@@ -1,0 +1,24 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+/* Required Swiper styles (if Tailwind resets break them) */
+.swiper {
+    width: 100%;
+    height: auto;
+    position: relative;
+}
+
+.swiper-wrapper {
+    display: flex;
+    transition-property: transform;
+    box-sizing: content-box;
+}
+
+.swiper-slide {
+    flex-shrink: 0;
+    width: 100%;
+    height: auto;
+    transition: transform 0.3s ease-in-out;
+}

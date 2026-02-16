@@ -1,0 +1,125 @@
+<?php
+
+namespace App\Http\Controllers\StripePayment;
+
+use App\Http\Controllers\Controller;
+use Illuminate\Http\Request;
+use Stripe\Webhook;
+use Stripe\Event;
+use App\Models\User;
+use Illuminate\Auth\Events\Registered;
+use Carbon\Carbon;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\DB;
+
+class WebhookController extends Controller
+{
+    public function handle(Request $request)
+    {
+        $payload = $request->getContent();
+        $sig_header = $request->header('Stripe-Signature');
+        $secret = config('services.stripe.webhook_secret');
+
+        Log::debug('Stripe webhook hit', [ 'has_signature' => !empty($sig_header), 'payload_len' => strlen($payload), ]);
+
+        try {
+            $event = Webhook::constructEvent($payload, $sig_header, $secret);
+        } catch (\Exception $e) {
+            Log::error('Stripe webhook signature failed', [ 'error' => $e->getMessage(), ]);
+            return response('Invalid signature', 400);
+        }
+
+        Log::debug('Stripe webhook event', [ 'type' => $event->type ?? null, 'id' => $event->id ?? null, ]);
+
+        if ($event->type === 'checkout.session.completed') {
+
+            $session = $event->data->object;
+            $metadata = $session->metadata;
+
+            $user_id = (int) ($metadata->user_id ?? 0);
+            $user_type = (int) ($metadata->user_type ?? 0);
+            $payment_type = (string) ($metadata->payment_type ?? '');
+            $extra = json_decode($metadata->extra, true);
+
+            Log::debug('Stripe session metadata', [ 'user_id' => $user_id, 'user_type' => $user_type, 'payment_type' => $payment_type, ]);
+
+            $transaction_id = $session->payment_intent;
+            $amount = $session->amount_total / 100;
+            $currency = $session->currency;
+
+            $now = Carbon::now();
+
+            if ($payment_type === 'therapist_registration' && $user_type == 30) {
+                try {
+                    // Insert into sys_finance_user_type_30_fees
+                    DB::table('sys_finance_user_type_30_fees')->insert([
+                        'TherapistUserID' => $user_id,
+                        'FeeType' => 'Registration Fee',
+                        'CreditDate' => $now->format('Y-m-d'),
+                        'CreditTime' => $now->format('H:i:s'),
+                        'CreditValue' => $amount,
+                        'CreditCurrency' => strtoupper($currency),
+                        'TransactionID' => $transaction_id,
+                        'TransactionResult' => 'success',
+                        'created_at' => $now,
+                        'updated_at' => $now,
+                    ]);
+                } catch (\Throwable $e) {
+                    Log::error('Therapist registration insert failed', [ 'user_id' => $user_id, 'error' => $e->getMessage(), ]);
+                }
+            }
+
+            if ($payment_type === 'business_registration' && $user_type == 10) {
+                try {
+                    // Insert into sys_finance_user_type_10_fees
+                    DB::table('sys_finance_user_type_10_fees')->insert([
+                        'BusinessLocalUserID' => $user_id,
+                        'FeeType' => 'Registration Fee',
+                        'CreditDate' => $now->format('Y-m-d'),
+                        'CreditTime' => $now->format('H:i:s'),
+                        'CreditValue' => $amount,
+                        'CreditCurrency' => strtoupper($currency),
+                        'TransactionID' => $transaction_id,
+                        'TransactionResult' => 'success',
+                        'created_at' => $now,
+                        'updated_at' => $now,
+                    ]);
+                    Log::debug('Business registration fee recorded', [ 'user_id' => $user_id, 'amount' => $amount, 'currency' => $currency, ]);
+                } catch (\Throwable $e) {
+                    Log::error('Business registration insert failed', [ 'user_id' => $user_id, 'error' => $e->getMessage(), ]);
+                }
+            }          
+            
+            if ($payment_type === 'session_purchase' && $user_type == 1) {
+                $allocatedTherapist = $extra['allocated_therapist'] ?? null;
+                $credits = $extra['credits'] ?? ($session->metadata->credits ?? null);
+                Log::debug('Session purchase metadata', [ 'user_id' => $user_id, 'credits' => $credits, 'allocated_therapist' => $allocatedTherapist ?? null, ]);
+                
+
+                if (!$credits) {
+                    Log::error('Session purchase webhook missing credits', [ 'user_id' => $user_id, 'metadata' => $session->metadata, ]);
+                    return response('Missing credits', 400);
+                }
+
+                // Insert into sys_finance_user_type_30_service_credits
+                DB::table('sys_finance_user_type_30_service_credits')->insert([
+                    'PatientUserID' => $user_id,
+                    // will go withe the therapist selection after Q/A.... SO thats why 'AllocatedTherapistUserID'  is NUll Now
+                    'AllocatedTherapistUserID' => $allocatedTherapist ?? NULL,
+                    'NumberSessionsPurchased' => $credits,
+                    'CreditDate' => $now->format('Y-m-d'),
+                    'CreditTime' => $now->format('H:i:s'),
+                    'CreditValue' => $amount,
+                    'CreditCurrency' => strtoupper($currency),
+                    'TransactionID' => $transaction_id,
+                    'TransactionResult' => 'success',
+                    'created_at' => $now,
+                    'updated_at' => $now,
+                ]);
+                return response('ok', 200);
+            }
+        }
+
+        return response('ok', 200);
+    }
+}
