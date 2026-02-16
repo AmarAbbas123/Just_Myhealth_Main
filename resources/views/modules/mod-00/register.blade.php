@@ -239,47 +239,22 @@
                     <input type="text" name="ProfileData[${field}_Custom]" placeholder="Specify Business Type" style="display:none;" />
                 `;
             } else if (field === 'Country') {
-                if (userTypeId === '10') {
-                    container.innerHTML += `
-                    <label>${field}</label>
-                    <select name="ProfileData[${field}]" id="country-dropdown" onchange="loadStates(this.value)">
-                        ${userOptions.Country.map(opt => `<option value="${opt}">${opt}</option>`).join('')}
-                    </select>
-                `;
-
-                } else {
-                    // For standard/therapy users -> text input
-                    container.innerHTML += `
+                container.innerHTML += `
                     <label>${field}</label>
                     <input type="text" name="ProfileData[${field}]" class="border rounded px-2 py-1" placeholder="Enter ${field}" />
                  `;
-                }
 
 
             } else if (field === 'State') {
-                if (userTypeId === '10') {
-                    container.innerHTML += `
-                    <label>${field}</label>
-                    <select name="ProfileData[${field}]" id="state-dropdown" onchange="loadCities(this.value)"></select>
-                `;
-                } else {
-                    container.innerHTML += `
-                    <label>${field}</label>
-                    <input type="text" name="ProfileData[${field}]" class="border rounded px-2 py-1" placeholder="Enter ${field}" />
-                `;
-                }
-            } else if (field === 'City') {
-                if (userTypeId === '10') {
                 container.innerHTML += `
                     <label>${field}</label>
-                    <select name="ProfileData[${field}]" id="city-dropdown"></select>
+                    <input type="text" name="ProfileData[${field}]" class="border rounded px-2 py-1" placeholder="Enter ${field}" />
                 `;
-                } else {
-                    container.innerHTML += `
+            } else if (field === 'City') {
+                container.innerHTML += `
                     <label>${field}</label>
                     <input type="text" name="ProfileData[${field}]" class="border rounded px-2 py-1" placeholder="Enter ${field}" />
                 `;
-                }
             } else if (userOptions[field]) {
                 container.innerHTML += `
                     <label>${field}</label>
