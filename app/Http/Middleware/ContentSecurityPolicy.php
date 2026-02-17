@@ -23,7 +23,7 @@ class ContentSecurityPolicy
                 "worker-src 'self' blob:",
             ];
         } else {
-            // 🔒 Production CSP (stricter)    //these are added in connect-src ON live Site     //https://api.zegocloud.com https://*.zego.im wss://*.zego.im https://zego.link wss://*.coolbcloud.com https://*.coolbcloud.com wss://*.coolzcloud.com https://*.coolzcloud.com wss://*.coolfcloud.com https://*.coolfcloud.com wss://*.zegocloudrelay.com https://*.zegocloudrelay.com
+            // 🔒 Production CSP (stricter)    //these are added in connect-src ON live Site     //https://api.zegocloud.com https://*.zego.im wss://*.zego.im https://zego.link wss://*.coolbcloud.com https://*.coolbcloud.com wss://*.coolzcloud.com https://*.coolzcloud.com wss://*.coolfcloud.com https://*.coolfcloud.com wss://*.zegocloudrelay.com https://*.zegocloudrelay.com  https://www.googletagmanager.com https://www.google-analytics.com
             $policies = [
                 "default-src 'self'",
                 "script-src 'self' https://cdn.jsdelivr.net https://cdnjs.cloudflare.com https://code.jquery.com https://unpkg.com",

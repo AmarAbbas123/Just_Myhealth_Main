@@ -4,7 +4,6 @@
         window.ZEGO_PATIENT_LOCK = false;
     </script>
 
-
     <div class="min-h-[80vh] flex items-center justify-center px-4">
         <div class="w-full max-w-xl bg-white dark:bg-gray-900 rounded-xl shadow-lg p-8 text-center">
 

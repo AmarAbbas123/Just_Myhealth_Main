@@ -320,6 +320,7 @@ Route::middleware(['auth', 'usertype:admins'])->group(function () {
 
 Route::middleware(['auth', 'usertype:admins'])->group(function () {
     Route::get('/mod-02/finance-reports/revenue', [FinanceReportsRevenueController::class, 'revenue'])->name('finance.reports.revenue');
+    Route::get('/mod-02/finance-reports/payments-platform-operations', [FinanceReportsRevenueController::class, 'paymentsPlatformOperations'])->name('finance.reports.payments_platform_operations');
 });
 
 /*
