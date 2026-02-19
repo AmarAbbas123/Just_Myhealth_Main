@@ -98,6 +98,7 @@ class RegisteredUserController extends Controller
             'Email' => $validated['Email'],
             'Password' => Hash::make($validated['Password']),
             'AccountStatus' => 0,   // INACTIVE until verified / paid
+            'AccountSetupComplete' => 0, // INACTIVE until Approved by Admin
             'UserCreatedDateTime' => now(),
             'NeedsEmailPrompt' => true,
         ]);

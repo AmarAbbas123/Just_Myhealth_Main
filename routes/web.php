@@ -297,6 +297,8 @@ Route::middleware(['auth', 'usertype:admins'])->group(function () {
 //Therapists Onboarding Verify
 Route::middleware(['auth', 'usertype:admins'])->group(function () {
     Route::resource('/mod-01/therapist-management/therapist-onboarding-verify', TherapistsOnboardingVerifyController::class)->names('therapists-onboarding-verify');
+    Route::post('/mod-01/therapist-management/therapist-onboarding-verify/{user}/status', [TherapistsOnboardingVerifyController::class, 'updateStatus'])
+        ->name('therapists-onboarding-verify.status');
 });
 
 

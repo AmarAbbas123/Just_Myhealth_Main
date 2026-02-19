@@ -1,4 +1,15 @@
 <x-app1scrollxtable>
+    @if (session('error'))
+        <div class="mb-4 rounded bg-red-100 px-4 py-3 text-red-700">
+            {{ session('error') }}
+        </div>
+    @endif
+
+    @if (session('success'))
+        <div class="mb-4 rounded bg-green-100 px-4 py-3 text-green-700">
+            {{ session('success') }}
+        </div>
+    @endif
     <div class="px-6 mx-auto mt-6" x-data="therapistsStatus()">
 
         <!-- Header -->
@@ -13,7 +24,7 @@
                 <thead class="bg-gray-100 text-xs uppercase text-gray-600">
                     <tr>
                         @foreach ([
-                                    'ID' => 'No.',
+                                    'ID' => 'UserID',
                                     'UserName' => 'UserName',
                                     'FirstName' => 'First Name',
                                     'LastName' => 'Last Name',
@@ -50,13 +61,9 @@
                         @php
                             $attr = $item->userAttributes;
                             $type30 = $item->type30;
-                            $displayName = trim(($attr->FirstName ?? '') . ' ' . ($attr->LastName ?? ''));
-                            $displayName = $displayName !== '' ? $displayName : $item->UserName ?? '';
-                            $createdDate = $item->UserCreatedDateTime ?? ($item->CreatedAt ?? $item->created_at);
                         @endphp
                         <tr class="border-t">
-                            <td class="px-3 py-2">
-                                {{ ($items->currentPage() - 1) * $items->perPage() + $loop->iteration }} </td>
+                            <td class="px-3 py-2">{{ $item->ID }}</td>
                             <td class="px-3 py-2">{{ $item->UserName }}</td>
                             <td class="px-3 py-2">{{ $attr->FirstName ?? '' }}</td>
                             <td class="px-3 py-2">{{ $attr->LastName ?? '' }}</td>
@@ -112,38 +119,46 @@
                                     </button>
 
                                     <!-- LAST 3 → RECTANGLE + SINGLE LINE -->
-                                    <button
-                                        class="px-5 py-1 text-[11px] font-semibold 
-                                               bg-emerald-600 text-white 
-                                               rounded-md 
-                                               shadow-sm hover:bg-emerald-700 
-                                               transition-all
-                                               whitespace-nowrap
-                                               min-w-[100px]">
-                                        APPROVE
-                                    </button>
+                                    <form method="POST"
+                                        action="{{ route('therapists-onboarding-verify.status', $item->ID) }}"
+                                        class="flex gap-2 flex-nowrap">
+                                        @csrf
+                                        <button type="submit" name="status" value="Approved"
+                                            class="px-5 py-1 text-[11px] font-semibold 
+                                                   bg-emerald-600 text-white 
+                                                   rounded-md 
+                                                   shadow-sm hover:bg-emerald-700 
+                                                   transition-all
+                                                   whitespace-nowrap
+                                                   min-w-[100px]"
+                                            onclick="return confirm('Approve this therapist?')">
+                                            APPROVE
+                                        </button>
 
-                                    <button
-                                        class="px-5 py-1 text-[11px] font-medium 
-                                               bg-amber-500 text-white 
-                                               rounded-md 
-                                               shadow-sm hover:bg-amber-600 
-                                               transition-all
-                                               whitespace-nowrap
-                                               min-w-[120px]" @click='openMessageModal({ id: {{ $item->ID }}, name: @json($displayName), userType: 30 })'>
-                                        Further Review
-                                    </button>
+                                        <button type="submit" name="status" value="Further Review"
+                                            class="px-5 py-1 text-[11px] font-medium 
+                                                   bg-amber-500 text-white 
+                                                   rounded-md 
+                                                   shadow-sm hover:bg-amber-600 
+                                                   transition-all
+                                                   whitespace-nowrap
+                                                   min-w-[120px]"
+                                            onclick="return confirm('Mark this therapist for further review?')">
+                                            FURTHER REVIEW
+                                        </button>
 
-                                    <button
-                                        class="px-5 py-1 text-[11px] font-semibold 
-                                               bg-red-600 text-white 
-                                               rounded-md 
-                                               shadow-sm hover:bg-red-700 
-                                               transition-all
-                                               whitespace-nowrap
-                                               min-w-[100px]" @click='openMessageModal({ id: {{ $item->ID }}, name: @json($displayName), userType: 30 })'>
-                                        REJECT
-                                    </button>
+                                        <button type="submit" name="status" value="Rejected"
+                                            class="px-5 py-1 text-[11px] font-semibold 
+                                                   bg-red-600 text-white 
+                                                   rounded-md 
+                                                   shadow-sm hover:bg-red-700 
+                                                   transition-all
+                                                   whitespace-nowrap
+                                                   min-w-[100px]"
+                                            onclick="return confirm('Reject this therapist?')">
+                                            REJECT
+                                        </button>
+                                    </form>
 
                                 </div>
 
@@ -151,7 +166,7 @@
                         </tr>
                     @empty
                         <tr>
-                            <td class="px-3 py-6 text-center text-gray-500" colspan="14">
+                            <td class="px-3 py-6 text-center text-gray-500" colspan="7">
                                 No therapists found.
                             </td>
                         </tr>
@@ -243,50 +258,12 @@
             </div>
         </div>
 
-        <!-- MESSAGE MODAL -->
-        <div x-show="isMessageOpen" x-cloak class="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4"
-            @click.self="closeMessageModal">
-
-            <div class="bg-white rounded-xl w-full max-w-lg p-6 shadow-xl" @click.stop>
-                <div class="flex justify-between items-center mb-4">
-                    <h2 class="text-lg font-semibold text-gray-800">
-                        Send Message
-                    </h2>
-                    <button @click="closeMessageModal" class="text-gray-500 text-xl">x</button>
-                </div>
-
-                <p class="text-sm text-gray-600 mb-3">
-                    To: <span class="font-medium" x-text="messageTarget.name || 'Therapist'"></span>
-                </p>
-
-                <form @submit.prevent="sendMessage">
-                    <textarea x-model="messageText" rows="4" class="w-full border rounded px-3 py-2 text-sm"
-                        placeholder="Type your message..."></textarea>
-
-                    <div class="mt-4 flex justify-end gap-2">
-                        <button type="button" @click="closeMessageModal"
-                            class="px-4 py-2 bg-gray-300 rounded-lg text-sm">
-                            Cancel
-                        </button>
-                        <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded-lg text-sm"
-                            :disabled="sending">
-                            <span x-show="!sending">Send</span>
-                            <span x-show="sending">Sending...</span>
-                        </button>
-                    </div>
-                </form>
-            </div>
-        </div>
-
     </div>
 
     <script>
         function therapistsStatus() {
             return {
                 isBioOpen: false,
-                isMessageOpen: false,
-                sending: false,
-                messageText: '',
                 reviewSection: 'personal',
                 sectionTitles: {
                     personal: 'Review Personal Data',
@@ -319,17 +296,10 @@
                     { label: 'Liability Insurance', key: 'VerificationLiabilityInsuranceImagePath' },
                     { label: 'DBS', key: 'VerificationDBSImagePath' }
                 ],
-                messageTarget: {
-                    id: null,
-                    name: '',
-                    userType: 30
-                },
                 therapist: {
                     user: {},
                     type30: {}
                 },
-                zim: null,
-                isZimLoggedIn: false,
 
                 hasAnyPersonalData() {
                     return this.personalFields.some((field) => this.therapist.user[field.key]);
@@ -366,84 +336,6 @@
                 },
                 closeBioModal() {
                     this.isBioOpen = false;
-                },
-                async openMessageModal(target) {
-                    this.messageTarget = Object.assign({
-                        userType: 30
-                    }, target || {});
-                    this.messageText = '';
-                    this.isMessageOpen = true;
-                    if (!this.isZimLoggedIn) {
-                        await this.initZego();
-                    }
-                },
-                closeMessageModal() {
-                    this.isMessageOpen = false;
-                },
-                async initZego() {
-                    try {
-                        const res = await fetch('/zego/chat-token', {
-                            method: 'POST',
-                            headers: {
-                                'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                            }
-                        });
-                        const data = await res.json();
-
-                        if (!ZIM.getInstance()) {
-                            ZIM.create({
-                                appID: data.appID
-                            });
-                        }
-                        this.zim = ZIM.getInstance();
-                        this.zim.on('error', (zim, err) => console.error('ZIM error', err));
-
-                        await this.zim.login(data.userID, {
-                            userName: data.userName,
-                            token: data.token
-                        });
-
-                        this.isZimLoggedIn = true;
-                    } catch (err) {
-                        console.error('Zego init failed', err);
-                    }
-                },
-                async sendMessage() {
-                    if (this.sending || !this.messageText.trim() || !this.messageTarget.id) return;
-                    this.sending = true;
-
-                    const text = this.messageText.trim();
-
-                    try {
-                        await fetch('/chat/store-message', {
-                            method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/json',
-                                'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                            },
-                            body: JSON.stringify({
-                                to_user_id: this.messageTarget.id,
-                                to_user_type: this.messageTarget.userType || 30,
-                                message: text
-                            })
-                        });
-
-                        if (this.isZimLoggedIn && this.zim) {
-                            await this.zim.sendMessage({
-                                type: 1,
-                                message: ''
-                            }, String(this.messageTarget.id), 0, {
-                                priority: 1
-                            });
-                        }
-
-                        this.messageText = '';
-                        this.isMessageOpen = false;
-                    } catch (err) {
-                        console.error('Send message failed', err);
-                    } finally {
-                        this.sending = false;
-                    }
                 }
             }
         }

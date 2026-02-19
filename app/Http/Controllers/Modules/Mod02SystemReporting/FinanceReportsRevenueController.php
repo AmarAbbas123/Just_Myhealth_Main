@@ -3,32 +3,18 @@
 namespace App\Http\Controllers\Modules\Mod02SystemReporting;
 
 use App\Http\Controllers\Controller;
-use App\Models\SysFinanceUserType30Fees;
-use App\Models\SysFinanceUserType30ServiceCredits;
-use App\Models\SysFinanceUserType31Fees;
-use App\Models\SysFinanceUserType32Fees;
 use App\Models\SysFinanceUserType10Fees;
 use App\Models\SysFinanceUserType11Fees;
 use App\Models\SysFinanceUserType12Fees;
 use App\Models\SysFinanceUserType13Fees;
+use App\Models\SysFinanceUserType30Fees;
+use App\Models\SysFinanceUserType31Fees;
+use App\Models\SysFinanceUserType32Fees;
+use App\Models\SysFinanceUserType30ServiceCredits;
 use App\Models\SysFinancePlatformOperationCost;
-use Illuminate\Support\Facades\Auth;
 
 class FinanceReportsRevenueController extends Controller
 {
-    /**
-     * Only UserType 90 / 91 / 92 allowed
-     */
-    public function __construct()
-    {
-        $this->middleware(function ($request, $next) {
-            if (!in_array(optional(Auth::user())->UserType, [90, 91, 92])) {
-                abort(403, 'Unauthorized access');
-            }
-            return $next($request);
-        });
-    }
-
     /**
      * Display Revenue Report
      */
