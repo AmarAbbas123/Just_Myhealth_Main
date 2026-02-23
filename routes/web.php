@@ -294,7 +294,7 @@ Route::middleware(['auth', 'usertype:admins'])->group(function () {
     Route::resource('/mod-01/therapist-management/therapist-status', TherapistsStatusController::class)->names('therapists-status');
 });
 
-//Therapists Onboarding Verify
+//Therapists Onboarding Verify (Thm)
 Route::middleware(['auth', 'usertype:admins'])->group(function () {
     Route::resource('/mod-01/therapist-management/therapist-onboarding-verify', TherapistsOnboardingVerifyController::class)->names('therapists-onboarding-verify');
     Route::post('/mod-01/therapist-management/therapist-onboarding-verify/{user}/status', [TherapistsOnboardingVerifyController::class, 'updateStatus'])
@@ -491,7 +491,7 @@ Route::middleware('auth')->post('/patient/session/joined', function (Request $re
 
 //8️⃣ Sessions History
 Route::controller(SessionHistoryController::class)
-    ->middleware(['auth', 'usertype:therapist'])
+    ->middleware(['auth', 'usertype:user,therapist'])
     ->group(function () {
         Route::get('mod-10/my-session-history', 'sessionHistory')->name('therap.session.history');
         Route::post('therapist/session-history/details', 'showDetails');

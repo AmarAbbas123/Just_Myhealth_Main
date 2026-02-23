@@ -82,7 +82,7 @@
                                     </button>
                                 </div>
                             </td>
-                            <td class="px-3 py-2"> {{ ($items->currentPage() - 1) * $items->perPage() + $loop->iteration }} </td>
+                            <td class="px-3 py-2"> {{ $item->ID }} </td>
                             <td class="px-3 py-2">{{ $item->UserName }}</td>
                             <td class="px-3 py-2">{{ $attr->FirstName ?? '' }}</td>
                             <td class="px-3 py-2">{{ $attr->LastName ?? '' }}</td>

@@ -29,7 +29,7 @@ class TherapistsStatusController extends Controller
         $items = User::where('UserType', 30)
             ->with(['userAttributes', 'type30'])
             ->orderBy($sortBy, $sortDir)
-            ->paginate(10)
+            ->paginate(25)
             ->appends($request->query());
 
         return view('modules.mod-01.thm.therapists-status', compact(
