@@ -106,7 +106,7 @@
 
                 // ⭐ ADD THIS FUNCTION HERE
                 StorageUrl(path) {
-                    return path ? `/storage/${path.replace('public/', '')}` : null;
+                    return path ? `/storage/${path}` : null;
                 },
 
                 loadDocuments() {

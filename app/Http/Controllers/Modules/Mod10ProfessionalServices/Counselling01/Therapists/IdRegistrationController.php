@@ -70,7 +70,7 @@ class IdRegistrationController extends Controller
             Storage::delete($user->$column);
         }
 
-        $path = $request->file('document')->store('public/documents');
+        $path = $request->file('document')->store('documents', 'public');
 
         // store REAL path, NOT URL
         $user->$column = $path;
@@ -101,7 +101,7 @@ class IdRegistrationController extends Controller
             Storage::delete($user->$column);
         }
 
-        $path = $request->file('document')->store('public/documents');
+        $path = $request->file('document')->store('documents', 'public');
 
         $user->$column = $path;
         $user->save();
