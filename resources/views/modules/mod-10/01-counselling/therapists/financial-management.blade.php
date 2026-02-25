@@ -117,6 +117,14 @@
             <h3 class="font-semibold mb-3">Transaction History (Payout):</h3>
 
             <table class="w-full text-sm">
+                <thead class="border-b">
+                    <tr>
+                        <th class="text-left py-1">Date</th>
+                        <th class="text-left py-1">From</th>
+                        <th class="text-left py-1">To</th>
+                        <th class="text-right py-1">Amount</th>
+                    </tr>
+                </thead>
                 <tbody>
                     <template x-for="p in payoutTransactions" :key="p.id">
                         <tr class="border-b">

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Modules\Mod10ProfessionalServices\Counselling01\Therapists;
 
 use App\Http\Controllers\Controller;
+use App\Models\SysFinanceUserType30ServiceDebits;
 use App\Models\SysUserType30SessionHistory;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -37,18 +38,15 @@ class FinancialManagementController extends Controller
                     : 'OWED',
             ]);
 
-
-
         /* Payouts */
-        $payoutTransactions = SysUserType30SessionHistory::where('AllocatedTherapistUserID', $therapistId)
-            ->where('TherapistPaymentCompleted', 'Y')
-            ->whereNotNull('SessionEndedDate')
-            ->orderByDesc('SessionEndedDate')
+        $payoutTransactions = SysFinanceUserType30ServiceDebits::where('AllocatedTherapistUserID', $therapistId)
+            ->orderByDesc('DebitDate')
+            ->orderByDesc('DebitTime')
             ->get()
-            ->map(fn($s) => [
-                'id' => $s->ID,
-                'date' => $s->SessionEndedDate,
-                'amount' => number_format($s->TherapistPaymentValue, 2),
+            ->map(fn($d) => [
+                'id' => $d->ID,
+                'date' => $d->DebitDate,
+                'amount' => number_format($d->DebitValue ?? 0, 2),
             ]);
 
         return view('modules.mod-10.01-counselling.therapists.financial-management', [
@@ -57,9 +55,9 @@ class FinancialManagementController extends Controller
                 ->whereNotNull('SessionEndedDate')
                 ->sum('TherapistPaymentValue'), 2),
 
-            'paymentsMade' => round(SysUserType30SessionHistory::where('AllocatedTherapistUserID', $therapistId)
-                ->where('TherapistPaymentCompleted', 'Y')
-                ->sum('TherapistPaymentValue'), 2),
+            'paymentsMade' => round(SysFinanceUserType30ServiceDebits::where('AllocatedTherapistUserID', $therapistId)
+                ->whereYear('DebitDate', Carbon::now()->year)
+                ->sum('DebitValue'), 2),
 
             'paymentsOwed' => round(SysUserType30SessionHistory::where('AllocatedTherapistUserID', $therapistId)
                 ->where('TherapistPaymentCompleted', 'N')
