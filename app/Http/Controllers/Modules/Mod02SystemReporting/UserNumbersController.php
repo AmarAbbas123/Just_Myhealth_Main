@@ -43,7 +43,7 @@ class UserNumbersController extends Controller
         // -----------------------------
         // LINE CHART DATA (LAST 30 DAYS)
         // -----------------------------
-        $fromDate = Carbon::now()->subDays(30)->startOfDay();
+        $fromDate = Carbon::now()->subDays(90)->startOfDay();
 
         $history = SysUserTotalsByDay::where('Date', '>=', $fromDate)
             ->orderBy('Date', 'asc')

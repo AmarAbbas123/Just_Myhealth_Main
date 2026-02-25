@@ -47,6 +47,7 @@ class TherapistsOnboardingVerifyController extends Controller
     {
         $validated = $request->validate([
             'status' => 'required|in:Approved,Rejected,Further Review',
+            'verifier_notes' => 'required|string|max:128',
         ]);
 
         $user = User::where('ID', $id)
@@ -63,6 +64,7 @@ class TherapistsOnboardingVerifyController extends Controller
 
         $type30->update([
             'VerifierID' => Auth::id(),
+            'VerifierNotes' => $validated['verifier_notes'],
             'VerificationStatus' => $validated['status'],
             'VerificationDate' => now()->toDateString(),
         ]);

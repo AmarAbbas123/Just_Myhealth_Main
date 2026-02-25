@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class SysUserType30Attributes extends Model
 {
     use HasFactory;
-    
+
     protected $table = 'sys_user_type_30_attributes';
     protected $primaryKey = 'ID';
     public $timestamps = false;
@@ -66,9 +66,11 @@ class SysUserType30Attributes extends Model
         'TherapyYearsExperience5',
         'VerifierID',
         'VerificationStatus',
+        'VerifierNotes',
         'VerificationDate',
         'ApproverID',
         'ApprovalStatus',
+        'ApproverNotes',
         'ApprovalDate'
     ];
 }

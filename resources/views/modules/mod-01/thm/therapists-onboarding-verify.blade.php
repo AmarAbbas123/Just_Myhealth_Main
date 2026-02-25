@@ -119,11 +119,8 @@
                                     </button>
 
                                     <!-- LAST 3 → RECTANGLE + SINGLE LINE -->
-                                    <form method="POST"
-                                        action="{{ route('therapists-onboarding-verify.status', $item->ID) }}"
-                                        class="flex gap-2 flex-nowrap">
-                                        @csrf
-                                        <button type="submit" name="status" value="Approved"
+                                    <div class="flex gap-2 flex-nowrap">
+                                        <button type="button"
                                             class="px-5 py-1 text-[11px] font-semibold 
                                                    bg-emerald-600 text-white 
                                                    rounded-md 
@@ -131,11 +128,11 @@
                                                    transition-all
                                                    whitespace-nowrap
                                                    min-w-[100px]"
-                                            onclick="return confirm('Approve this therapist?')">
+                                            @click='openStatusModal({{ $item->ID }}, @json($item->UserName), "Approved")'>
                                             APPROVE
                                         </button>
 
-                                        <button type="submit" name="status" value="Further Review"
+                                        <button type="button"
                                             class="px-5 py-1 text-[11px] font-medium 
                                                    bg-amber-500 text-white 
                                                    rounded-md 
@@ -143,11 +140,11 @@
                                                    transition-all
                                                    whitespace-nowrap
                                                    min-w-[120px]"
-                                            onclick="return confirm('Mark this therapist for further review?')">
+                                            @click='openStatusModal({{ $item->ID }}, @json($item->UserName), "Further Review")'>
                                             FURTHER REVIEW
                                         </button>
 
-                                        <button type="submit" name="status" value="Rejected"
+                                        <button type="button"
                                             class="px-5 py-1 text-[11px] font-semibold 
                                                    bg-red-600 text-white 
                                                    rounded-md 
@@ -155,10 +152,10 @@
                                                    transition-all
                                                    whitespace-nowrap
                                                    min-w-[100px]"
-                                            onclick="return confirm('Reject this therapist?')">
+                                            @click='openStatusModal({{ $item->ID }}, @json($item->UserName), "Rejected")'>
                                             REJECT
                                         </button>
-                                    </form>
+                                    </div>
 
                                 </div>
 
@@ -258,12 +255,70 @@
             </div>
         </div>
 
+        <!-- VERIFICATION NOTES MODAL -->
+        <div x-show="isStatusOpen" x-cloak class="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4"
+            @click.self="closeStatusModal">
+            <div class="bg-white rounded-xl w-full max-w-lg p-6 shadow-xl" @click.stop>
+                <div class="flex justify-between items-center mb-3">
+                    <h2 class="text-lg font-semibold text-gray-800">
+                        Verification Decision
+                    </h2>
+                    <button @click="closeStatusModal" class="text-gray-500 text-xl">x</button>
+                </div>
+
+                <div class="text-sm text-gray-700 space-y-2">
+                    <p>
+                        <strong>User:</strong>
+                        <span x-text="statusUserName"></span>
+                        <span class="text-gray-500">(#</span><span class="text-gray-500" x-text="statusUserId"></span><span class="text-gray-500">)</span>
+                    </p>
+                    <p>
+                        <strong>Action:</strong>
+                        <span x-text="statusValue"></span>
+                    </p>
+                </div>
+
+                <form method="POST" :action="statusActionUrl()" class="mt-4 space-y-3">
+                    @csrf
+                    <input type="hidden" name="status" :value="statusValue">
+
+                    <div>
+                        <label class="block text-xs font-medium text-gray-600 mb-1">Verifier notes (max 128 chars)</label>
+                        <input
+                            type="text"
+                            name="verifier_notes"
+                            x-model.trim="verifierNotes"
+                            maxlength="128"
+                            required
+                            class="w-full rounded-md border border-gray-300 px-3 py-2 text-sm text-gray-800 focus:border-teal-500 focus:ring-1 focus:ring-teal-500"
+                            placeholder="Enter a short note for this decision">
+                        <div class="mt-1 text-xs text-gray-500 text-right">
+                            <span x-text="verifierNotes.length"></span>/128
+                        </div>
+                    </div>
+
+                    <div class="flex justify-end gap-2 pt-2">
+                        <button type="button" @click="closeStatusModal"
+                            class="px-4 py-2 bg-gray-200 rounded-lg text-sm hover:bg-gray-300">
+                            Cancel
+                        </button>
+                        <button type="submit"
+                            class="px-4 py-2 bg-teal-600 text-white rounded-lg text-sm hover:bg-teal-700"
+                            :disabled="!verifierNotes || verifierNotes.length === 0">
+                            Submit
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
     </div>
 
     <script>
         function therapistsStatus() {
             return {
                 isBioOpen: false,
+                isStatusOpen: false,
                 reviewSection: 'personal',
                 sectionTitles: {
                     personal: 'Review Personal Data',
@@ -301,6 +356,11 @@
                     type30: {}
                 },
 
+                statusUserId: null,
+                statusUserName: '',
+                statusValue: '',
+                verifierNotes: '',
+
                 hasAnyPersonalData() {
                     return this.personalFields.some((field) => this.therapist.user[field.key]);
                 },
@@ -336,7 +396,22 @@
                 },
                 closeBioModal() {
                     this.isBioOpen = false;
-                }
+                },
+
+                openStatusModal(userId, userName, status) {
+                    this.statusUserId = userId;
+                    this.statusUserName = userName || '';
+                    this.statusValue = status || '';
+                    this.verifierNotes = '';
+                    this.isStatusOpen = true;
+                },
+                closeStatusModal() {
+                    this.isStatusOpen = false;
+                },
+                statusActionUrl() {
+                    if (!this.statusUserId) return '';
+                    return `/mod-01/therapist-management/therapist-onboarding-verify/${this.statusUserId}/status`;
+                },
             }
         }
     </script>

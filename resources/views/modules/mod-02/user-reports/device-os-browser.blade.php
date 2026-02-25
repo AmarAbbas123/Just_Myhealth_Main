@@ -1,10 +1,10 @@
 <x-app1>
     <div x-data="chartsDashboard()" x-init="init()" class="px-6 py-6">
-        <x-page-header />
+        <x-page-header /> 
 
-        <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div class="bg-white dark:bg-gray-800 border rounded-xl p-4">
-                <div id="chart-user-type" class="min-h-[260px] w-full"></div>
+                <div id="chart-user-type" class="min-h-[260px]"></div>
             </div>
 
             <div class="bg-white dark:bg-gray-800 border rounded-xl p-4">
@@ -21,6 +21,7 @@
         </div>
     </div>
 
+
     <script>
         window.chartsDashboard = function() {
             return {
@@ -29,16 +30,15 @@
                 initialized: false,
 
                 async init() {
-                    if (this.initialized) return;
+                    if (this.initialized) return; // 🔒 prevent double init
                     this.initialized = true;
 
-                    this.$nextTick(async () => {
-                        await this.loadCharts();
+                    await this.loadCharts();
 
-                        this.refreshTimer = setInterval(() => {
-                            this.loadCharts(true);
-                        }, 30000);
-                    });
+                    // 🔁 auto refresh every 30s (only once)
+                    this.refreshTimer = setInterval(() => {
+                        this.loadCharts(true);
+                    }, 30000);
                 },
 
                 async loadCharts(update = false) {
@@ -74,6 +74,11 @@
                             },
                             labels: dataset.labels,
                             series: dataset.series,
+                            dataLabels: {
+                                style: {
+                                    fontSize: '9px'
+                                }
+                            },
                             legend: {
                                 position: 'bottom'
                             },
@@ -83,6 +88,9 @@
                                         size: '70%',
                                         labels: {
                                             show: true,
+                                            value: {
+                                                fontSize: '16px'
+                                            },
                                             total: {
                                                 show: true,
                                                 label: title,
@@ -95,11 +103,7 @@
                         }
                     );
 
-                    chart.render().then(() => {
-                        setTimeout(() => {
-                            window.dispatchEvent(new Event('resize'));
-                        }, 0);
-                    });
+                    chart.render();
                     this.charts[el] = chart;
                 }
             };

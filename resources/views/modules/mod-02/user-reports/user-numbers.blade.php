@@ -22,23 +22,23 @@
         <!-- ===================== -->
         <!-- LINE CHARTS -->
         <!-- ===================== -->
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div class="grid grid-cols-1 lg:grid-cols-1 gap-6">
 
             <!-- Standard / Enhanced / Discharged -->
             <div class="bg-white p-4 rounded shadow">
-                <h2 class="font-semibold mb-2">Patient Users (Last 30 Days)</h2>
+                <h2 class="font-semibold mb-2">Patient Users (Last 90 Days)</h2>
                 <div id="patientChart"></div>
             </div>
 
             <!-- Professionals -->
             <div class="bg-white p-4 rounded shadow">
-                <h2 class="font-semibold mb-2">Professional Users (Last 30 Days)</h2>
+                <h2 class="font-semibold mb-2">Professional Users (Last 90 Days)</h2>
                 <div id="professionalChart"></div>
             </div>
 
             <!-- Business -->
             <div class="bg-white p-4 rounded shadow ">
-                <h2 class="font-semibold mb-2">Business Users (Last 30 Days)</h2>
+                <h2 class="font-semibold mb-2">Business Users (Last 90 Days)</h2>
                 <div id="businessChart"></div>
             </div>
 
