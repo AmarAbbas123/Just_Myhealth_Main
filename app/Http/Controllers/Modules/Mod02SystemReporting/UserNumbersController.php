@@ -6,7 +6,6 @@ use App\Http\Controllers\Controller;
 use App\Models\User;
 use App\Models\SysUserTotalsByDay;
 use App\Models\SysUserTypes;
-use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
 
 class UserNumbersController extends Controller
@@ -16,51 +15,91 @@ class UserNumbersController extends Controller
      */
     public function index()
     {
-        // -----------------------------
-        // Fetch all relevant user types dynamically from sys_user_types
-        // -----------------------------
-        $userTypes = SysUserTypes::whereIn('UserTypeRef', [1, 2, 3, 10, 11, 12, 13, 30, 31, 32])
+        // -------------------------------------------------
+        // Fetch all relevant user types dynamically
+        // -------------------------------------------------
+        $userTypes = SysUserTypes::whereIn('UserTypeRef', [1,2,3,10,11,12,13,30,31,32])
             ->pluck('UserTypeDescription', 'UserTypeRef')
             ->toArray();
 
-        // -----------------------------
+        // -------------------------------------------------
         // TOP ORANGE BOX TOTALS
-        // -----------------------------
+        // -------------------------------------------------
         $totalsQuery = User::select('UserType')
             ->selectRaw('COUNT(*) as total')
             ->groupBy('UserType')
             ->pluck('total', 'UserType')
             ->toArray();
+
         $totalUsers = array_sum($totalsQuery);
-        // Map totals to descriptions
+
         $totals = [
-            'Total Users' => $totalUsers, // 👈 FIRST GRID
+            'Total Users' => $totalUsers,
         ];
+
         foreach ($userTypes as $typeId => $description) {
             $totals[$description] = $totalsQuery[$typeId] ?? 0;
         }
 
-        // -----------------------------
-        // LINE CHART DATA (LAST 30 DAYS)
-        // -----------------------------
-        $fromDate = Carbon::now()->subDays(90)->startOfDay();
+        // -------------------------------------------------
+        // LAST 90 DAYS CONTINUOUS DATA (IMPORTANT FIX)
+        // -------------------------------------------------
+        $startDate = Carbon::today()->subDays(89); // include today = 90 days
+        $endDate   = Carbon::today();
 
-        $history = SysUserTotalsByDay::where('Date', '>=', $fromDate)
-            ->orderBy('Date', 'asc')
-            ->get();
+        // Fetch database rows and key them by date
+        $history = SysUserTotalsByDay::whereBetween('Date', [$startDate, $endDate])
+            ->get()
+            ->keyBy(function ($item) {
+                return Carbon::parse($item->Date)->format('Y-m-d');
+            });
 
+        // Prepare arrays
+        $dates = [];
+        $userStandard = [];
+        $userEnhanced = [];
+        $userDischarged = [];
+        $therapist = [];
+        $trainer = [];
+        $dietitian = [];
+        $businessLocal = [];
+        $businessRegional = [];
+        $businessNational = [];
+        $businessGlobal = [];
+
+        // Loop through every day (fills missing days with 0)
+        for ($date = $startDate->copy(); $date->lte($endDate); $date->addDay()) {
+
+            $formatted = $date->format('Y-m-d');
+            $row = $history[$formatted] ?? null;
+
+            $dates[] = $date->format('d M');
+
+            $userStandard[]   = $row->UserStandard ?? 0;
+            $userEnhanced[]   = $row->UserEnhanced ?? 0;
+            $userDischarged[] = $row->UserDischargedPatient ?? 0;
+            $therapist[]      = $row->UserProfessionalTherapist ?? 0;
+            $trainer[]        = $row->UserProfessionalPersonalTrainer ?? 0;
+            $dietitian[]      = $row->UserProfessionalDietitian ?? 0;
+            $businessLocal[]  = $row->UserBusinessLocal ?? 0;
+            $businessRegional[] = $row->UserBusinessRegional ?? 0;
+            $businessNational[] = $row->UserBusinessNational ?? 0;
+            $businessGlobal[] = $row->UserBusinessGlobal ?? 0;
+        }
+
+        // Chart data
         $chartData = [
-            'dates' => $history->pluck('Date')->map(fn($d) => $d->format('d M'))->toArray(),
-            'UserStandard'   => $history->pluck('UserStandard')->map(fn($v) => $v ?? 0),
-            'UserEnhanced'   => $history->pluck('UserEnhanced')->map(fn($v) => $v ?? 0),
-            'UserDischarged' => $history->pluck('UserDischargedPatient')->map(fn($v) => $v ?? 0),
-            'Therapist' => $history->pluck('UserProfessionalTherapist')->map(fn($v) => $v ?? 0),
-            'Trainer'   => $history->pluck('UserProfessionalPersonalTrainer')->map(fn($v) => $v ?? 0),
-            'Dietitian' => $history->pluck('UserProfessionalDietitian')->map(fn($v) => $v ?? 0),
-            'BusinessLocal'    => $history->pluck('UserBusinessLocal')->map(fn($v) => $v ?? 0),
-            'BusinessRegional' => $history->pluck('UserBusinessRegional')->map(fn($v) => $v ?? 0),
-            'BusinessNational' => $history->pluck('UserBusinessNational')->map(fn($v) => $v ?? 0),
-            'BusinessGlobal' => $history->pluck('UserBusinessGlobal')->map(fn($v) => $v ?? 0),
+            'dates' => $dates,
+            'UserStandard'   => $userStandard,
+            'UserEnhanced'   => $userEnhanced,
+            'UserDischarged' => $userDischarged,
+            'Therapist'      => $therapist,
+            'Trainer'        => $trainer,
+            'Dietitian'      => $dietitian,
+            'BusinessLocal'  => $businessLocal,
+            'BusinessRegional'=> $businessRegional,
+            'BusinessNational'=> $businessNational,
+            'BusinessGlobal' => $businessGlobal,
         ];
 
         return view(

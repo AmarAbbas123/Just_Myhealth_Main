@@ -22,7 +22,7 @@
         <!-- ===================== -->
         <!-- LINE CHARTS -->
         <!-- ===================== -->
-        <div class="grid grid-cols-1 lg:grid-cols-1 gap-6">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
 
             <!-- Standard / Enhanced / Discharged -->
             <div class="bg-white p-4 rounded shadow">
