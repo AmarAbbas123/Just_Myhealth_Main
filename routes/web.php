@@ -530,7 +530,10 @@ Route::controller(IdRegistrationController::class)
 Route::controller(TasksActionsController::class)
     ->middleware(['auth', 'usertype:therapist'])
     ->group(function () {
-        Route::get('mod-10/my-tasks&actions', 'tasksActions')->name('therap.tasks.actions');
+        Route::get('mod-10/my-tasks', 'tasksActions')->name('therap.tasks.actions');
+        Route::post('mod-10/my-tasks/store', 'storeTask')->name('therap.tasks.actions.store');
+        Route::post('mod-10/my-tasks/update', 'updateTask')->name('therap.tasks.actions.update');
+        Route::delete('mod-10/my-tasks/delete', 'deleteTask')->name('therap.tasks.actions.delete');
     });
 
 // ##############################################################################################################
