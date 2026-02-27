@@ -6,7 +6,12 @@ use App\Http\Controllers\Controller;
 
 class FindAGroupController extends Controller
 {
-    public function index() {
-        return view('modules.mod-03.usr-group-finder');
+    public function index()
+    {
+        $base = rtrim(config('social.shaunsocial.base_url'), '/');
+        $path = config('social.shaunsocial.paths.find_group');
+    
+        return redirect()->away($base . $path);
     }
+    
 }

@@ -334,8 +334,8 @@ Route::get('/mod-03/usr-my-space', [MySpaceController::class, 'index'])->middlew
 Route::get('/mod-03/usr-my-groups', [MyGroupsController::class, 'index'])->middleware('auth');
 Route::get('/mod-03/usr-group-finder', [FindAGroupController::class, 'index'])->middleware('auth');
 Route::get('/mod-03/usr-service-finder', [FindAServiceController::class, 'index'])->middleware('auth');
-Route::get('/mod-05/usr-business-finder', [FindABusinessController::class, 'index'])->middleware('auth');
 Route::get('/mod-04/usr-health-news-feed', [HealthNewsFeedsController::class, 'index'])->middleware('auth');
+Route::get('/mod-05/usr-business-finder', [FindABusinessController::class, 'index'])->middleware('auth');
 
 /*
 |--------------------------------------------------------------------------

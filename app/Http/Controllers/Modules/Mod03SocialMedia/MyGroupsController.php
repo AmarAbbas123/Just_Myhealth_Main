@@ -6,7 +6,12 @@ use App\Http\Controllers\Controller;
 
 class MyGroupsController extends Controller
 {
-    public function index() {
-        return view('modules.mod-03.usr-my-groups');
+    public function index()
+    {
+        $base = rtrim(config('social.shaunsocial.base_url'), '/');
+        $path = config('social.shaunsocial.paths.my_groups');
+    
+        return redirect()->away($base . $path);
     }
+    
 }

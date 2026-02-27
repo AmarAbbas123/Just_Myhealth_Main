@@ -61,10 +61,10 @@ class AuthenticatedSessionController extends Controller
         ]);
 
         // 6️⃣ Send login alert & log device
-        // $user->notify(new LoginAlert(
-        //     $request->ip(),
-        //     $request->header('User-Agent')
-        // ));
+        $user->notify(new LoginAlert(
+            $request->ip(),
+            $request->header('User-Agent')
+        ));
 
         DeviceLogger::log($user->ID, $user->UserType, 'Login');
 

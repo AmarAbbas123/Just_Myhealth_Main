@@ -6,7 +6,12 @@ use App\Http\Controllers\Controller;
 
 class FindAServiceController extends Controller
 {
-    public function index() {
-        return view('modules.mod-03.usr-service-finder');
+    public function index()
+    {
+        $base = rtrim(config('social.shaunsocial.base_url'), '/');
+        $path = config('social.shaunsocial.paths.find_service');
+    
+        return redirect()->away($base . $path);
     }
+    
 }
