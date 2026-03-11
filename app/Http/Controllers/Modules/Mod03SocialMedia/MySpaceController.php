@@ -8,10 +8,12 @@ class MySpaceController extends Controller
 {
     public function index()
     {
-        $base = rtrim(config('social.shaunsocial.base_url'), '/');
-        $path = config('social.shaunsocial.paths.my_space');
-    
-        return redirect()->away($base . $path);
+        return redirect()->away(
+            'https://jmhmod03.xyz/openid/auth/keycloak'
+        );
+        // $base = rtrim(config('social.shaunsocial.base_url'), '/');
+        // $path = config('social.shaunsocial.paths.my_space');
+
+        // return redirect()->away($base . $path);
     }
-    
 }

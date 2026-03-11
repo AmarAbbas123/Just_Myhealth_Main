@@ -31,14 +31,17 @@ use App\Http\Controllers\Modules\Mod02SystemReporting\FinanceReportsRevenueContr
 //mod-03 User General
 use App\Http\Controllers\Modules\Mod03SocialMedia\MySpaceController;
 use App\Http\Controllers\Modules\Mod03SocialMedia\MyGroupsController;
-use App\Http\Controllers\Modules\Mod03SocialMedia\MyMessagesController;  // common for user and admin
+use App\Http\Controllers\Modules\Mod03SocialMedia\MyMessagesController;  
 use App\Http\Controllers\Modules\Mod03SocialMedia\FindAGroupController;
 use App\Http\Controllers\Modules\Mod03SocialMedia\FindAServiceController;
+
+//mod-04  , mod-05
 use App\Http\Controllers\Modules\Mod04MedicalData\HealthNewsFeedsController;
 use App\Http\Controllers\Modules\Mod05BusinessDirectory\FindABusinessController;
 
 // Common controller  for all users
 use App\Http\Controllers\Modules\Mod10ProfessionalServices\Counselling01\Therapists\StoreChatMessageController;
+use App\Http\Controllers\Modules\Mod10ProfessionalServices\Counselling01\Therapists\MessagesController;
 
 //mod-10 Patients  
 use App\Http\Controllers\Modules\Mod10ProfessionalServices\Counselling01\Patients\PatientsOnboardingController;
@@ -330,10 +333,14 @@ Route::middleware(['auth', 'usertype:admins'])->group(function () {
 | mod-03 USER GENERAL
 |--------------------------------------------------------------------------
 */
-Route::get('/mod-03/usr-my-space', [MySpaceController::class, 'index'])->middleware('auth');
+//Route::get('/mod-03/usr-my-space', [MySpaceController::class, 'index'])->middleware('auth');   // https://jmhmod03.xyz/openid/auth/keycloak
+Route::get('/mod-03/usr-my-space')->middleware('auth');
 Route::get('/mod-03/usr-my-groups', [MyGroupsController::class, 'index'])->middleware('auth');
+Route::get('/mod-03/usr-my-messages', [MyMessagesController::class, 'index'])->middleware('auth');
 Route::get('/mod-03/usr-group-finder', [FindAGroupController::class, 'index'])->middleware('auth');
 Route::get('/mod-03/usr-service-finder', [FindAServiceController::class, 'index'])->middleware('auth');
+
+// | mod-04 , mod-05
 Route::get('/mod-04/usr-health-news-feed', [HealthNewsFeedsController::class, 'index'])->middleware('auth');
 Route::get('/mod-05/usr-business-finder', [FindABusinessController::class, 'index'])->middleware('auth');
 
@@ -352,10 +359,10 @@ Route::controller(StoreChatMessageController::class)
         Route::get('/chat/history/{peerID}', 'history');
     });
 //(Patients(1)  + Admin(90,91,92)
-Route::controller(MyMessagesController::class)
+Route::controller(MessagesController::class)
     ->middleware(['auth', 'usertype:user,admins'])
     ->group(function () {
-        Route::get('/mod-03/usr-my-messages', 'messages')->name('user.messages');
+        Route::get('/mod-10/my-messages ', 'messages')->name('user.messages');
     });
 
 /*

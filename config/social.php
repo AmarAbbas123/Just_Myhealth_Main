@@ -9,8 +9,6 @@ return [
             'my_messages' => '/chat/inbox',
             'find_group' => '/groups/all',
             'find_service' => '/pages',
-            'find_business' => '/pages',
-            'health_news' => '/discovery',
         ],
     ],
 ];

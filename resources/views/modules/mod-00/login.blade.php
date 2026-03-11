@@ -42,6 +42,13 @@
             <form method="POST" action="{{ route('login.perform') }}" x-data="{ username: '', showPassword: false, error: '' }">
                 @csrf
 
+                {{-- <div class="mb-4">
+                    <a href="{{ route('login.keycloak') }}"
+                     class="flex w-full justify-center items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-indigo-600 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition">
+                      Login with SSO
+                   </a>
+                 </div>    --}}
+
                 <!-- Username -->
                 <div>
                     <x-input-label for="UserName" :value="__('Username')" />
