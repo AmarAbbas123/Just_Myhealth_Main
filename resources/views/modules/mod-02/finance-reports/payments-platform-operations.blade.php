@@ -68,6 +68,97 @@
         <!-- Detailed Table (All Time) -->
         
 
+        <!-- DB Table View (Read Only): sys_finance_platform_operation_costs -->
+        <div class="mt-10 mb-10 bg-white border rounded-2xl shadow">
+            
+            <!-- Mobile cards -->
+            <div class="md:hidden p-4 space-y-3">
+                @forelse(($recordsAll ?? collect()) as $row)
+                    <div class="border rounded-xl p-4 bg-white shadow-sm">
+                        <div class="flex items-start justify-between gap-3">
+                            <div class="min-w-0">
+                                <div class="text-sm font-semibold text-gray-900 truncate">
+                                    {{ $row->ServiceCategory ?? '' }}
+                                </div>
+                                <div class="text-xs text-gray-500 truncate">      
+                                    {{ $row->SupplierName ?? '' }}
+                                </div>
+                            </div>
+                            <div class="text-right shrink-0">
+                                <div class="text-sm font-semibold text-gray-900 whitespace-nowrap">
+                                    {{ number_format((float) ($row->DebitValue ?? 0), 2) }}
+                                </div>
+                                <div class="text-xs text-gray-500 whitespace-nowrap">
+                                    {{ $row->DebitCurrency ?? '' }}
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mt-3 grid grid-cols-1 gap-2 text-sm">
+                            <div>
+                                <div class="text-[11px] uppercase tracking-wide text-gray-500">ServiceDescription</div>
+                                <div class="text-gray-800 break-words">{{ $row->ServiceDescription ?? '' }}</div>
+                            </div>
+                            <div class="grid grid-cols-2 gap-2">
+                                <div>
+                                    <div class="text-[11px] uppercase tracking-wide text-gray-500">DebitDate</div>
+                                    <div class="text-gray-800 whitespace-nowrap">
+                                        {{ $row->DebitDate ? \Illuminate\Support\Carbon::parse($row->DebitDate)->format('Y-m-d') : '' }}
+                                    </div>
+                                </div>
+                                <div>
+                                    <div class="text-[11px] uppercase tracking-wide text-gray-500">Supplier</div>
+                                    <div class="text-gray-800 truncate">{{ $row->SupplierName ?? '' }}</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                @empty
+                    <div class="py-10 text-center text-gray-500 text-sm">
+                        No records found.
+                    </div>
+                @endforelse
+            </div>
+
+            <!-- Desktop table -->
+            <div class="hidden md:block overflow-x-auto">
+                <table class="w-full min-w-[900px] text-sm">
+                    <thead class="bg-gray-50 text-base  text-gray-800 border-b">
+                        <tr>
+                            <th class="px-4 py-3 text-left whitespace-nowrap">ServiceCategory</th>
+                            <th class="px-4 py-3 text-left whitespace-nowrap">SupplierName</th>
+                            <th class="px-4 py-3 text-left whitespace-nowrap">ServiceDescription</th>
+                            <th class="px-4 py-3 text-left whitespace-nowrap">DebitDate</th>
+                            <th class="px-4 py-3 text-right whitespace-nowrap">DebitValue</th>
+                            <th class="px-4 py-3 text-left whitespace-nowrap">DebitCurrency</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y">
+                        @forelse(($recordsAll ?? collect()) as $row)
+                            <tr class="hover:bg-gray-50">
+                                <td class="px-4 py-3 whitespace-nowrap">{{ $row->ServiceCategory ?? '' }}</td>
+                                <td class="px-4 py-3 whitespace-nowrap">{{ $row->SupplierName ?? '' }}</td>
+                                <td class="px-4 py-3">{{ $row->ServiceDescription ?? '' }}</td>
+                                <td class="px-4 py-3 whitespace-nowrap">
+                                    {{ $row->DebitDate ? \Illuminate\Support\Carbon::parse($row->DebitDate)->format('Y-m-d') : '' }}
+                                </td>
+                                <td class="px-4 py-3 text-center whitespace-nowrap">
+                                    {{ number_format((float) ($row->DebitValue ?? 0), 2) }}
+                                </td>
+                                <td class="px-4 py-3 whitespace-nowrap">{{ $row->DebitCurrency ?? '' }}</td>
+                            </tr>
+                        @empty
+                            <tr>
+                                <td class="px-4 py-6 text-center text-gray-500" colspan="6">
+                                    No records found.
+                                </td>
+                            </tr>
+                        @endforelse
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
     </div>
 
 </x-app1>

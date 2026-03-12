@@ -3,18 +3,36 @@
 namespace App\Http\Controllers\Modules\Mod02SystemReporting;
 
 use App\Http\Controllers\Controller;
+use App\Models\SysFinanceUserType30Fees;
+use App\Models\SysFinanceUserType30ServiceCredits;
+use App\Models\SysFinanceUserType31Fees;
+use App\Models\SysFinanceUserType32Fees;
 use App\Models\SysFinanceUserType10Fees;
 use App\Models\SysFinanceUserType11Fees;
 use App\Models\SysFinanceUserType12Fees;
 use App\Models\SysFinanceUserType13Fees;
-use App\Models\SysFinanceUserType30Fees;
-use App\Models\SysFinanceUserType31Fees;
-use App\Models\SysFinanceUserType32Fees;
-use App\Models\SysFinanceUserType30ServiceCredits;
 use App\Models\SysFinancePlatformOperationCost;
+use App\Models\SysFinanceCreditDebitCombinedMonthly;
+use App\Models\SysFinanceCreditDebitCombinedWeekly;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
+use Carbon\Carbon;
 
 class FinanceReportsRevenueController extends Controller
 {
+    /**
+     * Only UserType 90 / 91 / 92 allowed
+     */
+    public function __construct()
+    {
+        $this->middleware(function ($request, $next) {
+            if (!in_array(optional(Auth::user())->UserType, [90, 91, 92])) {
+                abort(403, 'Unauthorized access');
+            }
+            return $next($request);
+        });
+    }
+
     /**
      * Display Revenue Report
      */
@@ -157,6 +175,117 @@ class FinanceReportsRevenueController extends Controller
         $thisYearBusinessGlobalRecords = SysFinanceUserType13Fees::whereBetween('CreditDate', [$currentYearStart, $currentYearEnd])
             ->orderBy('CreditDate', 'desc')->get();
 
+        // ==========================================
+        // NEW CHARTS (Monthly + Weekly) - combined tables
+        // ==========================================
+        $profDescriptions = [
+            'Therapist Registration Fee',
+            'Physio Registration Fee',
+            'Dietitian Registration Fee',
+        ];
+        $businessDescriptions = [
+            'Local Business Registration Fee',
+            'Regional Business Registration Fee',
+            'National Business Registration Fee',
+            'Global Business Registration Fee',
+        ];
+        $sessionDescriptions = [
+            'Therapy Session Fees',
+        ];
+
+        $bucketForDescription = function (?string $desc) use ($profDescriptions, $businessDescriptions, $sessionDescriptions) {
+            $d = trim((string) $desc);
+            if ($d === '') return null;
+
+            if (in_array($d, $profDescriptions, true)) return 'professional';
+            if (in_array($d, $businessDescriptions, true)) return 'business';
+            if (in_array($d, $sessionDescriptions, true)) return 'session';
+
+            // Fallback (in case PROD values differ slightly)
+            $dl = strtolower($d);
+            if (str_contains($dl, 'session')) return 'session';
+            if (str_contains($dl, 'business')) return 'business';
+            if (str_contains($dl, 'dietitian') || str_contains($dl, 'physio') || str_contains($dl, 'therap')) return 'professional';
+
+            return null;
+        };
+
+        // Monthly (grouped bars)
+        $monthlyRows = SysFinanceCreditDebitCombinedMonthly::query()
+            ->select('TransactionMonth', 'TransactionDescription', DB::raw('SUM(TransactionValue) as total'))
+            ->where('TransactionType', 'Credit')
+            ->groupBy('TransactionMonth', 'TransactionDescription')
+            ->orderBy('TransactionMonth', 'asc')
+            ->get();
+
+        $monthlyMonths = $monthlyRows->pluck('TransactionMonth')->unique()->values();
+        $monthlyIndex = $monthlyMonths->values()->all();
+        $monthlyLabels = $monthlyMonths->map(fn($d) => Carbon::parse($d)->format('M Y'))->toArray();
+
+        $monthlySeries = [
+            'professional' => array_fill(0, count($monthlyIndex), 0),
+            'business' => array_fill(0, count($monthlyIndex), 0),
+            'session' => array_fill(0, count($monthlyIndex), 0),
+        ];
+
+        $monthPos = [];
+        foreach ($monthlyMonths as $i => $m) {
+            $monthPos[Carbon::parse($m)->toDateString()] = $i;
+        }
+        foreach ($monthlyRows as $r) {
+            $key = $bucketForDescription($r->TransactionDescription);
+            if (!$key) continue;
+            $mKey = Carbon::parse($r->TransactionMonth)->toDateString();
+            $idx = $monthPos[$mKey] ?? null;
+            if ($idx === null) continue;
+            $monthlySeries[$key][$idx] += (float) ($r->total ?? 0);
+        }
+
+        // Weekly (stacked bars)
+        $weeklyRows = SysFinanceCreditDebitCombinedWeekly::query()
+            ->select('TransactionWeek', 'TransactionDescription', DB::raw('SUM(TransactionValue) as total'))
+            ->where('TransactionType', 'Credit')
+            ->groupBy('TransactionWeek', 'TransactionDescription')
+            ->orderBy('TransactionWeek', 'asc')
+            ->get();
+
+        $weeklyWeeks = $weeklyRows->pluck('TransactionWeek')->unique()->values();
+        $weeklyLabels = $weeklyWeeks->map(fn($d) => Carbon::parse($d)->format('d M'))->toArray();
+
+        $weeklySeries = [
+            'professional' => array_fill(0, count($weeklyWeeks), 0),
+            'business' => array_fill(0, count($weeklyWeeks), 0),
+            'session' => array_fill(0, count($weeklyWeeks), 0),
+        ];
+
+        $weekPos = [];
+        foreach ($weeklyWeeks as $i => $w) {
+            $weekPos[Carbon::parse($w)->toDateString()] = $i;
+        }
+        foreach ($weeklyRows as $r) {
+            $key = $bucketForDescription($r->TransactionDescription);
+            if (!$key) continue;
+            $wKey = Carbon::parse($r->TransactionWeek)->toDateString();
+            $idx = $weekPos[$wKey] ?? null;
+            if ($idx === null) continue;
+            $weeklySeries[$key][$idx] += (float) ($r->total ?? 0);
+        }
+
+        $combinedCharts = [
+            'monthly' => [
+                'labels' => $monthlyLabels,
+                'professional' => array_map(fn($v) => round($v, 2), $monthlySeries['professional']),
+                'business' => array_map(fn($v) => round($v, 2), $monthlySeries['business']),
+                'session' => array_map(fn($v) => round($v, 2), $monthlySeries['session']),
+            ],
+            'weekly' => [
+                'labels' => $weeklyLabels,
+                'professional' => array_map(fn($v) => round($v, 2), $weeklySeries['professional']),
+                'business' => array_map(fn($v) => round($v, 2), $weeklySeries['business']),
+                'session' => array_map(fn($v) => round($v, 2), $weeklySeries['session']),
+            ],
+        ];
+
         return view('modules.mod-02.finance-reports.revenue', compact(
             'allTimeRevenue',
             'thisYearRevenue',
@@ -176,7 +305,8 @@ class FinanceReportsRevenueController extends Controller
             'thisYearBusinessLocalRecords',
             'thisYearBusinessRegionalRecords',
             'thisYearBusinessNationalRecords',
-            'thisYearBusinessGlobalRecords'
+            'thisYearBusinessGlobalRecords',
+            'combinedCharts'
         ));
     }
 
