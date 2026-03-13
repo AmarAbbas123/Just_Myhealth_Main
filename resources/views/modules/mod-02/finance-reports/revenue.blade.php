@@ -219,10 +219,8 @@
                 <div id="chart-revenue-weekly" class="w-full min-h-[340px]"></div>
             </div>
 
-        </div>
-
-        <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
-        <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+        </div>        
+        
 <script>
 document.addEventListener('DOMContentLoaded', function () {
 
