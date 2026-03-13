@@ -264,7 +264,7 @@ document.addEventListener('DOMContentLoaded', function () {
             legend: { position: 'bottom' }
         }
     );
-
+ 
     monthlyChart.render();
 
 

@@ -1,7 +1,7 @@
 <x-app1>
 
     <div class="px-6 mx-auto mt-6">
-
+ 
         <!-- Page Title -->
         <div class="mb-8">
             <x-page-header />

@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Modules\Mod02SystemReporting;
 use App\Http\Controllers\Controller;
 use App\Models\SysFinanceUserType30Fees;
 use App\Models\SysFinanceUserType30ServiceCredits;
+use App\Models\SysFinanceUserType30ServiceDebits;
 use App\Models\SysFinanceUserType31Fees;
 use App\Models\SysFinanceUserType32Fees;
 use App\Models\SysFinanceUserType10Fees;
@@ -20,19 +21,7 @@ use Carbon\Carbon;
 
 class FinanceReportsRevenueController extends Controller
 {
-    /**
-     * Only UserType 90 / 91 / 92 allowed
-     */
-    public function __construct()
-    {
-        $this->middleware(function ($request, $next) {
-            if (!in_array(optional(Auth::user())->UserType, [90, 91, 92])) {
-                abort(403, 'Unauthorized access');
-            }
-            return $next($request);
-        });
-    }
-
+ 
     /**
      * Display Revenue Report
      */
@@ -361,6 +350,55 @@ class FinanceReportsRevenueController extends Controller
         $recordsThisYear = SysFinancePlatformOperationCost::whereBetween('DebitDate', [$currentYearStart, $currentYearEnd])->orderBy('DebitDate', 'desc')->get();
 
         return view('modules.mod-02.finance-reports.payments-platform-operations', compact(
+            'allTime',
+            'thisYear',
+            'dataSource',
+            'recordsAll',
+            'recordsThisYear'
+        ));
+    }
+
+ /**
+     * Display Professional Persons Payments report
+     */
+    public function paymentsprofpersons()
+    {
+        $currentYear = date('Y');
+        $currentYearStart = "{$currentYear}-01-01";
+        $currentYearEnd = "{$currentYear}-12-31";
+
+        // All time total (safe even if no ServiceCategory column)
+        $allTimeTotal = SysFinanceUserType30ServiceDebits::sum('DebitValue') ?: 0;
+
+        // This year total
+        $thisYearTotal = SysFinanceUserType30ServiceDebits::whereBetween('DebitDate', [$currentYearStart, $currentYearEnd])
+            ->sum('DebitValue') ?: 0;
+
+        // Known ServiceCategory buckets (values will be 0 unless the column exists and is populated)
+        $known = ['Compute', 'Services Plugins', 'SW Dev', 'SW Support', 'Security Services', 'Misc'];
+        $allTime = ['total' => 'GBP: £' . number_format($allTimeTotal, 2)];
+        $thisYear = ['total' => 'GBP: £' . number_format($thisYearTotal, 2)];
+
+        // Initialise all category boxes to zero to avoid SQL errors if the column does not exist yet
+        foreach ($known as $k) {
+            $key = strtolower(str_replace(' ', '_', $k));
+            $allTime[$key] = 'GBP: £' . number_format(0, 2);
+            $thisYear[$key] = 'GBP: £' . number_format(0, 2);
+        }
+
+        // Raw data source for potential charts (simple totals only for now)
+        $dataSource = [
+            'all_time' => ['total' => $allTimeTotal],
+            'this_year' => ['total' => $thisYearTotal],
+        ];
+
+        // Fetch records for table display
+        $recordsAll = SysFinanceUserType30ServiceDebits::orderBy('DebitDate', 'desc')->get();
+        $recordsThisYear = SysFinanceUserType30ServiceDebits::whereBetween('DebitDate', [$currentYearStart, $currentYearEnd])
+            ->orderBy('DebitDate', 'desc')
+            ->get();
+
+        return view('modules.mod-02.finance-reports.payments-prof-persons', compact(
             'allTime',
             'thisYear',
             'dataSource',
