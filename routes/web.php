@@ -31,7 +31,7 @@ use App\Http\Controllers\Modules\Mod02SystemReporting\FinanceReportsRevenueContr
 //mod-03 User General
 use App\Http\Controllers\Modules\Mod03SocialMedia\MySpaceController;
 use App\Http\Controllers\Modules\Mod03SocialMedia\MyGroupsController;
-use App\Http\Controllers\Modules\Mod03SocialMedia\MyMessagesController;  
+use App\Http\Controllers\Modules\Mod03SocialMedia\MyMessagesController;
 use App\Http\Controllers\Modules\Mod03SocialMedia\FindAGroupController;
 use App\Http\Controllers\Modules\Mod03SocialMedia\FindAServiceController;
 
@@ -64,6 +64,7 @@ use App\Http\Controllers\Modules\Mod10ProfessionalServices\Counselling01\Therapi
 use App\Http\Controllers\Modules\Mod10ProfessionalServices\Counselling01\Therapists\ComplaintsIssuesController;
 use App\Http\Controllers\Modules\Mod10ProfessionalServices\Counselling01\Therapists\IdRegistrationController;
 use App\Http\Controllers\Modules\Mod10ProfessionalServices\Counselling01\Therapists\TasksActionsController;
+use App\Http\Controllers\Modules\Mod10ProfessionalServices\Counselling01\Therapists\SearchMatchQuestionsController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Http\Request;
 use App\Models\User;
@@ -542,6 +543,15 @@ Route::controller(TasksActionsController::class)
         Route::post('mod-10/my-tasks/store', 'storeTask')->name('therap.tasks.actions.store');
         Route::post('mod-10/my-tasks/update', 'updateTask')->name('therap.tasks.actions.update');
         Route::delete('mod-10/my-tasks/delete', 'deleteTask')->name('therap.tasks.actions.delete');
+    });
+
+//1️⃣3️⃣ Search Match Questions (Therapist onboarding questions)
+Route::controller(SearchMatchQuestionsController::class)
+    ->middleware('auth')
+    ->group(function () {
+        Route::get('mod-10/mb/my-match-questions', 'index')->name('therapist.match.questions');
+        Route::post('mod-10/mb/my-match-questions/save', 'saveAnswer')->name('therapist.match.questions.save');
+        Route::post('mod-10/mb/my-match-questions/update', 'updateAnswer')->name('therapist.match.questions.update');
     });
 
 // ##############################################################################################################
