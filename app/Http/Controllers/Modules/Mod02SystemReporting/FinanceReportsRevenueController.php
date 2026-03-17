@@ -8,6 +8,8 @@ use App\Models\SysFinanceUserType30ServiceCredits;
 use App\Models\SysFinanceUserType30ServiceDebits;
 use App\Models\SysFinanceUserType31Fees;
 use App\Models\SysFinanceUserType32Fees;
+use App\Models\SysFinanceUserType31ServiceDebits;
+use App\Models\SysFinanceUserType32ServiceDebits;
 use App\Models\SysFinanceUserType10Fees;
 use App\Models\SysFinanceUserType11Fees;
 use App\Models\SysFinanceUserType12Fees;
@@ -21,7 +23,19 @@ use Carbon\Carbon;
 
 class FinanceReportsRevenueController extends Controller
 {
- 
+    /**
+     * Only UserType 90 / 91 / 92 allowed
+     */
+    public function __construct()
+    {
+        $this->middleware(function ($request, $next) {
+            if (!in_array(optional(Auth::user())->UserType, [90, 91, 92])) {
+                abort(403, 'Unauthorized access');
+            }
+            return $next($request);
+        });
+    }
+
     /**
      * Display Revenue Report
      */
@@ -367,43 +381,77 @@ class FinanceReportsRevenueController extends Controller
         $currentYearStart = "{$currentYear}-01-01";
         $currentYearEnd = "{$currentYear}-12-31";
 
-        // All time total (safe even if no ServiceCategory column)
-        $allTimeTotal = SysFinanceUserType30ServiceDebits::sum('DebitValue') ?: 0;
+        // ==========================================
+        // ALL TIME + THIS YEAR TOTALS (Type 30/31/32)
+        // ==========================================
+        $allTime30 = SysFinanceUserType30ServiceDebits::sum('DebitValue') ?: 0;
+        $allTime31 = SysFinanceUserType31ServiceDebits::sum('DebitValue') ?: 0;
+        $allTime32 = SysFinanceUserType32ServiceDebits::sum('DebitValue') ?: 0;
+        $allTimeTotal = $allTime30 + $allTime31 + $allTime32;
 
-        // This year total
-        $thisYearTotal = SysFinanceUserType30ServiceDebits::whereBetween('DebitDate', [$currentYearStart, $currentYearEnd])
-            ->sum('DebitValue') ?: 0;
+        $thisYear30 = SysFinanceUserType30ServiceDebits::whereBetween('DebitDate', [$currentYearStart, $currentYearEnd])->sum('DebitValue') ?: 0;
+        $thisYear31 = SysFinanceUserType31ServiceDebits::whereBetween('DebitDate', [$currentYearStart, $currentYearEnd])->sum('DebitValue') ?: 0;
+        $thisYear32 = SysFinanceUserType32ServiceDebits::whereBetween('DebitDate', [$currentYearStart, $currentYearEnd])->sum('DebitValue') ?: 0;
+        $thisYearTotal = $thisYear30 + $thisYear31 + $thisYear32;
 
-        // Known ServiceCategory buckets (values will be 0 unless the column exists and is populated)
-        $known = ['Compute', 'Services Plugins', 'SW Dev', 'SW Support', 'Security Services', 'Misc'];
-        $allTime = ['total' => 'GBP: £' . number_format($allTimeTotal, 2)];
-        $thisYear = ['total' => 'GBP: £' . number_format($thisYearTotal, 2)];
-
-        // Initialise all category boxes to zero to avoid SQL errors if the column does not exist yet
-        foreach ($known as $k) {
-            $key = strtolower(str_replace(' ', '_', $k));
-            $allTime[$key] = 'GBP: £' . number_format(0, 2);
-            $thisYear[$key] = 'GBP: £' . number_format(0, 2);
-        }
-
-        // Raw data source for potential charts (simple totals only for now)
-        $dataSource = [
-            'all_time' => ['total' => $allTimeTotal],
-            'this_year' => ['total' => $thisYearTotal],
+        $allTime = [
+            'total' => 'GBP: £' . number_format($allTimeTotal, 2),
+            'type30' => 'GBP: £' . number_format($allTime30, 2),
+            'type31' => 'GBP: £' . number_format($allTime31, 2),
+            'type32' => 'GBP: £' . number_format($allTime32, 2),
         ];
 
-        // Fetch records for table display
-        $recordsAll = SysFinanceUserType30ServiceDebits::orderBy('DebitDate', 'desc')->get();
-        $recordsThisYear = SysFinanceUserType30ServiceDebits::whereBetween('DebitDate', [$currentYearStart, $currentYearEnd])
-            ->orderBy('DebitDate', 'desc')
-            ->get();
+        $thisYear = [
+            'total' => 'GBP: £' . number_format($thisYearTotal, 2),
+            'type30' => 'GBP: £' . number_format($thisYear30, 2),
+            'type31' => 'GBP: £' . number_format($thisYear31, 2),
+            'type32' => 'GBP: £' . number_format($thisYear32, 2),
+        ];
+
+        // ==========================================
+        // MONTHLY CHART (start from Dec previous year)
+        // Example (today 2026): starts Dec 2025 → ... → current month
+        // ==========================================
+        $prevYear = (int) $currentYear - 1;
+        $startMonth = Carbon::createFromDate($prevYear, 12, 1)->startOfMonth();
+        $endMonth = Carbon::now()->startOfMonth();
+
+        $months = collect();
+        $cursor = $startMonth->copy();
+        while ($cursor->lte($endMonth)) {
+            $months->push([
+                'key' => $cursor->format('Y-m'),
+                'label' => $cursor->format('M Y'),
+                'start' => $cursor->copy()->startOfMonth()->toDateString(),
+                'end' => $cursor->copy()->endOfMonth()->toDateString(),
+            ]);
+            $cursor->addMonthNoOverflow();
+        }
+
+        $chartLabels = $months->pluck('label')->toArray();
+        $chart30 = [];
+        $chart31 = [];
+        $chart32 = [];
+
+        foreach ($months as $m) {
+            $chart30[] = (float) (SysFinanceUserType30ServiceDebits::whereBetween('DebitDate', [$m['start'], $m['end']])->sum('DebitValue') ?: 0);
+            $chart31[] = (float) (SysFinanceUserType31ServiceDebits::whereBetween('DebitDate', [$m['start'], $m['end']])->sum('DebitValue') ?: 0);
+            $chart32[] = (float) (SysFinanceUserType32ServiceDebits::whereBetween('DebitDate', [$m['start'], $m['end']])->sum('DebitValue') ?: 0);
+        }
+
+        $chart = [
+            'year' => (int) $currentYear,
+            'range' => $startMonth->format('M Y') . ' - ' . $endMonth->format('M Y'),
+            'labels' => $chartLabels,
+            'type30' => array_map(fn($v) => round($v, 2), $chart30),
+            'type31' => array_map(fn($v) => round($v, 2), $chart31),
+            'type32' => array_map(fn($v) => round($v, 2), $chart32),
+        ];
 
         return view('modules.mod-02.finance-reports.payments-prof-persons', compact(
             'allTime',
             'thisYear',
-            'dataSource',
-            'recordsAll',
-            'recordsThisYear'
+            'chart'
         ));
     }
 }
