@@ -21,7 +21,7 @@ use App\Http\Controllers\Modules\Mod01SystemAdministration\SysMenuOptionsControl
 // (Therapists Management)
 use App\Http\Controllers\Modules\Mod01SystemAdministration\ThrpistMangt\TherapistsStatusController;
 use App\Http\Controllers\Modules\Mod01SystemAdministration\ThrpistMangt\TherapistsOnboardingVerifyController;
-
+use App\Http\Controllers\Modules\Mod01SystemAdministration\ThrpistMangt\TherapistsOnboardingApproveController;
 
 //mod-02 System Reporting
 use App\Http\Controllers\Modules\Mod02SystemReporting\ChartsDeviceOsBrowserController;
@@ -29,6 +29,7 @@ use App\Http\Controllers\Modules\Mod02SystemReporting\UserNumbersController;
 use App\Http\Controllers\Modules\Mod02SystemReporting\FinanceReportsRevenueController;
 
 //mod-03 User General
+use App\Http\Controllers\Auth\KeycloakCallbackController;
 use App\Http\Controllers\Modules\Mod03SocialMedia\MySpaceController;
 use App\Http\Controllers\Modules\Mod03SocialMedia\MyGroupsController;
 use App\Http\Controllers\Modules\Mod03SocialMedia\MyMessagesController;
@@ -305,6 +306,13 @@ Route::middleware(['auth', 'usertype:admins'])->group(function () {
         ->name('therapists-onboarding-verify.status');
 });
 
+//Therapists Onboarding Approve
+Route::middleware(['auth', 'usertype:admins'])->group(function () {
+    Route::resource('/mod-01/therapist-management/therapist-onboarding-approve', TherapistsOnboardingApproveController::class)->names('therapists-onboarding-approve');
+    Route::post('/mod-01/therapist-management/therapist-onboarding-approve/{user}/status', [TherapistsOnboardingApproveController::class, 'updateStatus'])
+        ->name('therapists-onboarding-approve.status');
+});
+
 
 
 /*
@@ -335,6 +343,9 @@ Route::middleware(['auth', 'usertype:admins'])->group(function () {
 | mod-03 USER GENERAL
 |--------------------------------------------------------------------------
 */
+Route::get('/openid/callback', [KeycloakCallbackController::class, 'handle'])
+    ->name('keycloak.callback');
+
 //Route::get('/mod-03/usr-my-space', [MySpaceController::class, 'index'])->middleware('auth');   // https://jmhmod03.xyz/openid/auth/keycloak
 Route::get('/mod-03/usr-my-space')->middleware('auth');
 Route::get('/mod-03/usr-my-groups', [MyGroupsController::class, 'index'])->middleware('auth');
@@ -545,14 +556,6 @@ Route::controller(TasksActionsController::class)
         Route::delete('mod-10/my-tasks/delete', 'deleteTask')->name('therap.tasks.actions.delete');
     });
 
-//1️⃣3️⃣ Search Match Questions (Therapist onboarding questions)
-Route::controller(SearchMatchQuestionsController::class)
-    ->middleware('auth')
-    ->group(function () {
-        Route::get('mod-10/mb/my-match-questions', 'index')->name('therapist.match.questions');
-        Route::post('mod-10/mb/my-match-questions/save', 'saveAnswer')->name('therapist.match.questions.save');
-        Route::post('mod-10/mb/my-match-questions/update', 'updateAnswer')->name('therapist.match.questions.update');
-    });
 
 // ##############################################################################################################
 // #####################  Patients User Block ->middleware(['auth', 'usertype:user']) ###########################
