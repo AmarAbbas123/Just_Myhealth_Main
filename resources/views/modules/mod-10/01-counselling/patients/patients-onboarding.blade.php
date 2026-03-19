@@ -10,8 +10,13 @@
             </div>
 
             <!-- Question Number -->
-            <div x-show="questionNumber <= 39" class="text-lg font-bold text-gray-900 mb-2">
-                Question <span x-text="questionNumber"></span> of 39
+            <div class="text-lg font-bold text-gray-900 mb-2">
+                <template x-if="questionNumber <= 39">
+                    <span>Question <span x-text="questionNumber"></span> of 39</span>
+                </template>
+                <template x-if="questionNumber === 40">
+                    <span>Step 40 of 40</span>
+                </template>
             </div>
 
             <!-- QUESTION HEADING -->
@@ -22,30 +27,48 @@
             <p class="text-sm text-gray-500 mb-6 leading-relaxed" x-text="question.QuestionNotes">
             </p>
 
-            <!-- OPTIONS -->
-            <div class="space-y-3">
+            <!-- OPTIONS (Questions 1-39) -->
+            <div class="space-y-3" x-show="!isTextQuestion()">
                 <template x-for="(opt, index) in options()" :key="index">
-                    <label
-                        class="flex items-center gap-3 cursor-pointer bg-gray-50 hover:bg-gray-100 px-4 py-3 rounded-lg border border-gray-200">
+                    <label class="flex items-center gap-3 cursor-pointer bg-gray-50 hover:bg-gray-100 px-4 py-3 rounded-lg border border-gray-200">
                         <input type="radio" class="w-4 h-4 text-blue-600 focus:ring-blue-500" name="option"
-                            :value="index + 1" x-model="selected">
-
+                               :value="index + 1" x-model="selected">
                         <span class="text-gray-800" x-text="opt"></span>
                     </label>
                 </template>
             </div>
 
+            <!-- TEXT INPUT (Question 40 - Summary of Issue) -->
+            <div x-show="isTextQuestion()" class="mt-2">
+                <label class="block text-sm font-semibold text-gray-700 mb-2">
+                    Summary of Issue
+                </label>
+                <textarea
+                    x-model="freeText"
+                    maxlength="2028"
+                    rows="6"
+                    class="w-full rounded-lg border border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 p-3 text-gray-800"
+                    placeholder="Please describe the issue you are seeking help for..."></textarea>
+                <div class="mt-2 flex items-center justify-between text-xs text-gray-500">
+                    <span>This helps your therapist plan your sessions.</span>
+                    <span x-text="(freeText?.length || 0) + ' / 2028'"></span>
+                </div>
+            </div>
+
             <!-- BUTTON -->
-            <button @click="submitAnswer" x-show="!buttonLocked" :disabled="!selected"
+            <button
+                @click="submitAnswer"
+                x-show="!buttonLocked"
+                :disabled="isTextQuestion() ? !(freeText && freeText.trim().length > 0) : !selected"
                 class="mt-8 w-full py-3 text-center text-white font-semibold rounded-lg
                        bg-blue-600 hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed
                        transition-all duration-200">
-                Next Question
+                <span x-text="isTextQuestion() ? 'Finish' : 'Next Question'"></span>
             </button>
 
             <!-- Completed Message -->
             <div x-show="questionNumber > 39"
-                class="p-4 mb-4 bg-green-100 border border-green-300 text-green-800 rounded-md text-sm font-semibold">
+                class="p-4 mt-4 mb-4 bg-green-100 border border-green-300 text-green-800 rounded-md text-sm font-semibold">
                 You have successfully answered all onboarding questions.
                 Please proceed to find your perfect therapist.
 
@@ -84,8 +107,14 @@
                 question: @json($question),
                 questionNumber: questionNumber,
                 selected: null,
+                freeText: '',
                 finished: false,
                 buttonLocked: false,
+
+                isTextQuestion() {
+                    const dt = (this.question?.QuestionDisplayType || '').toString().toLowerCase();
+                    return this.questionNumber === 40 || dt.includes('text') || dt.includes('textarea') || dt.includes('input');
+                },
 
                 options() {
                     let arr = [];
@@ -97,11 +126,17 @@
                 },
 
                 submitAnswer() {
-                    if (!this.selected) return;
+                    if (this.isTextQuestion()) {
+                        if (!this.freeText || !this.freeText.trim()) return;
+                    } else {
+                        if (!this.selected) return;
+                    }
 
                     this.buttonLocked = true;
 
-                    let answerText = this.options()[this.selected - 1];
+                    let answerText = this.isTextQuestion()
+                        ? this.freeText.trim()
+                        : this.options()[this.selected - 1];
 
                     fetch("{{ route('onboarding.save') }}", {
                             method: "POST",
@@ -112,7 +147,7 @@
                             body: JSON.stringify({
                                 question_id: this.questionNumber,
                                 answer_text: answerText,
-                                answer_option_number: this.selected
+                                answer_option_number: this.isTextQuestion() ? 0 : this.selected
                             })
                         })
                         .then(res => res.json())
@@ -126,6 +161,7 @@
                             this.question = data.next_question;
                             this.questionNumber = data.next_question_number;
                             this.selected = null;
+                            this.freeText = '';
                             this.buttonLocked = false;
                         });
                 }

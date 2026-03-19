@@ -36,8 +36,8 @@ class PatientsOnboardingController extends Controller
     {
         $request->validate([
             'question_id' => 'required|integer',
-            'answer_text' => 'required|string',
-            'answer_option_number' => 'required|integer'
+            'answer_text' => 'required|string|max:2028',
+            'answer_option_number' => 'nullable|integer',
         ]);
 
         $userId = auth()->id();
@@ -53,14 +53,14 @@ class PatientsOnboardingController extends Controller
         $optCol  = "Id{$qid}_AnswerOptionNumber";
 
         $answers->$textCol = $request->answer_text;
-        $answers->$optCol  = $request->answer_option_number;
+        $answers->$optCol  = $request->input('answer_option_number', 0);
         $answers->save();
 
         // determine next question
         $nextQ = $this->getNextQuestionNumber($answers);
 
         // check if onboarding finished
-        if ($nextQ > 39) {
+        if ($nextQ > 40) {
 
             // generate SessionZegoCloudConnectID only once
             if (empty($answers->SessionZegoCloudConnectID)) {
@@ -87,12 +87,12 @@ class PatientsOnboardingController extends Controller
 
     private function getNextQuestionNumber($answers)
     {
-        for ($i = 1; $i <= 39; $i++) {
+        for ($i = 1; $i <= 40; $i++) {
             $col = "Id{$i}_Answer_text";
             if (empty($answers->$col)) {
                 return $i;
             }
         }
-        return 40; // completed
+        return 41; // completed
     }
 }

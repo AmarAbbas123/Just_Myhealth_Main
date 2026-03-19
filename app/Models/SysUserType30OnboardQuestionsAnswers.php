@@ -95,5 +95,7 @@ class SysUserType30OnboardQuestionsAnswers extends Model
         'Id38_AnswerOptionNumber',
         'Id39_Answer_text',
         'Id39_AnswerOptionNumber',
+        'Id40_Answer_text',
+        'Id40_AnswerOptionNumber',
     ];
 }
