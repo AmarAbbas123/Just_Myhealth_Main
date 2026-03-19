@@ -253,7 +253,7 @@
                     };
 
                     try {
-                        const res = await fetch('/therapist/session-history/details', {
+                        const res = await fetch('/mod-10/01/usr-therapy-history', {
                             method: 'POST',
                             headers: {
                                 'Content-Type': 'application/json',

@@ -67,7 +67,7 @@
                             <button
                                 class="w-full text-center border border-indigo-500 text-indigo-600 py-2 rounded-full text-sm"
                                 @click=" open = true;
-                                    therapist = {{ json_encode(['FirstName' => $attr->FirstName ?? '','LastName' => $attr->LastName ?? '','BaseCity' => $attr->BaseCity ?? '','BaseCountry' => $attr->BaseCountry ?? '','PreferredSalutation' => $type->PreferredSalutation ?? '','LanguagePrimary' => $type->LanguagePrimary ?? '','LanguageSecondary' => $type->LanguageSecondary ?? '','BioTextParagraph1' => $attr->BioTextParagraph1 ?? '','BioTextParagraph2' => $attr->BioTextParagraph2 ?? '','BioTextParagraph3' => $attr->BioTextParagraph3 ?? '','BioTextParagraph4' => $attr->BioTextParagraph4 ?? '','BioTextParagraph5' => $attr->BioTextParagraph5 ?? '','BioTextParagraph6' => $attr->BioTextParagraph6 ?? '','TherapyType1' => $type->TherapyType1 ?? '','TherapyYearsExperience1' => $type->TherapyYearsExperience1 ?? '','TherapyType2' => $type->TherapyType2 ?? '','TherapyYearsExperience2' => $type->TherapyYearsExperience2 ?? '','TherapyType3' => $type->TherapyType3 ?? '','TherapyYearsExperience3' => $type->TherapyYearsExperience3 ?? '','TherapyType4' => $type->TherapyType4 ?? '','TherapyYearsExperience4' => $type->TherapyYearsExperience4 ?? '','TherapyType5' => $type->TherapyType5 ?? '','TherapyYearsExperience5' => $type->TherapyYearsExperience5 ?? '','QualificationTitle1' => $type->QualificationTitle1 ?? '','QualificationFrom1' => $type->QualificationFrom1 ?? '','QualificationLevel1' => $type->QualificationLevel1 ?? '','QualificationGrade1' => $type->QualificationGrade1 ?? '','QualificationTitle2' => $type->QualificationTitle2 ?? '','QualificationFrom2' => $type->QualificationFrom2 ?? '','QualificationLevel2' => $type->QualificationLevel2 ?? '','QualificationGrade2' => $type->QualificationGrade2 ?? '','QualificationTitle3' => $type->QualificationTitle3 ?? '','QualificationFrom3' => $type->QualificationFrom3 ?? '','QualificationLevel3' => $type->QualificationLevel3 ?? '','QualificationGrade3' => $type->QualificationGrade3 ?? '','QualificationTitle4' => $type->QualificationTitle4 ?? '','QualificationFrom4' => $type->QualificationFrom4 ?? '','QualificationLevel4' => $type->QualificationLevel4 ?? '','QualificationGrade4' => $type->QualificationGrade4 ?? '']) }};">
+                                    therapist = {{ json_encode(['FirstName' => $attr->FirstName ?? '','LastName' => $attr->LastName ?? '','BaseCity' => $attr->BaseCity ?? '','BaseCountry' => $attr->BaseCountry ?? '','PreferredSalutation' => $type->PreferredSalutation ?? '','LanguagePrimary' => $type->LanguagePrimary ?? '','LanguageSecondary' => $type->LanguageSecondary ?? '','BioTextParagraph1' => $type->BioTextParagraph1 ?? '','BioTextParagraph2' => $type->BioTextParagraph2 ?? '','BioTextParagraph3' => $type->BioTextParagraph3 ?? '','BioTextParagraph4' => $type->BioTextParagraph4 ?? '','BioTextParagraph5' => $type->BioTextParagraph5 ?? '','BioTextParagraph6' => $type->BioTextParagraph6 ?? '','TherapyType1' => $type->TherapyType1 ?? '','TherapyYearsExperience1' => $type->TherapyYearsExperience1 ?? '','TherapyType2' => $type->TherapyType2 ?? '','TherapyYearsExperience2' => $type->TherapyYearsExperience2 ?? '','TherapyType3' => $type->TherapyType3 ?? '','TherapyYearsExperience3' => $type->TherapyYearsExperience3 ?? '','TherapyType4' => $type->TherapyType4 ?? '','TherapyYearsExperience4' => $type->TherapyYearsExperience4 ?? '','TherapyType5' => $type->TherapyType5 ?? '','TherapyYearsExperience5' => $type->TherapyYearsExperience5 ?? '','QualificationTitle1' => $type->QualificationTitle1 ?? '','QualificationFrom1' => $type->QualificationFrom1 ?? '','QualificationLevel1' => $type->QualificationLevel1 ?? '','QualificationGrade1' => $type->QualificationGrade1 ?? '','QualificationTitle2' => $type->QualificationTitle2 ?? '','QualificationFrom2' => $type->QualificationFrom2 ?? '','QualificationLevel2' => $type->QualificationLevel2 ?? '','QualificationGrade2' => $type->QualificationGrade2 ?? '','QualificationTitle3' => $type->QualificationTitle3 ?? '','QualificationFrom3' => $type->QualificationFrom3 ?? '','QualificationLevel3' => $type->QualificationLevel3 ?? '','QualificationGrade3' => $type->QualificationGrade3 ?? '','QualificationTitle4' => $type->QualificationTitle4 ?? '','QualificationFrom4' => $type->QualificationFrom4 ?? '','QualificationLevel4' => $type->QualificationLevel4 ?? '','QualificationGrade4' => $type->QualificationGrade4 ?? '']) }};">
                                 View BIO
                             </button>
 
@@ -97,6 +97,18 @@
                     <button @click="open=false" class="text-gray-500 hover:text-gray-700 text-xl">×</button>
                 </div>
 
+                <!-- BIO Details -->
+                <div class="mb-4">
+                    <h3 class="text-lg font-semibold text-gray-800 mb-3">BIO Details</h3>
+                    <div class="space-y-3 text-gray-700 leading-relaxed">
+                        <template x-for="i in [1,2,3,4,5,6]">
+                            <p x-show="therapist['BioTextParagraph'+i]" x-text="therapist['BioTextParagraph'+i]"></p>
+                        </template>
+                    </div>
+                </div>
+
+                <hr class="my-4">
+
                 <!-- Basic Info -->
                 <div class="space-y-2 text-gray-700 text-sm">
                     <p><strong>Location:</strong>
@@ -119,15 +131,6 @@
 
                 <hr class="my-4">
 
-                <!-- Bio Paragraphs -->
-                <div class="space-y-3 text-gray-700 leading-relaxed">
-                    <template x-for="i in [1,2,3,4,5,6]">
-                        <p x-show="therapist['BioTextParagraph'+i]" x-text="therapist['BioTextParagraph'+i]"></p>
-                    </template>
-                </div>
-
-                <hr class="my-4">
-
                 <!-- Therapy Services -->
                 <h3 class="text-lg font-semibold text-gray-800 mb-3">Therapy Services</h3>
                 <div class="space-y-3">
@@ -141,31 +144,8 @@
                     </template>
                 </div>
 
-                <hr class="my-4">
-
-                <!-- Qualification -->
-                <h3 class="text-lg font-semibold text-gray-800 mb-3">Qualification</h3>
-                <div class="space-y-3">
-                    <template x-for="i in [1,2,3,4]">
-                        <div x-show="therapist['QualificationTitle'+i]" class="border rounded-lg p-3 bg-gray-50">
-                            <p><strong>QualificationTitle:</strong>
-                                <span x-text="therapist['QualificationTitle'+i]"></span>
-                            </p>
-
-                            <p><strong>QualificationFrom:</strong>
-                                <span x-text="therapist['QualificationFrom'+i]"></span>
-                            </p>
-
-                            <p><strong>QualificationLevel:</strong>
-                                <span x-text="therapist['QualificationLevel'+i]"></span>
-                            </p>
-
-                            <p><strong>QualificationGrade:</strong>
-                                <span x-text="therapist['QualificationGrade'+i]"></span>
-                            </p>
-                        </div>
-                    </template>
-                </div>
+                
+                
 
                 <div class="mt-6 text-right">
                     <button @click="open=false"

@@ -10,6 +10,8 @@ use App\Services\TherapistSessionStartNotificationToPatients;
 use App\Models\CommonCalendar;
 use App\Models\SysUserType30SessionHistory;
 use App\Models\User;
+use App\Models\SysUserType30OnboardQuestions;
+use App\Models\SysUserType30OnboardQuestionsAnswers;
 
 class WaitingRoomController extends Controller
 {
@@ -140,7 +142,118 @@ class WaitingRoomController extends Controller
             ]);
         }
 
-        return response()->json(['success' => true]);
+        return response()->json([
+            'success' => true,
+            'history_id' => $history->ID,
+            'therapist_notes' => $history->TherapistNotes,
+        ]);
+    }
+
+    /**
+     * Save post-session therapist notes (max 2048 chars)
+     */
+    public function saveSessionNotes(Request $request)
+    {
+        $request->validate([
+            'calendar_id' => 'required|integer',
+            'therapist_notes' => 'nullable|string|max:2048',
+        ]);
+
+        $history = SysUserType30SessionHistory::where('SessionCalendarID', $request->calendar_id)
+            ->where('AllocatedTherapistUserID', auth()->id())
+            ->first();
+
+        if (!$history) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Session history not found',
+            ], 404);
+        }
+
+        $history->TherapistNotes = $request->input('therapist_notes');
+        $history->save();
+
+        return response()->json([
+            'success' => true,
+            'history_id' => $history->ID,
+        ]);
+    }
+
+    /**
+     * Fetch onboarding Q&A for a patient (Questions 1-39).
+     */
+    public function onboardingQa(Request $request)
+    {
+        $request->validate([
+            'patient_id' => 'required|integer',
+        ]);
+
+        $patientId = (int) $request->patient_id;
+
+        // Ensure therapist is allowed to view this patient (must have an upcoming session with them)
+        $allowed = CommonCalendar::where('TherapistUserID', auth()->id())
+            ->where('PatientUserID', $patientId)
+            ->where('CalendarEntryType', 'Busy')
+            ->whereIn('SessionType', ['Video', 'Audio'])
+            ->whereNotNull('SessionZegoCloudConnectID')
+            ->exists();
+
+        if (! $allowed) {
+            abort(403, 'Unauthorized access');
+        }
+
+        $answers = SysUserType30OnboardQuestionsAnswers::where('PatientUserID', $patientId)->first();
+
+        $questions = SysUserType30OnboardQuestions::query()
+            ->whereBetween('ID', [1, 39])
+            ->orderBy('ID')
+            ->get(['ID', 'QuestionHeading']);
+
+        $qa = $questions->map(function ($q) use ($answers) {
+            $col = "Id{$q->ID}_Answer_text";
+            return [
+                'id' => (int) $q->ID,
+                'question' => $q->QuestionHeading,
+                'answer' => $answers?->$col,
+            ];
+        })->values();
+
+        return response()->json([
+            'success' => true,
+            'data' => $qa,
+        ]);
+    }
+
+    /**
+     * Fetch the patient "Summary of Issue" (Question 40).
+     */
+    public function onboardingIssueSummary(Request $request)
+    {
+        $request->validate([
+            'patient_id' => 'required|integer',
+        ]);
+
+        $patientId = (int) $request->patient_id;
+
+        $allowed = CommonCalendar::where('TherapistUserID', auth()->id())
+            ->where('PatientUserID', $patientId)
+            ->where('CalendarEntryType', 'Busy')
+            ->whereIn('SessionType', ['Video', 'Audio'])
+            ->whereNotNull('SessionZegoCloudConnectID')
+            ->exists();
+
+        if (! $allowed) {
+            abort(403, 'Unauthorized access');
+        }
+
+        $answers = SysUserType30OnboardQuestionsAnswers::where('PatientUserID', $patientId)->first();
+
+        return response()->json([
+            'success' => true,
+            'data' => [
+                'issue_summary' => $answers?->Id40_Answer_text,
+            ],
+        ]);
     }
 
     // Send Notificataion invitation link to Patients

@@ -157,17 +157,7 @@
                         </template>
                     </div>
 
-                    <h3 class="text-lg font-semibold mb-3">Qualifications</h3>
-                    <div class="space-y-3">
-                        <template x-for="i in [1,2,3,4]">
-                            <div x-show="therapist.type30['QualificationTitle'+i]"
-                                class="border rounded-lg p-3 bg-gray-50">
-                                <p><strong x-text="therapist.type30['QualificationTitle'+i]"></strong></p>
-                                <p x-text="therapist.type30['QualificationFrom'+i]"></p>
-                                <p x-text="therapist.type30['QualificationLevel'+i]"></p>
-                            </div>
-                        </template>
-                    </div>
+                    
 
                     <h3 class="text-lg font-semibold mb-3">Bio Details</h3>
                     <div>

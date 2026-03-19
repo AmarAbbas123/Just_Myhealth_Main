@@ -14,6 +14,7 @@ class UsrPreviousTherapistsController extends Controller
 
     public function index()
     {
+
         // UNique therapists for the single patients
         $sessions = SysUserType30SessionHistory::where('PatientUserID', auth()->id())
             ->whereNotNull('SessionEndedTime')
