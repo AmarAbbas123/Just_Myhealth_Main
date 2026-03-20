@@ -12,6 +12,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use App\Traits\DeviceLogger;
+use App\Services\KeycloakService;
 
 class RegisteredUserController extends Controller
 {
@@ -46,12 +47,21 @@ class RegisteredUserController extends Controller
             ->where('FeeType', 'Account Creation')
             ->first();
 
-        // Check if both fees are available
-        if (!$feeTherapist || !$feeBusiness) {
-            abort(404, 'Account Creation fee not configured for both UserTypes.');
+        // TEMP: Therapist registration fee is waived during initial onboarding.
+        // To re-enable the fee, set $therapistFeeWaived = false.
+        $therapistFeeWaived = true;
+
+        if (!$feeBusiness) {
+            abort(404, 'Account Creation fee not configured for business.');
         }
 
-        return view('modules.mod-00.register-account-type', compact('feeTherapist', 'feeBusiness'));
+        if (!$therapistFeeWaived && !$feeTherapist) {
+            abort(404, 'Account Creation fee not configured for therapist.');
+        }
+
+        $therapistFeeAmount = $therapistFeeWaived ? 0 : (float) $feeTherapist->CurrencyGBP;
+
+        return view('modules.mod-00.register-account-type', compact('feeBusiness', 'therapistFeeAmount', 'therapistFeeWaived'));
     }
 
     /**
@@ -114,6 +124,18 @@ class RegisteredUserController extends Controller
             $attributesData
         ));
 
+        // Create user in Keycloak
+        $keycloak = new KeycloakService();
+        $firstName = $validated['ProfileData']['FirstName'] ?? '';
+        $lastName  = $validated['ProfileData']['LastName'] ?? '';
+        $keycloakUserId = $keycloak->createUser($user->UserName, $user->Email, $request->Password, $firstName, $lastName);
+
+        // store keycloak id locally (recommended)
+        if ($keycloakUserId) {
+            $user->keycloak_id = $keycloakUserId;
+            $user->save();
+        }
+
         // Log device details sys_device_detail_history        
         DeviceLogger::log($user->ID, $user->UserType, 'Registration');
 
@@ -125,7 +147,14 @@ class RegisteredUserController extends Controller
          * -----------------------------------*/
 
         // 🔐 Force Therapist/Business → must pay first
+        // TEMP: Therapist registration fee is waived during initial onboarding.
+        // To re-enable the fee, set $therapistFeeWaived = false.
+        $therapistFeeWaived = true;
         if ($user->UserType === 30) {
+            if ($therapistFeeWaived) {
+                event(new Registered($user)); // email verification
+                return redirect()->route('verification.notice');
+            }
             return redirect()->route('therapist.checkout');
         }
         if ($user->UserType === 10) {

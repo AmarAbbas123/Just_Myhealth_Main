@@ -27,6 +27,13 @@ class TherapistsRegistrationController extends Controller
             abort(403, 'Unauthorized access.');
         }
 
+        // TEMP: Therapist registration fee is waived during initial onboarding.
+        // To re-enable the fee, set $therapistFeeWaived = false.
+        $therapistFeeWaived = true;
+        if ($therapistFeeWaived) {
+            return redirect()->route('verification.notice');
+        }
+
         // Fetch Account Creation fee from DB (dynamic)  NOw only for UserType = 30 Therapists 
         $fee = SysFinanceServiceFeeDetail::where('UserType', 30)
             ->where('FeeType', 'Account Creation')
