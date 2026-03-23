@@ -57,7 +57,7 @@ class TherapistsBookSlotsController extends Controller
 
         while ($current < $endTime) {
             $timeRows[] = $current->format('H:i');
-            $current->addHour();
+            $current->addMinutes(30);
         }
 
         list($weeklySlots, $weekDates) = $this->getSlotsForWeek($therapistId, $selectedDate);
@@ -103,20 +103,23 @@ class TherapistsBookSlotsController extends Controller
             $tz = auth()->user()?->timezone ?? 'UTC';
             $startDT = Carbon::createFromFormat('Y-m-d H:i', $date . ' ' . $timeFrom, $tz);
             $endDT = $startDT->copy()->addHour();
+            $bufferedEndDT = $endDT->copy()->addMinutes(30);
 
             $dateTo = $endDT->toDateString();
             $timeTo = $endDT->format('H:i');
+            $bufferedEndDate = $bufferedEndDT->toDateString();
+            $bufferedEndTime = $bufferedEndDT->format('H:i');
 
             // Lock any rows for this therapist that could overlap
             $overlap = CommonCalendar::where('TherapistUserID', $therapistId)
-                ->whereRaw("TIMESTAMP(DateFrom, TimeFrom) < TIMESTAMP(?, ?)", [$dateTo, $timeTo])
-                ->whereRaw("TIMESTAMP(DateTo, TimeTo) > TIMESTAMP(?, ?)", [$date, $timeFrom])
+                ->whereRaw("TIMESTAMP(DateFrom, TimeFrom) < TIMESTAMP(?, ?)", [$bufferedEndDate, $bufferedEndTime])
+                ->whereRaw("DATE_ADD(TIMESTAMP(DateTo, TimeTo), INTERVAL 30 MINUTE) > TIMESTAMP(?, ?)", [$date, $timeFrom])
                 ->lockForUpdate()
                 ->exists();
 
             if ($overlap) {
                 DB::rollBack();
-                return response()->json(['error' => 'The requested time overlaps an existing calendar entry.'], 422);
+                return response()->json(['error' => 'The requested time overlaps with an existing calendar entry. Please note that therapists require a 30-minute gap between sessions, so new slots cannot be created immediately after an existing session ends.'], 422);
             }
 
             $row = CommonCalendar::create([
@@ -175,13 +178,16 @@ class TherapistsBookSlotsController extends Controller
             $tz = auth()->user()?->timezone ?? 'UTC';
             $startDT = Carbon::createFromFormat('Y-m-d H:i', $date . ' ' . $timeFrom, $tz);
             $endDT = $startDT->copy()->addHour();
+            $bufferedEndDT = $endDT->copy()->addMinutes(30);
             $dateTo = $endDT->toDateString();
             $timeTo = $endDT->format('H:i');
+            $bufferedEndDate = $bufferedEndDT->toDateString();
+            $bufferedEndTime = $bufferedEndDT->format('H:i');
 
             $overlap = CommonCalendar::where('TherapistUserID', $therapistId)
                 ->where('ID', '!=', $slot->ID)
-                ->whereRaw("TIMESTAMP(DateFrom, TimeFrom) < TIMESTAMP(?, ?)", [$dateTo, $timeTo])
-                ->whereRaw("TIMESTAMP(DateTo, TimeTo) > TIMESTAMP(?, ?)", [$date, $timeFrom])
+                ->whereRaw("TIMESTAMP(DateFrom, TimeFrom) < TIMESTAMP(?, ?)", [$bufferedEndDate, $bufferedEndTime])
+                ->whereRaw("DATE_ADD(TIMESTAMP(DateTo, TimeTo), INTERVAL 30 MINUTE) > TIMESTAMP(?, ?)", [$date, $timeFrom])
                 ->lockForUpdate()
                 ->exists();
 

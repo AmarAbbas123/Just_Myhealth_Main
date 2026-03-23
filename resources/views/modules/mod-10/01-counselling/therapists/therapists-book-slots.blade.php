@@ -56,7 +56,7 @@
                 </div>
 
                 <!-- Calendar grid,  overflow-y-auto -->
-                <div class="relative border rounded h-[calc(var(--rows)*3rem+2.5rem)]">
+                <div class="relative border rounded h-[calc(var(--rows)*1.5rem+2.5rem)]">
 
                     <!-- Time header -->
                     <div class="absolute left-0 top-0 w-20 h-10 bg-gray-100 border-b border-r flex items-center justify-center text-sm font-semibold z-30 pointer-events-none">
@@ -79,7 +79,7 @@
                     <!-- Time column -->
                     <div class="absolute left-0 top-10 w-20 bottom-0 border-r bg-gray-50">
                         <template x-for="time in timeRows" :key="time">
-                            <div class="h-12 text-xs text-right pr-2 border-b flex items-center justify-end"
+                            <div class="h-6 text-xs text-right pr-2 border-b flex items-center justify-end"
                                 x-text="time"></div>
                         </template>
                     </div>
@@ -91,7 +91,7 @@
 
                                 <!-- Grid cells -->
                                 <template x-for="time in timeRows" :key="time">
-                                    <div class="h-12 border-b hover:bg-blue-50 cursor-pointer"
+                                    <div class="h-6 border-b hover:bg-blue-50 cursor-pointer"
                                         @click="openCreateModal(date, time)"></div>
                                 </template>
 
@@ -144,6 +144,7 @@
                 weeklySlots: @json($weeklySlots),
                 weekDates: @json($weekDates),
                 timeRows: @json($timeRows),
+                rowHeight: 24,
 
                 modalOpen: false,
                 editing: false,
@@ -193,7 +194,7 @@
                 slotStyle(slot) {
                     const startIndex = this.timeRows.indexOf(slot.time_from);
                     const minutes = this.diffMinutes(slot.time_from, slot.time_to);
-                    return `top:${startIndex * 48}px;height:${(minutes/60)*48}px;`;
+                    return `top:${startIndex * this.rowHeight}px;height:${(minutes/30)*this.rowHeight}px;`;
                 },
 
                 diffMinutes(a, b) {
