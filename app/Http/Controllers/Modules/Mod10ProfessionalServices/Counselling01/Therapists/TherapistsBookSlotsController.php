@@ -91,20 +91,25 @@ class TherapistsBookSlotsController extends Controller
         $validated = $request->validate([
             'date' => 'required|date_format:Y-m-d',
             'time_from' => 'required|date_format:H:i',
-            'time_to' => 'required|date_format:H:i|after:time_from',
             // 'session_type' => 'nullable|string|max:191',
         ]);
 
         $date = $validated['date'];
         $timeFrom = $validated['time_from'];
-        $timeTo = $validated['time_to'];
         // $sessionType = $validated['session_type'] ?? null;
 
         DB::beginTransaction();
         try {
+            $tz = auth()->user()?->timezone ?? 'UTC';
+            $startDT = Carbon::createFromFormat('Y-m-d H:i', $date . ' ' . $timeFrom, $tz);
+            $endDT = $startDT->copy()->addHour();
+
+            $dateTo = $endDT->toDateString();
+            $timeTo = $endDT->format('H:i');
+
             // Lock any rows for this therapist that could overlap
             $overlap = CommonCalendar::where('TherapistUserID', $therapistId)
-                ->whereRaw("TIMESTAMP(DateFrom, TimeFrom) < TIMESTAMP(?, ?)", [$date, $timeTo])
+                ->whereRaw("TIMESTAMP(DateFrom, TimeFrom) < TIMESTAMP(?, ?)", [$dateTo, $timeTo])
                 ->whereRaw("TIMESTAMP(DateTo, TimeTo) > TIMESTAMP(?, ?)", [$date, $timeFrom])
                 ->lockForUpdate()
                 ->exists();
@@ -113,18 +118,6 @@ class TherapistsBookSlotsController extends Controller
                 DB::rollBack();
                 return response()->json(['error' => 'The requested time overlaps an existing calendar entry.'], 422);
             }
-
-            $startDT = Carbon::createFromFormat(
-                'Y-m-d H:i',
-                $date . ' ' . $timeFrom,
-                auth()->user()?->timezone ?? 'UTC'
-            );
-
-            $endDT = Carbon::createFromFormat(
-                'Y-m-d H:i',
-                $date . ' ' . $timeTo,
-                auth()->user()?->timezone ?? 'UTC'
-            );
 
             $row = CommonCalendar::create([
                 'TherapistUserID' => $therapistId,
@@ -135,7 +128,7 @@ class TherapistsBookSlotsController extends Controller
 
                 'DateFrom' => $date,
                 'TimeFrom' => $timeFrom . ':00',
-                'DateTo'   => $date,
+                'DateTo'   => $dateTo,
                 'TimeTo'   => $timeTo . ':00',
 
                 'SessionDateTimeFrom' => $startDT,
@@ -162,7 +155,6 @@ class TherapistsBookSlotsController extends Controller
         $validated = $request->validate([
             'date' => 'required|date_format:Y-m-d',
             'time_from' => 'required|date_format:H:i',
-            'time_to' => 'required|date_format:H:i|after:time_from',
             'session_type' => 'nullable|string|max:191',
         ]);
 
@@ -179,11 +171,16 @@ class TherapistsBookSlotsController extends Controller
             // Check overlap excluding the slot being edited
             $date = $validated['date'];
             $timeFrom = $validated['time_from'];
-            $timeTo = $validated['time_to'];
+
+            $tz = auth()->user()?->timezone ?? 'UTC';
+            $startDT = Carbon::createFromFormat('Y-m-d H:i', $date . ' ' . $timeFrom, $tz);
+            $endDT = $startDT->copy()->addHour();
+            $dateTo = $endDT->toDateString();
+            $timeTo = $endDT->format('H:i');
 
             $overlap = CommonCalendar::where('TherapistUserID', $therapistId)
                 ->where('ID', '!=', $slot->ID)
-                ->whereRaw("TIMESTAMP(DateFrom, TimeFrom) < TIMESTAMP(?, ?)", [$date, $timeTo])
+                ->whereRaw("TIMESTAMP(DateFrom, TimeFrom) < TIMESTAMP(?, ?)", [$dateTo, $timeTo])
                 ->whereRaw("TIMESTAMP(DateTo, TimeTo) > TIMESTAMP(?, ?)", [$date, $timeFrom])
                 ->lockForUpdate()
                 ->exists();
@@ -196,8 +193,10 @@ class TherapistsBookSlotsController extends Controller
             $slot->update([
                 'DateFrom' => $date,
                 'TimeFrom' => $timeFrom . ':00',
-                'DateTo' => $date,
+                'DateTo' => $dateTo,
                 'TimeTo' => $timeTo . ':00',
+                'SessionDateTimeFrom' => $startDT,
+                'SessionDateTimeTo' => $endDT,
                 // 'SessionType' => $validated['session_type'] ?? null,
             ]);
 

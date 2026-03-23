@@ -1,6 +1,5 @@
 <x-app1>
 
-
     <div class="max-w-7xl mx-auto space-y-6" x-data="therapistCalendar()" x-init="init()" :style="`--rows:${timeRows.length}`">
 
         <!-- Header -->
@@ -102,7 +101,7 @@
                                         :class="slotClass(slot.type)" :style="slotStyle(slot)"
                                         @click.stop="editSlot(slot)">
                                         <div class="font-semibold" x-text="slot.type"></div>
-                                        <div x-text="slot.time_from + ' – ' + slot.time_to"></div>
+                                        <div x-text="slot.time_from + ' (1h)'"></div>
                                     </div>
                                 </template>
 
@@ -122,9 +121,10 @@
                         <input type="date" x-model="form.date" class="w-full border p-2 rounded mb-2">
 
                         <div class="flex gap-2 mb-2">
-                            <input type="time" x-model="form.time_from" class="w-1/2 border p-2 rounded">
-                            <input type="time" x-model="form.time_to" class="w-1/2 border p-2 rounded">
+                            <input type="time" x-model="form.time_from" readonly @input="syncEndTime()" class="w-1/2 border p-2 rounded">
+                            <input type="time" x-model="form.time_to" readonly class="w-1/2 border p-2 rounded bg-gray-50">
                         </div>
+                        <div class="text-xs text-gray-500 mb-2">Fixed duration: 1 hour</div>
 
                         <div class="flex justify-end gap-2">
                             <button @click="closeModal" class="px-3 py-1 border rounded">❌ Cancel</button>
@@ -217,12 +217,19 @@
                         time_from: time,
                         time_to: ''
                     };
+                    this.syncEndTime();
                     this.modalOpen = true;
                 },
 
                 editSlot(slot) {
                     this.editing = true;
-                    this.form = JSON.parse(JSON.stringify(slot));
+                    this.form = {
+                        id: slot.id,
+                        date: slot.date,
+                        time_from: slot.time_from,
+                        time_to: slot.time_to
+                    };
+                    this.syncEndTime();
                     this.modalOpen = true;
                 },
 
@@ -233,8 +240,7 @@
                 saveSlot() {
                     const payload = {
                         date: this.form.date,
-                        time_from: this.form.time_from,
-                        time_to: this.form.time_to
+                        time_from: this.form.time_from
                     };
 
                     const url = this.editing ?
@@ -279,6 +285,21 @@
 
                 reloadWeek() {
                     window.location = `?date=${this.selectedDate}`;
+                },
+
+                syncEndTime() {
+                    if (!this.form.time_from) {
+                        this.form.time_to = '';
+                        return;
+                    }
+                    this.form.time_to = this.addHour(this.form.time_from);
+                },
+
+                addHour(time) {
+                    const [h, m] = time.split(':').map(Number);
+                    const date = new Date(2000, 0, 1, h, m);
+                    date.setHours(date.getHours() + 1);
+                    return date.toTimeString().slice(0, 5);
                 }
             }
         }
