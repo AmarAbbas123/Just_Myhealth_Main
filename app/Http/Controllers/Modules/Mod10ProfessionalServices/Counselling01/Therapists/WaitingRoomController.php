@@ -8,29 +8,30 @@ use Illuminate\Http\Request;
 use Carbon\Carbon;
 use App\Services\TherapistSessionStartNotificationToPatients;
 use App\Models\CommonCalendar;
+use App\Models\SysSentAutoEmail;
 use App\Models\SysUserType30SessionHistory;
 use App\Models\User;
 use App\Models\SysUserType30OnboardQuestions;
 use App\Models\SysUserType30OnboardQuestionsAnswers;
+use App\Notifications\UserSessionStartedNotification;
 
 class WaitingRoomController extends Controller
 {
     // Waiting Room Display
     public function waitingRoom()
     {
-        $start = Carbon::today();                // today 00:00:00
-        $end   = Carbon::today()->addDays(14)->endOfDay(); // day 14 at 23:59:59
+        $start = Carbon::today();
+        $end   = Carbon::today()->addDays(14)->endOfDay();
 
         $sessions = CommonCalendar::where('TherapistUserID', auth()->id())
             ->where('CalendarEntryType', 'Busy')
             ->whereIn('SessionType', ['Video', 'Audio'])
             ->whereNotNull('SessionZegoCloudConnectID')
             ->whereBetween('SessionDateTimeFrom', [$start, $end])
-            ->with(['patient.userAttributes', 'therapist.userAttributes'])  // from indirect relations with SysUserAttribute Model via Users Model
+            ->with(['patient.userAttributes', 'therapist.userAttributes'])
             ->orderBy('SessionDateTimeFrom')
             ->get();
 
-        // ✅ Safely extract ONE room ID from the collection
         $roomID = $sessions->first()?->SessionZegoCloudConnectID;
 
         return view(
@@ -39,33 +40,26 @@ class WaitingRoomController extends Controller
         );
     }
 
-    // When Therapists Entered Room / presence / waiting / Press Start etc
     public function therapistEnteredWaitingRoom(Request $request)
     {
         $request->validate([
             'calendar_id' => 'required|integer',
         ]);
 
-        // ✅ Fetch calendar to read updated_at
-        $calendar = CommonCalendar::findOrFail($request->calendar_id);        
+        $calendar = CommonCalendar::findOrFail($request->calendar_id);
 
         SysUserType30SessionHistory::updateOrCreate(
             ['SessionCalendarID' => $calendar->ID],
             [
                 'AllocatedTherapistUserID' => auth()->id(),
-
-                // Therapist entry time
                 'TherapistEnteredWaitingRoomDate' => now()->toDateString(),
                 'TherapistEnteredWaitingRoomTime' => now()->toTimeString(),
-
-                // ✅ Copy EXACT booking timestamp
                 'SessionBookedDate' => $calendar->updated_at->toDateString(),
             ]
         );
 
         return response()->json(['success' => true]);
     }
-
 
     // Video/Audio Session Started
     public function start(Request $request)
@@ -74,9 +68,8 @@ class WaitingRoomController extends Controller
             'calendar_id' => 'required|integer',
         ]);
 
-        $calendar = CommonCalendar::findOrFail($request->calendar_id);
+        $calendar = CommonCalendar::with(['patient', 'therapist'])->findOrFail($request->calendar_id);
 
-        // 1️⃣ Create or update session history (START)
         SysUserType30SessionHistory::updateOrCreate(
             ['SessionCalendarID' => $calendar->ID],
             [
@@ -89,12 +82,10 @@ class WaitingRoomController extends Controller
             ]
         );
 
-
-        // 2️⃣ Send system message WITH JOIN LINK
         $joinLink = url('/patient/join') . '?' . http_build_query([
             'room'    => $calendar->SessionZegoCloudConnectID . '-' . $calendar->ID,
-            'session' => $calendar->ID, // SessionCalendarID
-        ]);        
+            'session' => $calendar->ID,
+        ]);
 
         $this->sendSystemMessage(
             $calendar->PatientUserID,
@@ -103,6 +94,13 @@ class WaitingRoomController extends Controller
                 Join Session
              </a>'
         );
+
+        $patient = $calendar->patient;
+        $therapist = $calendar->therapist;
+
+        if ($patient && $therapist && !empty($patient->Email) && !$this->sessionStartEmailAlreadySent($patient->ID, $calendar->ID)) {
+            $patient->notify(new UserSessionStartedNotification($calendar, $therapist->UserName ?: 'Therapist'));
+        }
 
         return response()->json([
             'success' => true,
@@ -130,13 +128,10 @@ class WaitingRoomController extends Controller
             ], 404);
         }
 
-        // ✅ Do not overwrite end time if already ended
         if (!$history->SessionEndedDate) {
             $history->update([
                 'SessionEndedDate' => now()->toDateString(),
                 'SessionEndedTime' => now()->toTimeString(),
-
-                // Ensure these are always present
                 'PatientUserID' => $history->PatientUserID,
                 'AllocatedTherapistUserID' => auth()->id(),
             ]);
@@ -190,7 +185,6 @@ class WaitingRoomController extends Controller
 
         $patientId = (int) $request->patient_id;
 
-        // Ensure therapist is allowed to view this patient (must have an upcoming session with them)
         $allowed = CommonCalendar::where('TherapistUserID', auth()->id())
             ->where('PatientUserID', $patientId)
             ->where('CalendarEntryType', 'Busy')
@@ -256,11 +250,21 @@ class WaitingRoomController extends Controller
         ]);
     }
 
-    // Send Notificataion invitation link to Patients
     protected function sendSystemMessage($patientID, $message)
     {
-        // Reuse your existing chat storage logic
         app(TherapistSessionStartNotificationToPatients::class)
             ->storeSystemMessage($patientID, $message);
+    }
+
+    protected function sessionStartEmailAlreadySent(int $userId, int $sessionId): bool
+    {
+        return SysSentAutoEmail::query()
+            ->where('UserID', $userId)
+            ->where('ModuleRef', 10)
+            ->where('ModuleSubRef', 1)
+            ->where('ModuleFull', '1001')
+            ->where('EmailSubRef', '003')
+            ->where('EventNotes', 'like', '%session #' . $sessionId . '%')
+            ->exists();
     }
 }

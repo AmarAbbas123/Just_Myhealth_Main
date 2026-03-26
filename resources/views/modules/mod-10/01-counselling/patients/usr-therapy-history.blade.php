@@ -191,7 +191,7 @@
                         <span x-text="selectedSession.duration"></span>
                     </div>
 
-                    <div><b>Recording:</b>
+                    {{-- <div><b>Recording:</b>
                         <template x-if="selectedSession.recording">
                             <a :href="selectedSession.recording" target="_blank" class="text-blue-600 underline">
                                 View Recording
@@ -201,7 +201,7 @@
                         <template x-if="!selectedSession.recording">
                             <span>Not available</span>
                         </template>
-                    </div>
+                    </div> --}}
 
                     <div><b>Therapy Notes:</b> <br><br>
                         <p class="px-3 py-2 bg-gray-100 text-gray-700 text-sm font-medium shadow">

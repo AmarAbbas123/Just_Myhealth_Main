@@ -446,11 +446,11 @@
 
                             // 🟢 AUTO-START RECORDING WHEN ROOM IS READY
                             onJoinRoom: () => {
-                                console.log('Successfully joined room. Triggering Auto-Recording...');
+                                console.log('Successfully joined room...');
                                 // We wait 3 seconds to ensure the media stream is stable
-                                setTimeout(() => {
-                                    this.triggerAutoRecording();
-                                }, 3000);
+                                // setTimeout(() => {
+                                //     this.triggerAutoRecording();
+                                // }, 3000);
                             },
 
                             onLeaveRoom: async () => {
@@ -487,50 +487,50 @@
                 },
 
                 // 🟢 AUTOMATED RECORDING TRIGGER
-                async triggerAutoRecording() {
-                    // If already recording or already trying to start, STOP.
-                    if (this.recording || this.isProcessing) return;
+                // async triggerAutoRecording() {
+                //     // If already recording or already trying to start, STOP.
+                //     if (this.recording || this.isProcessing) return;
 
-                    // 2. Ensure we have the Room ID
-                    if (!this.roomID) {
-                        console.error("Recording failed: No Room ID found in Alpine state");
-                        return;
-                    }
+                //     // 2. Ensure we have the Room ID
+                //     if (!this.roomID) {
+                //         console.error("Recording failed: No Room ID found in Alpine state");
+                //         return;
+                //     }
 
-                    this.isProcessing = true;
-                    console.log('Requesting Recording for Room:', this.roomID);
+                //     this.isProcessing = true;
+                //     console.log('Requesting Recording for Room:', this.roomID);
 
-                    try {
-                        const response = await fetch('/zego/start-recording', {
-                            method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/json',
-                                'Accept': 'application/json',
-                                'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                            },
-                            body: JSON.stringify({
-                                room_id: this.roomID,
-                                start: true
-                            })
-                        });
+                //     try {
+                //         const response = await fetch('/zego/start-recording', {
+                //             method: 'POST',
+                //             headers: {
+                //                 'Content-Type': 'application/json',
+                //                 'Accept': 'application/json',
+                //                 'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                //             },
+                //             body: JSON.stringify({
+                //                 room_id: this.roomID,
+                //                 start: true
+                //             })
+                //         });
 
-                        const data = await response.json();
+                //         const data = await response.json();
 
-                        if (response.ok && data.task_id) {
-                            this.recording = true;
-                            console.log('✅ Recording Started. Task ID:', data.task_id);
-                        } else {
-                            console.error('❌ Zego Rejected Storage/Params:', data.debug);
-                            // This alerts you to exactly what Zego said
-                            alert("Zego Error: " + (data.debug?.Message || "Check Storage Config"));
-                        }
-                    } catch (error) {
-                        console.error('Network Error:', error);
-                    } finally {
-                        this.isProcessing = false;
-                    }
+                //         if (response.ok && data.task_id) {
+                //             this.recording = true;
+                //             console.log('✅ Recording Started. Task ID:', data.task_id);
+                //         } else {
+                //             console.error('❌ Zego Rejected Storage/Params:', data.debug);
+                //             // This alerts you to exactly what Zego said
+                //             alert("Zego Error: " + (data.debug?.Message || "Check Storage Config"));
+                //         }
+                //     } catch (error) {
+                //         console.error('Network Error:', error);
+                //     } finally {
+                //         this.isProcessing = false;
+                //     }
 
-                },
+                // },
 
                 async endSession() {
                     if (!this.currentCalendarID) {
@@ -627,26 +627,26 @@
                 },
 
                 // Manual toggle if you still want the button to work
-                async toggleRecording() {
-                    const action = !this.recording;
-                    const response = await fetch('/zego/start-recording', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'X-CSRF-TOKEN': '{{ csrf_token() }}',
-                            'Accept': 'application/json'
-                        },
-                        body: JSON.stringify({
-                            room_id: this.roomID,
-                            start: action
-                        })
-                    });
+                // async toggleRecording() {
+                //     const action = !this.recording;
+                //     const response = await fetch('/zego/start-recording', {
+                //         method: 'POST',
+                //         headers: {
+                //             'Content-Type': 'application/json',
+                //             'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                //             'Accept': 'application/json'
+                //         },
+                //         body: JSON.stringify({
+                //             room_id: this.roomID,
+                //             start: action
+                //         })
+                //     });
 
-                    if (response.ok) {
-                        this.recording = action;
-                        alert(action ? 'Recording started' : 'Recording stopped');
-                    }
-                },
+                //     if (response.ok) {
+                //         this.recording = action;
+                //         alert(action ? 'Recording started' : 'Recording stopped');
+                //     }
+                // },
 
                 async openOnboardingAnswers(patientId, patientUserName) {
                     this.onboardingPatientLabel = patientUserName ? `(${patientUserName})` : '';
