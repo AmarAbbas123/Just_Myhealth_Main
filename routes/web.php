@@ -29,7 +29,7 @@ use App\Http\Controllers\Modules\Mod02SystemReporting\UserNumbersController;
 use App\Http\Controllers\Modules\Mod02SystemReporting\FinanceReportsRevenueController;
 
 //mod-03 User General
-use App\Http\Controllers\Auth\KeycloakCallbackController;
+//use App\Http\Controllers\Auth\KeycloakCallbackController;
 use App\Http\Controllers\Modules\Mod03SocialMedia\MySpaceController;
 use App\Http\Controllers\Modules\Mod03SocialMedia\MyGroupsController;
 use App\Http\Controllers\Modules\Mod03SocialMedia\MyMessagesController;
@@ -294,7 +294,7 @@ Route::middleware(['auth', 'usertype:admins'])->group(function () {
 });
 
 ///////// ThM Therapists Mangament //////////////
-//Therapists Status
+//Therapists Status (Thm)
 Route::middleware(['auth', 'usertype:admins'])->group(function () {
     Route::resource('/mod-01/therapist-management/therapist-status', TherapistsStatusController::class)->names('therapists-status');
 });
@@ -306,7 +306,7 @@ Route::middleware(['auth', 'usertype:admins'])->group(function () {
         ->name('therapists-onboarding-verify.status');
 });
 
-//Therapists Onboarding Approve
+//Therapists Onboarding Approve (Thm)
 Route::middleware(['auth', 'usertype:admins'])->group(function () {
     Route::resource('/mod-01/therapist-management/therapist-onboarding-approve', TherapistsOnboardingApproveController::class)->names('therapists-onboarding-approve');
     Route::post('/mod-01/therapist-management/therapist-onboarding-approve/{user}/status', [TherapistsOnboardingApproveController::class, 'updateStatus'])
@@ -343,11 +343,8 @@ Route::middleware(['auth', 'usertype:admins'])->group(function () {
 | mod-03 USER GENERAL
 |--------------------------------------------------------------------------
 */
-Route::get('/openid/callback', [KeycloakCallbackController::class, 'handle'])
-    ->name('keycloak.callback');
-
-//Route::get('/mod-03/usr-my-space', [MySpaceController::class, 'index'])->middleware('auth');   // https://jmhmod03.xyz/openid/auth/keycloak
-Route::get('/mod-03/usr-my-space')->middleware('auth');
+//Route::get('/openid/callback', [KeycloakCallbackController::class, 'handle']) ->name('keycloak.callback');
+Route::get('/mod-03/usr-my-space', [MySpaceController::class, 'index'])->middleware('auth');  
 Route::get('/mod-03/usr-my-groups', [MyGroupsController::class, 'index'])->middleware('auth');
 Route::get('/mod-03/usr-my-messages', [MyMessagesController::class, 'index'])->middleware('auth');
 Route::get('/mod-03/usr-group-finder', [FindAGroupController::class, 'index'])->middleware('auth');
@@ -482,6 +479,9 @@ Route::controller(WaitingRoomController::class)
         Route::post('/therapist/session/entered-waiting-room', 'therapistEnteredWaitingRoom');
         Route::post('/therapist/session/start', 'start');
         Route::post('/therapist/session/end', 'end');
+        Route::post('/therapist/session/notes', 'saveSessionNotes')->name('therapist.session.notes');
+        Route::post('/therapist/onboarding/qa', 'onboardingQa')->name('therapist.onboarding.qa');
+        Route::post('/therapist/onboarding/issue', 'onboardingIssueSummary')->name('therapist.onboarding.issue');
     });
 
 // 🔔 Send system message to patient with join links
@@ -557,13 +557,22 @@ Route::controller(TasksActionsController::class)
     });
 
 
+    //1️⃣3️⃣ Search Match Questions (Therapist onboarding questions)
+Route::controller(SearchMatchQuestionsController::class)
+->middleware(['auth', 'usertype:therapist'])
+->group(function () {
+    Route::get('mod-10/mb/my-match-questions', 'index')->name('therapist.match.questions');
+    Route::post('mod-10/mb/my-match-questions/save', 'saveAnswer')->name('therapist.match.questions.save');
+    Route::post('mod-10/mb/my-match-questions/update', 'updateAnswer')->name('therapist.match.questions.update');
+});
+
 // ##############################################################################################################
 // #####################  Patients User Block ->middleware(['auth', 'usertype:user']) ###########################
 // ##############################################################################################################    
 
 //Onboarding Question and Answers
 Route::controller(PatientsOnboardingController::class)
-    ->middleware(['auth', 'usertype:user'])
+    ->middleware('auth')  //->middleware(['auth', 'usertype:user'])
     ->group(function () {
         Route::get('/mod-10/01/usr-how-i-feel-questions', 'showonboardingquestions')->name('onboarding.start');
         Route::post('/mod-10/01/save-onboarding', 'saveonboardingAnswers')->name('onboarding.save');

@@ -13,6 +13,7 @@ use Illuminate\Support\Str;
 use Illuminate\Validation\Rules;
 use Illuminate\View\View;
 use Illuminate\Support\Facades\DB;
+use App\Services\KeycloakService;
 
 class NewPasswordController extends Controller
 {
@@ -62,9 +63,14 @@ class NewPasswordController extends Controller
         // Delete used token
         DB::table('password_reset_tokens')->where('email', $user->Email)->delete();
 
+        $keycloak = new KeycloakService();
+
+        if ($user->keycloak_id) {
+            $keycloak->resetPassword($user->keycloak_id, $request->Password);
+        }
+
         event(new PasswordReset($user));
 
         return redirect()->route('login')->with('status', 'Your password has been reset!');
     }
-    
 }

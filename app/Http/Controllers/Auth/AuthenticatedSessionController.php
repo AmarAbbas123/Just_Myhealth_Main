@@ -13,16 +13,27 @@ use Illuminate\View\View;
 use App\Notifications\LoginAlert;
 use App\Traits\DeviceLogger;
 use Illuminate\Support\Facades\DB;
+use App\Services\KeycloakService;
+use response;
 
 class AuthenticatedSessionController extends Controller
 {
+
+    protected KeycloakService $keycloak;
+
+    public function __construct()
+    {
+        $this->keycloak = new KeycloakService();
+    }
+
+
     /**
      * Display the login view.
      */
     public function create(): View
     {
         if (Auth::check()) {
-            return view('modules.dashboard'); // Or wherever you want
+            return view('modules.dashboard');
         }
 
         return view('modules.mod-00.login');
@@ -33,49 +44,75 @@ class AuthenticatedSessionController extends Controller
      */
     public function store(LoginRequest $request): RedirectResponse
     {
-        // 1️⃣ Authenticate user (this sets Auth::user())
+        // 1️⃣ Breeze login
         $request->authenticate();
 
         /** @var \App\Models\User $user */
         $user = Auth::user();
 
-        // 2️⃣ Regenerate session *after* authentication
+        if (!$user) {
+            abort(500, 'Auth failed after login');
+        }
+
+        // 2️⃣ Regenerate session
         $request->session()->regenerate();
 
-        // 3️⃣ Update current session with the authenticated user_id
+        // 3️⃣ 🔥 Login to Keycloak (hidden)
+        $kcResponse = $this->keycloak->loginDirectGrant(
+            $request->input('UserName'),
+            $request->input('Password')
+        );
+
+        if ($kcResponse && isset($kcResponse['access_token'])) {
+
+            // ✅ Store token ONLY if success
+            session([                
+                'kc_access_token' => $kcResponse['access_token'],
+                'kc_refresh_token' => $kcResponse['refresh_token'] ?? null,
+            ]);
+        
+            Log::info('Keycloak login SUCCESS', ['user_id' => Auth::id()]);
+        
+        } else {
+        
+            // ❗ DO NOT logout user
+            Log::warning('Keycloak login skipped (user not in KC yet)', [
+                'user_id' => $user->id
+            ]);
+        }      
+
+        // 5️⃣ Session DB handling
         DB::table('sessions')
             ->where('id', $request->session()->getId())
             ->update(['user_id' => $user->id]);
 
-        // 4️⃣ Delete any *other* active sessions for this user
         DB::table('sessions')
             ->where('user_id', $user->id)
             ->where('id', '!=', $request->session()->getId())
             ->delete();
 
-        // 5️⃣ Optional: Log for debugging
-        Log::info('Login redirect debug', [
-            'intended'   => session('url.intended'),
-            'auth_check' => Auth::check(),
-            'user_id'    => Auth::id(),
-        ]);
+        // 6️⃣ Logs
+        Log::info('Login redirect debug', ['intended'   => session('url.intended'), 'auth_check' => Auth::check(), 'user_id'    => Auth::id(),]);
+        Log::info('Login success with Keycloak', ['user_id' => $user->id,]);
+        Log::error('Keycloak full response', ['response' => $kcResponse]);
 
-        // 6️⃣ Send login alert & log device
-        $user->notify(new LoginAlert(
-            $request->ip(),
-            $request->header('User-Agent')
-        ));
+        if (!$user) {
+            dd('User is NULL after login');
+        }
+
+        // 7️⃣ Alerts
+        $user->notify(new LoginAlert($request->ip(), $request->header('User-Agent')));
 
         DeviceLogger::log($user->ID, $user->UserType, 'Login');
 
-        // 7️⃣ Redirect logic
+        // 8️⃣ Email verification
         if (!$user->hasVerifiedEmail()) {
             return redirect()->route('verification.notice');
         }
 
+        // ✅ FINAL: go to YOUR dashboard (NOT shaunsocial)
         return redirect()->intended(RouteServiceProvider::HOME);
     }
-
 
 
     /**
@@ -105,8 +142,6 @@ class AuthenticatedSessionController extends Controller
         // 🧠 Prevent Laravel from storing a new empty session row
         config(['session.driver' => 'array']);
 
-        return redirect()
-            ->route('login')
-            ->with('status', 'You have been logged out successfully.');
+        return redirect()->route('login')->with('status', 'You have been logged out successfully.');
     }
 }

@@ -40,13 +40,14 @@ Route::middleware('guest')->group(function () {
 
     Route::post('reset-password', [NewPasswordController::class, 'store'])
         ->name('password.store');
+
 });
 
 
 // Outside Auth Group
 Route::get('/verify-email/{id}/{hash}', [VerifyEmailController::class, '__invoke'])
-->middleware(['signed']) // ✅ Only 'signed', not 'auth'
-->name('verification.verify');
+    ->middleware(['signed']) // ✅ Only 'signed', not 'auth'
+    ->name('verification.verify');
 
 // Auth Group 
 Route::middleware('auth')->group(function () {

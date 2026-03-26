@@ -75,12 +75,13 @@ return [
     ],
 
     'keycloak' => [
-        'base_url' => env('KEYCLOAK_BASE_URL'),
+        'base_url' => env('KEYCLOAK_URL'),
         'realm' => env('KEYCLOAK_REALM'),
         'client_id' => env('KEYCLOAK_CLIENT_ID'),
         'client_secret' => env('KEYCLOAK_CLIENT_SECRET'),
         'redirect' => env('KEYCLOAK_REDIRECT_URI'),
+        'admin_client' => env('KEYCLOAK_ADMIN_CLIENT'),
+        'admin_secret' => env('KEYCLOAK_ADMIN_SECRET'),              
     ],
-
 
 ];

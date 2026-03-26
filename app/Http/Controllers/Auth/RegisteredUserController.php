@@ -124,7 +124,7 @@ class RegisteredUserController extends Controller
             $attributesData
         ));
 
-        // Create user in Keycloak
+        // Create user in Keycloak   // this iscommented for PROD RIGHT NOW
         $keycloak = new KeycloakService();
         $firstName = $validated['ProfileData']['FirstName'] ?? '';
         $lastName  = $validated['ProfileData']['LastName'] ?? '';

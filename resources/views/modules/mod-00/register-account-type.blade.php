@@ -31,8 +31,7 @@
         <h1 class="text-4xl lg:text-5xl font-bold text-white tracking-tight mb-4">
             Register <span class="text-teal-400">JustMy.Health</span>
         </h1>
-
-       
+      
 
     </div>
 </section>
