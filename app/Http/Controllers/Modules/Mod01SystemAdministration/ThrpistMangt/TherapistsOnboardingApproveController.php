@@ -72,6 +72,11 @@ class TherapistsOnboardingApproveController extends Controller
             'ApprovalDate' => now()->toDateString(),
         ]);
 
+        // Update SystemUser column
+        $user->update([
+            'SystemUser' => 0,
+        ]);
+
         if ($validated['status'] === 'Approved') {
             $user->update([
                 'AccountStatus' => 1,

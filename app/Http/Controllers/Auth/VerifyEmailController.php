@@ -33,8 +33,8 @@ class VerifyEmailController extends Controller
         if (!$user->hasVerifiedEmail()) {
             $user->markEmailAsVerified();
             $user->NeedsEmailPrompt = false;
-            $user->AccountStatus = 1;
-            $user->UserActivatedDateTime = now();
+            $user->SystemUser = 1;
+            $user->UserActivatedDateTime = now();            
             $user->save();
 
             event(new Verified($user));
