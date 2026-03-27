@@ -187,7 +187,7 @@
                         <span x-text="selectedSession.media_type"></span>
                     </div>
 
-                    <div><b>Duration:</b>
+                    <div><b>Duration:</b> 
                         <span x-text="selectedSession.duration"></span>
                     </div>
 

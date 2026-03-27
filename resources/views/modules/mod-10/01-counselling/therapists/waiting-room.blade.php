@@ -602,7 +602,7 @@
 
                 openMessageModal(clientName, patientID) {
                     this.messageClient = clientName;
-                    this.currentPatientID = patientID;
+                    this.currentPatientID = patientID; 
                     this.messageText = '';
                     this.showMessageModal = true;
                 },
