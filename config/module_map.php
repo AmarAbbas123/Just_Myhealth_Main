@@ -57,7 +57,7 @@ return [
         'EmailSubRef' => '002',
         'Label'       => 'UserSessionReminder',
     ],
-    'UserSessionStartedNotification' => [
+    'UserSessionStartedNotification' => [  
         'ModuleRef'   => 10,
         'ModuleSubRef'=> 1,
         'ModuleFull'  => '1001',

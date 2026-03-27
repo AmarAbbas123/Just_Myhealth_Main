@@ -2,16 +2,15 @@
 
 namespace App\Listeners;
 
-use Illuminate\Notifications\Events\NotificationSent;
-use App\Models\User;
 use App\Models\SysSentAutoEmail;
+use App\Models\User;
+use Illuminate\Notifications\Events\NotificationSent;
 use Illuminate\Support\Facades\Log;
 
 class LogSentEmail
 {
     public function handle(NotificationSent $event): void
     {
-        // ✅ Ensure recipient is a User
         if (!($event->notifiable instanceof User)) {
             Log::warning('Skipped logging email, notifiable is not a User', [
                 'notification' => class_basename($event->notification),
@@ -22,7 +21,6 @@ class LogSentEmail
         $userId = $event->notifiable->ID;
         $userType = $event->notifiable->UserType;
 
-        // ✅ Resolve notification name dynamically
         $notificationName = class_basename($event->notification);
         $map = config("module_map.$notificationName");
 
@@ -31,7 +29,10 @@ class LogSentEmail
             return;
         }
 
-        // ✅ Store email log with friendly label
+        $eventNotes = method_exists($event->notification, 'auditSummary')
+            ? $event->notification->auditSummary($event->notifiable)
+            : $map['Label'];
+
         SysSentAutoEmail::create([
             'UserID'            => $userId,
             'UserType'          => $userType,
@@ -40,7 +41,7 @@ class LogSentEmail
             'ModuleFull'        => $map['ModuleFull'],
             'EmailSubRef'       => $map['EmailSubRef'],
             'EmailSentDateTime' => now(),
-            'EventNotes'        => $map['Label'], // 👈 friendly label, not class name
+            'EventNotes'        => $eventNotes,
         ]);
     }
 }

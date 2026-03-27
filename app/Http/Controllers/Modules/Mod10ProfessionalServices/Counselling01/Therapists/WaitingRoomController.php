@@ -96,7 +96,7 @@ class WaitingRoomController extends Controller
         );
 
         $patient = $calendar->patient;
-        $therapist = $calendar->therapist;
+        $therapist = $calendar->therapist;  
 
         if ($patient && $therapist && !empty($patient->Email) && !$this->sessionStartEmailAlreadySent($patient->ID, $calendar->ID)) {
             $patient->notify(new UserSessionStartedNotification($calendar, $therapist->UserName ?: 'Therapist'));

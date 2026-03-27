@@ -127,7 +127,7 @@ class RegisteredUserController extends Controller
             $targetField = $attributeFieldMap[$field] ?? $field;
             $attributesData[$targetField] = $validated['ProfileData'][$field] ?? null;
         }
-
+  
         SysUserAttribute::create(array_merge(
             ['UserID' => $user->ID],
             $attributesData
