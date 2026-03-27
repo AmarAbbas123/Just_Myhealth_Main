@@ -115,8 +115,17 @@ class RegisteredUserController extends Controller
 
         // Save personal attributes separately
         $attributesData = [];
+        $attributeFieldMap = [
+            'Country' => 'BaseCountry',
+            'State' => 'BaseState',
+            'City' => 'BaseCity',
+            'ZIP' => 'BaseZIP',
+            'DoB' => 'DOB',
+            'DateOfBirth' => 'YearBirth',
+        ];
         foreach ($profileFields as $field) {
-            $attributesData[$field] = $validated['ProfileData'][$field] ?? null;
+            $targetField = $attributeFieldMap[$field] ?? $field;
+            $attributesData[$targetField] = $validated['ProfileData'][$field] ?? null;
         }
 
         SysUserAttribute::create(array_merge(
