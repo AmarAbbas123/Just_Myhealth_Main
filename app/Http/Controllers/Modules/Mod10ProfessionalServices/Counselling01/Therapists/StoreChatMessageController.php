@@ -5,8 +5,9 @@ namespace App\Http\Controllers\Modules\Mod10ProfessionalServices\Counselling01\T
 use App\Http\Controllers\Controller;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 use App\Models\SysUserMessageHistory;
+use App\Models\User;
+use App\Notifications\TherapistMessageReceivedNotification; 
 
 class StoreChatMessageController extends Controller
 {
@@ -20,104 +21,26 @@ class StoreChatMessageController extends Controller
 
         $user = auth()->user();
 
-        SysUserMessageHistory::create([
+        $message = SysUserMessageHistory::create([
             'FromUserID'      => $user->ID,
             'FromUserType'    => (int) $user->UserType,
             'ToUserID'        => (int) $request->to_user_id,
             'ToUserType'      => (int) $request->to_user_type,
             'MessageDateTime' => now(),
-            'MessageContent' => $request->message,
+            'MessageContent'  => $request->message,
         ]);
+
+        // 🔔 Send notification (from File 2)
+        $this->notifyTherapistWhenPatientMessages($user, $message);
 
         return response()->json(['success' => true]);
     }
 
-    public function history(Request $request, $peerID)
+    public function history($peerID)
     {
         $user = auth()->user();
 
-        if ($request->boolean('debug')) {
-            if (!app()->environment(['local', 'development'])) {
-                abort(403);
-            }
-
-            $rawRows = DB::table('sys_user_message_history')
-                ->where(function ($q) use ($user, $peerID) {
-                    $q->where('FromUserID', $user->ID)
-                        ->where('ToUserID', $peerID);
-                })
-                ->orWhere(function ($q) use ($user, $peerID) {
-                    $q->where('FromUserID', $peerID)
-                        ->where('ToUserID', $user->ID);
-                })
-                ->orWhere(function ($q) use ($user) {
-                    $q->where('FromUserID', 0)
-                        ->where('ToUserID', $user->ID);
-                })
-                ->orderBy('MessageDateTime')
-                ->get([
-                    'ID',
-                    'FromUserID',
-                    'FromUserType',
-                    'ToUserID',
-                    'ToUserType',
-                    'MessageDateTime',
-                    'MessageContent',
-                    'created_at',
-                    'updated_at',
-                ]);
-
-            $eloquentRows = SysUserMessageHistory::query()
-                ->withoutGlobalScopes()
-                ->where(function ($q) use ($user, $peerID) {
-                    $q->where('FromUserID', $user->ID)
-                        ->where('ToUserID', $peerID);
-                })
-                ->orWhere(function ($q) use ($user, $peerID) {
-                    $q->where('FromUserID', $peerID)
-                        ->where('ToUserID', $user->ID);
-                })
-                ->orWhere(function ($q) use ($user) {
-                    $q->where('FromUserID', 0)
-                        ->where('ToUserID', $user->ID);
-                })
-                ->orderBy('MessageDateTime')
-                ->get([
-                    'ID',
-                    'FromUserID',
-                    'FromUserType',
-                    'ToUserID',
-                    'ToUserType',
-                    'MessageDateTime',
-                    'MessageContent',
-                    'created_at',
-                    'updated_at',
-                ]);
-
-            $dbNow = null;
-            try {
-                $row = DB::selectOne('select CURRENT_TIMESTAMP as db_now');
-                $dbNow = $row?->db_now ?? null;
-            } catch (\Throwable $e) {
-                $dbNow = null;
-            }
-
-            return response()->json([
-                'server_now' => now()->toDateTimeString(),
-                'app_timezone' => config('app.timezone'),
-                'db_now' => $dbNow,
-                'peer_id' => $peerID,
-                'user_id' => $user->ID,
-                'raw_count' => $rawRows->count(),
-                'eloquent_count' => $eloquentRows->count(),
-                'raw_rows' => $rawRows,
-                'eloquent_rows' => $eloquentRows,
-            ]);
-        }
-
-        return SysUserMessageHistory::query()
-            ->withoutGlobalScopes()
-            ->where(function ($q) use ($user, $peerID) {
+        return SysUserMessageHistory::where(function ($q) use ($user, $peerID) {
                 $q->where('FromUserID', $user->ID)
                     ->where('ToUserID', $peerID);
             })
@@ -127,7 +50,7 @@ class StoreChatMessageController extends Controller
             })
             ->orWhere(function ($q) use ($user) {
                 $q->where('FromUserID', 0)
-                  ->where('ToUserID', $user->ID);   // $peerID
+                  ->where('ToUserID', $user->ID);
             })
             ->orderBy('MessageDateTime')
             ->get()
@@ -138,12 +61,44 @@ class StoreChatMessageController extends Controller
                         ? ($user->UserType == 1 ? 'patient' : 'therapist')
                         : ($user->UserType == 1 ? 'therapist' : 'patient'),
                     'text'   => $m->MessageContent,
-                    'time'   => $m->MessageDateTime->format('H:i'),
-                    'date'      => $m->MessageDateTime->format('d M Y'),
-                    'dateTime'  => $m->MessageDateTime->format('d M Y H:i'),
-                    'timestamp' => $m->MessageDateTime->toIso8601String(),
+
+                    // ✅ Detailed timestamps (from File 1)
+                    'time'       => $m->MessageDateTime->format('H:i'),
+                    'date'       => $m->MessageDateTime->format('d M Y'),
+                    'dateTime'   => $m->MessageDateTime->format('d M Y H:i'),
+                    'timestamp'  => $m->MessageDateTime->toIso8601String(),
                 ];
             });
     }
 
+    protected function notifyTherapistWhenPatientMessages(User $sender, SysUserMessageHistory $message): void
+    {
+        // Only notify when patient sends to therapist
+        if ((int) $sender->UserType !== 1 || (int) $message->ToUserType !== 30) {
+            return;
+        }
+
+        $therapist = User::find($message->ToUserID);
+
+        if (!$therapist || empty($therapist->Email)) {
+            return;
+        }
+
+        $sender->loadMissing('userAttributes');
+
+        $senderFullName = trim(collect([
+            $sender->userAttributes->FirstName ?? null,
+            $sender->userAttributes->LastName ?? null,
+        ])->filter()->implode(' '));
+
+        if ($senderFullName === '') {
+            $senderFullName = $sender->UserName ?: 'User';
+        }
+
+        $therapist->notify(new TherapistMessageReceivedNotification(
+            $message,
+            $sender->UserName ?: 'User',
+            $senderFullName
+        ));
+    }
 }
