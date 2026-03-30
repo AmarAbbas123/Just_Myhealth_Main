@@ -371,9 +371,9 @@ Route::controller(StoreChatMessageController::class)
     });
 //(Patients(1)  + Admin(90,91,92)
 Route::controller(MessagesController::class)
-    ->middleware(['auth', 'usertype:user,admins'])
+    ->middleware(['auth', 'usertype:user,therapist,admins'])
     ->group(function () {
-        Route::get('/mod-10/my-messages ', 'messages')->name('user.messages');
+        Route::get('/mod-10/my-messages', 'messages')->name('user.messages');
     });
 
 /*
@@ -465,12 +465,12 @@ Route::controller(TherapistsBookSlotsController::class)
         Route::delete('/therapist/calendar/slots/{id}', 'destroy')->name('therapist.calendar.destroy');
     });
 
-// 6️⃣ Therapists Messages
-Route::controller(TherapistsMessagesController::class)
-    ->middleware(['auth', 'usertype:therapist'])
-    ->group(function () {
-        Route::get('mod-10/my-messages', 'messages')->name('therap.messages');
-    });
+// 6️⃣ Therapists Messages   // MAY BE NOT USE OF IT
+// Route::controller(TherapistsMessagesController::class)
+//     ->middleware(['auth', 'usertype:therapist'])
+//     ->group(function () {
+//         Route::get('mod-10/my-messages', 'messages')->name('therap.messages');
+//     });
 
 //7️⃣  waiting-room
 Route::controller(WaitingRoomController::class)

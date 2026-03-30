@@ -6,11 +6,13 @@ use App\Http\Controllers\Controller;
 use App\Models\User;
 use App\Models\SysUserAttribute;
 use App\Models\SysFinanceServiceFeeDetail;
+use App\Notifications\AdminNewUserRegisteredNotification;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Notification;
 use App\Traits\DeviceLogger;
 use App\Services\KeycloakService;
 
@@ -55,6 +57,7 @@ class RegisteredUserController extends Controller
             abort(404, 'Account Creation fee not configured for business.');
         }
 
+        // Check if both fees are available
         if (!$therapistFeeWaived && !$feeTherapist) {
             abort(404, 'Account Creation fee not configured for therapist.');
         }
@@ -71,7 +74,6 @@ class RegisteredUserController extends Controller
      */
     public function store(Request $request): RedirectResponse
     {
-
         $userType = $request->UserType;
 
         // Load required dynamic profile fields from config
@@ -90,7 +92,6 @@ class RegisteredUserController extends Controller
 
         // Add dynamic ProfileData validation rules
         foreach ($profileFields as $field) {
-            // If the field is Address2, apply nullable validation
             if ($field === 'Address2') {
                 $rules["ProfileData.$field"] = 'nullable|string|max:255';
             } else {
@@ -98,7 +99,6 @@ class RegisteredUserController extends Controller
             }
         }
 
-        // Validate
         $validated = $request->validate($rules);
 
         // Create the user
@@ -113,21 +113,14 @@ class RegisteredUserController extends Controller
             'NeedsEmailPrompt' => true,
         ]);
 
-        // Save personal attributes separately
+        $profileData = $validated['ProfileData'] ?? [];
+
+        // Save personal attributes using the sys_user_attributes column names.
         $attributesData = [];
-        $attributeFieldMap = [
-            'Country' => 'BaseCountry',
-            'State' => 'BaseState',
-            'City' => 'BaseCity',
-            'ZIP' => 'BaseZIP',
-            'DoB' => 'DOB',
-            'DateOfBirth' => 'YearBirth',
-        ];
         foreach ($profileFields as $field) {
-            $targetField = $attributeFieldMap[$field] ?? $field;
-            $attributesData[$targetField] = $validated['ProfileData'][$field] ?? null;
+            $attributesData[$this->mapUserAttributeField($field)] = $profileData[$field] ?? null;
         }
-  
+
         SysUserAttribute::create(array_merge(
             ['UserID' => $user->ID],
             $attributesData
@@ -139,16 +132,18 @@ class RegisteredUserController extends Controller
         $lastName  = $validated['ProfileData']['LastName'] ?? '';
         $keycloakUserId = $keycloak->createUser($user->UserName, $user->Email, $request->Password, $firstName, $lastName);
 
-        // store keycloak id locally (recommended)
+        // // store keycloak id locally (recommended)
         if ($keycloakUserId) {
             $user->keycloak_id = $keycloakUserId;
             $user->save();
         }
 
-        // Log device details sys_device_detail_history        
         DeviceLogger::log($user->ID, $user->UserType, 'Registration');
 
-        // ✔ You MUST login user so Stripe routes work 
+        Notification::route('mail', config('mail.admin_notification_address'))
+            ->notify(new AdminNewUserRegisteredNotification($user));
+
+        // Log in the user so therapist checkout routes work.
         Auth::login($user);
 
         /** ------------------------------------
@@ -175,5 +170,17 @@ class RegisteredUserController extends Controller
 
         // Normal Patients User should register without payment            
         return redirect()->route('verification.notice');
+    }
+
+    private function mapUserAttributeField(string $field): string
+    {
+        return match ($field) {
+            'Country' => 'BaseCountry',
+            'State' => 'BaseState',
+            'City' => 'BaseCity',
+            'ZIP' => 'BaseZIP',
+            'DoB' => 'DOB',
+            default => $field,
+        };
     }
 }

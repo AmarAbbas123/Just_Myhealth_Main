@@ -11,15 +11,21 @@ class LogSentEmail
 {
     public function handle(NotificationSent $event): void
     {
-        if (!($event->notifiable instanceof User)) {
+        $auditUser = $event->notifiable instanceof User
+            ? $event->notifiable
+            : (method_exists($event->notification, 'auditUser')
+                ? $event->notification->auditUser($event->notifiable)
+                : null);
+
+        if (!($auditUser instanceof User)) {
             Log::warning('Skipped logging email, notifiable is not a User', [
                 'notification' => class_basename($event->notification),
             ]);
             return;
         }
 
-        $userId = $event->notifiable->ID;
-        $userType = $event->notifiable->UserType;
+        $userId = $auditUser->ID;
+        $userType = $auditUser->UserType;
 
         $notificationName = class_basename($event->notification);
         $map = config("module_map.$notificationName");
@@ -30,7 +36,7 @@ class LogSentEmail
         }
 
         $eventNotes = method_exists($event->notification, 'auditSummary')
-            ? $event->notification->auditSummary($event->notifiable)
+            ? $event->notification->auditSummary($auditUser)
             : $map['Label'];
 
         SysSentAutoEmail::create([
