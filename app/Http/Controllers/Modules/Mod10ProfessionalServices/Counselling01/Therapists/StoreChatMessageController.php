@@ -3,11 +3,11 @@
 namespace App\Http\Controllers\Modules\Mod10ProfessionalServices\Counselling01\Therapists;
 
 use App\Http\Controllers\Controller;
-
-use Illuminate\Http\Request;
 use App\Models\SysUserMessageHistory;
 use App\Models\User;
-use App\Notifications\TherapistMessageReceivedNotification; 
+use App\Notifications\TherapistMessageReceivedNotification;
+use App\Notifications\UserMessageReceivedNotification;
+use Illuminate\Http\Request;
 
 class StoreChatMessageController extends Controller
 {
@@ -30,8 +30,7 @@ class StoreChatMessageController extends Controller
             'MessageContent'  => $request->message,
         ]);
 
-        // 🔔 Send notification (from File 2)
-        $this->notifyTherapistWhenPatientMessages($user, $message);
+        $this->sendMessageNotification($user, $message);
 
         return response()->json(['success' => true]);
     }
@@ -41,9 +40,9 @@ class StoreChatMessageController extends Controller
         $user = auth()->user();
 
         return SysUserMessageHistory::where(function ($q) use ($user, $peerID) {
-                $q->where('FromUserID', $user->ID)
-                    ->where('ToUserID', $peerID);
-            })
+            $q->where('FromUserID', $user->ID)
+                ->where('ToUserID', $peerID);
+        })
             ->orWhere(function ($q) use ($user, $peerID) {
                 $q->where('FromUserID', $peerID)
                     ->where('ToUserID', $user->ID);
@@ -61,29 +60,31 @@ class StoreChatMessageController extends Controller
                         ? ($user->UserType == 1 ? 'patient' : 'therapist')
                         : ($user->UserType == 1 ? 'therapist' : 'patient'),
                     'text'   => $m->MessageContent,
-
-                    // ✅ Detailed timestamps (from File 1)
-                    'time'       => $m->MessageDateTime->format('H:i'),
-                    'date'       => $m->MessageDateTime->format('d M Y'),
-                    'dateTime'   => $m->MessageDateTime->format('d M Y H:i'),
-                    'timestamp'  => $m->MessageDateTime->toIso8601String(),
+                    'time'   => $m->MessageDateTime->format('H:i'),
                 ];
             });
     }
 
-    protected function notifyTherapistWhenPatientMessages(User $sender, SysUserMessageHistory $message): void
+    protected function sendMessageNotification(User $sender, SysUserMessageHistory $message): void
     {
-        // Only notify when patient sends to therapist
-        if ((int) $sender->UserType !== 1 || (int) $message->ToUserType !== 30) {
+        $recipient = User::find($message->ToUserID);
+
+        if (!$recipient || empty($recipient->Email)) {
             return;
         }
 
-        $therapist = User::find($message->ToUserID);
-
-        if (!$therapist || empty($therapist->Email)) {
+        if ((int) $sender->UserType === 1 && (int) $message->ToUserType === 30) {
+            $this->notifyTherapistWhenPatientMessages($sender, $recipient, $message);
             return;
         }
 
+        if ((int) $sender->UserType === 30 && (int) $message->ToUserType === 1) {
+            $this->notifyUserWhenTherapistMessages($sender, $recipient, $message);
+        }
+    }
+
+    protected function notifyTherapistWhenPatientMessages(User $sender, User $therapist, SysUserMessageHistory $message): void
+    {
         $sender->loadMissing('userAttributes');
 
         $senderFullName = trim(collect([
@@ -99,6 +100,14 @@ class StoreChatMessageController extends Controller
             $message,
             $sender->UserName ?: 'User',
             $senderFullName
+        ));
+    }
+
+    protected function notifyUserWhenTherapistMessages(User $sender, User $user, SysUserMessageHistory $message): void
+    {
+        $user->notify(new UserMessageReceivedNotification(
+            $message,
+            $sender->UserName ?: 'Therapist'
         ));
     }
 }

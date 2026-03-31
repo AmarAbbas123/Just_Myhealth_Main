@@ -71,6 +71,13 @@ return [
         'EmailSubRef' => '004',
         'Label'       => 'TherapistMessageReceivedNotification',
     ],
+    'UserMessageReceivedNotification' => [
+        'ModuleRef'   => 10,
+        'ModuleSubRef'=> 1,
+        'ModuleFull'  => '1001',
+        'EmailSubRef' => '005',
+        'Label'       => 'UserMessageReceivedNotification',
+    ],
     'AdminNewUserRegisteredNotification' => [
         'ModuleRef'   => 1,
         'ModuleSubRef'=> 0,

@@ -103,6 +103,7 @@ return [
     ],
 
 
+    // 'admin_notification_address' => env('ADMIN_NOTIFICATION_EMAIL', 'newuser@justmy.health'),
     'admin_notification_address' => env('ADMIN_NOTIFICATION_EMAIL', 'abidkhatak5757@gmail.com'),
 
     /*

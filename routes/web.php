@@ -58,7 +58,6 @@ use App\Http\Controllers\Modules\Mod10ProfessionalServices\Counselling01\Therapi
 use App\Http\Controllers\Modules\Mod10ProfessionalServices\Counselling01\Therapists\TherapyTypesController;
 use App\Http\Controllers\Modules\Mod10ProfessionalServices\Counselling01\Therapists\QualificationController;
 use App\Http\Controllers\Modules\Mod10ProfessionalServices\Counselling01\Therapists\TherapistsBookSlotsController;
-use App\Http\Controllers\Modules\Mod10ProfessionalServices\Counselling01\Therapists\TherapistsMessagesController;
 use App\Http\Controllers\Modules\Mod10ProfessionalServices\Counselling01\Therapists\WaitingRoomController;
 use App\Http\Controllers\Modules\Mod10ProfessionalServices\Counselling01\Therapists\SessionHistoryController;
 use App\Http\Controllers\Modules\Mod10ProfessionalServices\Counselling01\Therapists\FinancialManagementController;
@@ -369,11 +368,11 @@ Route::controller(StoreChatMessageController::class)
         // load chat messages
         Route::get('/chat/history/{peerID}', 'history');
     });
-//(Patients(1)  + Admin(90,91,92)
+//(Patients(1) + Therapists(30) + Admin(90,91,92)
 Route::controller(MessagesController::class)
-    ->middleware(['auth', 'usertype:user,therapist,admins'])
+     ->middleware(['auth', 'usertype:user,therapist,admins'])
     ->group(function () {
-        Route::get('/mod-10/my-messages', 'messages')->name('user.messages');
+        Route::get('/mod-10/my-messages', 'messages')->name('messages.center');
     });
 
 /*
@@ -465,12 +464,7 @@ Route::controller(TherapistsBookSlotsController::class)
         Route::delete('/therapist/calendar/slots/{id}', 'destroy')->name('therapist.calendar.destroy');
     });
 
-// 6️⃣ Therapists Messages   // MAY BE NOT USE OF IT
-// Route::controller(TherapistsMessagesController::class)
-//     ->middleware(['auth', 'usertype:therapist'])
-//     ->group(function () {
-//         Route::get('mod-10/my-messages', 'messages')->name('therap.messages');
-//     });
+// 6️⃣ Therapists Messages   
 
 //7️⃣  waiting-room
 Route::controller(WaitingRoomController::class)
