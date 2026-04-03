@@ -16,7 +16,7 @@ class MessagesController extends Controller
         $user = auth()->user();
 
         // Patient view (default)
-        if ((int) $user->UserType === 1) {
+        if (in_array((int) $user->UserType, [1,2], true)) {        
             // Get booked therapists for this patient
             $bookedTherapistIds = CommonCalendar::where('PatientUserID', $user->ID)
                 ->where('CalendarEntryType', 'Busy')

@@ -29,7 +29,6 @@ use App\Http\Controllers\Modules\Mod02SystemReporting\UserNumbersController;
 use App\Http\Controllers\Modules\Mod02SystemReporting\FinanceReportsRevenueController;
 
 //mod-03 User General
-//use App\Http\Controllers\Auth\KeycloakCallbackController;
 use App\Http\Controllers\Modules\Mod03SocialMedia\MySpaceController;
 use App\Http\Controllers\Modules\Mod03SocialMedia\MyGroupsController;
 use App\Http\Controllers\Modules\Mod03SocialMedia\MyMessagesController;
@@ -342,8 +341,6 @@ Route::middleware(['auth', 'usertype:admins'])->group(function () {
 | mod-03 USER GENERAL
 |--------------------------------------------------------------------------
 */
-//Route::get('/openid/callback', [KeycloakCallbackController::class, 'handle']) ->name('keycloak.callback');
-
 Route::get('/mod-03/usr-my-space', [MySpaceController::class, 'index'])->middleware('auth');  
 Route::get('/mod-03/usr-my-groups', [MyGroupsController::class, 'index'])->middleware('auth');
 Route::get('/mod-03/usr-my-messages', [MyMessagesController::class, 'index'])->middleware('auth');

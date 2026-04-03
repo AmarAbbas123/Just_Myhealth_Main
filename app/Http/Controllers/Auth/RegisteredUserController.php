@@ -127,16 +127,16 @@ class RegisteredUserController extends Controller
         ));
 
         // Create user in Keycloak   // this iscommented for PROD RIGHT NOW
-        // $keycloak = new KeycloakService();
-        // $firstName = $validated['ProfileData']['FirstName'] ?? '';
-        // $lastName  = $validated['ProfileData']['LastName'] ?? '';
-        // $keycloakUserId = $keycloak->createUser($user->UserName, $user->Email, $request->Password, $firstName, $lastName);
+        $keycloak = new KeycloakService();
+        $firstName = $validated['ProfileData']['FirstName'] ?? '';
+        $lastName  = $validated['ProfileData']['LastName'] ?? '';
+        $keycloakUserId = $keycloak->createUser($user->UserName, $user->Email, $request->Password, $firstName, $lastName);
 
         // // // store keycloak id locally (recommended)
-        // if ($keycloakUserId) {
-        //     $user->keycloak_id = $keycloakUserId;
-        //     $user->save();
-        // }
+        if ($keycloakUserId) {
+            $user->keycloak_id = $keycloakUserId;
+            $user->save();
+        }
 
         DeviceLogger::log($user->ID, $user->UserType, 'Registration');
 

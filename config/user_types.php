@@ -5,7 +5,7 @@ return [
 
     'user' => [
         1  => 'USER (Standard)',
-      //  2  => 'UserEnhanced',
+       2  => 'UserEnhanced',
        // 3  => 'UserDischargedPatient', // you can keep it here if you want later
     ],
 

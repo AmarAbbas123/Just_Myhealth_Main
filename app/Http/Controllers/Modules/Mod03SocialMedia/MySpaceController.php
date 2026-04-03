@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Http\Controllers\Modules\Mod03SocialMedia;
 
 use App\Http\Controllers\Controller;
