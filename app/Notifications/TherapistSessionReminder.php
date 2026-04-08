@@ -35,8 +35,11 @@ class TherapistSessionReminder extends Notification
     public function auditSummary(object $notifiable): string
     {
         $sessionId = $this->calendar->ID ?? 'N/A';
+        $sessionStartUtc = $this->calendar->SessionDateTimeFrom
+            ? $this->calendar->SessionDateTimeFrom->copy()->setTimezone('UTC')->format('Y-m-d H:i:s')
+            : 'N/A';
         $therapistName = $notifiable->UserName ?? 'Therapist';
 
-        return "Therapist 30-minute session reminder sent for session #{$sessionId} to {$therapistName} for patient {$this->patientDisplayName}";
+        return "Therapist 30-minute session reminder sent for session #{$sessionId} at {$sessionStartUtc} to {$therapistName} for patient {$this->patientDisplayName}";
     }
 }

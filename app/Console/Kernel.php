@@ -24,7 +24,9 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule): void
     {
-        $schedule->command('sessions:send-therapist-reminders')->everyMinute();
+        $reminderLeadMinutes = max((int) config('reminders.therapist_session_lead_minutes', 30), 1);
+        $reminderGraceMinutes = max((int) config('reminders.therapist_session_grace_minutes', 2), 0);
+        $schedule->command("sessions:send-therapist-reminders --minutes={$reminderLeadMinutes} --grace={$reminderGraceMinutes}")->everyMinute();
     }
 
     /**

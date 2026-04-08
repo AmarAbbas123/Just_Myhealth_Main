@@ -99,7 +99,9 @@ class User extends Authenticatable implements MustVerifyEmail
 
     public function routeNotificationForMail()
     {
-        return $this->Email;
+        $email = trim((string) $this->Email);
+
+        return $email !== '' ? $email : null;
     }
 
     // Since we are already handling sending reset links inside PasswordResetLinkController with
