@@ -14,14 +14,16 @@ use App\Models\User;
 use App\Models\SysUserType30OnboardQuestions;
 use App\Models\SysUserType30OnboardQuestionsAnswers;
 use App\Notifications\UserSessionStartedNotification;
+use App\Services\UserTimeZoneService;
 
 class WaitingRoomController extends Controller
 {
     // Waiting Room Display
     public function waitingRoom()
     {
-        $start = Carbon::today();
-        $end   = Carbon::today()->addDays(14)->endOfDay();
+        $therapistTimeZone = app(UserTimeZoneService::class)->getUserHomeTimezoneName(auth()->user());
+        $start = Carbon::now($therapistTimeZone)->startOfDay()->setTimezone('UTC');
+        $end = Carbon::now($therapistTimeZone)->addDays(14)->endOfDay()->setTimezone('UTC');
 
         $sessions = CommonCalendar::where('TherapistUserID', auth()->id())
             ->where('CalendarEntryType', 'Busy')
@@ -32,11 +34,16 @@ class WaitingRoomController extends Controller
             ->orderBy('SessionDateTimeFrom')
             ->get();
 
+        $sessions->each(function ($session) use ($therapistTimeZone) {
+            $session->DisplaySessionDateTimeFrom = Carbon::parse($session->SessionDateTimeFrom, 'UTC')
+                ->setTimezone($therapistTimeZone);
+        });
+
         $roomID = $sessions->first()?->SessionZegoCloudConnectID;
 
         return view(
             'modules.mod-10.01-counselling.therapists.waiting-room',
-            compact('sessions', 'roomID')
+            compact('sessions', 'roomID', 'therapistTimeZone')
         );
     }
 

@@ -99,12 +99,6 @@ Route::get('/optimize1', function () {
     Artisan::call('optimize:clear');
 });
 
-Route::get('/optimize1', function () {
-    Artisan::call('optimize:clear');
-    Artisan::call('config:cache');
-    Artisan::call('route:cache');
-});
-
 Route::get('/log-test', function () {
     Log::info('✅ Laravel log test is working!');
     return 'Log written!';

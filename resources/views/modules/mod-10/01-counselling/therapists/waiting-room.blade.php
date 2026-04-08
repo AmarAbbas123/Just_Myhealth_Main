@@ -57,7 +57,7 @@
                                     </div>
                                     <div class="text-xs text-gray-500">
                                         {{ $session->SessionType }} —
-                                        {{ $session->SessionDateTimeFrom->format('H:i') }}
+                                        {{ $session->DisplaySessionDateTimeFrom->format('H:i') }}
                                     </div>
                                 </div>
                                 </div>
@@ -71,7 +71,7 @@
 
                             <td class="block md:table-cell p-3 md:py-3 md:px-0 text-gray-500">
                                 <div class="md:hidden text-[11px] font-semibold text-gray-500 mb-1">Date/Time</div>
-                                {{ $session->SessionDateTimeFrom->format('Y-m-d H:i') }}
+                                {{ $session->DisplaySessionDateTimeFrom->format('Y-m-d H:i') }}
                             </td>
 
                             <td class="block md:table-cell p-3 md:py-3 md:px-0 text-gray-500">

@@ -22,6 +22,7 @@ class SysUserAttribute extends Model
         'BaseCity',
         'BaseState',
         'BaseCountry',
+        'UserHomeTimeZoneName',
         'BusinessName',
         'BusinessContactFirstName',
         'BusinessContactLastName',
@@ -30,7 +31,7 @@ class SysUserAttribute extends Model
         'BusinessType',
         'Address1',
         'Address2',
-        'BaseZIP',
+        'BaseZip',
     ];
 
     public function user()

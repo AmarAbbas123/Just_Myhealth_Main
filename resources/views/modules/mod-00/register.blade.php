@@ -207,6 +207,7 @@
     const userFieldMap = @json(config('user_fields'));
     const businessOptions = @json(config('business_options'));
     const userOptions = @json(config('user_options'));
+    const timezoneCountryOptions = @json($countryOptions ?? []);
     const medicalOptions = @json(config('medical_options'));
     const professionalOptions = @json(config('professional_options'));
 
@@ -239,22 +240,17 @@
                     <input type="text" name="ProfileData[${field}_Custom]" placeholder="Specify Business Type" style="display:none;" />
                 `;
             } else if (field === 'Country') {
-                if (userTypeId === '10') {
-                    container.innerHTML += `
+                const countries = (timezoneCountryOptions && timezoneCountryOptions.length > 0)
+                    ? timezoneCountryOptions
+                    : (userOptions.Country || []);
+
+                container.innerHTML += `
                     <label>${field}</label>
-                    <select name="ProfileData[${field}]" id="country-dropdown" onchange="loadStates(this.value)">
-                        ${userOptions.Country.map(opt => `<option value="${opt}">${opt}</option>`).join('')}
+                    <select name="ProfileData[${field}]" id="country-dropdown" onchange="loadStates(this.value)" required>
+                        <option value="">Select Country</option>
+                        ${countries.map(opt => `<option value="${opt}">${opt}</option>`).join('')}
                     </select>
                 `;
-
-                } else {
-                    // For standard/therapy users -> text input
-                    container.innerHTML += `
-                    <label>${field}</label>
-                    <input type="text" name="ProfileData[${field}]" class="border rounded px-2 py-1" placeholder="Enter ${field}" />
-                 `;
-                }
-
 
             } else if (field === 'State') {
                 if (userTypeId === '10') {
@@ -338,11 +334,19 @@
         const cityDropdown = document.getElementById('city-dropdown');
 
         if (stateDropdown) {
-            stateDropdown.innerHTML = states.map(s => `<option value="${s}">${s}</option>`).join('');
+            if (states.length === 0) {
+                stateDropdown.innerHTML = `<option value="">N/A</option>`;
+            } else {
+                stateDropdown.innerHTML = states.map(s => `<option value="${s}">${s}</option>`).join('');
+            }
         }
 
-        if (states.length && cityDropdown) {
-            loadCities(states[0]);
+        if (cityDropdown) {
+            if (states.length) {
+                loadCities(states[0]);
+            } else {
+                cityDropdown.innerHTML = `<option value="">N/A</option>`;
+            }
         }
     }
 

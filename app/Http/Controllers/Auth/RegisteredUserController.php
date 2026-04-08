@@ -13,15 +13,17 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Notification;
+use Illuminate\Validation\Rule;
 use App\Traits\DeviceLogger;
 use App\Services\KeycloakService;
+use App\Services\UserTimeZoneService;
 
 class RegisteredUserController extends Controller
 {
     /**
      * Display the registration view.
      */
-    public function create(Request $request)
+    public function create(Request $request, UserTimeZoneService $timeZoneService)
     {
         // 1. Block already logged-in users
         if (Auth::check()) {
@@ -34,8 +36,12 @@ class RegisteredUserController extends Controller
         }
 
         $type = $request->query('type');
+        $countryOptions = $timeZoneService->getCountryOptions();
+        if (empty($countryOptions)) {
+            $countryOptions = config('user_options.Country', []);
+        }
 
-        return view('modules.mod-00.register', compact('type'));
+        return view('modules.mod-00.register', compact('type', 'countryOptions'));
     }
 
     public function registerAccountType()
@@ -72,9 +78,13 @@ class RegisteredUserController extends Controller
      *
      * @throws \Illuminate\Validation\ValidationException
      */
-    public function store(Request $request): RedirectResponse
+    public function store(Request $request, UserTimeZoneService $timeZoneService): RedirectResponse
     {
         $userType = $request->UserType;
+        $countryOptions = $timeZoneService->getCountryOptions();
+        if (empty($countryOptions)) {
+            $countryOptions = config('user_options.Country', []);
+        }
 
         // Load required dynamic profile fields from config
         $profileFields = config("user_fields.$userType", []);
@@ -94,6 +104,11 @@ class RegisteredUserController extends Controller
         foreach ($profileFields as $field) {
             if ($field === 'Address2') {
                 $rules["ProfileData.$field"] = 'nullable|string|max:255';
+            } elseif ($field === 'Country') {
+                $rules["ProfileData.$field"] = ['required', 'string', 'max:255'];
+                if (!empty($countryOptions)) {
+                    $rules["ProfileData.$field"][] = Rule::in($countryOptions);
+                }
             } else {
                 $rules["ProfileData.$field"] = 'required|string|max:255';
             }
@@ -120,6 +135,7 @@ class RegisteredUserController extends Controller
         foreach ($profileFields as $field) {
             $attributesData[$this->mapUserAttributeField($field)] = $profileData[$field] ?? null;
         }
+        $attributesData['UserHomeTimeZoneName'] = $timeZoneService->resolveTimezoneNameByCountry($profileData['Country'] ?? null);
 
         SysUserAttribute::create(array_merge(
             ['UserID' => $user->ID],
@@ -178,7 +194,7 @@ class RegisteredUserController extends Controller
             'Country' => 'BaseCountry',
             'State' => 'BaseState',
             'City' => 'BaseCity',
-            'ZIP' => 'BaseZIP',
+            'ZIP' => 'BaseZip',
             'DoB' => 'DOB',
             default => $field,
         };

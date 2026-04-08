@@ -4,11 +4,11 @@ namespace App\Http\Controllers\Modules\Mod10ProfessionalServices\Counselling01\T
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use App\Models\CommonCalendar;
 use App\Models\User;
+use App\Services\UserTimeZoneService;
 use Carbon\Carbon;
 
 class TherapistsBookSlotsController extends Controller
@@ -23,13 +23,11 @@ class TherapistsBookSlotsController extends Controller
     public function index(Request $request)
     {
         $therapistId = Auth::id();
-        $therapist = User::find($therapistId);
+        $therapist = User::with(['userAttributes', 'type30'])->find($therapistId);
+        $therapistTimeZone = $this->resolveUserTimeZoneName($therapist);
 
-        $selectedDate = $request->query('date') ?? Carbon::now($therapist?->timezone ?? 'UTC')->toDateString();
+        $selectedDate = $request->query('date') ?? Carbon::now($therapistTimeZone)->toDateString();
         $viewMode = $request->query('view') ?? 'week';
-
-        // Initial slots for the requested view (week)
-        $weeklySlots = $this->getSlotsForWeek($therapistId, $selectedDate);
 
         $sessionTypes = $therapist && $therapist->type30
             ? array_filter([
@@ -60,7 +58,7 @@ class TherapistsBookSlotsController extends Controller
             $current->addMinutes(30);
         }
 
-        list($weeklySlots, $weekDates) = $this->getSlotsForWeek($therapistId, $selectedDate);
+        [$weeklySlots, $weekDates] = $this->getSlotsForWeek($therapistId, $selectedDate, $therapistTimeZone);
 
         return view('modules.mod-10.01-counselling.therapists.therapists-book-slots', [
             'therapistCard' => $therapistCard,
@@ -70,6 +68,7 @@ class TherapistsBookSlotsController extends Controller
             'weeklySlots' => $weeklySlots,
             'weekDates' => $weekDates,
             'sessionTypes' => $sessionTypes,
+            'displayTimeZone' => $therapistTimeZone,
         ]);
     }
 
@@ -78,9 +77,10 @@ class TherapistsBookSlotsController extends Controller
     {
         $therapistId = Auth::id();
         $date = $request->query('date') ?? date('Y-m-d');
-        $slots = $this->getSlotsForWeek($therapistId, $date);
+        $therapistTimeZone = $this->resolveUserTimeZoneName(Auth::user());
+        [$slots, $weekDates] = $this->getSlotsForWeek($therapistId, $date, $therapistTimeZone);
 
-        return response()->json(['date' => $date, 'slots' => $slots]);
+        return response()->json(['date' => $date, 'slots' => $slots, 'weekDates' => $weekDates]);
     }
 
     // Create new slot (Available)
@@ -100,20 +100,21 @@ class TherapistsBookSlotsController extends Controller
 
         DB::beginTransaction();
         try {
-            $tz = auth()->user()?->timezone ?? 'UTC';
-            $startDT = Carbon::createFromFormat('Y-m-d H:i', $date . ' ' . $timeFrom, $tz);
-            $endDT = $startDT->copy()->addHour();
-            $bufferedEndDT = $endDT->copy()->addMinutes(30);
+            $therapist = Auth::user();
+            $therapistTimeZone = $this->resolveUserTimeZoneName($therapist);
+            $timeZoneService = app(UserTimeZoneService::class);
 
-            $dateTo = $endDT->toDateString();
-            $timeTo = $endDT->format('H:i');
-            $bufferedEndDate = $bufferedEndDT->toDateString();
-            $bufferedEndTime = $bufferedEndDT->format('H:i');
+            $startLocal = Carbon::createFromFormat('Y-m-d H:i', $date . ' ' . $timeFrom, $therapistTimeZone);
+            $endLocal = $startLocal->copy()->addHour();
+
+            $startUtc = $startLocal->copy()->setTimezone('UTC');
+            $endUtc = $endLocal->copy()->setTimezone('UTC');
+            $bufferedEndUtc = $endUtc->copy()->addMinutes(30);
 
             // Lock any rows for this therapist that could overlap
             $overlap = CommonCalendar::where('TherapistUserID', $therapistId)
-                ->whereRaw("TIMESTAMP(DateFrom, TimeFrom) < TIMESTAMP(?, ?)", [$bufferedEndDate, $bufferedEndTime])
-                ->whereRaw("DATE_ADD(TIMESTAMP(DateTo, TimeTo), INTERVAL 30 MINUTE) > TIMESTAMP(?, ?)", [$date, $timeFrom])
+                ->where('SessionDateTimeFrom', '<', $bufferedEndUtc)
+                ->whereRaw('DATE_ADD(SessionDateTimeTo, INTERVAL 30 MINUTE) > ?', [$startUtc->format('Y-m-d H:i:s')])
                 ->lockForUpdate()
                 ->exists();
 
@@ -129,15 +130,15 @@ class TherapistsBookSlotsController extends Controller
 
                 // 'SessionType' => in_array($sessionType, ['Video', 'Audio', 'Message']) ? $sessionType : null,
 
-                'DateFrom' => $date,
-                'TimeFrom' => $timeFrom . ':00',
-                'DateTo'   => $dateTo,
-                'TimeTo'   => $timeTo . ':00',
+                'DateFrom' => $startUtc->toDateString(),
+                'TimeFrom' => $startUtc->format('H:i:s'),
+                'DateTo'   => $endUtc->toDateString(),
+                'TimeTo'   => $endUtc->format('H:i:s'),
 
-                'SessionDateTimeFrom' => $startDT,
-                'SessionDateTimeTo'   => $endDT,
+                'SessionDateTimeFrom' => $startUtc,
+                'SessionDateTimeTo'   => $endUtc,
 
-                'TherapistTimeZone' => auth()->user()?->timezone ?? '+00:00',
+                'TherapistTimeZone' => $timeZoneService->getUtcOffsetForTimezone($therapistTimeZone, $startUtc),
                 'PatientUserID' => null,
             ]);
 
@@ -175,19 +176,20 @@ class TherapistsBookSlotsController extends Controller
             $date = $validated['date'];
             $timeFrom = $validated['time_from'];
 
-            $tz = auth()->user()?->timezone ?? 'UTC';
-            $startDT = Carbon::createFromFormat('Y-m-d H:i', $date . ' ' . $timeFrom, $tz);
-            $endDT = $startDT->copy()->addHour();
-            $bufferedEndDT = $endDT->copy()->addMinutes(30);
-            $dateTo = $endDT->toDateString();
-            $timeTo = $endDT->format('H:i');
-            $bufferedEndDate = $bufferedEndDT->toDateString();
-            $bufferedEndTime = $bufferedEndDT->format('H:i');
+            $therapist = Auth::user();
+            $therapistTimeZone = $this->resolveUserTimeZoneName($therapist);
+            $timeZoneService = app(UserTimeZoneService::class);
+
+            $startLocal = Carbon::createFromFormat('Y-m-d H:i', $date . ' ' . $timeFrom, $therapistTimeZone);
+            $endLocal = $startLocal->copy()->addHour();
+            $startUtc = $startLocal->copy()->setTimezone('UTC');
+            $endUtc = $endLocal->copy()->setTimezone('UTC');
+            $bufferedEndUtc = $endUtc->copy()->addMinutes(30);
 
             $overlap = CommonCalendar::where('TherapistUserID', $therapistId)
                 ->where('ID', '!=', $slot->ID)
-                ->whereRaw("TIMESTAMP(DateFrom, TimeFrom) < TIMESTAMP(?, ?)", [$bufferedEndDate, $bufferedEndTime])
-                ->whereRaw("DATE_ADD(TIMESTAMP(DateTo, TimeTo), INTERVAL 30 MINUTE) > TIMESTAMP(?, ?)", [$date, $timeFrom])
+                ->where('SessionDateTimeFrom', '<', $bufferedEndUtc)
+                ->whereRaw('DATE_ADD(SessionDateTimeTo, INTERVAL 30 MINUTE) > ?', [$startUtc->format('Y-m-d H:i:s')])
                 ->lockForUpdate()
                 ->exists();
 
@@ -197,12 +199,13 @@ class TherapistsBookSlotsController extends Controller
             }
 
             $slot->update([
-                'DateFrom' => $date,
-                'TimeFrom' => $timeFrom . ':00',
-                'DateTo' => $dateTo,
-                'TimeTo' => $timeTo . ':00',
-                'SessionDateTimeFrom' => $startDT,
-                'SessionDateTimeTo' => $endDT,
+                'DateFrom' => $startUtc->toDateString(),
+                'TimeFrom' => $startUtc->format('H:i:s'),
+                'DateTo' => $endUtc->toDateString(),
+                'TimeTo' => $endUtc->format('H:i:s'),
+                'SessionDateTimeFrom' => $startUtc,
+                'SessionDateTimeTo' => $endUtc,
+                'TherapistTimeZone' => $timeZoneService->getUtcOffsetForTimezone($therapistTimeZone, $startUtc),
                 // 'SessionType' => $validated['session_type'] ?? null,
             ]);
 
@@ -244,13 +247,12 @@ class TherapistsBookSlotsController extends Controller
     }
 
     // --- Helper functions copied/adapted from your Patients controller ---
-    private function getSlotsForWeek($therapistId, $selectedDate)
+    private function getSlotsForWeek($therapistId, $selectedDate, $displayTimeZone)
     {
-        $tz = auth()->user()?->timezone ?? 'UTC';
-        $date = Carbon::parse($selectedDate, $tz);
+        $date = Carbon::parse($selectedDate, $displayTimeZone);
 
         // Start of the week (Monday)
-        $monday = $date->copy()->startOfWeek(Carbon::MONDAY);
+        $monday = $date->copy()->startOfWeek(Carbon::MONDAY)->startOfDay();
 
         $weeklySlots = [];
         $weekDates = [];
@@ -262,25 +264,31 @@ class TherapistsBookSlotsController extends Controller
             $weekDates[] = $d;
         }
 
-        // Fetch DB rows within the week
+        $weekStartUtc = $monday->copy()->setTimezone('UTC');
+        $weekEndUtc = $monday->copy()->addDays(6)->endOfDay()->setTimezone('UTC');
+
+        // Fetch DB rows by UTC session datetime
         $rows = CommonCalendar::where('TherapistUserID', $therapistId)
-            ->whereBetween('DateFrom', [$weekDates[0], $weekDates[6]])
-            ->orderBy('DateFrom')
-            ->orderBy('TimeFrom')
+            ->whereBetween('SessionDateTimeFrom', [$weekStartUtc, $weekEndUtc])
+            ->orderBy('SessionDateTimeFrom')
             ->get();
 
         foreach ($rows as $row) {
-            // Normalize DB date strings
-            $dateFrom = substr(trim($row->DateFrom), 0, 10);
-            $dateTo   = substr(trim($row->DateTo), 0, 10);
+            $startUtc = $row->SessionDateTimeFrom
+                ? Carbon::parse($row->SessionDateTimeFrom, 'UTC')
+                : Carbon::parse(trim($row->DateFrom) . ' ' . trim($row->TimeFrom), 'UTC');
+            $endUtc = $row->SessionDateTimeTo
+                ? Carbon::parse($row->SessionDateTimeTo, 'UTC')
+                : Carbon::parse(trim($row->DateTo) . ' ' . trim($row->TimeTo), 'UTC');
 
-            // Normalize time strings to H:i
-            $timeFrom = Carbon::parse($row->TimeFrom)->format('H:i');
-            $timeTo   = Carbon::parse($row->TimeTo)->format('H:i');
+            $start = $startUtc->copy()->setTimezone($displayTimeZone);
+            $end = $endUtc->copy()->setTimezone($displayTimeZone);
+            $dateFrom = $start->toDateString();
+            $timeFrom = $start->format('H:i');
 
-            // Combine into full Carbon objects safely
-            $start = Carbon::createFromFormat('Y-m-d H:i', "$dateFrom $timeFrom", $tz);
-            $end   = Carbon::createFromFormat('Y-m-d H:i', "$dateTo $timeTo", $tz);
+            if (!array_key_exists($dateFrom, $weeklySlots)) {
+                continue;
+            }
 
             $weeklySlots[$dateFrom][$timeFrom] = (object)[
                 'id'              => $row->ID,
@@ -289,12 +297,17 @@ class TherapistsBookSlotsController extends Controller
                 'end'             => $end->format('Y-m-d H:i:s'),
                 'date'            => $dateFrom,
                 'time_from'       => $timeFrom,
-                'time_to'         => $timeTo,
+                'time_to'         => $end->format('H:i'),
                 // 'session_type'    => $row->SessionType,
                 'patient_user_id' => $row->PatientUserID,
             ];
         }
 
         return [$weeklySlots, $weekDates];
+    }
+
+    private function resolveUserTimeZoneName(?User $user): string
+    {
+        return app(UserTimeZoneService::class)->getUserHomeTimezoneName($user);
     }
 }

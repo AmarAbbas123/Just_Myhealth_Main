@@ -8,6 +8,7 @@ use Carbon\Carbon;
 use App\Models\CommonCalendar;
 use App\Models\SysUserMessageHistory;
 use App\Models\SysUserType30SessionHistory;
+use App\Services\UserTimeZoneService;
 use Illuminate\Http\Request;
 
 class PatientsCalendarController extends Controller
@@ -21,15 +22,19 @@ class PatientsCalendarController extends Controller
     public function pollSessions()
     {
         $patientId = auth()->id();
+        $patientTimeZone = app(UserTimeZoneService::class)->getUserHomeTimezoneName(auth()->user());
+        $startOfTodayUtc = Carbon::now($patientTimeZone)->startOfDay()->setTimezone('UTC');
 
         $sessions = CommonCalendar::where('PatientUserID', $patientId)
-            ->whereDate('SessionDateTimeFrom', '>=', Carbon::today())
+            ->where('SessionDateTimeFrom', '>=', $startOfTodayUtc)
             //->whereNotNull('SessionZegoCloudConnectID')
             ->with(['therapist.userAttributes', 'therapist.type30'])
             ->orderBy('SessionDateTimeFrom')
             ->get();
 
-        $sessions = $sessions->map(function ($session) use ($patientId) {
+        $sessions = $sessions->map(function ($session) use ($patientId, $patientTimeZone) {
+            $sessionStartLocal = Carbon::parse($session->SessionDateTimeFrom, 'UTC')->setTimezone($patientTimeZone);
+            $sessionEndLocal = Carbon::parse($session->SessionDateTimeTo, 'UTC')->setTimezone($patientTimeZone);
 
             // JOIN URL
             $sessionStarted = SysUserType30SessionHistory::where('SessionCalendarID', $session->ID)
@@ -85,11 +90,10 @@ class PatientsCalendarController extends Controller
 
                 // SESSION
                 'media'     => $session->SessionType,
-                'date'      => Carbon::parse($session->DateFrom)->format('Y-m-d'),
-                'start'     => Carbon::parse($session->SessionDateTimeFrom)->format('H:i'),
-                'end'       => Carbon::parse($session->SessionDateTimeTo)->format('H:i'),
-                'duration'  => Carbon::parse($session->SessionDateTimeFrom)
-                    ->diffInMinutes($session->SessionDateTimeTo),
+                'date'      => $sessionStartLocal->format('Y-m-d'),
+                'start'     => $sessionStartLocal->format('H:i'),
+                'end'       => $sessionEndLocal->format('H:i'),
+                'duration'  => $sessionStartLocal->diffInMinutes($sessionEndLocal),
 
                 // THERAPIST
                 'therapist_name' =>
@@ -115,7 +119,7 @@ class PatientsCalendarController extends Controller
                 'join_url' => $joinUrl,
 
                 // 👇 NEW (required for countdown)
-                'session_start_at' => Carbon::parse($session->SessionDateTimeFrom)->toIso8601String(),
+                'session_start_at' => $sessionStartLocal->toIso8601String(),
             ];
         });
 
