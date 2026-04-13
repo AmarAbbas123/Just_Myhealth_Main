@@ -14,34 +14,8 @@
             </div>
         </div>
 
-        <!-- Main layout -->
-        <div class="grid grid-cols-1 lg:grid-cols-[300px_1fr] gap-6">
-
-            <!-- Left mini calendar -->
-            <aside class="bg-white rounded-xl p-4 border space-y-3">
-                <div class="flex items-center justify-between">
-                    <div class="font-semibold" x-text="formatMonth(selectedDate)"></div>
-                    <div class="flex gap-1">
-                        <button @click="moveMonth(-1)">‹</button>
-                        <button @click="moveMonth(1)">›</button>
-                    </div>
-                </div>
-
-                <div class="grid grid-cols-7 text-xs text-center text-gray-500">
-                    <template x-for="d in ['Su','Mo','Tu','We','Th','Fr','Sa']">
-                        <div x-text="d"></div>
-                    </template>
-                </div>
-
-                <div class="grid grid-cols-7 gap-1">
-                    <template x-for="day in monthDays">
-                        <button @click="selectDate(day.date)" class="p-2 rounded text-sm"
-                            :class="isSameDay(day.date, selectedDate) ? 'bg-indigo-600 text-white' : 'hover:bg-gray-100'"
-                            x-text="day.d">
-                        </button>
-                    </template>
-                </div>
-            </aside>
+        <!-- Main layout -->        
+        <div class="grid grid-cols-1 gap-6">
 
             <!-- Right main calendar -->
             <div class="bg-white rounded-xl p-4 border">

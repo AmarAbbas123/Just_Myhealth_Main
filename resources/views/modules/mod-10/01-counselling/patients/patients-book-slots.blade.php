@@ -8,69 +8,9 @@
             </div>
 
             <div x-data="calendarApp({{ $therapistCard['id'] ?? 'null' }}, '{{ $selectedDate }}')" x-init="init()" class="flex gap-6">
-                <!-- Left column 33% -->
-                <div class="w-1/3">
-                    <div class="bg-white p-4 rounded shadow-sm">
-                        <label class="block text-sm font-medium text-gray-700 mb-2">Choose date</label>
-                        <div x-data="miniCalendar((date) => {
-                            selectedDate = date;
-                            onDateChange();
-                        })" x-init="init()" class="w-full">
-
-                            <div class="flex justify-between items-center mb-2">
-                                <button @click="prevMonth">&lt;</button>
-                                <span x-text="monthLabel"></span>
-                                <button @click="nextMonth">&gt;</button>
-                            </div>
-
-                            <div class="grid grid-cols-7 gap-1 text-center text-sm">
-                                <template x-for="d in days">
-                                    <div class="py-1 text-gray-500" x-text="d"></div>
-                                </template>
-                            </div>
-
-                            <div class="grid grid-cols-7 gap-1 mt-1">
-                                <template x-for="day in monthDays">
-                                    <div @click="choose(day.full)" class="p-2 text-sm rounded cursor-pointer"
-                                        :class="{
-                                            'bg-blue-600 text-white': day.full === selectedDate,
-                                            'text-gray-800': day.current,
-                                            'text-gray-400': !day.current
-                                        }"
-                                        x-text="day.label">
-                                    </div>
-                                </template>
-                            </div>
-                        </div>
-
-                        <!-- Therapist card -->
-                        <div class="mt-4 border rounded p-3 flex items-center space-x-3">
-                            <img src="{{ $therapistCard['avatar'] ?? 'https://via.placeholder.com/64' }}"
-                                class="w-10 h-10 rounded-full object-cover" alt="">
-                            <div>
-                                <div class="font-semibold">{{ $therapistCard['name'] ?? 'null' }}</div>
-                                @if ($therapistCard)
-                                    <div class="text-sm text-gray-500">
-                                        {{ implode(', ', $therapistCard['therapy_types']) }} </div>
-                                @endif
-                            </div>
-                        </div>
-
-                        <button @click="openBookingModal()" class="mt-4 w-full bg-blue-600 text-white py-2 rounded">Book
-                            Session</button>
-
-                        <template x-if="message">
-                            <div class="mt-3 text-sm text-green-700" x-text="message"></div>
-                        </template>
-
-                        <template x-if="error">
-                            <div class="mt-3 text-sm text-red-700" x-text="error"></div>
-                        </template>
-                    </div>
-                </div>
 
                 <!-- RIGHT COLUMN 66% -->
-                <div class="w-2/3">
+                <div class="w-full">
                     <div class="bg-white p-6 rounded shadow-sm">
 
                         <div class="flex items-center justify-between mb-4">
