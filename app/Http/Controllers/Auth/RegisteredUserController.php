@@ -27,7 +27,7 @@ class RegisteredUserController extends Controller
     {
         // 1. Block already logged-in users
         if (Auth::check()) {
-            return view('modules.dashboard');
+            return redirect()->route('dashboard');
         }
 
         // 2. Require type param

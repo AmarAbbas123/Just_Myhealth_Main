@@ -11,6 +11,7 @@ use App\Http\Controllers\ZegoCloud\VideoSessionController;
 use App\Http\Controllers\ZegoCloud\ZegoRecordingController;
 use App\Models\SysMenuDisplayOption;
 use App\Models\SysUserType30SessionHistory;
+use App\Http\Controllers\DashboardController;
 
 //mod-01 System Administration (Table Management)
 use App\Http\Controllers\Modules\Mod00UserAccess\ProfileController;
@@ -64,6 +65,7 @@ use App\Http\Controllers\Modules\Mod10ProfessionalServices\Counselling01\Therapi
 use App\Http\Controllers\Modules\Mod10ProfessionalServices\Counselling01\Therapists\IdRegistrationController;
 use App\Http\Controllers\Modules\Mod10ProfessionalServices\Counselling01\Therapists\TasksActionsController;
 use App\Http\Controllers\Modules\Mod10ProfessionalServices\Counselling01\Therapists\SearchMatchQuestionsController;
+use App\Http\Controllers\Modules\Mod10ProfessionalServices\Counselling01\Therapists\TherapistDocumentController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Http\Request;
 use App\Models\User;
@@ -195,12 +197,8 @@ require __DIR__ . '/auth.php';
 */
 
 Route::middleware(['auth', 'verified', \App\Http\Middleware\CheckUserSession::class])
-    ->group(function () {
-        Route::get('/dashboard', function () {
-            ['id' => optional(Auth::user())->id];
-            return view('modules.dashboard');
-        })->name('dashboard');      //    Changed return view('therapdashboard.dashboard1');
-        // Route::get('/dashboard', function () { return view('modules.dashboard'); })->name('dashboard');
+    ->group(function () {        
+        Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');        
         Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
         Route::match(['POST', 'PATCH'], '/profile', [ProfileController::class, 'update'])->name('profile.update');
         Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
@@ -551,6 +549,17 @@ Route::controller(SearchMatchQuestionsController::class)
     Route::post('mod-10/mb/my-match-questions/save', 'saveAnswer')->name('therapist.match.questions.save');
     Route::post('mod-10/mb/my-match-questions/update', 'updateAnswer')->name('therapist.match.questions.update');
 });
+
+    //1️⃣4️⃣ mod-10/mb/my-collateral-documents (Therapist collateral documents for Patients)
+    Route::controller(TherapistDocumentController::class)
+    ->middleware(['auth', 'usertype:therapist, admins'])
+    ->group(function () {
+        Route::get('mod-10/mb/my-collateral-documents', 'index')->name('collateral.index');
+        Route::post('mod-10/mb/my-collateral-documents/upload', 'upload')->name('collateral.upload');
+        Route::post('mod-10/mb/my-collateral-documents/download/{type}/{file}', 'download')->name('collateral.download');
+        Route::delete('mod-10/mb/my-collateral-documents/delete/{type}/{file}', 'delete')->name('collateral.delete');
+    });
+
 
 // ##############################################################################################################
 // #####################  Patients User Block ->middleware(['auth', 'usertype:user']) ###########################

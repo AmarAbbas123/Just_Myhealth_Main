@@ -13,8 +13,8 @@ use Illuminate\View\View;
 use App\Notifications\LoginAlert;
 use App\Traits\DeviceLogger;
 use Illuminate\Support\Facades\DB;
+use Symfony\Component\HttpFoundation\Response;
 use App\Services\KeycloakService;
-use response;
 
 class AuthenticatedSessionController extends Controller
 {
@@ -30,10 +30,10 @@ class AuthenticatedSessionController extends Controller
     /**
      * Display the login view.
      */
-    public function create(): View
+    public function create(): Response|View
     {
         if (Auth::check()) {
-            return view('modules.dashboard');
+            return redirect()->route('dashboard');
         }
 
         return view('modules.mod-00.login');

@@ -105,7 +105,7 @@ class WebhookController extends Controller
                 DB::table('sys_finance_user_type_30_service_credits')->insert([
                     'PatientUserID' => $user_id,
                     // will go withe the therapist selection after Q/A.... SO thats why 'AllocatedTherapistUserID'  is NUll Now
-                    'AllocatedTherapistUserID' => $allocatedTherapist ?? NULL,
+                   // 'AllocatedTherapistUserID' => $allocatedTherapist ?? NULL,
                     'NumberSessionsPurchased' => $credits,
                     'CreditDate' => $now->format('Y-m-d'),
                     'CreditTime' => $now->format('H:i:s'),

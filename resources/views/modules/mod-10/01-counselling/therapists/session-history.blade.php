@@ -113,30 +113,29 @@
 
                             <!-- Screen Name -->
                             <td class="px-4 py-3 font-medium text-gray-500 dark:text-gray-100">
-                                {{ $session->patient->UserName }}
+                                {{ $session->patient?->UserName }}
                             </td>
 
                             <!-- User Name -->
                             <td class="px-4 py-3 font-medium text-gray-500 dark:text-gray-100">
-                                {{ optional($session->patient->userAttributes)->FirstName }}
-                                {{ optional($session->patient->userAttributes)->LastName }}
+                                {{ optional($session->patient?->userAttributes)->FirstName }}
+                                {{ optional($session->patient?->userAttributes)->LastName }}
                             </td>
 
                             <!-- Media -->
                             <td class="px-4 py-3 text-center font-medium text-gray-500 dark:text-gray-100">
-                                @if (isset($sessionMap[$session->SessionMediaType]))
-                                    {{ $sessionMap[$session->SessionMediaType]['label'] }}
+                                @if (isset($sessionMap[$session?->SessionMediaType]))
+                                    {{ $sessionMap[$session?->SessionMediaType]['label'] }}
                                 @endif
                             </td>
 
                             <!-- Actions -->
                             @php
-                                $clientName = trim(
-                                    optional($session->patient->userAttributes)->FirstName .
-                                        ' ' .
-                                        optional($session->patient->userAttributes)->LastName,
-                                );
-                            @endphp
+                            $clientName = trim(
+                                ($session->patient?->userAttributes?->FirstName ?? '') . ' ' .
+                                ($session->patient?->userAttributes?->LastName ?? '')
+                            );
+                        @endphp
 
 
                             <td class="px-4 py-3 text-right">
