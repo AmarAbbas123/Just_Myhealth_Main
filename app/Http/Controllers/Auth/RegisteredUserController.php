@@ -115,6 +115,13 @@ class RegisteredUserController extends Controller
         }
 
         $validated = $request->validate($rules);
+        $profileDataInput = $validated['ProfileData'] ?? [];
+        $profileData = [];
+
+        // Keep only the configured fields for this user type in users.ProfileData
+        foreach ($profileFields as $field) {
+            $profileData[$field] = $profileDataInput[$field] ?? null;
+        }
 
         // Create the user
         $user = User::create([
@@ -122,13 +129,12 @@ class RegisteredUserController extends Controller
             'UserName' => $validated['UserName'],
             'Email' => $validated['Email'],
             'Password' => Hash::make($validated['Password']),
+            'ProfileData' => $profileData,
             'AccountStatus' => 0,   // INACTIVE until verified / paid
             'AccountSetupComplete' => 0, // INACTIVE until Approved by Admin
             'UserCreatedDateTime' => now(),
             'NeedsEmailPrompt' => true,
         ]);
-
-        $profileData = $validated['ProfileData'] ?? [];
 
         // Save personal attributes using the sys_user_attributes column names.
         $attributesData = [];

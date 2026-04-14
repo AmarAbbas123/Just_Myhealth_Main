@@ -40,7 +40,7 @@
                         <!-- WEEKLY TABLE (REPLACE previous table) -->
                         <div class="overflow-x-auto">
                             <div class="relative">
-                                <table class="min-w-full border border-gray-300 text-sm">
+                                <table class="min-w-full border text-sm">
                                     <thead class="bg-gray-100">
                                         <tr>
                                             <th class="border px-2 py-2 text-left w-24">Time</th>
@@ -67,7 +67,7 @@
 
                                                 <!-- 7 day columns -->
                                                 <template x-for="(d, idx) in weekDates" :key="d">
-                                                    <td class="border px-1 py-1 relative overflow-visible"
+                                                    <td class="border border-gray-400 px-1 py-1 relative overflow-visible"
                                                         style="height: 48px; position: relative;">
                                                         <!-- Container to hold blocks positioned absolutely -->
                                                         <div class="relative w-full h-full">
@@ -215,18 +215,22 @@
                 message: null,
                 error: null,
 
-                // 60-minute rows 00:00 - 23:00 (you can extend)
+                // 30-minute rows 00:00 - 23:30
                 timeRows: (function() {
                     const rows = [];
-                    let hour = 0,
-                        minute = 0;
-                    while (hour < 24) {
+                    let totalMinutes = 0;
+
+                    while (totalMinutes < 24 * 60) {
+                        const hour = Math.floor(totalMinutes / 60);
+                        const minute = totalMinutes % 60;
                         const hh = String(hour).padStart(2, '0');
+                        const mm = String(minute).padStart(2, '0');
+
                         rows.push({
-                            label: hh + ':00',
-                            time: hh + ':00'
+                            label: `${hh}:${mm}`,
+                            time: `${hh}:${mm}`
                         });
-                        hour++;
+                        totalMinutes += 30;
                     }
 
                     return rows;
@@ -285,10 +289,8 @@
 
                     const duration = toMinutes(slot.time_to) - toMinutes(slot.time_from);
 
-                    // base 30-minute blocks
-                    const blocks = duration / 60;
-
-
+                    // each table row is 30 minutes and 48px high
+                    const blocks = duration / 30;
                     const height = blocks * 48;
 
                     return `top: 0; height: ${height}px;`;

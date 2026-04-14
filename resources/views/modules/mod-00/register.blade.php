@@ -1,5 +1,11 @@
 <x-guest-layout>
-    <div class="w-full max-w-4xl bg-white rounded-lg shadow-lg overflow-hidden flex flex-col md:flex-row mx-auto">
+    <style>
+        [x-cloak] {
+            display: none !important;
+        }
+    </style>
+
+    <div class="w-full max-w-6xl bg-white rounded-lg shadow-lg overflow-hidden flex flex-col md:flex-row mx-auto">
         <!-- Left Image -->
         <div class="hidden md:block md:w-1/2 bg-cover bg-center" style="background-image: url('/images/bg-1.jpg');"></div>
 
@@ -69,18 +75,29 @@
                 <!-- Common Fields -->
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div class="relative col-span-2">
-                        <x-text-input name="UserName" placeholder="UserName" x-model="UserName"
+                        <x-text-input name="UserName" placeholder="UserName e.g RedRose47" x-model="UserName"
                             @input="validateUserName" @blur="checkUsernameExists"
-                            class="w-full rounded-md border-gray-300 shadow-sm focus:ring-indigo-500 focus:border-indigo-500 px-4 py-2 pr-10"
+                            class="w-full rounded-md border-gray-300 shadow-sm focus:ring-indigo-500 focus:border-indigo-500 px-4 py-2"
                             required />
+                        <button type="button"
+                            class="absolute right-0 top-0 -translate-y-1/2 translate-x-1/2 inline-flex h-7 w-7 items-center justify-center rounded-full border border-slate-500 bg-slate-100 text-sm font-bold leading-none text-slate-700 shadow-sm transition hover:bg-slate-200"
+                            @click="showInfo('username')" aria-label="Username help">
+                            ?
+                        </button>
+                        
                         <p x-text="errors.UserName" x-show="errors.UserName" class="text-red-600 text-sm mt-1"></p>
                     </div>
 
                     <div class="relative col-span-2">
-                        <x-text-input name="Email" placeholder="Email" x-model="Email" @input="validateEmail"
+                        <x-text-input name="Email" placeholder="Email e.g myname@mydomain.com" x-model="Email" @input="validateEmail"
                             @blur="() => { validateEmail(); }"
-                            class="w-full rounded-md border-gray-300 shadow-sm focus:ring-indigo-500 focus:border-indigo-500 px-4 py-2 pr-10"
+                            class="w-full rounded-md border-gray-300 shadow-sm focus:ring-indigo-500 focus:border-indigo-500 px-4 py-2"
                             required />
+                        <button type="button"
+                            class="absolute right-0 top-0 -translate-y-1/2 translate-x-1/2 inline-flex h-7 w-7 items-center justify-center rounded-full border border-slate-500 bg-slate-100 text-sm font-bold leading-none text-slate-700 shadow-sm transition hover:bg-slate-200"
+                            @click="showInfo('email')" aria-label="Email help">
+                            ?
+                        </button>
                         <p x-text="errors.Email" x-show="errors.Email" class="text-red-600 text-sm mt-1"></p>
                     </div>
 
@@ -117,18 +134,6 @@
                                             d="M3 3l18 18" />
                                     </svg>
                                 </button>
-                                <!-- Strength -->
-                                <div class="text-sm mt-1" x-show="Password.length > 0">
-                                    <template x-if="strength === 'weak'">
-                                        <span class="text-red-600">Weak Password</span>
-                                    </template>
-                                    <template x-if="strength === 'medium'">
-                                        <span class="text-yellow-600">Medium strength</span>
-                                    </template>
-                                    <template x-if="strength === 'strong'">
-                                        <span class="text-green-600">Strong Password</span>
-                                    </template>
-                                </div>
                             </div>
 
                             <!-- Confirm Password Field with Toggle -->
@@ -161,6 +166,9 @@
                             </div>
 
                         </div>
+                        <p class="text-gray-500 text-xs mt-2">
+                            Password must contain minimum 8 characters, with at least one uppercase, lowercase, number, and special character.
+                        </p>
                     </div>
 
 
@@ -168,6 +176,20 @@
 
                 <!-- Dynamic Fields Placeholder -->
                 <div id="dynamic-user-fields" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
+
+                <!-- Guidance Modal -->
+                <div x-show="showInfoModal" x-cloak class="fixed inset-0 z-50 flex items-center justify-center">
+                    <div class="absolute inset-0 bg-black/40" @click="closeInfo()"></div>
+                    <div class="relative bg-white rounded-lg shadow-lg max-w-lg w-full p-6">
+                        <div class="flex items-start justify-end gap-4 mb-4">
+                            <button type="button" @click="closeInfo()" class="text-gray-500 hover:text-gray-900">✕</button>
+                        </div>
+                        <div class="text-sm text-gray-700" x-html="infoText"></div>
+                        <div class="mt-6 text-right">
+                            <button type="button" @click="closeInfo()" class="px-4 py-2 rounded bg-indigo-600 text-white">Close</button>
+                        </div>
+                    </div>
+                </div>
 
                 <!-- Terms -->
                 <div class="space-y-2 text-sm text-gray-700">
@@ -219,25 +241,31 @@
         fields.forEach(field => {
             if (field === 'BusinessPrimaryIndustry') {
                 container.innerHTML += `
-                    <label>${field}</label>
-                    <select name="ProfileData[${field}]" onchange="handleNotListed(this, '${field}'); loadSubIndustry(this.value)">
+                <div class="flex flex-col space-y-1">
+                    <label class="text-sm font-medium text-gray-700">${field}</label>
+                    <select name="ProfileData[${field}]" onchange="handleNotListed(this, '${field}'); loadSubIndustry(this.value)" class="w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
                         ${businessOptions.BusinessPrimaryIndustry.map(opt => `<option value="${opt}">${opt}</option>`).join('')}
                     </select>
-                    <input type="text" name="ProfileData[${field}_Custom]" placeholder="Specify Industry" style="display:none;" />
+                    <input type="text" name="ProfileData[${field}_Custom]" placeholder="Specify Industry" style="display:none;" class="w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:ring-indigo-500 focus:border-indigo-500" />
+                    </div>
                 `;
             } else if (field === 'BusinessSubIndustry') {
                 container.innerHTML += `
-                    <label>${field}</label>
-                    <select name="ProfileData[${field}]" id="subindustry" onchange="handleNotListed(this, '${field}')"></select>
-                    <input type="text" name="ProfileData[${field}_Custom]" placeholder="Specify SubIndustry" style="display:none;" />
+                <div class="flex flex-col space-y-1">
+                    <label class="text-sm font-medium text-gray-700">${field}</label>
+                    <select name="ProfileData[${field}]" id="subindustry" onchange="handleNotListed(this, '${field}')" class="w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:ring-indigo-500 focus:border-indigo-500"></select>
+                    <input type="text" name="ProfileData[${field}_Custom]" placeholder="Specify SubIndustry" style="display:none;" class="w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:ring-indigo-500 focus:border-indigo-500" />
+                    </div>
                 `;
             } else if (field === 'BusinessType') {
                 container.innerHTML += `
-                    <label>${field}</label>
-                    <select name="ProfileData[${field}]" onchange="handleNotListed(this, '${field}')">
+                <div class="flex flex-col space-y-1">
+                    <label class="text-sm font-medium text-gray-700">${field}</label>
+                    <select name="ProfileData[${field}]" onchange="handleNotListed(this, '${field}')" class="w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
                         ${businessOptions.BusinessType.map(opt => `<option value="${opt}">${opt}</option>`).join('')}
                     </select>
-                    <input type="text" name="ProfileData[${field}_Custom]" placeholder="Specify Business Type" style="display:none;" />
+                    <input type="text" name="ProfileData[${field}_Custom]" placeholder="Specify Business Type" style="display:none;" class="w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:ring-indigo-500 focus:border-indigo-500"/>
+                    </div>
                 `;
             } else if (field === 'Country') {
                 const countries = (timezoneCountryOptions && timezoneCountryOptions.length > 0)
@@ -245,48 +273,69 @@
                     : (userOptions.Country || []);
 
                 container.innerHTML += `
-                    <label>${field}</label>
-                    <select name="ProfileData[${field}]" id="country-dropdown" onchange="loadStates(this.value)" required>
+                <div class="flex flex-col space-y-1">
+                    <label class="text-sm font-medium text-gray-700">${field}</label>
+                    <select name="ProfileData[${field}]" id="country-dropdown" onchange="loadStates(this.value)" class="w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:ring-indigo-500 focus:border-indigo-500" required>
                         <option value="">Select Country</option>
                         ${countries.map(opt => `<option value="${opt}">${opt}</option>`).join('')}
                     </select>
+                    </div>
                 `;
 
             } else if (field === 'State') {
                 if (userTypeId === '10') {
                     container.innerHTML += `
-                    <label>${field}</label>
-                    <select name="ProfileData[${field}]" id="state-dropdown" onchange="loadCities(this.value)"></select>
+                    <div class="flex flex-col space-y-1">
+                    <label class="text-sm font-medium text-gray-700">${field}</label>
+                    <select name="ProfileData[${field}]" id="state-dropdown" onchange="loadCities(this.value)"  class="w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:ring-indigo-500 focus:border-indigo-500"></select>
+                    </div>
                 `;
                 } else {
                     container.innerHTML += `
-                    <label>${field}</label>
-                    <input type="text" name="ProfileData[${field}]" class="border rounded px-2 py-1" placeholder="Enter ${field}" />
+                    <div class="flex flex-col space-y-1">
+                    <label class="text-sm font-medium text-gray-700">${field}</label>
+                    <input type="text" name="ProfileData[${field}]" class="w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:ring-indigo-500 focus:border-indigo-500" placeholder="Enter ${field}" />
+                    </div>
                 `;
                 }
             } else if (field === 'City') {
                 if (userTypeId === '10') {
                 container.innerHTML += `
-                    <label>${field}</label>
-                    <select name="ProfileData[${field}]" id="city-dropdown"></select>
+                <div class="flex flex-col space-y-1">
+                    <label class="text-sm font-medium text-gray-700">${field}</label>
+                    <select name="ProfileData[${field}]" id="city-dropdown" class="w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:ring-indigo-500 focus:border-indigo-500"></select>
+                    </div>
+                `;
+                } else if (userTypeId === '1') {
+                    container.innerHTML += `
+                    <div class="flex flex-col space-y-1">
+                    <label class="text-sm font-medium text-gray-700">${field}</label>
+                    <input type="text" name="ProfileData[${field}]" class="min-w-[210%] rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:ring-indigo-500 focus:border-indigo-500" placeholder="Enter ${field}" />
+                    </div>
                 `;
                 } else {
                     container.innerHTML += `
-                    <label>${field}</label>
-                    <input type="text" name="ProfileData[${field}]" class="border rounded px-2 py-1" placeholder="Enter ${field}" />
+                    <div class="flex flex-col space-y-1">
+                    <label class="text-sm font-medium text-gray-700">${field}</label>
+                    <input type="text" name="ProfileData[${field}]" class="w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:ring-indigo-500 focus:border-indigo-500" placeholder="Enter ${field}" />
+                    </div>
                 `;
                 }
             } else if (userOptions[field]) {
                 container.innerHTML += `
-                    <label>${field}</label>
-                    <select name="ProfileData[${field}]">
+                <div class="flex flex-col space-y-1">
+                    <label class="text-sm font-medium text-gray-700">${field}</label>
+                    <select name="ProfileData[${field}]" class="w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
                         ${userOptions[field].map(opt => `<option value="${opt}">${opt}</option>`).join('')}
                     </select>
+                    </div>
                 `;
             } else if (field === 'DOB' || field === 'DateOfBirth') {
                 container.innerHTML += `
-                    <label>${field}</label>
-                    <input type="date" name="ProfileData[${field}]" class="border rounded px-2 py-1" />
+                <div class="flex flex-col space-y-1">
+                    <label class="text-sm font-medium text-gray-700">${field}</label>
+                    <input type="date" name="ProfileData[${field}]" class="w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:ring-indigo-500 focus:border-indigo-500" />
+                    </div>
                 `;
             } else if (field === 'YearBirth') {
                 const currentYear = new Date().getFullYear();
@@ -295,16 +344,20 @@
                     yearOptions += `<option value="${y}">${y}</option>`;
                 }
                 container.innerHTML += `
-                    <label>${field}</label>
-                    <select name="ProfileData[${field}]" class="border rounded px-2 py-1">
+                <div class="flex flex-col space-y-1">
+                    <label class="text-sm font-medium text-gray-700">${field}</label>
+                    <select name="ProfileData[${field}]" class="w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
                         <option value="">Select Year</option>
                         ${yearOptions}
                     </select>
+                    </div>
                 `;
             } else {
                 container.innerHTML += `
-                    <label>${field}</label>
-                    <input type="text" name="ProfileData[${field}]" class="border rounded px-2 py-1" />
+                <div class="flex flex-col space-y-1">
+                    <label class="text-sm font-medium text-gray-700">${field}</label>
+                    <input type="text" name="ProfileData[${field}]" class="w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:ring-indigo-500 focus:border-indigo-500" />
+                    </div>
                 `;
             }
         });
@@ -375,6 +428,8 @@
             ConfirmPassword: '',
             showPassword: false,
             showConfirmPassword: false,
+            showInfoModal: false,
+            infoText: '',
             errors: {},
 
             get strength() {
@@ -444,6 +499,19 @@
                 } catch (e) {
                     console.error("checkUsernameExists failed:", e);
                 }
+            },
+
+            showInfo(type) {
+                if (type === 'username') {
+                    this.infoText = `The JustMy.Health platform protects user identity using UserNames in public facing pages. As part of account creation, the user is required to choose a UserName which is then used within the platform. A UserName must be unique to the platform, contain a minimum of 8 characters and can contain uppercase and lowercase letters and numbers i.e. RedRose47, GreenTruck, BadLand1, MarthaL.`;
+                } else {
+                    this.infoText = `The user must provide an active email account which is used for system validation, account activation, system messages and system notifications. The provided email address is not publicly used or shown within the JustMy.Health platform.`;
+                }
+                this.showInfoModal = true;
+            },
+
+            closeInfo() {
+                this.showInfoModal = false;
             }
         };
     }

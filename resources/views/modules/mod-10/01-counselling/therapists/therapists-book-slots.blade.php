@@ -30,10 +30,10 @@
                 </div>
 
                 <!-- Calendar grid,  overflow-y-auto -->
-                <div class="relative border rounded h-[calc(var(--rows)*1.5rem+2.5rem)]">
+                <div class="relative border rounded h-[calc(var(--rows)*3rem+2.5rem)]">
 
                     <!-- Time header -->
-                    <div class="absolute left-0 top-0 w-20 h-10 bg-gray-100 border-b border-r flex items-center justify-center text-sm font-semibold z-30 pointer-events-none">
+                    <div class="absolute left-0 top-0 w-20 h-10 bg-gray-100 border-b border-r  flex items-center justify-center text-sm font-semibold z-30 pointer-events-none">
                         Time
                     </div>
 
@@ -53,7 +53,7 @@
                     <!-- Time column -->
                     <div class="absolute left-0 top-10 w-20 bottom-0 border-r bg-gray-50">
                         <template x-for="time in timeRows" :key="time">
-                            <div class="h-6 text-xs text-right pr-2 border-b flex items-center justify-end"
+                            <div class="h-12 text-xs text-right pr-2 border-b flex items-center justify-end"
                                 x-text="time"></div>
                         </template>
                     </div>
@@ -65,7 +65,7 @@
 
                                 <!-- Grid cells -->
                                 <template x-for="time in timeRows" :key="time">
-                                    <div class="h-6 border-b hover:bg-blue-50 cursor-pointer"
+                                    <div class="h-12 border-b border-r border-gray-400 hover:bg-blue-50 cursor-pointer"
                                         @click="openCreateModal(date, time)"></div>
                                 </template>
 
@@ -118,7 +118,7 @@
                 weeklySlots: @json($weeklySlots),
                 weekDates: @json($weekDates),
                 timeRows: @json($timeRows),
-                rowHeight: 24,
+                rowHeight: 48,
 
                 modalOpen: false,
                 editing: false,
