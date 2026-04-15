@@ -96,6 +96,9 @@ class TherapistsBookSlotsController extends Controller
 
         $date = $validated['date'];
         $timeFrom = $validated['time_from'];
+        if (! $this->isHalfHourSlot($timeFrom)) {
+            return response()->json(['error' => 'Start time must be on 00 or 30 minutes.'], 422);
+        }
         // $sessionType = $validated['session_type'] ?? null;
 
         DB::beginTransaction();
@@ -175,6 +178,10 @@ class TherapistsBookSlotsController extends Controller
             // Check overlap excluding the slot being edited
             $date = $validated['date'];
             $timeFrom = $validated['time_from'];
+            if (! $this->isHalfHourSlot($timeFrom)) {
+                DB::rollBack();
+                return response()->json(['error' => 'Start time must be on 00 or 30 minutes.'], 422);
+            }
 
             $therapist = Auth::user();
             $therapistTimeZone = $this->resolveUserTimeZoneName($therapist);
@@ -309,5 +316,10 @@ class TherapistsBookSlotsController extends Controller
     private function resolveUserTimeZoneName(?User $user): string
     {
         return app(UserTimeZoneService::class)->getUserHomeTimezoneName($user);
+    }
+
+    private function isHalfHourSlot(string $time): bool
+    {
+        return preg_match('/^\d{2}:(00|30)$/', $time) === 1;
     }
 }
