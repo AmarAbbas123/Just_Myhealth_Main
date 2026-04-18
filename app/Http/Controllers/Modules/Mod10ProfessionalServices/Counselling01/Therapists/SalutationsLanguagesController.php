@@ -10,6 +10,12 @@ use Illuminate\Support\Facades\Log;
 
 class SalutationsLanguagesController extends Controller
 {
+
+    private function languageOptions(): array
+    {
+        return ['English', 'Spanish', 'French', 'German', 'Arabic', 'Hindi', 'Mandarin', 'Other'];
+    }
+
     // --------------------------------------------------------------
     // 1️⃣ Show the salutationsLanguages
     // --------------------------------------------------------------
@@ -30,11 +36,18 @@ class SalutationsLanguagesController extends Controller
     //2️⃣ store
     public function storeSalutationsLanguages(Request $request)
     {
+
+        $request->merge([
+            'LanguagePrimary' => $request->input('LanguagePrimary') ?: null,
+            'LanguageSecondary' => $request->input('LanguageSecondary') ?: null,
+        ]);
+
+
         // ✅ Validate input
         $validated = $request->validate([
             'PreferredSalutation' => 'nullable|string|max:30',
-            'LanguagePrimary'     => 'nullable|string|max:30',
-            'LanguageSecondary'   => 'nullable|string|max:30',
+            'LanguagePrimary'     => ['nullable', 'string', 'max:30', 'in:' . implode(',', $this->languageOptions())],
+            'LanguageSecondary'   => ['nullable', 'string', 'max:30', 'in:' . implode(',', $this->languageOptions())],
         ]);
 
         // ✅ Get logged-in user's ID
@@ -69,8 +82,14 @@ class SalutationsLanguagesController extends Controller
                 return response()->json(['success' => false, 'message' => 'Invalid field name.']);
             }
 
+            $value = trim(mb_convert_encoding($request->input('value', ''), 'UTF-8', 'auto'));
+            if (in_array($field, ['LanguagePrimary', 'LanguageSecondary'], true) && $value !== '' && !in_array($value, $this->languageOptions(), true)) {
+                return response()->json(['success' => false, 'message' => 'Invalid language selection.']);
+            }
+
+
             // === 🟢 STEP 1: three Text fields ===                
-            $salutationsDetails->$field = trim(mb_convert_encoding($request->input('value', ''), 'UTF-8', 'auto'));
+            $salutationsDetails->$field = $value;
 
             $salutationsDetails->UserID = $userId;
             $salutationsDetails->save();

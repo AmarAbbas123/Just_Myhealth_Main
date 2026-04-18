@@ -1,5 +1,11 @@
 <!-- resources/views/therapdashboard/waiting-room.blade.php -->
 <x-app1>
+    <style>
+        [x-cloak] {
+            display: none !important;
+        }
+    </style>
+
     {{-- <script> window.WAITING_ROOM_ID = @json($roomID); </script> --}}
     <script>
         window.ZEGO_LOCK = false;
@@ -7,7 +13,6 @@
     </script>
 
     <div x-data="waitingRoomApp()" class="space-y-6">
-
         <!-- Header -->
         <div class="flex flex-wrap items-center justify-between gap-3">
             <x-page-header />
@@ -15,6 +20,11 @@
                 class="px-3 py-2 bg-indigo-600 text-white rounded-lg shadow hover:bg-indigo-700 transition">
                 🚑 Admit All Patients
             </button> --}}
+        </div>
+
+        <div x-show="notesStatusMessage" x-cloak
+            class="rounded-lg border border-green-200 bg-green-50 px-4 py-3 text-sm text-green-800">
+            <span x-text="notesStatusMessage"></span>
         </div>
 
         <!-- Waiting List Table -->
@@ -158,7 +168,7 @@
         </div> --}}
 
         <!-- Start Session Modal -->
-        <div x-show="showSession" x-transition
+        <div x-show="showSession" x-cloak x-transition
             class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40">
             <div @click.away="showSession=false"
                 class="bg-white dark:bg-gray-800 rounded-lg p-6 w-full max-w-lg space-y-4">
@@ -198,7 +208,7 @@
         </div>
 
         <!-- Message Modal -->
-        <div x-show="showMessageModal" x-transition
+        <div x-show="showMessageModal" x-cloak x-transition
             class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40">
             <div @click.away="showMessageModal=false" class="bg-white dark:bg-gray-800 rounded-lg p-6 w-full max-w-md">
                 <div class="flex justify-between items-center mb-4">
@@ -218,48 +228,29 @@
         </div>
 
         <!-- Session Notes Modal (opens after session ends) -->
-        <div x-show="showNotesModal" x-transition
-            class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40">
-            <div @click.away="!savingNotes && (showNotesModal=false)"
-                class="bg-white dark:bg-gray-800 rounded-lg p-6 w-full max-w-lg">
-                <div class="flex justify-between items-center mb-3">
-                    <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-100">
-                        Session Notes
-                    </h3>
-                    <button @click="showNotesModal=false" class="text-gray-500" :disabled="savingNotes">✕</button>
+        <div x-show="showNotesModal" x-cloak x-transition
+            class="fixed inset-0 z-[70] flex items-center justify-center bg-black bg-opacity-50 p-4">
+            <div 
+            {{-- @click.away="closeNotesModal()" --}}
+                class="bg-white dark:bg-gray-800 rounded-lg w-full max-w-5xl h-[85vh] shadow-xl flex flex-col overflow-hidden">
+                <div class="flex items-center justify-between gap-3 px-6 py-4 border-b border-gray-200 dark:border-gray-700">
+                    <div>
+                        <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-100">Post Session Notes</h3>
+                        <p class="text-sm text-gray-500">Add notes and attach up to 4 support collateral links.</p>
+                    </div>
+                    <button type="button" @click="closeNotesModal()" class="text-gray-500 text-xl leading-none">&times;</button>
                 </div>
 
-                <p class="text-sm text-gray-500 mb-4">
-                    Add notes for this therapy session. These notes will be visible in Session History.
-                </p>
-
-                <textarea x-model="sessionNotes" rows="7" maxlength="2048"
-                    class="w-full rounded-md border-gray-300 dark:border-gray-700 px-3 py-2 mb-2"
-                    placeholder="Write your notes here..."></textarea>
-
-                <div class="flex items-center justify-between text-xs text-gray-500 mb-4">
-                    <span x-text="notesSaved ? 'Saved' : ''" class="text-green-700"></span>
-                    <span x-text="(sessionNotes?.length || 0) + ' / 2048'"></span>
-                </div>
-
-                <div class="flex justify-end gap-2">
-                    <button @click="showNotesModal=false"
-                        class="px-3 py-2 bg-gray-100 text-gray-700 text-sm font-medium rounded-lg shadow hover:bg-gray-200 transition"
-                        :disabled="savingNotes">
-                        Close
-                    </button>
-                    <button @click="saveNotes()"
-                        class="px-3 py-2 bg-indigo-600 text-white rounded-md text-sm font-medium hover:bg-indigo-700 transition"
-                        :disabled="savingNotes">
-                        <span x-show="!savingNotes">Save Notes</span>
-                        <span x-show="savingNotes">Saving...</span>
-                    </button>
+                <div class="flex-1 bg-gray-100">
+                    <template x-if="notesModalUrl">
+                        <iframe :src="notesModalUrl" class="w-full h-full border-0" title="Post Session Notes"></iframe>
+                    </template>
                 </div>
             </div>
         </div>
 
         <!-- Onboarding Answers Modal (Q1-Q39) -->
-        <div x-show="showOnboardingAnswersModal" x-transition
+        <div x-show="showOnboardingAnswersModal" x-cloak x-transition
             class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40">
             <div @click.away="showOnboardingAnswersModal=false"
                 class="bg-white dark:bg-gray-800 rounded-lg p-4 sm:p-6 w-full max-w-lg md:max-w-3xl max-h-[85vh] overflow-y-auto">
@@ -303,7 +294,7 @@
         </div>
 
         <!-- Onboarding Issue Modal (Q40) -->
-        <div x-show="showOnboardingIssueModal" x-transition
+        <div x-show="showOnboardingIssueModal" x-cloak x-transition
             class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40">
             <div @click.away="showOnboardingIssueModal=false"
                 class="bg-white dark:bg-gray-800 rounded-lg p-6 w-full max-w-3xl max-h-[80vh] overflow-y-auto">
@@ -337,6 +328,24 @@
     <script>
         window.waitingRoomApp = function() {
             return {
+                init() {
+                    window.addEventListener('message', (event) => {
+                        if (event.origin !== window.location.origin || !event.data || typeof event.data.type !== 'string') {
+                            return;
+                        }
+
+                        if (event.data.type === 'session-notes-close' && event.data.manual) {
+                            this.closeNotesModal();
+                            return;
+                        }
+
+                        if (event.data.type === 'session-notes-saved') {
+                            if (!this.showNotesModal) return; // ✅ ignore if already closed
+                            this.notesStatusMessage = event.data.message || 'Session notes saved.';
+                            this.closeNotesModal();
+                        }
+                    });
+                },
                 showAdmitAll: false,
                 showSession: false,
                 showMessageModal: false,
@@ -348,11 +357,11 @@
                 recording: false, // This will track if recording is active
                 roomID: null,
                 isProcessing: false, // NEW: Prevent double clicks/triggers
+                sessionEndHandled: false,
                 sessionType: 'Video',
                 showNotesModal: false,
-                sessionNotes: '',
-                savingNotes: false,
-                notesSaved: false,
+                notesModalUrl: null,
+                notesStatusMessage: '',
                 showOnboardingAnswersModal: false,
                 showOnboardingIssueModal: false,
                 onboardingLoading: false,
@@ -399,6 +408,7 @@
                         const data = await res.json();
                         console.log('SESSION START RESPONSE:', data);
 
+                        this.sessionEndHandled = false;
                         this.currentCalendarID = calendarID;
                         this.roomID = data.roomID;
                         this.sessionType = data.sessionType;
@@ -435,7 +445,8 @@
                         window.ZEGO_INSTANCE.joinRoom({
                             container,
                             scenario: {
-                                mode: ZegoUIKitPrebuilt.OneOnOneCall
+                                //mode: ZegoUIKitPrebuilt.OneOnOneCall
+                                mode: ZegoUIKitPrebuilt.GroupCall
                             },
                             showPreJoinView: false,
                             turnOnCameraWhenJoining: this.sessionType !== 'Audio',
@@ -447,15 +458,38 @@
                             // 🟢 AUTO-START RECORDING WHEN ROOM IS READY
                             onJoinRoom: () => {
                                 console.log('Successfully joined room...');
+                                this.sessionStartedManually = true;
                                 // We wait 3 seconds to ensure the media stream is stable
                                 // setTimeout(() => {
                                 //     this.triggerAutoRecording();
                                 // }, 3000);
                             },
 
-                            onLeaveRoom: async () => {
+                            onLeaveRoom: async (reason) => {
+                                console.log('Leave reason:', reason);
                                 console.log('Therapist left room → ending session');
-                                if (!this.currentCalendarID) return;
+                                console.log('ON LEAVE ROOM TRIGGERED');
+                                console.log('SESSION END HANDLED:', this.sessionEndHandled);
+                                
+
+                                // 🚨 detect auto-leave vs manual leave
+                                if (!this.sessionStartedManually) {
+                                    console.log('Auto leave detected — ignoring');
+                                    window.ZEGO_LOCK = false;
+                                    return;
+                                }
+
+                                if (!this.currentCalendarID || this.sessionEndHandled) {
+                                    window.ZEGO_LOCK = false;
+                                    return;
+                                }
+                            
+                                this.sessionEndHandled = true; // ✅ ADD HERE
+
+                                    // ❌ ADD THIS  LINE (IMPORTANT)
+                                    if (window.ZEGO_INSTANCE) {
+                                        window.ZEGO_INSTANCE = null;
+                                    }
 
                                 const res = await fetch('/therapist/session/end', {
                                     method: 'POST',
@@ -470,8 +504,11 @@
                                 });
 
                                 if (res.ok) {
-                                    const data = await res.json();
-                                    this.openNotesModal(data.therapist_notes || '');
+                                   const data = await res.json();
+
+                                    if (!this.showNotesModal) { // ✅ ADD THIS
+                                        this.openNotesModal(data.embedded_notes_url || data.notes_url);
+                                    }
                                 }
 
                                 window.ZEGO_LOCK = false;
@@ -533,10 +570,17 @@
                 // },
 
                 async endSession() {
-                    if (!this.currentCalendarID) {
-                        alert('Calendar ID missing');
-                        return;
+                    console.log('END SESSION CLICKED');
+                    if (!this.currentCalendarID || this.sessionEndHandled) return;
+
+                     this.sessionEndHandled = true; // ✅ MOVE THIS UP 
+
+                     if (window.ZEGO_INSTANCE) {
+                        window.ZEGO_INSTANCE.leaveRoom();
+                        window.ZEGO_INSTANCE.destroy();
+                        window.ZEGO_INSTANCE = null;
                     }
+
                     const res = await fetch('/therapist/session/end', {
                         method: 'POST',
                         headers: {
@@ -548,56 +592,29 @@
                         })
                     });
 
-                    if (window.ZEGO_INSTANCE) {
-                        window.ZEGO_INSTANCE.leaveRoom();
-                        window.ZEGO_INSTANCE.destroy();
-                        window.ZEGO_INSTANCE = null;
-                    }
                     this.showSession = false;
 
                     if (res.ok) {
                         const data = await res.json();
-                        this.openNotesModal(data.therapist_notes || '');
+                    
+                        if (!this.showNotesModal) { // ✅ ADD THIS
+                            this.openNotesModal(data.embedded_notes_url || data.notes_url);
+                        }
                     }
+
+                    window.ZEGO_LOCK = false;
                 },
 
-                openNotesModal(existingNotes = '') {
-                    this.notesSaved = false;
-                    this.sessionNotes = (existingNotes || '').toString();
+                openNotesModal(notesUrl) {
+                    if (!notesUrl || this.showNotesModal) return; // ✅ prevent reopen
+
+                    this.notesModalUrl = `${notesUrl}${notesUrl.includes('?') ? '&' : '?'}modal_ts=${Date.now()}`;
                     this.showNotesModal = true;
                 },
 
-                async saveNotes() {
-                    if (!this.currentCalendarID) return;
-                    this.savingNotes = true;
-                    this.notesSaved = false;
-
-                    try {
-                        const res = await fetch("{{ route('therapist.session.notes') }}", {
-                            method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/json',
-                                'X-CSRF-TOKEN': '{{ csrf_token() }}',
-                                'Accept': 'application/json'
-                            },
-                            body: JSON.stringify({
-                                calendar_id: this.currentCalendarID,
-                                therapist_notes: this.sessionNotes
-                            })
-                        });
-
-                        if (!res.ok) {
-                            const msg = await res.text();
-                            console.error('SAVE NOTES FAILED:', msg);
-                            alert('Failed to save notes');
-                            return;
-                        }
-
-                        this.notesSaved = true;
-                        setTimeout(() => (this.notesSaved = false), 2000);
-                    } finally {
-                        this.savingNotes = false;
-                    }
+                closeNotesModal() {
+                    this.showNotesModal = false;
+                    this.notesModalUrl = null;
                 },
 
                 openMessageModal(clientName, patientID) {
@@ -707,4 +724,4 @@
         }
     </script>
 
-</x-app1>
+</x-app1>   

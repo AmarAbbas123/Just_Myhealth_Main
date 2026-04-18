@@ -460,6 +460,7 @@ Route::controller(WaitingRoomController::class)
     ->middleware(['auth', 'usertype:therapist'])
     ->group(function () {
         Route::get('mod-10/my-waiting-room', 'waitingRoom')->name('therap.waiting.room');
+        Route::get('/therapist/session/{calendar_id}/notes', 'editSessionNotes')->name('therapist.session.notes.edit');
         Route::post('/therapist/session/entered-waiting-room', 'therapistEnteredWaitingRoom');
         Route::post('/therapist/session/start', 'start');
         Route::post('/therapist/session/end', 'end');

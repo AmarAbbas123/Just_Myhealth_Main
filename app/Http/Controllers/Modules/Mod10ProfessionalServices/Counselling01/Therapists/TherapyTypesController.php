@@ -16,7 +16,7 @@ class TherapyTypesController extends Controller
 
         // Prepare therapy sets for blade
         $therapySets = [];
-        for ($i = 1; $i <= 5; $i++) {
+        for ($i = 1; $i <= 8; $i++) {
             $type = $attr?->{"TherapyType$i"};
             $years = $attr?->{"TherapyYearsExperience$i"};
 
@@ -45,7 +45,7 @@ class TherapyTypesController extends Controller
             return back()->with('error', 'Your profile attributes record does not exist.');
         }
         // Find first empty slot
-        for ($i = 1; $i <= 5; $i++) {
+        for ($i = 1; $i <= 8; $i++) {
             if (!$attr->{"TherapyType$i"}) {
                 $attr->{"TherapyType$i"} = $validated['TherapyType'];
                 $attr->{"TherapyYearsExperience$i"} = $validated['TherapyYearsExperience'];
@@ -54,14 +54,14 @@ class TherapyTypesController extends Controller
             }
         }
 
-        return back()->with('error', 'Maximum 5 therapy types allowed.');
+        return back()->with('error', 'Maximum 8 therapy types allowed.');
     }
 
     // Update single therapy set
     public function updateTherapyType(Request $request)
     {
         $validated = $request->validate([
-            'Index' => 'required|integer|min:1|max:5',
+            'Index' => 'required|integer|min:1|max:8',
             'TherapyType' => 'required|string',
             'TherapyYearsExperience' => 'required|string',
         ]);
@@ -83,7 +83,7 @@ class TherapyTypesController extends Controller
     public function deleteTherapyType(Request $request)
     {
         $validated = $request->validate([
-            'Index' => 'required|integer|min:1|max:5',
+            'Index' => 'required|integer|min:1|max:8',
         ]);
 
         $attr = SysUserType30Attributes::where('UserID', Auth::id())->first();

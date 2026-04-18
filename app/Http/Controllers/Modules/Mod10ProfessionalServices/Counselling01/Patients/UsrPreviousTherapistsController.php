@@ -60,6 +60,12 @@ class UsrPreviousTherapistsController extends Controller
                 // Meta                
                 'recording'  => $history?->LinkToSessionRecording,
                 'therapist_notes'  => $history?->TherapistNotes,
+                'session_note_resources' => collect([
+                    $history?->SessionNotesResources1 ?? $history?->SessionNotesResource1,
+                    $history?->SessionNotesResources2 ?? $history?->SessionNotesResource2,
+                    $history?->SessionNotesResources3 ?? $history?->SessionNotesResource3,
+                    $history?->SessionNotesResources4 ?? $history?->SessionNotesResource4,
+                ])->filter()->values()->all(),
             ]
         ]);
     }

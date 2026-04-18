@@ -18,7 +18,8 @@ class SessionHistoryController extends Controller
         $sessions = SysUserType30SessionHistory::where('AllocatedTherapistUserID', auth()->id())
             ->whereNotNull('SessionEndedTime')
             ->with(['patient.userAttributes', 'therapist.userAttributes'])  // from indirect relations with SysUserAttribute Model via Users Model
-            ->orderBy('SessionStartedDate')
+            ->orderByDesc('SessionStartedDate')
+            ->orderByDesc('SessionStartedTime')
             ->get();
 
         return view(
@@ -56,6 +57,12 @@ class SessionHistoryController extends Controller
                 'recording'  => $history?->LinkToSessionRecording,
                 'id'        => $history?->ID,
                 'therapist_notes'  => $history?->TherapistNotes,
+                'session_note_resources' => collect([
+                   $history?->SessionNotesResource1,
+                   $history?->SessionNotesResource2,
+                   $history?->SessionNotesResource3,
+                   $history?->SessionNotesResource4,
+                ])->filter()->values()->all(),
             ]
         ]);
     }

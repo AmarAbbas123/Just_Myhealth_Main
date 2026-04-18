@@ -213,6 +213,11 @@ class PatientsBookSlotsController extends Controller
         }
 
         foreach ($entries as $e) {
+            
+            if ($e->CalendarEntryType === 'Busy') {
+                continue; // ✅ hide busy slots
+            }
+
             $startUtc = $e->SessionDateTimeFrom
                 ? Carbon::parse($e->SessionDateTimeFrom, 'UTC')
                 : Carbon::parse(trim($e->DateFrom) . ' ' . trim($e->TimeFrom), 'UTC');
@@ -269,6 +274,11 @@ class PatientsBookSlotsController extends Controller
         }
 
         foreach ($entries as $e) {
+
+            if ($e->CalendarEntryType === 'Busy') {
+                continue; // ✅ hide busy slots
+            }
+
             $startUtc = $e->SessionDateTimeFrom
                 ? Carbon::parse($e->SessionDateTimeFrom, 'UTC')
                 : Carbon::parse(trim($e->DateFrom) . ' ' . trim($e->TimeFrom), 'UTC');

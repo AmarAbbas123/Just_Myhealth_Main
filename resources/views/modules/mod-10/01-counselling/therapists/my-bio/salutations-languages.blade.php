@@ -77,15 +77,33 @@
                     </div>
                     <div>
                         <label class="text-sm font-medium text-gray-600">Primary Language</label>
-                        <input type="text" name="LanguagePrimary"
-                            class="mt-1 block w-full rounded-md border-gray-200 dark:border-gray-700 px-3 py-2 dark:bg-gray-900"
-                            placeholder="e.g. English">
+                        <select name="LanguagePrimary"
+                            class="mt-1 block w-full rounded-md border-gray-200 dark:border-gray-700 px-3 py-2 dark:bg-gray-900">
+                            <option value="">Select a language</option>
+                            <option value="English">English</option>
+                            <option value="Spanish">Spanish</option>
+                            <option value="French">French</option>
+                            <option value="German">German</option>
+                            <option value="Arabic">Arabic</option>
+                            <option value="Hindi">Hindi</option>
+                            <option value="Mandarin">Mandarin</option>
+                            <option value="Other">Other</option>
+                        </select>
                     </div>
                     <div>
                         <label class="text-sm font-medium text-gray-600">Secondary Language</label>
-                        <input type="text" name="LanguageSecondary"
-                            class="mt-1 block w-full rounded-md border-gray-200 dark:border-gray-700 px-3 py-2 dark:bg-gray-900"
-                            placeholder="e.g. Urdu">
+                        <select name="LanguageSecondary"
+                            class="mt-1 block w-full rounded-md border-gray-200 dark:border-gray-700 px-3 py-2 dark:bg-gray-900">
+                            <option value="">Select a language</option>
+                            <option value="English">English</option>
+                            <option value="Spanish">Spanish</option>
+                            <option value="French">French</option>
+                            <option value="German">German</option>
+                            <option value="Arabic">Arabic</option>
+                            <option value="Hindi">Hindi</option>
+                            <option value="Mandarin">Mandarin</option>
+                            <option value="Other">Other</option>
+                        </select>
                     </div>
 
                     <div class="flex justify-end gap-2 pt-4">
@@ -111,8 +129,19 @@
                     <input type="hidden" name="field" :value="editField">
                     <div class="mb-4">
                         <label class="text-sm font-medium text-gray-600 dark:text-white" x-text="fieldLabel()"></label>
-                        <input type="text" x-model="editValue"
-                            class="w-full border rounded-lg p-2 mt-1 dark:bg-gray-600 dark:text-gray-300" />
+                        <template x-if="editField === 'PreferredSalutation'">
+                            <input type="text" x-model="editValue"
+                                class="w-full border rounded-lg p-2 mt-1 dark:bg-gray-600 dark:text-gray-300" />
+                        </template>
+                        <template x-if="editField !== 'PreferredSalutation'">
+                            <select x-model="editValue"
+                                class="w-full border rounded-lg p-2 mt-1 dark:bg-gray-600 dark:text-gray-300">
+                                <option value="">Select a language</option>
+                                <template x-for="lang in languageOptions" :key="lang">
+                                    <option :value="lang" x-text="lang"></option>
+                                </template>
+                            </select>
+                        </template>
                     </div>
 
                     <div class="flex justify-end gap-2">
@@ -132,8 +161,7 @@
         function salutationLangEditor() {
             return {
                 salutationData: @json($salutang),
-                showAddModal: false,
-                showEditModal: false,
+                    languageOptions: ['English', 'Spanish', 'French', 'German', 'Arabic', 'Hindi', 'Mandarin', 'Other'],
                 editField: '',
                 editValue: '',
 

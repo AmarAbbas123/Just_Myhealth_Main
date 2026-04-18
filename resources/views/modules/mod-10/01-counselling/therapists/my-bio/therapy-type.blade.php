@@ -46,7 +46,7 @@
             <!-- Add Button -->
             <div class="mt-4">
                 <button @click="openModal('add')" class="px-6 py-2 bg-indigo-600 text-white rounded hover:bg-indigo-700"
-                    x-show="therapies.length < 5">
+                    x-show="therapies.length < 8">
                     + Add Therapy Type
                 </button>
             </div>

@@ -214,6 +214,19 @@
                         </p>
                     </div>
 
+                    <div>
+                        <b>Support Collateral Links:</b>
+                        <template x-if="selectedSession.session_note_resources.length === 0">
+                            <p class="text-sm text-gray-500 mt-2">No links added.</p>
+                        </template>
+                        <div class="mt-2 space-y-1">
+                            <template x-for="(link, index) in selectedSession.session_note_resources" :key="index">
+                                <a :href="link" target="_blank" class="block text-sm text-blue-700 underline break-all"
+                                    x-text="link"></a>
+                            </template>
+                        </div>
+                    </div>
+
                 </div>
 
                 <div class="mt-6 flex justify-end">
@@ -241,7 +254,8 @@
                     session_started_date: '',
                     duration: '',
                     recording: '',
-                    therapist_notes: ''
+                    therapist_notes: '',
+                    session_note_resources: []
                 },
 
                 async openDetailsModal(calendarId, patientName) {
@@ -254,7 +268,8 @@
                         session_started_date: '',
                         duration: '',
                         recording: '',
-                        therapist_notes: ''
+                        therapist_notes: '',
+                        session_note_resources: []
                     };
 
                     try {
@@ -307,6 +322,9 @@
 
                         this.selectedSession.therapist_notes =
                             d.therapist_notes ?? '';
+
+                        this.selectedSession.session_note_resources =
+                            Array.isArray(d.session_note_resources) ? d.session_note_resources : [];
 
                     } catch (e) {
                         console.error(e);
