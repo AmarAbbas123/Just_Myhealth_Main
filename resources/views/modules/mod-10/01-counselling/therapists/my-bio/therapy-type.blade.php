@@ -142,8 +142,10 @@
                 },
 
                 availableTypes() {
-                    const allTypes = ['Cognitive Behavioral Therapy', 'Dialectical Behavior Therapy',
-                        'Psychodynamic Therapy', 'Humanistic Therapy', 'Couples Therapy', 'Family Therapy'
+                    const allTypes = ['Cognitive Behavioral Therapy', 'Gestalt Therapy',
+                        'Humanistic Therapy', 'Integrative Therapy', 'Mindfulness-Based Therapy',
+                         'Narrative Therapy', 'Person-Centred Therapy', 'Psychodynamic Therapy', 
+                          'Solution-Focused Therapy', 'Transactional Analysis'
                     ];
                     const selected = this.therapies.map(t => t.type);
                     return allTypes.filter(t => !selected.includes(t) || t === this.form.type);

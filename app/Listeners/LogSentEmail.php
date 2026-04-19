@@ -30,6 +30,11 @@ class LogSentEmail
         $notificationName = class_basename($event->notification);
         $map = config("module_map.$notificationName");
 
+        if (!$map && method_exists($event->notification, 'auditMeta')) {
+            $map = $event->notification->auditMeta();
+            Log::info("Using notification-provided audit metadata for unmapped notification: {$notificationName}");
+        }
+
         if (!$map) {
             Log::info("Skipping unmapped notification: {$notificationName}");
             return;
@@ -37,7 +42,7 @@ class LogSentEmail
 
         $eventNotes = method_exists($event->notification, 'auditSummary')
             ? $event->notification->auditSummary($auditUser)
-            : $map['Label'];
+            : ($map['Label'] ?? $notificationName);
 
         SysSentAutoEmail::create([
             'UserID'            => $userId,

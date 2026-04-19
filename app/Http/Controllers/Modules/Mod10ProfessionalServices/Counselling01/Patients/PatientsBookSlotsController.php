@@ -14,6 +14,19 @@ use Carbon\Carbon;
 
 class PatientsBookSlotsController extends Controller
 {
+     // For TimeZone Display
+    private function formatTimezoneOffset(string $tz): string
+{
+    try {
+        $now = \Carbon\Carbon::now($tz);
+        $offset = $now->format('P'); // +01:00
+        return "{$tz} (GMT{$offset})";
+    } catch (\Exception $e) {
+        return $tz;
+    }
+}
+
+
     // Show HTML page (GET /therapists/{id}/calendar)
     public function show(Request $request, $therapistId)
     {
@@ -27,6 +40,10 @@ class PatientsBookSlotsController extends Controller
         if (! $selectedDate) {
             $selectedDate = Carbon::now($viewerTimeZone)->toDateString();
         }
+
+        // Therapist card info for Blade timezone
+        $viewerTimeZone = $this->resolveUserTimeZoneName(Auth::user());
+        $timezoneDisplay = $this->formatTimezoneOffset($viewerTimeZone);
 
         // Therapist card info for Blade
         $therapistCard = [
@@ -61,7 +78,7 @@ class PatientsBookSlotsController extends Controller
             'selectedDate' => $selectedDate,
             'viewMode' => $viewMode,
             'slots' => $slots,
-            'displayTimeZone' => $viewerTimeZone,
+            'displayTimeZone' => $timezoneDisplay,
         ]);
     }
 

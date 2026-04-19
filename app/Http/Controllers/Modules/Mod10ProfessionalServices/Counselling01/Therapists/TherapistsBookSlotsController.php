@@ -14,6 +14,18 @@ use Carbon\Carbon;
 class TherapistsBookSlotsController extends Controller
 {
 
+       // For TimeZone Display
+   private function formatTimezoneOffset(string $tz): string
+   {
+       try {
+           $now = \Carbon\Carbon::now($tz);
+           $offset = $now->format('P'); // +01:00
+           return "{$tz} (GMT{$offset})";
+       } catch (\Exception $e) {
+           return $tz;
+       }
+   }
+
     public function __construct()
     {
         request()->headers->set('Accept', 'application/json');
@@ -25,6 +37,7 @@ class TherapistsBookSlotsController extends Controller
         $therapistId = Auth::id();
         $therapist = User::with(['userAttributes', 'type30'])->find($therapistId);
         $therapistTimeZone = $this->resolveUserTimeZoneName($therapist);
+        $timezoneDisplay = $this->formatTimezoneOffset($therapistTimeZone);
 
         $selectedDate = $request->query('date') ?? Carbon::now($therapistTimeZone)->toDateString();
         $viewMode = $request->query('view') ?? 'week';
@@ -68,7 +81,7 @@ class TherapistsBookSlotsController extends Controller
             'weeklySlots' => $weeklySlots,
             'weekDates' => $weekDates,
             'sessionTypes' => $sessionTypes,
-            'displayTimeZone' => $therapistTimeZone,
+            'displayTimeZone' => $timezoneDisplay,
         ]);
     }
 

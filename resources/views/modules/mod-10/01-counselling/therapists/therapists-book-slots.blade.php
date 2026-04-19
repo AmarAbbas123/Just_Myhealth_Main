@@ -5,12 +5,20 @@
             <!-- Header -->
             <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                 <x-page-header />
+
                 <div class="flex items-center gap-2">
                     <button @click="openManualCreateModal()"
                         class="inline-flex items-center gap-2 px-3 py-2 bg-indigo-600 text-white rounded-md text-sm">
                         + Add Availability
                     </button>
                     <button @click="goToday()" class="px-3 py-2 bg-gray-100 rounded-md text-sm">Today</button>
+                </div>
+            </div>
+
+            <!-- Timezone Notification -->
+            <div class="mb-4">
+                <div class="bg-indigo-50 border border-indigo-200 text-indigo-800 px-4 py-2 rounded text-sm">
+                    <strong> {{ $displayTimeZone }} </strong>
                 </div>
             </div>
 

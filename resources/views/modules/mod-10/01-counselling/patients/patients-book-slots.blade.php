@@ -7,6 +7,13 @@
                 <x-page-header />
             </div>
 
+            <!-- Timezone Notification -->
+            <div class="mb-4">
+                <div class="bg-indigo-50 border border-indigo-200 text-indigo-800 px-4 py-2 rounded text-sm">
+                    <strong> {{ $displayTimeZone }} </strong>
+                </div>
+            </div>
+
             <div x-data="calendarApp({{ $therapistCard['id'] ?? 'null' }}, '{{ $selectedDate }}')" x-init="init()" class="flex gap-6">
 
                 <!-- RIGHT COLUMN 66% -->
@@ -433,7 +440,5 @@
             };
         }
     </script>
-
-
 
 </x-app1>
