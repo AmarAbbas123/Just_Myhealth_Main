@@ -155,19 +155,22 @@ class WaitingRoomController extends Controller
             'therapist_notes' => $history->TherapistNotes,
             'selected_resources' => $this->existingSessionNoteResources($history),
             'notes_url' => route('therapist.session.notes.edit', ['calendar_id' => $request->calendar_id]),
+            // Do not pass saved=1 here: the embedded view posts session-notes-saved on load when
+            // saved=1 is present, which would immediately close the parent waiting-room modal.
             'embedded_notes_url' => route('therapist.session.notes.edit', [
                 'calendar_id' => $request->calendar_id,
                 'embedded' => 1,
-                'saved' => 1
             ]),
         ]);
     }
 
     public function editSessionNotes(Request $request, int $calendar_id)
     {
-
-        // ✅ CLEAR SUCCESS MESSAGE WHEN OPENING MODAL
-        session()->forget('session_notes_success');
+        // Keep flash for one request when returning from save (?saved=1) so embedded notes can
+        // show the banner and notify the parent; clear stale success on normal opens.
+        if (! $request->boolean('saved')) {
+            session()->forget('session_notes_success');
+        }
 
         $history = SysUserType30SessionHistory::where('SessionCalendarID', $calendar_id)
             ->where('AllocatedTherapistUserID', auth()->id())
@@ -179,8 +182,8 @@ class WaitingRoomController extends Controller
 
         return view(
             $embedded
-                ? 'modules.mod-10.01-counselling.therapists.post-session-notes-embedded'
-                : 'modules.mod-10.01-counselling.therapists.post-session-notes',
+                ? 'modules.mod-10.01-counselling.therapists.partials.post-session-notes-embedded'
+                : 'modules.mod-10.01-counselling.therapists.partials.post-session-notes',
             compact('history', 'calendar_id', 'sessionNoteResources', 'selectedResources', 'embedded')
         );
     }

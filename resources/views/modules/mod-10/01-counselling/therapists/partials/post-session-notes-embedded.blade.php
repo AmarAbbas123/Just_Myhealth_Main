@@ -19,26 +19,19 @@
     </div>
 
     <script>
+        const SESSION_NOTES_MSG_SOURCE = 'justmy-session-notes-embed';
+
         function closeSessionNotesModal() {
             if (window.parent !== window) {
                 window.parent.postMessage({
                     type: 'session-notes-close',
-                    manual: true // ✅ ADD FLAG
+                    source: SESSION_NOTES_MSG_SOURCE,
+                    manual: true,
                 }, window.location.origin);
             }
         }
 
-        document.addEventListener('DOMContentLoaded', function() {
-            const urlParams = new URLSearchParams(window.location.search);
-
-            if (urlParams.get('saved') === '1') {
-                window.parent.postMessage({
-                    type: 'session-notes-saved',
-                    message: 'Session notes saved successfully',
-                }, window.location.origin);
-            }
-        });
-        
+        document.addEventListener('DOMContentLoaded', function() {});
     </script>
 </body>
 

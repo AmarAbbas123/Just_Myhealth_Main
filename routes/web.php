@@ -610,6 +610,10 @@ Route::controller(UsrTherapyHistoryController::class)
     ->group(function () {
         Route::get('/mod-10/01/usr-therapy-history', 'index')->name('usr-therapy-history');
         Route::post('/mod-10/01/usr-therapy-history', 'showDetails');
+        Route::get('/mod-10/01/usr-therapy-history/{history_id}/resource/{index}', 'downloadSessionResource')
+            ->whereNumber('history_id')
+            ->whereNumber('index')
+            ->name('usr.therapy.history.resource.download');
     });
 
 

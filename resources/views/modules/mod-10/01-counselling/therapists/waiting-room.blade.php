@@ -241,9 +241,10 @@
                     <button type="button" @click="closeNotesModal()" class="text-gray-500 text-xl leading-none">&times;</button>
                 </div>
 
-                <div class="flex-1 bg-gray-100">
+                <div class="flex-1 bg-gray-100 min-h-0">
                     <template x-if="notesModalUrl">
-                        <iframe :src="notesModalUrl" class="w-full h-full border-0" title="Post Session Notes"></iframe>
+                        <iframe data-notes-iframe :src="notesModalUrl" class="w-full h-full min-h-[50vh] border-0"
+                            title="Post Session Notes"></iframe>
                     </template>
                 </div>
             </div>
@@ -329,22 +330,42 @@
         window.waitingRoomApp = function() {
             return {
                 init() {
-                    window.addEventListener('message', (event) => {
-                        if (event.origin !== window.location.origin || !event.data || typeof event.data.type !== 'string') {
-                            return;
-                        }
+                    this._onNotesWindowMessage = (event) => this.handleNotesWindowMessage(event);
+                    window.addEventListener('message', this._onNotesWindowMessage);
+                },
 
-                        if (event.data.type === 'session-notes-close' && event.data.manual) {
-                            this.closeNotesModal();
-                            return;
-                        }
+                destroy() {
+                    if (this._onNotesWindowMessage) {
+                        window.removeEventListener('message', this._onNotesWindowMessage);
+                    }
+                },
 
-                        if (event.data.type === 'session-notes-saved') {
-                            if (!this.showNotesModal) return; // ✅ ignore if already closed
-                            this.notesStatusMessage = event.data.message || 'Session notes saved.';
-                            this.closeNotesModal();
-                        }
-                    });
+                /**
+                 * Only accept postMessages that actually come from our notes iframe (not Vite, Ignition, Zego, extensions).
+                 * Do not auto-close the modal on "saved" — user closes via × or the iframe Close button to avoid phantom closes.
+                 */
+                handleNotesWindowMessage(event) {
+                    if (event.origin !== window.location.origin || !event.data || typeof event.data.type !== 'string') {
+                        return;
+                    }
+                    if (event.data.source !== 'justmy-session-notes-embed') {
+                        return;
+                    }
+
+                    const iframe = this.$el?.querySelector?.('iframe[data-notes-iframe]');
+                    if (!iframe || event.source !== iframe.contentWindow) {
+                        return;
+                    }
+
+                    if (event.data.type === 'session-notes-close' && event.data.manual) {
+                        this.closeNotesModal();
+                        return;
+                    }
+
+                    if (event.data.type === 'session-notes-saved') {
+                        if (!this.showNotesModal) return;
+                        this.notesStatusMessage = event.data.message || 'Session notes saved.';
+                    }
                 },
                 showAdmitAll: false,
                 showSession: false,
@@ -358,6 +379,7 @@
                 roomID: null,
                 isProcessing: false, // NEW: Prevent double clicks/triggers
                 sessionEndHandled: false,
+                sessionStartedManually: false,
                 sessionType: 'Video',
                 showNotesModal: false,
                 notesModalUrl: null,
