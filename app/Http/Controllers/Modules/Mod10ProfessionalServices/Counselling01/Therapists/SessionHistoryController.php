@@ -35,10 +35,32 @@ class SessionHistoryController extends Controller
             'calendar_id' => 'required|integer',
         ]);
 
-        $history = SysUserType30SessionHistory::where(
-            'ID',
-            $request->calendar_id
-        )->first();
+        $history = SysUserType30SessionHistory::where('ID', $request->calendar_id)
+            ->where('AllocatedTherapistUserID', auth()->id())
+            ->first();
+
+        $sessionResourceColumns = [
+            $history?->SessionNotesResources1 ?? $history?->SessionNotesResource1,
+            $history?->SessionNotesResources2 ?? $history?->SessionNotesResource2,
+            $history?->SessionNotesResources3 ?? $history?->SessionNotesResource3,
+            $history?->SessionNotesResources4 ?? $history?->SessionNotesResource4,
+        ];
+
+        $sessionResourceLinks = collect($sessionResourceColumns)
+            ->values()
+            ->map(function ($value, $index) use ($history) {
+                if (!$value || !$history) {
+                    return null;
+                }
+
+                return route('therap.session.history.resource.download', [
+                    'history_id' => $history->ID,
+                    'index' => $index + 1,
+                ]);
+            })
+            ->filter()
+            ->values()
+            ->all();
 
         return response()->json([
             'success' => true,
@@ -57,15 +79,62 @@ class SessionHistoryController extends Controller
                 'recording'  => $history?->LinkToSessionRecording,
                 'id'        => $history?->ID,
                 'therapist_notes'  => $history?->TherapistNotes,
-                'session_note_resources' => collect([
-                   $history?->SessionNotesResource1,
-                   $history?->SessionNotesResource2,
-                   $history?->SessionNotesResource3,
-                   $history?->SessionNotesResource4,
-                ])->filter()->values()->all(),
+                'session_note_resources' => $sessionResourceLinks,
             ]
         ]);
     }
+
+
+    public function downloadSessionResource(int $history_id, int $index)
+{
+    $history = SysUserType30SessionHistory::where('ID', $history_id)
+        ->where('AllocatedTherapistUserID', auth()->id())
+        ->firstOrFail();
+
+    $resourceMap = [
+        1 => $history->SessionNotesResources1 ?? $history->SessionNotesResource1,
+        2 => $history->SessionNotesResources2 ?? $history->SessionNotesResource2,
+        3 => $history->SessionNotesResources3 ?? $history->SessionNotesResource3,
+        4 => $history->SessionNotesResources4 ?? $history->SessionNotesResource4,
+    ];
+
+    if (!isset($resourceMap[$index]) || empty($resourceMap[$index])) {
+        abort(404);
+    }
+
+    $path = $this->normalizeSessionResourcePath((string) $resourceMap[$index]);
+
+    if (!$path || !Storage::disk('therapy_docs')->exists($path)) {
+        abort(404);
+    }
+
+    return Storage::disk('therapy_docs')->download($path, basename($path));
+}
+
+    protected function normalizeSessionResourcePath(string $value): ?string
+{
+    $value = trim($value);
+    if ($value === '') {
+        return null;
+    }
+
+    $parsedPath = parse_url($value, PHP_URL_PATH);
+    $pathValue = is_string($parsedPath) && $parsedPath !== '' ? $parsedPath : $value;
+
+    $prefix = '/storage/therapy-documents/';
+    if (str_starts_with($pathValue, $prefix)) {
+        $pathValue = substr($pathValue, strlen($prefix));
+    }
+
+    $pathValue = ltrim($pathValue, '/');
+    if ($pathValue === '') {
+        return null;
+    }
+
+    return collect(explode('/', $pathValue))
+        ->map(fn($segment) => rawurldecode($segment))
+        ->implode('/');
+}
 
 
     public function getRecording($sessionId)
