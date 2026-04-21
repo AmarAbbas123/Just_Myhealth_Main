@@ -79,8 +79,10 @@
 
                                     <!-- Slots -->
                                     <template x-for="slot in slotsForDate(date)" :key="slot.id">
-                                        <div class="absolute left-1 right-1 rounded p-2 text-xs cursor-pointer"
-                                            :class="slotClass(slot.type)" :style="slotStyle(slot)"
+                                        <div class="absolute left-1 right-1 rounded p-2 text-xs"
+                                            :class="[slotClass(slot.type), isReadOnlySlot(slot.type) ? 'cursor-not-allowed opacity-90' : 'cursor-pointer']"
+                                            :title="isReadOnlySlot(slot.type) ? 'Booked slot (read-only)' : 'Edit slot'"
+                                            :style="slotStyle(slot)"
                                             @click.stop="editSlot(slot)">
                                             <div class="font-semibold" x-text="slot.type"></div>
                                             <div x-text="slot.time_from + ' (1h)'"></div>
@@ -100,17 +102,61 @@
                             <h3 class="font-semibold mb-3" x-text="editing ? 'Edit Availability' : 'Add Availability'">
                             </h3>
 
-                            <input type="date" x-model="form.date" class="w-full border p-2 rounded mb-2">
+                            <input type="date" x-model="form.date" readonly class="w-full border p-2 rounded mb-2 bg-gray-100 readonly:bg-gray-100 cursor-not-allowed">
 
                             <div class="flex gap-2 mb-2">
-                                <input type="time" x-model="form.time_from" readonly @input="syncEndTime()" class="w-1/2 border p-2 rounded">
-                                <input type="time" x-model="form.time_to" readonly class="w-1/2 border p-2 rounded bg-gray-50">
+                                <div class="w-1/2 flex gap-2">
+                                    <select
+                                        x-model="form.time_hour"
+                                        @change="syncStartFromParts()"
+                                        :disabled="isReadOnlyEditing()"
+                                        :class="isReadOnlyEditing() ? 'bg-gray-100 cursor-not-allowed' : ''"
+                                        class="w-1/2 border p-2 rounded">
+                                        <option value="">Hour</option>
+                                        <template x-for="hour in hourOptions" :key="'edit-hour-' + hour">
+                                            <option :value="hour" x-text="hour"></option>
+                                        </template>
+                                    </select>
+                                    <select
+                                        x-model="form.time_minute"
+                                        @change="syncStartFromParts()"
+                                        :disabled="isReadOnlyEditing()"
+                                        :class="isReadOnlyEditing() ? 'bg-gray-100 cursor-not-allowed' : ''"
+                                        class="w-1/2 border p-2 rounded">
+                                        <template x-for="minute in minuteOptions" :key="'edit-minute-' + minute">
+                                            <option :value="minute" x-text="minute"></option>
+                                        </template>
+                                    </select>
+                                </div>
+                                <input type="text" x-model="form.time_to" readonly inputmode="numeric" class="w-1/2 border p-2 rounded bg-gray-100 readonly:bg-gray-100 cursor-not-allowed" placeholder="HH:mm">
                             </div>
                             <div class="text-xs text-gray-500 mb-2">Fixed duration: 1 hour</div>
+                            <div x-show="isReadOnlyEditing()" class="text-xs text-amber-700 bg-amber-50 border border-amber-200 rounded px-2 py-1 mb-2">
+                                This booked slot is Busy and cannot be edited or deleted.
+                            </div>
 
-                            <div class="flex justify-end gap-2">
-                                <button @click="closeModal" class="px-3 py-1 border rounded">❌ Cancel</button>
-                                <button @click="saveSlot" class="px-3 py-1 bg-indigo-600 text-white rounded">Save</button>
+                            <div class="flex items-center justify-between gap-2">
+                                <button
+                                    x-show="editing && !isReadOnlyEditing()"
+                                    @click="deleteSlot"
+                                    type="button"
+                                    class="inline-flex items-center gap-2 px-3 py-1.5 rounded-md border border-rose-200 bg-rose-50 text-rose-700 hover:bg-rose-100 transition">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="none"
+                                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                                        aria-hidden="true">
+                                        <path d="M3 6h18"></path>
+                                        <path d="M8 6V4h8v2"></path>
+                                        <path d="M19 6l-1 14H6L5 6"></path>
+                                        <path d="M10 11v6"></path>
+                                        <path d="M14 11v6"></path>
+                                    </svg>
+                                    <span>Delete Slot</span>
+                                </button>
+
+                                <div class="flex justify-end gap-2 ml-auto">
+                                    <button @click="closeModal" class="px-3 py-1 border rounded">Cancel</button>
+                                    <button x-show="!isReadOnlyEditing()" @click="saveSlot" class="px-3 py-1 bg-indigo-600 text-white rounded">Save</button>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -136,7 +182,7 @@
                                         </template>
                                     </select>
                                 </div>
-                                <input type="time" x-model="manualForm.time_to" readonly class="w-1/2 border p-2 rounded bg-gray-50">
+                                <input type="text" x-model="manualForm.time_to" readonly inputmode="numeric" class="w-1/2 border p-2 rounded bg-gray-50" placeholder="HH:mm">
                             </div>
                             <div class="text-xs text-gray-500 mb-2">Fixed duration: 1 hour</div>
 
@@ -232,9 +278,12 @@
                     openCreateModal(date = '', time = '') {
                         this.manualModalOpen = false;
                         this.editing = false;
+                        const [hour = '', minute = '00'] = (time || '').split(':');
                         this.form = {
                             date,
                             time_from: time,
+                            time_hour: hour,
+                            time_minute: minute,
                             time_to: ''
                         };
                         this.syncEndTime();
@@ -258,11 +307,15 @@
                     editSlot(slot) {
                         this.manualModalOpen = false;
                         this.editing = true;
+                        const [hour = '', minute = '00'] = (slot.time_from || '').split(':');
                         this.form = {
                             id: slot.id,
                             date: slot.date,
                             time_from: slot.time_from,
-                            time_to: slot.time_to
+                            time_hour: hour,
+                            time_minute: minute,
+                            time_to: slot.time_to,
+                            type: slot.type
                         };
                         this.syncEndTime();
                         this.modalOpen = true;
@@ -277,6 +330,12 @@
                     },
 
                     saveSlot() {
+                        if (this.isReadOnlyEditing()) {
+                            alert('Booked slots are read-only and cannot be edited.');
+                            return;
+                        }
+                        this.syncStartFromParts();
+
                         const payload = {
                             date: this.form.date,
                             time_from: this.form.time_from
@@ -286,6 +345,48 @@
                         const method = this.editing ? 'PUT' : 'POST';
 
                         this.submitSlot(url, method, payload);
+                    },
+
+                    deleteSlot() {
+                        if (!this.editing || !this.form.id) return;
+                        if (this.isReadOnlyEditing()) {
+                            alert('Booked slots are read-only and cannot be deleted.');
+                            return;
+                        }
+
+                        if (!confirm('Remove this availability slot? This action cannot be undone.')) return;
+
+                        fetch(`/therapist/calendar/slots/${this.form.id}`, {
+                                method: 'DELETE',
+                                headers: {
+                                    'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                                    'Accept': 'application/json'
+                                }
+                            })
+                            .then(async r => {
+                                const data = await r.json();
+                                if (!r.ok) throw data;
+                                return data;
+                            })
+                            .then(res => {
+                                if (res.success) {
+                                    location.reload();
+                                } else {
+                                    alert(res.error || 'Failed to delete slot.');
+                                }
+                            })
+                            .catch(err => {
+                                alert(err.error || 'Error deleting slot.');
+                                console.error(err);
+                            });
+                    },
+
+                    isReadOnlySlot(type) {
+                        return type === 'Busy';
+                    },
+
+                    isReadOnlyEditing() {
+                        return this.editing && this.isReadOnlySlot(this.form.type);
                     },
 
                     saveManualSlot() {
@@ -349,6 +450,17 @@
                             return;
                         }
                         this.form.time_to = this.addHour(this.form.time_from);
+                    },
+
+                    syncStartFromParts() {
+                        if (!this.form.time_hour) {
+                            this.form.time_from = '';
+                            this.form.time_to = '';
+                            return;
+                        }
+
+                        this.form.time_from = `${this.form.time_hour}:${this.form.time_minute || '00'}`;
+                        this.syncEndTime();
                     },
 
                     syncManualStartFromParts() {
