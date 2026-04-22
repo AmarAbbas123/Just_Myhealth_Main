@@ -35,7 +35,7 @@ class SearchMatchQuestionsController extends Controller
 
         $nextQuestionNumber = $this->getNextQuestionNumber($answers, $totalQuestions);
 
-        $question = SysUserType30TherapistOnboardQuestions::find($nextQuestionNumber);
+        $question = $this->getQuestionBySequence($nextQuestionNumber);
 
         return view('modules.mod-10.01-counselling.therapists.search-match-questions', [
             'mode' => 'wizard',
@@ -49,8 +49,10 @@ class SearchMatchQuestionsController extends Controller
     {
         $request->validate([
             'question_id' => 'required|integer',
-            'answer_text' => 'required|string',
-            'answer_option_number' => 'required|integer',
+            'answer_text' => 'required|array',
+            'answer_text.*' => 'string',
+            'answer_option_number' => 'required|array',
+            'answer_option_number.*' => 'integer',
         ]);
 
         $userId = auth()->id();
@@ -60,13 +62,14 @@ class SearchMatchQuestionsController extends Controller
             ['QuestionCompletionStatus' => 0]
         );
 
-        $qid = $request->question_id;
+        $qid = (int) $request->question_id;
 
         $textCol = "Id{$qid}_Answer_text";
         $optCol  = "Id{$qid}_AnswerOptionNumber";
 
-        $answers->$textCol = $request->answer_text;
-        $answers->$optCol  = $request->answer_option_number;
+        $optionNumbers = array_map('intval', $request->answer_option_number ?? []);
+        $answers->$textCol = json_encode($request->answer_text);
+        $answers->$optCol  = json_encode($optionNumbers);
         $answers->save();
 
         $totalQuestions = SysUserType30TherapistOnboardQuestions::where('QuestionStatus', 1)->count();
@@ -82,7 +85,7 @@ class SearchMatchQuestionsController extends Controller
             ]);
         }
 
-        $question = SysUserType30TherapistOnboardQuestions::find($nextQ);
+        $question = $this->getQuestionBySequence($nextQ);
 
         return response()->json([
             'completed' => false,
@@ -96,21 +99,24 @@ class SearchMatchQuestionsController extends Controller
     {
         $request->validate([
             'question_id' => 'required|integer',
-            'answer_text' => 'required|string',
-            'answer_option_number' => 'required|integer',
+            'answer_text' => 'required|array',
+            'answer_text.*' => 'string',
+            'answer_option_number' => 'required|array',
+            'answer_option_number.*' => 'integer',
         ]);
 
         $userId = auth()->id();
 
         $answers = SysUserType30TherapistOnboardQuestionsAnswers::where('TherapistUserID', $userId)->firstOrFail();
 
-        $qid = $request->question_id;
+        $qid = (int) $request->question_id;
 
         $textCol = "Id{$qid}_Answer_text";
         $optCol  = "Id{$qid}_AnswerOptionNumber";
 
-        $answers->$textCol = $request->answer_text;
-        $answers->$optCol  = $request->answer_option_number;
+        $optionNumbers = array_map('intval', $request->answer_option_number ?? []);
+        $answers->$textCol = json_encode($request->answer_text);
+        $answers->$optCol  = json_encode($optionNumbers);
         $answers->save();
 
         return response()->json([
@@ -128,5 +134,17 @@ class SearchMatchQuestionsController extends Controller
         }
 
         return $totalQuestions + 1;
+    }
+
+    private function getQuestionBySequence(int $sequence): ?SysUserType30TherapistOnboardQuestions
+    {
+        if ($sequence < 1) {
+            return null;
+        }
+
+        return SysUserType30TherapistOnboardQuestions::where('QuestionStatus', 1)
+            ->orderBy('ID')
+            ->skip($sequence - 1)
+            ->first();
     }
 }

@@ -36,15 +36,13 @@
                     <template x-for="(opt, index) in options()" :key="index">
                         <label
                             class="flex items-center gap-3 cursor-pointer bg-gray-50 hover:bg-gray-100 px-4 py-3 rounded-lg border border-gray-200">
-                            <input type="radio" class="w-4 h-4 text-blue-600 focus:ring-blue-500" name="option"
-                                :value="index + 1" x-model="selected">
-
+                            <input type="checkbox" class="w-4 h-4 text-blue-600 focus:ring-blue-500" :value="index + 1" x-model="selected">
                             <span class="text-gray-800" x-text="opt"></span>
                         </label>
                     </template>
                 </div>
 
-                <button @click="submitAnswer" x-show="!buttonLocked" :disabled="!selected"
+                <button @click="submitAnswer" x-show="!buttonLocked" :disabled="selected.length === 0"
                     class="mt-8 w-full py-3 text-center text-white font-semibold rounded-lg
                            bg-blue-600 hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed
                            transition-all duration-200">
@@ -86,21 +84,21 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <template x-for="q in summaryQuestions" :key="q.ID">
+                            <template x-for="(q, idx) in summaryQuestions" :key="q.ID">
                                 <tr class="border-t">
-                                    <td class="px-3 py-2 align-top" x-text="q.ID"></td>
+                                    <td class="px-3 py-2 align-top" x-text="idx + 1"></td>
                                     <td class="px-3 py-2 align-top">
                                         <div class="font-medium text-gray-800" x-text="q.QuestionHeading"></div>
                                         <div class="text-xs text-gray-500 mt-1" x-text="q.QuestionNotes"></div>
                                     </td>
                                     <td class="px-3 py-2 align-top">
-                                        <span x-text="currentAnswerText(q.ID) || 'Not answered yet'"
-                                            :class="currentAnswerText(q.ID) ? 'text-gray-800' : 'text-gray-400 italic'"></span>
+                                        <span x-text="currentAnswerText(idx + 1) || 'Not answered yet'"
+                                            :class="currentAnswerText(idx + 1) ? 'text-gray-800' : 'text-gray-400 italic'"></span>
                                     </td>
                                     <td class="px-3 py-2 align-top">
                                         <button type="button"
                                             class="px-4 py-1.5 text-xs font-semibold bg-emerald-600 text-white rounded-full shadow-sm hover:bg-emerald-700 transition-all"
-                                            @click="openEditModal(q)">
+                                            @click="openEditModal(q, idx + 1)">
                                             Update
                                         </button>
                                     </td>
@@ -131,7 +129,7 @@
                     <template x-for="(opt, index) in editOptions()" :key="index">
                         <label
                             class="flex items-center gap-3 cursor-pointer bg-gray-50 hover:bg-gray-100 px-4 py-3 rounded-lg border border-gray-200">
-                            <input type="radio" class="w-4 h-4 text-blue-600 focus:ring-blue-500" name="edit_option"
+                            <input type="checkbox" class="w-4 h-4 text-blue-600 focus:ring-blue-500"
                                 :value="index + 1" x-model="editSelected">
 
                             <span class="text-gray-800" x-text="opt"></span>
@@ -146,7 +144,7 @@
                     </button>
                     <button type="button" @click="submitEdit"
                         class="px-4 py-2 bg-teal-600 text-white rounded-lg text-sm hover:bg-teal-700"
-                        :disabled="!editSelected">
+                        :disabled="editSelected.length === 0">
                         Save
                     </button>
                 </div>
@@ -167,7 +165,7 @@
                 // Wizard state
                 currentQuestion: config.question || {},
                 questionNumber: config.nextQuestion || 1,
-                selected: null,
+                selected: [],
 
                 // Summary state
                 summaryQuestions: config.questions || [],
@@ -176,12 +174,13 @@
                 // Edit modal
                 isEditOpen: false,
                 editQuestion: {},
-                editSelected: null,
+                editQuestionNumber: null,
+                editSelected: [],
 
                 options() {
                     let arr = [];
                     if (!this.currentQuestion) return arr;
-                    for (let i = 1; i <= 12; i++) {
+                    for (let i = 1; i <= 24; i++) {
                         let v = this.currentQuestion["Option" + i];
                         if (v) arr.push(v);
                     }
@@ -189,11 +188,12 @@
                 },
 
                 submitAnswer() {
-                    if (!this.selected || !this.currentQuestion) return;
+                    if (!this.currentQuestion || this.selected.length === 0) return;
 
                     this.buttonLocked = true;
 
-                    let answerText = this.options()[this.selected - 1];
+                    let selectedTexts = this.selected.map(i => this.options()[i - 1]);
+                    let selectedOptionNumbers = this.selected.map(i => Number(i));
 
                     fetch("{{ route('therapist.match.questions.save') }}", {
                             method: "POST",
@@ -203,8 +203,8 @@
                             },
                             body: JSON.stringify({
                                 question_id: this.questionNumber,
-                                answer_text: answerText,
-                                answer_option_number: this.selected
+                                answer_text: selectedTexts,
+                                answer_option_number: selectedOptionNumbers
                             })
                         })
                         .then(res => res.json())
@@ -219,38 +219,52 @@
                             this.currentQuestion = data.next_question;
                             this.questionNumber = data.next_question_number;
                             this.totalQuestions = data.total_questions || this.totalQuestions;
-                            this.selected = null;
+                            this.selected = [];
+                            this.buttonLocked = false;
+                        })
+                        .catch(() => {
                             this.buttonLocked = false;
                         });
                 },
 
                 currentAnswerText(id) {
-                    if (!this.answersRow) return '';
+                    return this.currentAnswerArray(id).join(', ');
+                },
+
+                currentAnswerArray(id) {
+                    if (!this.answersRow) return [];
                     const col = `Id${id}_Answer_text`;
-                    return this.answersRow[col] || '';
+                    try {
+                        const parsed = JSON.parse(this.answersRow[col] || '[]') || [];
+                        return Array.isArray(parsed) ? parsed : (parsed ? [String(parsed)] : []);
+                    } catch (e) {
+                        return [];
+                    }
                 },
 
-                currentAnswerOptionNumber(id) {
-                    if (!this.answersRow) return null;
-                    const col = `Id${id}_AnswerOptionNumber`;
-                    return this.answersRow[col] || null;
-                },
-
-                openEditModal(question) {
+                openEditModal(question, questionNumber) {
                     this.editQuestion = question;
-                    const currentOpt = this.currentAnswerOptionNumber(question.ID);
-                    this.editSelected = currentOpt || null;
+                    this.editQuestionNumber = questionNumber;
+                    const opts = this.editOptions();
+                    const selectedTexts = this.currentAnswerArray(questionNumber);
+                    this.editSelected = selectedTexts
+                        .map(text => {
+                            const idx = opts.indexOf(text);
+                            return idx >= 0 ? String(idx + 1) : null;
+                        })
+                        .filter(v => v !== null);
                     this.isEditOpen = true;
                 },
 
                 closeEditModal() {
                     this.isEditOpen = false;
+                    this.editQuestionNumber = null;
                 },
 
                 editOptions() {
                     let arr = [];
                     if (!this.editQuestion) return arr;
-                    for (let i = 1; i <= 12; i++) {
+                    for (let i = 1; i <= 24; i++) {
                         let v = this.editQuestion["Option" + i];
                         if (v) arr.push(v);
                     }
@@ -258,10 +272,11 @@
                 },
 
                 submitEdit() {
-                    if (!this.editSelected || !this.editQuestion) return;
+                    if (!this.editQuestion || this.editSelected.length === 0) return;
 
                     const opts = this.editOptions();
-                    const answerText = opts[this.editSelected - 1];
+                    const selectedTexts = this.editSelected.map(i => opts[i - 1]);
+                    const selectedOptionNumbers = this.editSelected.map(i => Number(i));
 
                     fetch("{{ route('therapist.match.questions.update') }}", {
                             method: "POST",
@@ -270,19 +285,19 @@
                                 "X-CSRF-TOKEN": "{{ csrf_token() }}"
                             },
                             body: JSON.stringify({
-                                question_id: this.editQuestion.ID,
-                                answer_text: answerText,
-                                answer_option_number: this.editSelected
+                                question_id: this.editQuestionNumber,
+                                answer_text: selectedTexts,
+                                answer_option_number: selectedOptionNumbers
                             })
                         })
                         .then(res => res.json())
                         .then(data => {
                             if (data && data.success) {
                                 if (this.answersRow) {
-                                    const textCol = `Id${this.editQuestion.ID}_Answer_text`;
-                                    const optCol = `Id${this.editQuestion.ID}_AnswerOptionNumber`;
-                                    this.answersRow[textCol] = answerText;
-                                    this.answersRow[optCol] = this.editSelected;
+                                    const textCol = `Id${this.editQuestionNumber}_Answer_text`;
+                                    const optCol = `Id${this.editQuestionNumber}_AnswerOptionNumber`;
+                                    this.answersRow[textCol] = JSON.stringify(selectedTexts);
+                                    this.answersRow[optCol] = JSON.stringify(selectedOptionNumbers);
                                 }
                                 this.closeEditModal();
                             }
