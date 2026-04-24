@@ -78,11 +78,25 @@ return [
         'EmailSubRef' => '005',
         'Label'       => 'UserMessageReceivedNotification',
     ],
+    'UserSessionPurchaseConfirmationNotification' => [
+        'ModuleRef'   => 10,
+        'ModuleSubRef'=> 1,
+        'ModuleFull'  => '1001',
+        'EmailSubRef' => '006',
+        'Label'       => 'UserSessionPurchaseConfirmationNotification',
+    ],
     'AdminNewUserRegisteredNotification' => [
         'ModuleRef'   => 1,
         'ModuleSubRef'=> 0,
         'ModuleFull'  => '0100',
         'EmailSubRef' => '001',
         'Label'       => 'AdminNewUserRegisteredNotification',
+    ],
+    'TherapistAccountApprovedNotification' => [
+        'ModuleRef'   => 1,
+        'ModuleSubRef'=> 0,
+        'ModuleFull'  => '0100',
+        'EmailSubRef' => '002',
+        'Label'       => 'TherapistAccountApprovedNotification',
     ],
 ];

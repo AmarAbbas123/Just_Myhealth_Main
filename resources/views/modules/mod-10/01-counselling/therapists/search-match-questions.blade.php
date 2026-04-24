@@ -114,7 +114,7 @@
         <div x-show="isEditOpen" x-cloak
             class="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4"
             @click.self="closeEditModal">
-            <div class="bg-white rounded-xl w-full max-w-lg p-6 shadow-xl" @click.stop>
+            <div class="bg-white rounded-xl w-full max-w-lg p-6 shadow-xl max-h-[90vh] overflow-y-auto" @click.stop>
                 <div class="flex justify-between items-center mb-3">
                     <h2 class="text-lg font-semibold text-gray-800">
                         Update Answer

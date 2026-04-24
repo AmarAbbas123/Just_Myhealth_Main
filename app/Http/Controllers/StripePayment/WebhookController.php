@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\StripePayment;
 
 use App\Http\Controllers\Controller;
+use App\Notifications\UserSessionPurchaseConfirmationNotification;
 use Illuminate\Http\Request;
 use Stripe\Webhook;
 use Stripe\Event;
@@ -88,36 +89,88 @@ class WebhookController extends Controller
                 } catch (\Throwable $e) {
                     Log::error('Business registration insert failed', [ 'user_id' => $user_id, 'error' => $e->getMessage(), ]);
                 }
-            }          
-            
-            if ($payment_type === 'session_purchase' && $user_type == 1) {
-                $allocatedTherapist = $extra['allocated_therapist'] ?? null;
-                $credits = $extra['credits'] ?? ($session->metadata->credits ?? null);
-                Log::debug('Session purchase metadata', [ 'user_id' => $user_id, 'credits' => $credits, 'allocated_therapist' => $allocatedTherapist ?? null, ]);
-                
+            }                      
 
-                if (!$credits) {
-                    Log::error('Session purchase webhook missing credits', [ 'user_id' => $user_id, 'metadata' => $session->metadata, ]);
-                    return response('Missing credits', 400);
+            if (($payment_type === 'session_purchase' || empty($payment_type)) && in_array($user_type, [1, 2, 3], true)) {
+
+                if (($session->payment_status ?? null) !== 'paid') {
+                    Log::warning('Webhook skipped: payment not paid', [
+                        'session_id' => $session->id
+                    ]);
+                    return response('not paid', 200);
                 }
-
-                // Insert into sys_finance_user_type_30_service_credits
-                DB::table('sys_finance_user_type_30_service_credits')->insert([
-                    'PatientUserID' => $user_id,
-                    // will go withe the therapist selection after Q/A.... SO thats why 'AllocatedTherapistUserID'  is NUll Now
-                   // 'AllocatedTherapistUserID' => $allocatedTherapist ?? NULL,
-                    'NumberSessionsPurchased' => $credits,
-                    'CreditDate' => $now->format('Y-m-d'),
-                    'CreditTime' => $now->format('H:i:s'),
-                    'CreditValue' => $amount,
-                    'CreditCurrency' => strtoupper($currency),
-                    'TransactionID' => $transaction_id,
-                    'TransactionResult' => 'success',
-                    'created_at' => $now,
-                    'updated_at' => $now,
-                ]);
+            
+                $transaction_id = $session->payment_intent;
+                $amount = $session->amount_total / 100;
+                $currency = strtoupper($session->currency);
+            
+                $extra = json_decode($metadata->extra ?? '{}', true) ?: [];
+                $credits = $extra['credits'] ?? ($session->metadata->credits ?? null);
+            
+                if (!$credits || !$transaction_id) {
+                    Log::error('Session purchase webhook missing data', [
+                        'user_id' => $user_id,
+                        'transaction_id' => $transaction_id
+                    ]);
+                    return response('invalid data', 400);
+                }
+            
+                try {
+                    DB::transaction(function () use (
+                        $user_id,
+                        $credits,
+                        $transaction_id,
+                        $amount,
+                        $currency
+                    ) {
+            
+                        // 🔒 STRONG IDEMPOTENCY (WITH LOCK)
+                        $exists = DB::table('sys_finance_user_type_30_service_credits')
+                            ->where('TransactionID', $transaction_id)
+                            ->lockForUpdate()
+                            ->exists();
+            
+                        if ($exists) {
+                            Log::info('Duplicate webhook ignored', [
+                                'transaction_id' => $transaction_id
+                            ]);
+                            return;
+                        }
+            
+                        $now = Carbon::now();
+            
+                        DB::table('sys_finance_user_type_30_service_credits')->insert([
+                            'PatientUserID' => $user_id,
+                            'NumberSessionsPurchased' => $credits,
+                            'CreditDate' => $now->format('Y-m-d'),
+                            'CreditTime' => $now->format('H:i:s'),
+                            'CreditValue' => $amount,
+                            'CreditCurrency' => $currency,
+                            'TransactionID' => $transaction_id,
+                            'TransactionResult' => 'success',
+                            'created_at' => $now,
+                            'updated_at' => $now,
+                        ]);
+            
+                        $user = User::find($user_id);
+                        if ($user) {
+                            $user->notify(new UserSessionPurchaseConfirmationNotification());
+                        }
+                    });
+            
+                } catch (\Throwable $e) {
+                    Log::error('Webhook transaction failed', [
+                        'error' => $e->getMessage(),
+                        'transaction_id' => $transaction_id
+                    ]);
+            
+                    return response('failed', 500);
+                }
+            
                 return response('ok', 200);
             }
+
+
         }
 
         return response('ok', 200);

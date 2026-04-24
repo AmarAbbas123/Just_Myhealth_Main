@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Modules\Mod01SystemAdministration\ThrpistMangt;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use App\Models\SysUserType30Attributes;
+use App\Notifications\TherapistAccountApprovedNotification;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -80,7 +81,11 @@ class TherapistsOnboardingApproveController extends Controller
         if ($validated['status'] === 'Approved') {
             $user->update([
                 'AccountStatus' => 1,
+                'UserActivatedDateTime' => now(),
             ]);
+
+            // Notify therapist only when admin approves and activates account.
+            $user->notify(new TherapistAccountApprovedNotification());
         }
 
         return back()->with('success', 'Approval status updated.');

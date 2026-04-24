@@ -19,7 +19,7 @@ class TherapistAccountApprovedNotification extends Notification
     {
         return (new MailMessage)
             ->subject('Therapist Account Approved')
-            ->greeting('Dear ' . ($notifiable->UserName ?? 'Therapist'))
+            ->greeting('Dear "' . ($notifiable->UserName ?? 'Therapist') . '"')
             ->line('Thank you for registering your Therapist account with JustMy.Health')
             ->line('Verification and validation has been completed and your account has been activated on the platform.')
             ->line('Regards,')
