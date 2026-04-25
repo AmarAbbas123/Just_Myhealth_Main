@@ -11,28 +11,48 @@
 
         <x-page-header />
 
-        <div x-data="{ type: 'private' }" class="flex items-center gap-4">
+        <div x-data="{ type: 'private', folder: 'Folder01' }" class="flex items-center gap-3">
 
-            <!-- Type Dropdown -->
-            <select x-model="type" class="border rounded-md px-3 py-2 text-sm focus:ring focus:ring-indigo-200">
-                <option value="private">Private</option>
-                <option value="common">Common</option>
-            </select>
+            <!-- TYPE -->
+            <div class="relative">
+                <select x-model="type"
+                    class="appearance-none border border-gray-300 rounded-md px-4 py-2 pr-10 text-sm bg-white focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
+                    <option value="private">Private</option>
+                    <option value="common">Common</option>
+                </select>
 
-            <!-- Upload Button -->
+                <!-- Custom arrow -->
+                <div class="pointer-events-none absolute inset-y-0 right-3 flex items-center text-gray-400">
+                    ▼
+                </div>
+            </div>
+
+            <!-- FOLDER -->
+            <div class="relative" x-show="type === 'private'">
+                <select x-model="folder"
+                    class="appearance-none border border-gray-300 rounded-md px-4 py-2 pr-10 text-sm bg-white focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
+                    <template x-for="i in 8">
+                        <option :value="'Folder0' + i">Folder0<span x-text="i"></span></option>
+                    </template>
+                </select>
+
+                <div class="pointer-events-none absolute inset-y-0 right-3 flex items-center text-gray-400">
+                    ▼
+                </div>
+            </div>
+
+            <!-- BUTTON -->
             <button @click="$refs.file.click()"
-                class="inline-flex items-center gap-2 px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-md text-sm shadow">
-                + Upload Document
+                class="inline-flex items-center gap-2 px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-md text-sm shadow transition">
+                + Upload
             </button>
 
-            <!-- Hidden Form -->
+            <!-- Hidden form -->
             <form x-ref="form" method="POST" action="{{ route('collateral.upload') }}" enctype="multipart/form-data"
                 class="hidden">
                 @csrf
-
-                <!-- IMPORTANT -->
                 <input type="hidden" name="type" :value="type">
-
+                <input type="hidden" name="folder" :value="folder">
                 <input type="file" name="file" x-ref="file" @change="$refs.form.submit()">
             </form>
 
@@ -48,6 +68,7 @@
                     <th class="px-4 py-3">#</th>
                     <th class="px-4 py-3">File Name</th>
                     <th class="px-4 py-3">Type</th>
+                    <th class="px-4 py-3">Folder</th>
                     <th class="px-4 py-3">Date</th>
                     <th class="px-4 py-3">Size</th>
                     <th class="px-4 py-3 text-center">Action</th>
@@ -77,6 +98,8 @@
                             @endif
                         </td>
 
+                        <td class="px-4 py-3 text-gray-500">{{ $file['folder'] ?? '-' }}</td>
+
                         <td class="px-4 py-3 text-gray-500">
                             {{ date('d M Y', $meta) }}
                         </td>
@@ -94,15 +117,14 @@
                             </a>
 
 
-                                <form method="POST"
-                                    action="{{ route('collateral.delete', ['type' => $file['type'], 'file' => $file['name']]) }}">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button
-                                        class="px-3 py-1 bg-red-100 text-red-700 rounded-md text-xs hover:bg-red-200">
-                                        Delete
-                                    </button>
-                                </form>
+                            <form method="POST"
+                                action="{{ route('collateral.delete', ['type' => $file['type'], 'file' => $file['name']]) }}">
+                                @csrf
+                                @method('DELETE')
+                                <button class="px-3 py-1 bg-red-100 text-red-700 rounded-md text-xs hover:bg-red-200">
+                                    Delete
+                                </button>
+                            </form>
 
 
                         </td>
