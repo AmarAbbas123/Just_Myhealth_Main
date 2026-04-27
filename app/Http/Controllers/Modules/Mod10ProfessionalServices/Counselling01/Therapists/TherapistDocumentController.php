@@ -9,57 +9,56 @@ use Illuminate\Support\Str;
 
 class TherapistDocumentController extends Controller
 {
-    protected function therapistPath()
+    protected function privateBasePath()
     {
         return 'private/' . auth()->id();
+    }
+    
+    protected function commonBasePath()
+    {
+        return 'common/' . auth()->id();
     }
 
 
     public function index()
     {
         $files = [];
-
-        // ✅ ensure therapist folders exist
-        foreach ($this->defaultFolders() as $folder) {
-            Storage::disk('therapy_docs')->makeDirectory(
-                $this->therapistPath() . '/' . $folder
-            );
-        }
-
-        // Common files (visible to all)
-        $commonFiles = Storage::disk('therapy_docs')->files('common');
-
-        foreach ($commonFiles as $file) {
-            $files[] = [
-                'name' => basename($file),
-                'path' => $file,
-                'type' => 'common',
-                'folder' => null,
-            ];
-        }
-
-        // Private files (only current user)
-        $privateFiles = Storage::disk('therapy_docs')->files($this->therapistPath());
-
-        // Private files (loop folders)
-        foreach ($this->defaultFolders() as $folder) {
-            $folderPath = $this->therapistPath() . '/' . $folder;
-
-            $folderFiles = Storage::disk('therapy_docs')->files($folderPath);
-
-            foreach ($folderFiles as $file) {
-                $files[] = [
-                    'name' => basename($file),
-                    'path' => $file,
-                    'type' => 'private',
-                    'folder' => $folder,
-                ];
+    
+        foreach ($this->folders() as $folder) {
+    
+            // COMMON (user scoped now)
+            $commonPath = $this->commonBasePath() . '/' . $folder;
+            if (Storage::disk('therapy_docs')->exists($commonPath)) {
+                foreach (Storage::disk('therapy_docs')->files($commonPath) as $file) {
+                    $files[] = [
+                        'name' => basename($file),
+                        'path' => $file,
+                        'type' => 'common',
+                        'folder' => $folder,
+                    ];
+                }
+            }
+    
+            // PRIVATE
+            $privatePath = $this->privateBasePath() . '/' . $folder;
+            if (Storage::disk('therapy_docs')->exists($privatePath)) {
+                foreach (Storage::disk('therapy_docs')->files($privatePath) as $file) {
+                    $files[] = [
+                        'name' => basename($file),
+                        'path' => $file,
+                        'type' => 'private',
+                        'folder' => $folder,
+                    ];
+                }
             }
         }
-
+    
         return view(
             'modules.mod-10.01-counselling.therapists.Therapists-collateral-documents',
-            compact('files')
+            [
+                'files' => $files,
+                'folders' => $this->folders()
+            ]
         );
     }
 
@@ -68,94 +67,61 @@ class TherapistDocumentController extends Controller
         $request->validate([
             'file' => 'required|file|max:10240',
             'type' => 'required|in:private,common',
-            'folder' => 'nullable|string'
+            'folder' => 'required'
         ]);
-
-        $type = $request->input('type');
+    
         $folder = $request->input('folder');
-
-        // ✅ FIXED PATH
-        if ($type === 'common') {
-            $path = 'common';
+    
+        if ($request->type === 'common') {
+            $path = $this->commonBasePath() . '/' . $folder;
         } else {
-            // ✅ force valid folder
-            if (!in_array($folder, $this->defaultFolders())) {
-                $folder = 'Folder01';
-            }
-
-            $path = $this->therapistPath() . '/' . $folder;
+            $path = $this->privateBasePath() . '/' . $folder;
         }
-
-        // ✅ KEEP ORIGINAL NAME (cleaned)
+    
         $file = $request->file('file');
-
+    
         $originalName = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
         $extension = $file->getClientOriginalExtension();
-
+    
         $fileName = time() . '-' . Str::slug($originalName) . '.' . $extension;
-
-        // ensure folder exists
+    
         Storage::disk('therapy_docs')->makeDirectory($path);
-
-        // ✅ IMPORTANT FIX (no more encrypted names)
         Storage::disk('therapy_docs')->putFileAs($path, $file, $fileName);
-
+    
         return back()->with('success', 'File uploaded');
     }
 
-    public function download($type, $file)
+    public function download($type, $folder, $file)
     {
         if ($type === 'common') {
-            $path = 'common/' . $file;
+            $path = $this->commonBasePath() . '/' . $folder . '/' . $file;
         } else {
-            // find file in folders
-            foreach ($this->defaultFolders() as $folder) {
-                $tryPath = $this->therapistPath() . '/' . $folder . '/' . $file;
-
-                if (Storage::disk('therapy_docs')->exists($tryPath)) {
-                    return Storage::disk('therapy_docs')->download($tryPath);
-                }
-            }
-
-            abort(404);
+            $path = $this->privateBasePath() . '/' . $folder . '/' . $file;
         }
-
+    
+        abort_unless(Storage::disk('therapy_docs')->exists($path), 404);
+    
         return Storage::disk('therapy_docs')->download($path);
     }
 
-    public function delete($type, $file)
+    public function delete($type, $folder, $file)
     {
         if ($type === 'common') {
-            $path = 'common/' . $file;
-
-            if (Storage::disk('therapy_docs')->exists($path)) {
-                Storage::disk('therapy_docs')->delete($path);
-            }
+            $path = $this->commonBasePath() . '/' . $folder . '/' . $file;
         } else {
-            foreach ($this->defaultFolders() as $folder) {
-                $tryPath = $this->therapistPath() . '/' . $folder . '/' . $file;
-
-                if (Storage::disk('therapy_docs')->exists($tryPath)) {
-                    Storage::disk('therapy_docs')->delete($tryPath);
-                    break;
-                }
-            }
+            $path = $this->privateBasePath() . '/' . $folder . '/' . $file;
         }
-
+    
+        if (Storage::disk('therapy_docs')->exists($path)) {
+            Storage::disk('therapy_docs')->delete($path);
+        }
+    
         return back()->with('success', 'File deleted');
     }
 
-    protected function defaultFolders()
-    {
-        return [
-            'Folder01',
-            'Folder02',
-            'Folder03',
-            'Folder04',
-            'Folder05',
-            'Folder06',
-            'Folder07',
-            'Folder08',
-        ];
-    }
+    protected function folders()
+{
+    return collect(range(1, 8))->map(fn($i) => 'Folder' . str_pad($i, 2, '0', STR_PAD_LEFT));
+}
+
 }
