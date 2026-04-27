@@ -558,8 +558,8 @@ Route::controller(SearchMatchQuestionsController::class)
     ->group(function () {
         Route::get('mod-10/mb/my-collateral-documents', 'index')->name('collateral.index');
         Route::post('mod-10/mb/my-collateral-documents/upload', 'upload')->name('collateral.upload');
-        Route::get('mod-10/mb/my-collateral-documents/download/{type}/{file}', 'download')->name('collateral.download');
-        Route::delete('mod-10/mb/my-collateral-documents/delete/{type}/{file}', 'delete')->name('collateral.delete');
+        Route::get('mod-10/mb/my-collateral-documents/download/{type}/{folder}/{file}', 'download')->name('collateral.download');
+        Route::delete('mod-10/mb/my-collateral-documents/delete/{type}/{folder}/{file}', 'delete')->name('collateral.delete');
     });
 
 

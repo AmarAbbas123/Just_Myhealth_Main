@@ -4,7 +4,7 @@
     <!-- Hero Section -->
 <section class="relative h-80 flex items-start lg:items-center pt-24 lg:pt-32">
     <div class="absolute inset-0 -z-10">
-        <img src="{{ asset('images/welcome-page/hero-bg.png') }}" alt="Hero Background" class="w-full h-full object-cover object-center">
+        <img src="{{ asset('images/hero-bg.png') }}" alt="Hero Background" class="w-full h-full object-cover object-center">
         <div class="absolute inset-0 bg-gradient-to-r from-black/60 to-black/30"></div>
     </div>
 
@@ -15,7 +15,7 @@
                 <path stroke-linecap="round" stroke-linejoin="round" d="M3 9.75L12 3l9 6.75v11.25A1.5 1.5 0 0119.5 21H4.5A1.5 1.5 0 013 21V9.75z" />
             </svg>
             <span>Home</span>
-            <span class="text-white/60">›</span>
+            <span class="text-white/60">&rsaquo;</span>
             <span class="text-white font-semibold">Online Counselling</span>
         </div>
 
@@ -27,9 +27,7 @@
     </div>
 </section>
 
-    <!-- Navbar is in layouts/app.blade.php -->
-
-   
+    <!-- Navbar is in layouts/app.blade.php -->   
 
     <div class="container-fluid mx-auto pt-10 px-4 md:px-6 lg:px-4 bg-white min-h-screen">
         
@@ -39,92 +37,30 @@
             ensuring you receive the support and guidance you deserve.
         </p>
 
-        {{-- Services --}}
-        <section class="bg-white">
-            <div class="container mx-auto px-4 md:px-6 lg:px-12 pt-12">
-
-                @php
-                    $cards = [
-                        [
-                            'title' => 'Cognitive Behavioral Therapy (CBT)',
-                            'desc' =>
-                                'Focuses on identifying and changing negative thought patterns and behaviors. Effective for anxiety, depression, and stress management.',
-                                'image' => asset('images/therapy-types/Cognitive_Behavioral_Therapy_20251121_030950.png') 
-                        ],
-                        [
-                            'title' => 'Solution Focus Therapy',
-                            'desc' =>
-                                'Solution Focus Therapy with mindfulness practices. Ideal for individuals dealing with borderline personality disorder, self-harm, and emotional regulation issues.',
-                                'image' => asset('images/therapy-types/Solution_Focused_Therapy_20251121_034859.png')                        ],
-                        [
-                            'title' => 'Psychodynamic Therapy',
-                            'desc' =>
-                                'Explores unconscious processes and past experiences to understand current behavior. Helps with deep-seated emotional issues and relationship problems.',
-                                'image' => asset('images/therapy-types/Psychodynamic_Therapy_20251121_033104.png')
-                        ],
-                        [
-                            'title' => 'Humanistic Therapy',
-                            'desc' =>
-                                'Emphasizes personal growth and self-actualization. Encourages self-exploration and self-acceptance.',
-                                'image' => asset('images/therapy-types/Humanistic_Therapy_20251121_033547.png')
-                        ],
-                        [
-                            'title' => 'Couples Therapy',
-                            'desc' =>
-                                'Aims to improve communication and resolve conflicts within relationships. Supports couples in building stronger, healthier connections.',
-                                'image' => asset('images/therapy-types/Couples_Therapy_20251121_034002.png')
-                        ],
-                    ];
-                @endphp
-
-                <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
-                    @foreach ($cards as $card)
-                        <div x-data="{ hover: false }" @mouseenter="hover = true" @mouseleave="hover = false"
-                            class="bg-white rounded-2xl shadow-md p-6 text-center relative transform transition duration-300"
-                            :class="{ 'scale-105 shadow-xl': hover }">
-
-                            <a href="">
-                                <div class="flex justify-center -mt-12 mb-4">
-                                    <div class="bg-white p-4">
-                                        <img src="{{ asset($card['image']) }}" alt="{{ $card['title'] }}"
-                                            class="w-40 h-33">
-                                    </div>
-                                </div>
-
-                                <h3 class="text-xl font-semibold text-gray-900">
-                                    {{ $card['title'] }}
-                                </h3>
-
-                                <p class="mt-3 text-gray-600 text-sm leading-relaxed">
-                                    {{ $card['desc'] }}
-                                </p>
-                            </a>
-
-                        </div>
-                    @endforeach
-                </div>
-
-            </div>
-        </section>
-
-
-        <br><br>
-
-        {{-- Why Choose Us --}}
         <section class="bg-gradient-to-b from-gray-50 to-white py-16">
             <div class="container mx-auto px-4 md:px-6 lg:px-12">
-                <h2 class="text-3xl font-bold text-gray-900 mb-10 text-center md:text-left">Why Choose Us?</h2>
-                <p class="text-gray-700 text-base md:text-lg leading-relaxed max-w-5xl mx-auto mb-12 text-justify">
-                    "Our aim is to be one of the most outstanding online therapy provision. Therefore, we aim to match
-                    you with a client within 15 minutes of you signing up. We understand that there can be long waiting
-                    times to see a therapist. Such experience can sometimes escalate the distress that you are
-                    experiencing. We at Justmyhealth, further aim for you to be able to access therapy within two days
-                    of signing up. We work with you according to your presenting issues, and therefore the best
-                    therapist is allocated, to facilitate your needs. We aim to have resources, such as worksheets,
-                    which will explain more about the issues that you are experiencing. Please acknowledge that we do
-                    have your interest at heart, therefore please use the accessible email to reach out to us, if there
-                    is a complaint or any other concerns. "
-                </p>
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-10 items-start mb-14">
+                    <div class="overflow-hidden rounded-3xl shadow-lg">
+                        <img
+                            src="{{ asset('images/welcome-page/therapyjourney.png') }}"
+                            alt="Therapy Journey"
+                            class="w-full h-auto object-cover">
+                    </div>
+                    <div>
+                        <h2 class="text-3xl font-bold text-gray-900 mb-6">Why Choose Us?</h2>
+                        <p class="text-gray-700 text-base md:text-lg leading-relaxed text-justify">
+                            "Our aim is to be one of the most outstanding online therapy provision. Therefore, we aim to match
+                            you with a client within 15 minutes of you signing up. We understand that there can be long waiting
+                            times to see a therapist. Such experience can sometimes escalate the distress that you are
+                            experiencing. We at Justmyhealth, further aim for you to be able to access therapy within two days
+                            of signing up. We work with you according to your presenting issues, and therefore the best
+                            therapist is allocated, to facilitate your needs. We aim to have resources, such as worksheets,
+                            which will explain more about the issues that you are experiencing. Please acknowledge that we do
+                            have your interest at heart, therefore please use the accessible email to reach out to us, if there
+                            is a complaint or any other concerns. "
+                        </p>
+                    </div>
+                </div>
 
                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-8">
                     @foreach ([
@@ -194,7 +130,7 @@
                     </p>
                     <p class="text-gray-600 leading-relaxed">
                         The cost of therapy ranges from
-                        <span class="font-semibold text-indigo-600">£50 to £70 per week</span>
+                        <span class="font-semibold text-indigo-600">&pound;50 to &pound;70 per week</span>
                         (billed every 4 weeks). Variation depends on location, type of therapy,
                         preferences, and therapist availability.
                     </p>
@@ -207,25 +143,25 @@
                 <div
                     class="bg-white rounded-2xl shadow-lg border-t-4 border-indigo-600 p-6 flex flex-col justify-between hover:shadow-2xl transition">
                     <div class="text-center">
-                        <h3 class="text-xl font-semibold text-gray-800">£50 to £70</h3>
+                        <h3 class="text-xl font-semibold text-gray-800">&pound;50 to &pound;70</h3>
                         <p class="text-gray-500">per weekly session</p>
                     </div>
 
                     <ul class="mt-6 space-y-3 text-gray-700">
-                        <li class="flex items-center gap-2"><span class="text-green-500">✔</span> End-to-End Encryption
+                        <li class="flex items-center gap-2"><span class="text-green-500">&#10004;</span> End-to-End Encryption
                         </li>
-                        <li class="flex items-center gap-2"><span class="text-green-500">✔</span> Confidential Messaging
+                        <li class="flex items-center gap-2"><span class="text-green-500">&#10004;</span> Confidential Messaging
                         </li>
-                        <li class="flex items-center gap-2"><span class="text-green-500">✔</span> Private Scheduling
+                        <li class="flex items-center gap-2"><span class="text-green-500">&#10004;</span> Private Scheduling
                         </li>
-                        <li class="flex items-center gap-2"><span class="text-green-500">✔</span> Secure Document
+                        <li class="flex items-center gap-2"><span class="text-green-500">&#10004;</span> Secure Document
                             Sharing</li>
-                        <li class="flex items-center gap-2"><span class="text-green-500">✔</span> Session Recording
+                        <li class="flex items-center gap-2"><span class="text-green-500">&#10004;</span> Session Recording
                             Controls</li>
-                        <li class="flex items-center gap-2"><span class="text-green-500">✔</span> Emergency Support</li>
-                        <li class="flex items-center gap-2"><span class="text-green-500">✔</span> Virtual Waiting Rooms
+                        <li class="flex items-center gap-2"><span class="text-green-500">&#10004;</span> Emergency Support</li>
+                        <li class="flex items-center gap-2"><span class="text-green-500">&#10004;</span> Virtual Waiting Rooms
                         </li>
-                        <li class="flex items-center gap-2"><span class="text-green-500">✔</span> Therapist Verification
+                        <li class="flex items-center gap-2"><span class="text-green-500">&#10004;</span> Therapist Verification
                         </li>
                     </ul>
 
