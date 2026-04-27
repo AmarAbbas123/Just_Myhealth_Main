@@ -10,6 +10,7 @@ use App\Services\UserTimeZoneService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Schema;
 use Carbon\Carbon;
 
 class PatientsBookSlotsController extends Controller
@@ -30,6 +31,11 @@ class PatientsBookSlotsController extends Controller
     // Show HTML page (GET /therapists/{id}/calendar)
     public function show(Request $request, $therapistId)
     {
+        $userId = (int) Auth::id();
+        if ($redirect = $this->redirectIfNoSessionCredits($userId)) {
+            return $redirect;
+        }
+
         $viewerTimeZone = $this->resolveUserTimeZoneName(Auth::user());
 
         // Load all relations
@@ -107,6 +113,14 @@ class PatientsBookSlotsController extends Controller
     // API: returns JSON slots for one date (GET /therapists/{id}/calendar/slots?date=YYYY-MM-DD)
     public function slots(Request $request, $therapistId)
     {
+        $userId = (int) Auth::id();
+        if ($this->getRemainingSessionCreditsForUser($userId) <= 0) {
+            return response()->json([
+                'message' => 'Please purchase additional sessions before booking.',
+                'redirect' => route('pay.sessions.options'),
+            ], 403);
+        }
+
         $viewerTimeZone = $this->resolveUserTimeZoneName(Auth::user());
         $date = $request->query('date') ?? Carbon::now($viewerTimeZone)->toDateString();
         $slots = $this->getSlotsForWeek($therapistId, $date, $viewerTimeZone);
@@ -123,6 +137,9 @@ class PatientsBookSlotsController extends Controller
         $userId = Auth::id();
         if (! $userId) {
             return redirect()->route('login');
+        }
+        if ($redirect = $this->redirectIfNoSessionCredits((int) $userId)) {
+            return $redirect;
         }
 
         $request->validate([
@@ -329,5 +346,38 @@ class PatientsBookSlotsController extends Controller
     {
         return app(UserTimeZoneService::class)->getUserHomeTimezoneName($user);
     }
-}
 
+    private function redirectIfNoSessionCredits(int $userId)
+    {
+        if ($this->getRemainingSessionCreditsForUser($userId) > 0) {
+            return null;
+        }
+
+        return redirect()
+            ->route('pay.sessions.options')
+            ->with('session_credit_required', true)
+            ->with('session_credit_message', 'You need to purchase additional sessions before booking.');
+    }
+
+    private function getRemainingSessionCreditsForUser(int $userId): int
+    {
+        $table = 'sys_finance_user_type_30_open_session_balance';
+
+        if (! Schema::hasTable($table) || ! Schema::hasColumn($table, 'RemainingSessionCredits')) {
+            return 0;
+        }
+
+        $lookupColumn = collect(['PatientUserID', 'UserID', 'ID'])
+            ->first(fn($column) => Schema::hasColumn($table, $column));
+
+        if (! $lookupColumn) {
+            return 0;
+        }
+
+        $credits = DB::table($table)
+            ->where($lookupColumn, $userId)
+            ->value('RemainingSessionCredits');
+
+        return max(0, (int) $credits);
+    }
+}

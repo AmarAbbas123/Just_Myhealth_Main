@@ -1,5 +1,5 @@
 <x-app1>
-    <div class="space-y-6">
+    <div x-data="{ showCreditModal: {{ session('session_credit_required') ? 'true' : 'false' }} }" class="space-y-6">
         @if (session('success'))
             <div class="mb-4 p-4 rounded-lg bg-green-100 text-green-800 border border-green-300">
                 {{ session('success') }}
@@ -55,6 +55,30 @@
                     </form>
                 </div>
             @endforeach
+        </div>
+
+        <div
+            x-show="showCreditModal"
+            x-cloak
+            class="fixed inset-0 z-50 flex items-center justify-center p-4"
+        >
+            <div class="absolute inset-0 bg-black/50" @click="showCreditModal = false"></div>
+
+            <div class="relative z-10 w-full max-w-md rounded-xl bg-white p-6 shadow-xl">
+                <h2 class="text-lg font-semibold text-gray-900">Session Credits Required</h2>
+                <p class="mt-2 text-sm text-gray-700">
+                    {{ session('session_credit_message', 'You need to purchase additional sessions before booking.') }}
+                </p>
+                <div class="mt-4 flex justify-end">
+                    <button
+                        type="button"
+                        @click="showCreditModal = false"
+                        class="rounded bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-700"
+                    >
+                        OK
+                    </button>
+                </div>
+            </div>
         </div>
     </div>
 
