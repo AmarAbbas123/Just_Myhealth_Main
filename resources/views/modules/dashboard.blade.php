@@ -1,4 +1,4 @@
-﻿{{-- resources/views/dashboard.blade.php --}}
+﻿﻿{{-- resources/views/dashboard.blade.php --}}
 
 <x-app1>
     <div class="space-y-6">
@@ -9,6 +9,7 @@
             $therapistChats = collect($therapistChats ?? []);
             $patientUpcomingSessions = collect($patientUpcomingSessions ?? []);
             $patientChats = collect($patientChats ?? []);
+            $showPatientOnboardingJourney = (bool) ($showPatientOnboardingJourney ?? false);
         @endphp
 
         <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
@@ -203,6 +204,35 @@
             </div>
         @else
             <div class="space-y-6">
+                @if($showPatientOnboardingJourney)
+                    <section class="rounded-2xl border border-gray-200 bg-white p-4 shadow-sm dark:border-gray-700 dark:bg-gray-800">
+                        <div class="grid gap-4 lg:grid-cols-[56%_44%] lg:items-start">
+                            <div class="overflow-hidden rounded-lg border-2 border-[#8fd2cb]">
+                                <img
+                                    src="{{ asset('images/welcome-page/therapyjourney.png') }}"
+                                    alt="Therapy onboarding journey infographic"
+                                    class="h-auto w-full object-cover">
+                            </div>
+                            <div class="px-1">
+                                <h3 class="text-xl font-semibold text-gray-900 dark:text-gray-100">Therapy On-Boarding Journey:</h3>
+                                <p class="mt-2 text-base leading-6 text-gray-800 dark:text-gray-200">
+                                    The JustMy.Health platform has been designed with your health and wellbeing at the center of our services and solutions:
+                                </p>
+                                <ul class="mt-3 list-disc space-y-1 pl-6 text-base leading-6 text-gray-900 dark:text-gray-200">
+                                    <li>Step 1: Create Account (Completed)</li>
+                                    <li>Step 2: Purchase a block of Sessions</li>
+                                    <li>Step 3: Complete your profile questions</li>
+                                    <li>Step 4: Describe your current issue</li>
+                                    <li>Step 5: We suggest suitable therapists</li>
+                                    <li>Step 6: You select your therapists</li>
+                                    <li>Step 7: You book your 1<sup>st</sup> session</li>
+                                    <li>Step 8: Start the wellbeing journey</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </section>
+                @endif
+
                 <div>
                     <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                         <div>

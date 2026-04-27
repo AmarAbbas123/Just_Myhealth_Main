@@ -306,7 +306,7 @@
         ];
 
         /* ---------- 2) Conditionally hidden menu items (hide in case 1 & 2) ---------- */
-        $hideUntilOnboardComplete = ['History', 'Dietitian'];
+        $hideUntilOnboardComplete = ['History', 'Dietitian', 'Messages'];
 
         $isCounsellingMenu = function ($item) {
             $name = strtolower(trim($item->DisplayName));

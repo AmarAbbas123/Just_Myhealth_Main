@@ -32,6 +32,7 @@ class DashboardController extends Controller
         if ((int) $user->UserType === 1) {
             $viewData['patientUpcomingSessions'] = $this->getPatientUpcomingSessions($user);
             $viewData['patientChats'] = $this->getPatientChats($user);
+            $viewData['showPatientOnboardingJourney'] = $this->shouldShowPatientOnboardingJourney($user);
         }
 
         return view('modules.dashboard', $viewData);
@@ -140,6 +141,18 @@ class DashboardController extends Controller
             ->get();
 
         return $this->buildChatList($patient, $therapists, 30);
+    }
+
+    private function shouldShowPatientOnboardingJourney(User $patient): bool
+    {
+        if ((int) $patient->UserType !== 1) {
+            return false;
+        }
+
+        return ! SysUserType30OnboardQuestionsAnswers::query()
+            ->where('PatientUserID', $patient->ID)
+            ->where('QuestionCompletionStatus', 1)
+            ->exists();
     }
 
     private function buildChatList(User $currentUser, Collection $peers, int $peerType): Collection
