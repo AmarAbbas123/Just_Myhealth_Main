@@ -17,7 +17,7 @@
 
         <x-page-header />
 
-        <div x-data="{ type: 'private', folder: 'Folder01' }" class="flex items-center gap-3">
+        <div x-data="{ type: 'private', folder: '{{ \Illuminate\Support\Str::slug($folders[0]) }}' }" class="flex items-center gap-3">
 
             <!-- TYPE DROPDOWN -->
             <div class="relative">
@@ -37,9 +37,11 @@
                 <select x-model="folder"
                     class="appearance-none border border-gray-300 rounded-md px-4 py-2 pr-10 text-sm bg-white focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
 
-                    @foreach ($folders as $f)
-                        <option value="{{ $f }}">{{ $f }}</option>
-                    @endforeach
+                @foreach($folders as $f)
+                    <option value="{{ \Illuminate\Support\Str::slug($f) }}">
+                        {{ $f }}
+                    </option>
+                @endforeach
 
                 </select>
 
