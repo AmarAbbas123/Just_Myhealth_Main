@@ -77,6 +77,18 @@
                                             @click="openCreateModal(date, time)"></div>
                                     </template>
 
+                                    <!-- Carry-over slots from previous day -->
+                                    <template x-for="slot in carryOverSlotsForDate(date)" :key="`carry-${slot.id}-${date}`">
+                                        <div class="absolute left-1 right-1 rounded p-2 text-xs"
+                                            :class="[slotClass(slot.type), isReadOnlySlot(slot.type) ? 'cursor-not-allowed opacity-90' : 'cursor-pointer']"
+                                            :title="isReadOnlySlot(slot.type) ? 'Booked slot (read-only)' : 'Edit slot'"
+                                            :style="carryOverSlotStyle(slot)"
+                                            @click.stop="editSlot(slot)">
+                                            <div class="font-semibold" x-text="slot.type"></div>
+                                            <div x-text="slot.time_from + ' (1h)'"></div>
+                                        </div>
+                                    </template>
+
                                     <!-- Slots -->
                                     <template x-for="slot in slotsForDate(date)" :key="slot.id">
                                         <div class="absolute left-1 right-1 rounded p-2 text-xs"
@@ -255,23 +267,73 @@
                             .filter((v, i, a) => a.findIndex(s => s.id === v.id) === i);
                     },
 
+                    formatLocalDate(d) {
+                        const y = d.getFullYear();
+                        const m = String(d.getMonth() + 1).padStart(2, '0');
+                        const day = String(d.getDate()).padStart(2, '0');
+                        return `${y}-${m}-${day}`;
+                    },
+
+                    prevDate(date) {
+                        const d = new Date(date + 'T12:00:00');
+                        d.setDate(d.getDate() - 1);
+                        return this.formatLocalDate(d);
+                    },
+
+                    toMinutes(time) {
+                        const [h, m] = time.split(':').map(Number);
+                        return h * 60 + m;
+                    },
+
+                    durationMinutes(slot) {
+                        let minutes = this.diffMinutes(slot.time_from, slot.time_to);
+                        if (minutes <= 0) minutes += 24 * 60;
+                        return minutes;
+                    },
+
+                    startDayMinutes(slot) {
+                        const from = this.toMinutes(slot.time_from);
+                        const availableUntilMidnight = 24 * 60 - from;
+                        return Math.min(this.durationMinutes(slot), availableUntilMidnight);
+                    },
+
+                    carryOverMinutes(slot) {
+                        return Math.max(0, this.durationMinutes(slot) - this.startDayMinutes(slot));
+                    },
+
+                    isCrossDaySlot(slot) {
+                        return this.carryOverMinutes(slot) > 0;
+                    },
+
+                    carryOverSlotsForDate(date) {
+                        const previous = this.prevDate(date);
+                        return this.slotsForDate(previous).filter(slot => this.isCrossDaySlot(slot));
+                    },
+
                     slotStyle(slot) {
                         const startIndex = this.timeRows.indexOf(slot.time_from);
-                        const minutes = this.diffMinutes(slot.time_from, slot.time_to);
+                        const minutes = this.startDayMinutes(slot);
                         return `top:${startIndex * this.rowHeight}px;height:${(minutes/30)*this.rowHeight}px;`;
                     },
 
-                    diffMinutes(a, b) {
-                        const [ah, am] = a.split(':');
-                        const [bh, bm] = b.split(':');
-                        return (bh * 60 + +bm) - (ah * 60 + +am);
+                    carryOverSlotStyle(slot) {
+                        const minutes = this.carryOverMinutes(slot);
+                        return `top:0px;height:${(minutes/30)*this.rowHeight}px;`;
                     },
+
+                diffMinutes(a, b) {
+                    const [ah, am] = a.split(':');
+                    const [bh, bm] = b.split(':');
+                    let minutes = (bh * 60 + +bm) - (ah * 60 + +am);
+                    if (minutes <= 0) minutes += 24 * 60;
+                    return minutes;
+                },
 
                     slotClass(type) {
                         return {
-                            'Available': 'bg-green-100 border border-green-200 text-green-800',
-                            'Busy': 'bg-red-200 border border-red-600',
-                            'Blocked': 'bg-gray-200 border border-gray-600'
+                            'Available': 'bg-green-200 text-green-800 border border-green-600',
+                            'Busy': 'bg-red-200 text-red-800 border border-red-600',
+                            'Blocked': 'bg-gray-300 border border-gray-800'
                         } [type] || 'bg-gray-100';
                     },
 

@@ -122,6 +122,10 @@ class TherapistsBookSlotsController extends Controller
 
             $startLocal = Carbon::createFromFormat('Y-m-d H:i', $date . ' ' . $timeFrom, $therapistTimeZone);
             $endLocal = $startLocal->copy()->addHour();
+            if (! $this->isExactSixtyMinuteWindow($startLocal, $endLocal)) {
+                DB::rollBack();
+                return response()->json(['error' => 'Session duration must be exactly 60 minutes.'], 422);
+            }
 
             $startUtc = $startLocal->copy()->setTimezone('UTC');
             $endUtc = $endLocal->copy()->setTimezone('UTC');
@@ -202,6 +206,10 @@ class TherapistsBookSlotsController extends Controller
 
             $startLocal = Carbon::createFromFormat('Y-m-d H:i', $date . ' ' . $timeFrom, $therapistTimeZone);
             $endLocal = $startLocal->copy()->addHour();
+            if (! $this->isExactSixtyMinuteWindow($startLocal, $endLocal)) {
+                DB::rollBack();
+                return response()->json(['error' => 'Session duration must be exactly 60 minutes.'], 422);
+            }
             $startUtc = $startLocal->copy()->setTimezone('UTC');
             $endUtc = $endLocal->copy()->setTimezone('UTC');
             $bufferedEndUtc = $endUtc->copy()->addMinutes(30);
@@ -334,5 +342,10 @@ class TherapistsBookSlotsController extends Controller
     private function isHalfHourSlot(string $time): bool
     {
         return preg_match('/^\d{2}:(00|30)$/', $time) === 1;
+    }
+
+    private function isExactSixtyMinuteWindow(Carbon $start, Carbon $end): bool
+    {
+        return $start->diffInMinutes($end) === 60;
     }
 }

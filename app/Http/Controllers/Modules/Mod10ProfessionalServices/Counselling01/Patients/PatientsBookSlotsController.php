@@ -145,7 +145,7 @@ class PatientsBookSlotsController extends Controller
         $request->validate([
             'date' => 'required|date_format:Y-m-d',
             'time_from' => 'required|date_format:H:i',
-            'time_to' => 'required|date_format:H:i|after:time_from',
+            'time_to' => 'required|date_format:H:i',
             'session_type' => 'required|in:Video,Audio,Message',
         ]);
 
@@ -159,6 +159,15 @@ class PatientsBookSlotsController extends Controller
         try {
             $startLocal = Carbon::createFromFormat('Y-m-d H:i', "{$date} {$timeFrom}", $viewerTimeZone);
             $endLocal = Carbon::createFromFormat('Y-m-d H:i', "{$date} {$timeTo}", $viewerTimeZone);
+            if ($endLocal->lte($startLocal)) {
+                $endLocal->addDay();
+            }
+            if (! $this->isExactSixtyMinuteWindow($startLocal, $endLocal)) {
+                DB::rollBack();
+                return back()->withErrors([
+                    'slot' => 'Session duration must be exactly 60 minutes.',
+                ]);
+            }
             $startUtc = $startLocal->copy()->setTimezone('UTC');
             $endUtc = $endLocal->copy()->setTimezone('UTC');
 
@@ -217,8 +226,14 @@ class PatientsBookSlotsController extends Controller
 
             DB::commit();
 
-            return redirect()->route('therapist.calendar.show', ['id' => $therapistId, 'date' => $date])
-                ->with('reload', true);
+            $remainingCredits = $this->getRemainingSessionCreditsForUser((int) $userId);
+            if ($remainingCredits <= 0) {
+                return redirect('/mod-10/01/usr-therapy-calendar')
+                    ->with('success', 'Session booked successfully.');
+            }
+
+            return redirect()->route('session.book', ['id' => $therapistId, 'date' => $date])
+                ->with('success', 'Session booked successfully.');
         } catch (\Exception $e) {
             DB::rollBack();
             return back()->withErrors(['error' => 'Booking failed: ' . $e->getMessage()]);
@@ -379,5 +394,10 @@ class PatientsBookSlotsController extends Controller
             ->value('RemainingSessionCredits');
 
         return max(0, (int) $credits);
+    }
+
+    private function isExactSixtyMinuteWindow(Carbon $start, Carbon $end): bool
+    {
+        return $start->diffInMinutes($end) === 60;
     }
 }

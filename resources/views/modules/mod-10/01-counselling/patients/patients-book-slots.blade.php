@@ -7,6 +7,15 @@
                 <x-page-header />
             </div>
 
+            @if (session('success'))
+                <div class="mb-4 rounded-md border border-green-200 bg-green-50 px-4 py-3 text-sm text-green-800">
+                    <span>{{ session('success') }} If you want its details visit this </span>
+                    <a href="/mod-10/01/usr-therapy-calendar" class="font-semibold underline">
+                        Booked Session Details
+                    </a>
+                </div>
+            @endif
+
             <!-- Timezone Notification -->
             <div class="mb-4">
                 <div class="bg-indigo-50 border border-indigo-200 text-indigo-800 px-4 py-2 rounded text-sm">
@@ -45,7 +54,7 @@
                         </div>
 
                         <!-- WEEKLY TABLE (REPLACE previous table) -->
-                        <div class="overflow-x-auto">
+                        <div class="relative border rounded h-[calc(var(--rows)*3rem+2.5rem)]">
                             <div class="relative">
                                 <table class="min-w-full border text-sm">
                                     <thead class="bg-gray-100">
@@ -111,6 +120,33 @@
                                                                     </div>
 
 
+                                                                </template>
+                                                            </template>
+
+                                                            <!-- Render carry-over from previous day at 00:00 -->
+                                                            <template x-if="row.time === '00:00'">
+                                                                <template x-for="slot in carryOverSlotsForDate(d)" :key="`carry-${slot.id}-${d}`">
+                                                                    <div @click.stop="slot.type === 'Available' && 
+                                                                    $store.booking.open({
+                                                                        date: slot.date,
+                                                                        start: slot.time_from,
+                                                                        end: slot.time_to,
+                                                                        therapy_types: ['Video','Audio','Message'],
+                                                                        type: slot.type
+                                                                    }, therapistId)"
+                                                                        class="absolute left-1 right-1 rounded-md overflow-hidden flex items-center justify-center text-xs font-semibold cursor-pointer z-50"
+                                                                        :class="slot.type === 'Available' ?
+                                                                            'bg-green-200 text-green-800 border border-green-600' :
+                                                                            (slot.type === 'Busy' ?
+                                                                                'bg-red-200 text-red-800 border border-red-600' :
+                                                                                (slot.type === 'Blocked' ?
+                                                                                    'bg-gray-300 text-gray-800' :
+                                                                                    'bg-yellow-200 text-yellow-800'))"
+                                                                        :style="carryOverBlockStyle(slot)">
+                                                                        <div class="text-center leading-tight">
+                                                                            <div x-text="slot.type"></div>
+                                                                        </div>
+                                                                    </div>
                                                                 </template>
                                                             </template>
                                                         </div>
@@ -282,6 +318,49 @@
                     return this.slots[date] || [];
                 },
 
+                formatLocalDate(d) {
+                    const y = d.getFullYear();
+                    const m = String(d.getMonth() + 1).padStart(2, '0');
+                    const day = String(d.getDate()).padStart(2, '0');
+                    return `${y}-${m}-${day}`;
+                },
+
+                prevDate(date) {
+                    const d = new Date(date + 'T12:00:00');
+                    d.setDate(d.getDate() - 1);
+                    return this.formatLocalDate(d);
+                },
+
+                toMinutes(time) {
+                    const [hh, mm] = time.split(':').map(Number);
+                    return hh * 60 + mm;
+                },
+
+                durationMinutes(slot) {
+                    let duration = this.toMinutes(slot.time_to) - this.toMinutes(slot.time_from);
+                    if (duration <= 0) duration += 24 * 60;
+                    return duration;
+                },
+
+                startDayMinutes(slot) {
+                    const from = this.toMinutes(slot.time_from);
+                    const availableUntilMidnight = 24 * 60 - from;
+                    return Math.min(this.durationMinutes(slot), availableUntilMidnight);
+                },
+
+                carryOverMinutes(slot) {
+                    return Math.max(0, this.durationMinutes(slot) - this.startDayMinutes(slot));
+                },
+
+                isCrossDaySlot(slot) {
+                    return this.carryOverMinutes(slot) > 0;
+                },
+
+                carryOverSlotsForDate(date) {
+                    const previous = this.prevDate(date);
+                    return this.slotsForDate(previous).filter(slot => this.isCrossDaySlot(slot));
+                },
+
                 // returns true if slot starts exactly at the given time (H:i)
                 slotStartsAt(slot, time) {
                     return slot.time_from === time;
@@ -289,17 +368,19 @@
 
                 // compute style for block: height based on duration (rows * 48px row height) and top offset 0
                 blockStyle(slot) {
-                    const toMinutes = (t) => {
-                        const [hh, mm] = t.split(':').map(Number);
-                        return hh * 60 + mm;
-                    };
-
-                    const duration = toMinutes(slot.time_to) - toMinutes(slot.time_from);
+                    const duration = this.startDayMinutes(slot);
 
                     // each table row is 30 minutes and 48px high
                     const blocks = duration / 30;
                     const height = blocks * 48;
 
+                    return `top: 0; height: ${height}px;`;
+                },
+
+                carryOverBlockStyle(slot) {
+                    const duration = this.carryOverMinutes(slot);
+                    const blocks = duration / 30;
+                    const height = blocks * 48;
                     return `top: 0; height: ${height}px;`;
                 },
 

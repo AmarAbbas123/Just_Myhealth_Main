@@ -13,7 +13,7 @@ class TherapistDocumentController extends Controller
     {
         return 'private/' . auth()->id();
     }
-    
+
     protected function commonBasePath()
     {
         return 'common/' . auth()->id();
@@ -23,24 +23,27 @@ class TherapistDocumentController extends Controller
     public function index()
     {
         $files = [];
-    
+
         foreach ($this->folders() as $folder) {
-    
-            // COMMON (user scoped now)
-            $commonPath = $this->commonBasePath() . '/' . $folder;
+
+            $slug = $this->folderSlug($folder);
+
+            // COMMON
+            $commonPath = 'common/' . auth()->id() . '/' . $slug;
             if (Storage::disk('therapy_docs')->exists($commonPath)) {
                 foreach (Storage::disk('therapy_docs')->files($commonPath) as $file) {
                     $files[] = [
                         'name' => basename($file),
                         'path' => $file,
                         'type' => 'common',
-                        'folder' => $folder,
+                        'folder' => $folder, // show real name
+                        'folder_slug' => $slug,
                     ];
                 }
             }
-    
+
             // PRIVATE
-            $privatePath = $this->privateBasePath() . '/' . $folder;
+            $privatePath = 'private/' . auth()->id() . '/' . $slug;
             if (Storage::disk('therapy_docs')->exists($privatePath)) {
                 foreach (Storage::disk('therapy_docs')->files($privatePath) as $file) {
                     $files[] = [
@@ -48,11 +51,12 @@ class TherapistDocumentController extends Controller
                         'path' => $file,
                         'type' => 'private',
                         'folder' => $folder,
+                        'folder_slug' => $slug,
                     ];
                 }
             }
         }
-    
+
         return view(
             'modules.mod-10.01-counselling.therapists.Therapists-collateral-documents',
             [
@@ -69,35 +73,44 @@ class TherapistDocumentController extends Controller
             'type' => 'required|in:private,common',
             'folder' => 'required'
         ]);
-    
-        $folder = $request->input('folder');
-    
+
+        $folderName = $request->input('folder');
+        $folderSlug = $this->folderSlug($folderName);
+
+        // base path
         if ($request->type === 'common') {
-            $path = $this->commonBasePath() . '/' . $folder;
+            $basePath = 'common/' . auth()->id();
         } else {
-            $path = $this->privateBasePath() . '/' . $folder;
+            $basePath = 'private/' . auth()->id();
         }
-    
+
+        $path = $basePath . '/' . $folderSlug;
+
         $file = $request->file('file');
-    
-        $originalName = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
-        $extension = $file->getClientOriginalExtension();
-    
-        $fileName = time() . '-' . Str::slug($originalName) . '.' . $extension;
-    
+
+        // ✔ KEEP ORIGINAL NAME ONLY
+        $fileName = $file->getClientOriginalName();
+
+        // ✔ DUPLICATE CHECK
+        if (Storage::disk('therapy_docs')->exists($path . '/' . $fileName)) {
+            return back()->with('error', 'File already exists in this folder');
+        }
+
         Storage::disk('therapy_docs')->makeDirectory($path);
         Storage::disk('therapy_docs')->putFileAs($path, $file, $fileName);
-    
+
         return back()->with('success', 'File uploaded');
     }
 
     public function download($type, $folder, $file)
     {
-        if ($type === 'common') {
-            $path = $this->commonBasePath() . '/' . $folder . '/' . $file;
-        } else {
-            $path = $this->privateBasePath() . '/' . $folder . '/' . $file;
-        }
+        $slug = $this->folderSlug($folder);
+    
+        $base = $type === 'common'
+            ? 'common/' . auth()->id()
+            : 'private/' . auth()->id();
+    
+        $path = $base . '/' . $slug . '/' . $file;
     
         abort_unless(Storage::disk('therapy_docs')->exists($path), 404);
     
@@ -106,11 +119,13 @@ class TherapistDocumentController extends Controller
 
     public function delete($type, $folder, $file)
     {
-        if ($type === 'common') {
-            $path = $this->commonBasePath() . '/' . $folder . '/' . $file;
-        } else {
-            $path = $this->privateBasePath() . '/' . $folder . '/' . $file;
-        }
+        $slug = $this->folderSlug($folder);
+    
+        $base = $type === 'common'
+            ? 'common/' . auth()->id()
+            : 'private/' . auth()->id();
+    
+        $path = $base . '/' . $slug . '/' . $file;
     
         if (Storage::disk('therapy_docs')->exists($path)) {
             Storage::disk('therapy_docs')->delete($path);
@@ -119,9 +134,30 @@ class TherapistDocumentController extends Controller
         return back()->with('success', 'File deleted');
     }
 
-    protected function folders()
-{
-    return collect(range(1, 8))->map(fn($i) => 'Folder' . str_pad($i, 2, '0', STR_PAD_LEFT));
-}
+    protected function folderSlug($folder)
+    {
+        return Str::slug($folder); // e.g. bereavement-losses
+    }
 
+    protected function folders()
+    {
+        return [
+            'Bereavement / Losses',
+            'Building self Esteem',
+            'CBT (Cognitive Behavioral Therapy)',
+            'Children/Parent',
+            'Coping with triggers',
+            'Depression',
+            'Discrimination',
+            'Mindfulness',
+            'Motivation',
+            'Narcissistic Behavior',
+            'Panic attack / attack',
+            'Psychological Safety Mediation',
+            'Relationship',
+            'Self Reflection',
+            'Solution Focus',
+            'Visualization',
+        ];
+    }
 }
