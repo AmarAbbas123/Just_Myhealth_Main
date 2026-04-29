@@ -73,15 +73,16 @@
 
                                     <!-- Grid cells -->
                                     <template x-for="time in timeRows" :key="time">
-                                        <div class="h-12 border-b border-r border-gray-400 hover:bg-blue-50 cursor-pointer"
+                                        <div class="h-12 border-b border-r border-gray-400 cursor-pointer"
+                                            :class="isPastDateTime(date, time) ? 'bg-gray-200' : 'hover:bg-blue-50'"
                                             @click="openCreateModal(date, time)"></div>
                                     </template>
 
                                     <!-- Carry-over slots from previous day -->
                                     <template x-for="slot in carryOverSlotsForDate(date)" :key="`carry-${slot.id}-${date}`">
                                         <div class="absolute left-1 right-1 rounded p-2 text-xs"
-                                            :class="[slotClass(slot.type), isReadOnlySlot(slot.type) ? 'cursor-not-allowed opacity-90' : 'cursor-pointer']"
-                                            :title="isReadOnlySlot(slot.type) ? 'Booked slot (read-only)' : 'Edit slot'"
+                                            :class="[slotClass(slot), (isReadOnlySlot(slot.type) || isPastSlot(slot)) ? 'cursor-not-allowed opacity-90' : 'cursor-pointer']"
+                                            :title="isPastSlot(slot) ? 'Past slot (read-only)' : (isReadOnlySlot(slot.type) ? 'Booked slot (read-only)' : 'Edit slot')"
                                             :style="carryOverSlotStyle(slot)"
                                             @click.stop="editSlot(slot)">
                                             <div class="font-semibold" x-text="slot.type"></div>
@@ -92,8 +93,8 @@
                                     <!-- Slots -->
                                     <template x-for="slot in slotsForDate(date)" :key="slot.id">
                                         <div class="absolute left-1 right-1 rounded p-2 text-xs"
-                                            :class="[slotClass(slot.type), isReadOnlySlot(slot.type) ? 'cursor-not-allowed opacity-90' : 'cursor-pointer']"
-                                            :title="isReadOnlySlot(slot.type) ? 'Booked slot (read-only)' : 'Edit slot'"
+                                            :class="[slotClass(slot), (isReadOnlySlot(slot.type) || isPastSlot(slot)) ? 'cursor-not-allowed opacity-90' : 'cursor-pointer']"
+                                            :title="isPastSlot(slot) ? 'Past slot (read-only)' : (isReadOnlySlot(slot.type) ? 'Booked slot (read-only)' : 'Edit slot')"
                                             :style="slotStyle(slot)"
                                             @click.stop="editSlot(slot)">
                                             <div class="font-semibold" x-text="slot.type"></div>
@@ -213,6 +214,7 @@
             function therapistCalendar() {
                 return {
                     selectedDate: '{{ $selectedDate }}',
+                    userTimeZone: @json($userTimeZone ?? 'UTC'),
                     weeklySlots: @json($weeklySlots),
                     weekDates: @json($weekDates),
                     timeRows: @json($timeRows),
@@ -329,7 +331,12 @@
                     return minutes;
                 },
 
-                    slotClass(type) {
+                    slotClass(slot) {
+                        if (this.isPastSlot(slot)) {
+                            return 'bg-gray-300 text-gray-700 border border-gray-500';
+                        }
+
+                        const type = slot.type;
                         return {
                             'Available': 'bg-green-200 text-green-800 border border-green-600',
                             'Busy': 'bg-red-200 text-red-800 border border-red-600',
@@ -337,7 +344,52 @@
                         } [type] || 'bg-gray-100';
                     },
 
+                    isPastDateTime(date, time) {
+                        const now = this.nowInUserTimeZone();
+                        const targetDate = String(date || '');
+                        const targetTime = String(time || '').slice(0, 5);
+
+                        if (!targetDate || !targetTime) {
+                            return false;
+                        }
+                        if (targetDate < now.date) {
+                            return true;
+                        }
+                        if (targetDate > now.date) {
+                            return false;
+                        }
+
+                        return targetTime <= now.time;
+                    },
+
+                    nowInUserTimeZone() {
+                        const parts = new Intl.DateTimeFormat('en-CA', {
+                            timeZone: this.userTimeZone || 'UTC',
+                            year: 'numeric',
+                            month: '2-digit',
+                            day: '2-digit',
+                            hour: '2-digit',
+                            minute: '2-digit',
+                            hour12: false
+                        }).formatToParts(new Date());
+
+                        const get = (type) => parts.find(p => p.type === type)?.value || '00';
+
+                        return {
+                            date: `${get('year')}-${get('month')}-${get('day')}`,
+                            time: `${get('hour')}:${get('minute')}`,
+                        };
+                    },
+
+                    isPastSlot(slot) {
+                        return this.isPastDateTime(slot.date, slot.time_from);
+                    },
+
                     openCreateModal(date = '', time = '') {
+                        if (date && time && this.isPastDateTime(date, time)) {
+                            alert('You can only create future time slots.');
+                            return;
+                        }
                         this.manualModalOpen = false;
                         this.editing = false;
                         const [hour = '', minute = '00'] = (time || '').split(':');
@@ -367,6 +419,10 @@
                     },
 
                     editSlot(slot) {
+                        if (this.isPastSlot(slot)) {
+                            alert('Past slots cannot be edited.');
+                            return;
+                        }
                         this.manualModalOpen = false;
                         this.editing = true;
                         const [hour = '', minute = '00'] = (slot.time_from || '').split(':');
@@ -465,6 +521,10 @@
                     submitSlot(url, method, payload) {
                         if (!this.isHalfHourSlot(payload.time_from)) {
                             alert('Start time must be in 30-minute steps (HH:00 or HH:30).');
+                            return;
+                        }
+                        if (this.isPastDateTime(payload.date, payload.time_from)) {
+                            alert('You can only create or edit future time slots.');
                             return;
                         }
 

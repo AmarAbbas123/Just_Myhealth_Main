@@ -85,6 +85,7 @@ class PatientsBookSlotsController extends Controller
             'viewMode' => $viewMode,
             'slots' => $slots,
             'displayTimeZone' => $timezoneDisplay,
+            'userTimeZone' => $viewerTimeZone,
         ]);
     }
 
@@ -159,6 +160,12 @@ class PatientsBookSlotsController extends Controller
         try {
             $startLocal = Carbon::createFromFormat('Y-m-d H:i', "{$date} {$timeFrom}", $viewerTimeZone);
             $endLocal = Carbon::createFromFormat('Y-m-d H:i', "{$date} {$timeTo}", $viewerTimeZone);
+            if (! $this->isFutureDateTime($startLocal, $viewerTimeZone)) {
+                DB::rollBack();
+                return back()->withErrors([
+                    'slot' => 'You can only book future time slots.',
+                ]);
+            }
             if ($endLocal->lte($startLocal)) {
                 $endLocal->addDay();
             }
@@ -360,6 +367,11 @@ class PatientsBookSlotsController extends Controller
     private function resolveUserTimeZoneName(?User $user): string
     {
         return app(UserTimeZoneService::class)->getUserHomeTimezoneName($user);
+    }
+
+    private function isFutureDateTime(Carbon $dateTime, string $timeZone): bool
+    {
+        return $dateTime->greaterThan(Carbon::now($timeZone));
     }
 
     private function redirectIfNoSessionCredits(int $userId)

@@ -84,6 +84,7 @@
                                                 <!-- 7 day columns -->
                                                 <template x-for="(d, idx) in weekDates" :key="d">
                                                     <td class="border border-gray-400 px-1 py-1 relative overflow-visible"
+                                                        :class="isPastDateTime(d, row.time) ? 'bg-gray-100' : ''"
                                                         style="height: 48px; position: relative;">
                                                         <!-- Container to hold blocks positioned absolutely -->
                                                         <div class="relative w-full h-full">
@@ -91,7 +92,7 @@
                                                             <template x-for="slot in slotsForDate(d)"
                                                                 :key="slot.id">
                                                                 <template x-if="slotStartsAt(slot, row.time)">
-                                                                    <div @click.stop="slot.type === 'Available' && 
+                                                                    <div @click.stop="slot.type === 'Available' && !isPastSlot(slot) && 
                                                                     $store.booking.open({
                                                                         date: slot.date,
                                                                         start: slot.time_from,
@@ -100,13 +101,15 @@
                                                                         type: slot.type
                                                                     }, therapistId)"
                                                                         class="absolute left-1 right-1 rounded-md overflow-hidden flex items-center justify-center text-xs font-semibold cursor-pointer z-50"
-                                                                        :class="slot.type === 'Available' ?
+                                                                        :class="isPastSlot(slot) ?
+                                                                            'bg-gray-300 text-gray-700 border border-gray-500 cursor-not-allowed' :
+                                                                            (slot.type === 'Available' ?
                                                                             'bg-green-200 text-green-800 border border-green-600' :
                                                                             (slot.type === 'Busy' ?
                                                                                 'bg-red-200 text-red-800 border border-red-600' :
                                                                                 (slot.type === 'Blocked' ?
                                                                                     'bg-gray-300 text-gray-800' :
-                                                                                    'bg-yellow-200 text-yellow-800'))"
+                                                                                    'bg-yellow-200 text-yellow-800')))"
                                                                         :style="blockStyle(slot)">
                                                                         <div class="text-center leading-tight">
                                                                             <div x-text="slot.type"></div>
@@ -126,7 +129,7 @@
                                                             <!-- Render carry-over from previous day at 00:00 -->
                                                             <template x-if="row.time === '00:00'">
                                                                 <template x-for="slot in carryOverSlotsForDate(d)" :key="`carry-${slot.id}-${d}`">
-                                                                    <div @click.stop="slot.type === 'Available' && 
+                                                                    <div @click.stop="slot.type === 'Available' && !isPastSlot(slot) && 
                                                                     $store.booking.open({
                                                                         date: slot.date,
                                                                         start: slot.time_from,
@@ -135,13 +138,15 @@
                                                                         type: slot.type
                                                                     }, therapistId)"
                                                                         class="absolute left-1 right-1 rounded-md overflow-hidden flex items-center justify-center text-xs font-semibold cursor-pointer z-50"
-                                                                        :class="slot.type === 'Available' ?
+                                                                        :class="isPastSlot(slot) ?
+                                                                            'bg-gray-300 text-gray-700 border border-gray-500 cursor-not-allowed' :
+                                                                            (slot.type === 'Available' ?
                                                                             'bg-green-200 text-green-800 border border-green-600' :
                                                                             (slot.type === 'Busy' ?
                                                                                 'bg-red-200 text-red-800 border border-red-600' :
                                                                                 (slot.type === 'Blocked' ?
                                                                                     'bg-gray-300 text-gray-800' :
-                                                                                    'bg-yellow-200 text-yellow-800'))"
+                                                                                    'bg-yellow-200 text-yellow-800')))"
                                                                         :style="carryOverBlockStyle(slot)">
                                                                         <div class="text-center leading-tight">
                                                                             <div x-text="slot.type"></div>
@@ -251,6 +256,7 @@
                 therapistId: therapistId,
                 selectedDate: initialDate || new Date().toISOString().slice(0, 10),
                 displayDate: initialDate || new Date().toISOString().slice(0, 10),
+                userTimeZone: @json($userTimeZone ?? 'UTC'),
 
                 // weekSlots provided by controller (object: { '2025-12-08': [ {...}, ... ], ... })
                 slots: @json($slots),
@@ -382,6 +388,47 @@
                     const blocks = duration / 30;
                     const height = blocks * 48;
                     return `top: 0; height: ${height}px;`;
+                },
+
+                isPastDateTime(date, time) {
+                    const now = this.nowInUserTimeZone();
+                    const targetDate = String(date || '');
+                    const targetTime = String(time || '').slice(0, 5);
+
+                    if (!targetDate || !targetTime) {
+                        return false;
+                    }
+                    if (targetDate < now.date) {
+                        return true;
+                    }
+                    if (targetDate > now.date) {
+                        return false;
+                    }
+
+                    return targetTime <= now.time;
+                },
+
+                nowInUserTimeZone() {
+                    const parts = new Intl.DateTimeFormat('en-CA', {
+                        timeZone: this.userTimeZone || 'UTC',
+                        year: 'numeric',
+                        month: '2-digit',
+                        day: '2-digit',
+                        hour: '2-digit',
+                        minute: '2-digit',
+                        hour12: false
+                    }).formatToParts(new Date());
+
+                    const get = (type) => parts.find(p => p.type === type)?.value || '00';
+
+                    return {
+                        date: `${get('year')}-${get('month')}-${get('day')}`,
+                        time: `${get('hour')}:${get('minute')}`,
+                    };
+                },
+
+                isPastSlot(slot) {
+                    return this.isPastDateTime(slot.date, slot.time_from);
                 },
 
                 // Reload weekSlots from server for the selectedDate (full week)

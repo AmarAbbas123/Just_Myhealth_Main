@@ -82,6 +82,7 @@ class TherapistsBookSlotsController extends Controller
             'weekDates' => $weekDates,
             'sessionTypes' => $sessionTypes,
             'displayTimeZone' => $timezoneDisplay,
+            'userTimeZone' => $therapistTimeZone,
         ]);
     }
 
@@ -121,6 +122,10 @@ class TherapistsBookSlotsController extends Controller
             $timeZoneService = app(UserTimeZoneService::class);
 
             $startLocal = Carbon::createFromFormat('Y-m-d H:i', $date . ' ' . $timeFrom, $therapistTimeZone);
+            if (! $this->isFutureDateTime($startLocal, $therapistTimeZone)) {
+                DB::rollBack();
+                return response()->json(['error' => 'You can only create future time slots.'], 422);
+            }
             $endLocal = $startLocal->copy()->addHour();
             if (! $this->isExactSixtyMinuteWindow($startLocal, $endLocal)) {
                 DB::rollBack();
@@ -205,6 +210,10 @@ class TherapistsBookSlotsController extends Controller
             $timeZoneService = app(UserTimeZoneService::class);
 
             $startLocal = Carbon::createFromFormat('Y-m-d H:i', $date . ' ' . $timeFrom, $therapistTimeZone);
+            if (! $this->isFutureDateTime($startLocal, $therapistTimeZone)) {
+                DB::rollBack();
+                return response()->json(['error' => 'You can only move slots to future times.'], 422);
+            }
             $endLocal = $startLocal->copy()->addHour();
             if (! $this->isExactSixtyMinuteWindow($startLocal, $endLocal)) {
                 DB::rollBack();
@@ -347,5 +356,10 @@ class TherapistsBookSlotsController extends Controller
     private function isExactSixtyMinuteWindow(Carbon $start, Carbon $end): bool
     {
         return $start->diffInMinutes($end) === 60;
+    }
+
+    private function isFutureDateTime(Carbon $dateTime, string $timeZone): bool
+    {
+        return $dateTime->greaterThan(Carbon::now($timeZone));
     }
 }
