@@ -399,18 +399,18 @@ class WaitingRoomController extends Controller
         $disk = Storage::disk('therapy_docs');
         $files = [];
 
-        foreach ($disk->files('common') as $path) {
+        foreach ($disk->allFiles('common') as $path) {
             $files[] = [
-                'name' => basename($path),
+                'name' => $this->therapyDocumentDisplayName($path, 'common'),
                 'path' => $path,
                 'type' => 'common',
                 'url' => $this->therapyDocumentPublicUrl($path),
             ];
         }
 
-        foreach ($disk->files('private/' . auth()->id()) as $path) {
+        foreach ($disk->allFiles('private/' . auth()->id()) as $path) {
             $files[] = [
-                'name' => basename($path),
+                'name' => $this->therapyDocumentDisplayName($path, 'private/' . auth()->id()),
                 'path' => $path,
                 'type' => 'private',
                 'url' => $this->therapyDocumentPublicUrl($path),
@@ -429,6 +429,18 @@ class WaitingRoomController extends Controller
             ->implode('/');
 
         return asset('storage/therapy-documents/' . $encoded);
+    }
+
+    protected function therapyDocumentDisplayName(string $path, string $prefix): string
+    {
+        $prefix = trim($prefix, '/');
+        $path = trim($path, '/');
+
+        if (str_starts_with($path, $prefix . '/')) {
+            return substr($path, strlen($prefix) + 1);
+        }
+
+        return basename($path);
     }
 
     protected function existingSessionNoteResources(SysUserType30SessionHistory $history): array

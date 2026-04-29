@@ -194,6 +194,8 @@ class TherapistDocumentController extends Controller
             'Self Reflection',
             'Solution Focus',
             'Visualization',
+            'Neurodiversion',
+            'Communication'
         ];
     }
 }
