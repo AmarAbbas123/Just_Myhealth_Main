@@ -47,25 +47,26 @@
 
                 <tbody class="divide-y divide-gray-100 dark:divide-gray-700 md:divide-y">
                     @forelse($sessions as $session)
-                        <tr class="block md:table-row border border-gray-200 dark:border-gray-700 rounded-lg md:border-0 md:rounded-none mb-3 md:mb-0 overflow-hidden">
+                        <tr
+                            class="block md:table-row border border-gray-200 dark:border-gray-700 rounded-lg md:border-0 md:rounded-none mb-3 md:mb-0 overflow-hidden">
                             <td class="block md:table-cell p-3 md:py-3 md:px-0">
                                 <div class="md:hidden text-[11px] font-semibold text-gray-500 mb-1">Screen Name</div>
                                 <div class="flex items-center gap-3">
-                                <img src="{{ asset('images/avatar1.jfif') }}"
-                                    class="w-10 h-10 rounded-full object-cover">
-                                {{-- <img src="{{ asset('storage/' . $session->patient->ProfilePhotoPath) }}"
+                                    <img src="{{ asset('images/avatar1.jfif') }}"
+                                        class="w-10 h-10 rounded-full object-cover">
+                                    {{-- <img src="{{ asset('storage/' . $session->patient->ProfilePhotoPath) }}"
                                     alt="Profile Photo"
                                     class="w-10 h-10 rounded-full object-cover"> --}}
 
-                                <div>
-                                    <div class="font-medium text-gray-800 dark:text-gray-100">
-                                        {{ $session->patient->UserName }}
+                                    <div>
+                                        <div class="font-medium text-gray-800 dark:text-gray-100">
+                                            {{ $session->patient->UserName }}
+                                        </div>
+                                        <div class="text-xs text-gray-500">
+                                            {{ $session->SessionType }} —
+                                            {{ $session->DisplaySessionDateTimeFrom->format('H:i') }}
+                                        </div>
                                     </div>
-                                    <div class="text-xs text-gray-500">
-                                        {{ $session->SessionType }} —
-                                        {{ $session->DisplaySessionDateTimeFrom->format('H:i') }}
-                                    </div>
-                                </div>
                                 </div>
                             </td>
 
@@ -96,7 +97,8 @@
 
                             <td class="block md:table-cell p-3 md:py-3 md:px-0 md:text-right">
                                 <div class="md:hidden text-[11px] font-semibold text-gray-500 mb-2">Actions</div>
-                                <div class="flex flex-wrap md:flex-nowrap justify-start md:justify-end items-center gap-2">
+                                <div
+                                    class="flex flex-wrap md:flex-nowrap justify-start md:justify-end items-center gap-2">
 
                                     <button
                                         @click="openOnboardingAnswers('{{ $session->PatientUserID }}','{{ $session->patient->UserName }}')"
@@ -210,15 +212,16 @@
         <!-- Session Notes Modal (opens after session ends) -->
         <div x-show="showNotesModal" x-cloak x-transition
             class="fixed inset-0 z-[70] flex items-center justify-center bg-black bg-opacity-50 p-4">
-            <div 
-            {{-- @click.away="closeNotesModal()" --}}
+            <div {{-- @click.away="closeNotesModal()" --}}
                 class="bg-white dark:bg-gray-800 rounded-lg w-full max-w-5xl h-[85vh] shadow-xl flex flex-col overflow-hidden">
-                <div class="flex items-center justify-between gap-3 px-6 py-4 border-b border-gray-200 dark:border-gray-700">
+                <div
+                    class="flex items-center justify-between gap-3 px-6 py-4 border-b border-gray-200 dark:border-gray-700">
                     <div>
                         <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-100">Post Session Notes</h3>
                         <p class="text-sm text-gray-500">Add notes and attach up to 4 support collateral links.</p>
                     </div>
-                    <button type="button" @click="closeNotesModal()" class="text-gray-500 text-xl leading-none">&times;</button>
+                    <button type="button" @click="closeNotesModal()"
+                        class="text-gray-500 text-xl leading-none">&times;</button>
                 </div>
 
                 <div class="flex-1 bg-gray-100 min-h-0">
@@ -297,6 +300,31 @@
             </div>
         </div>
 
+        <!-- Session Reminder Popup -->
+        <div x-show="showSessionReminderPopup" x-cloak x-transition
+            class="fixed inset-0 z-[80] flex items-center justify-center bg-black bg-opacity-40">
+
+            <div class="bg-white dark:bg-gray-800 rounded-lg p-6 w-full max-w-md shadow-lg">
+                <div class="flex justify-between items-center mb-3">
+                    <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-100">
+                        Session Reminder
+                    </h3>
+                    <button @click="showSessionReminderPopup=false" class="text-gray-500">✕</button>
+                </div>
+
+                <p class="text-sm text-gray-600">
+                    Scheduled Session has 15 minutes remaining
+                </p>
+
+                <div class="mt-4 flex justify-end">
+                    <button @click="showSessionReminderPopup=false"
+                        class="px-4 py-2 bg-indigo-600 text-white rounded-md">
+                        OK
+                    </button>
+                </div>
+            </div>
+        </div>
+
         <div id="videoContainer" class="w-full h-[70vh] mt-4 rounded-lg overflow-hidden"></div>
 
     </div>
@@ -344,7 +372,7 @@
                         if (!this.showNotesModal) return;
                         this.notesStatusMessage = event.data.message || 'Session notes saved.';
                     }
-                },                
+                },
                 showSession: false,
                 showMessageModal: false,
                 currentClient: null,
@@ -476,7 +504,7 @@
                                 console.log('Therapist left room → ending session');
                                 console.log('ON LEAVE ROOM TRIGGERED');
                                 console.log('SESSION END HANDLED:', this.sessionEndHandled);
-                                
+
 
                                 // 🚨 detect auto-leave vs manual leave
                                 if (!this.sessionStartedManually) {
@@ -494,13 +522,13 @@
                                     clearTimeout(this.sessionReminderTimer);
                                     this.sessionReminderTimer = null;
                                 }
-                            
+
                                 this.sessionEndHandled = true; // ✅ ADD HERE
 
-                                    // ❌ ADD THIS  LINE (IMPORTANT)
-                                    if (window.ZEGO_INSTANCE) {
-                                        window.ZEGO_INSTANCE = null;
-                                    }
+                                // ❌ ADD THIS  LINE (IMPORTANT)
+                                if (window.ZEGO_INSTANCE) {
+                                    window.ZEGO_INSTANCE = null;
+                                }
 
                                 const res = await fetch('/therapist/session/end', {
                                     method: 'POST',
@@ -515,7 +543,7 @@
                                 });
 
                                 if (res.ok) {
-                                   const data = await res.json();
+                                    const data = await res.json();
 
                                     if (!this.showNotesModal) { // ✅ ADD THIS
                                         this.openNotesModal(data.embedded_notes_url || data.notes_url);
@@ -540,11 +568,11 @@
                     if (this.sessionReminderTimer) {
                         clearTimeout(this.sessionReminderTimer);
                     }
-                
-                    // ⏱ 3 minutes for testing (180000 ms)
+
+                    // ⏱ 45 minutes for testing (2,700,000 ms)
                     this.sessionReminderTimer = setTimeout(() => {
                         this.showSessionReminderPopup = true;
-                    }, 180000);
+                    }, 2,700,000);
                 },
 
 
@@ -597,9 +625,14 @@
                     console.log('END SESSION CLICKED');
                     if (!this.currentCalendarID || this.sessionEndHandled) return;
 
-                     this.sessionEndHandled = true; // ✅ MOVE THIS UP 
+                    this.sessionEndHandled = true; // ✅ MOVE THIS UP 
 
-                     if (window.ZEGO_INSTANCE) {
+                    if (this.sessionReminderTimer) {
+                        clearTimeout(this.sessionReminderTimer);
+                        this.sessionReminderTimer = null;
+                    }
+
+                    if (window.ZEGO_INSTANCE) {
                         window.ZEGO_INSTANCE.leaveRoom();
                         window.ZEGO_INSTANCE.destroy();
                         window.ZEGO_INSTANCE = null;
@@ -620,7 +653,7 @@
 
                     if (res.ok) {
                         const data = await res.json();
-                    
+
                         if (!this.showNotesModal) { // ✅ ADD THIS
                             this.openNotesModal(data.embedded_notes_url || data.notes_url);
                         }
@@ -643,7 +676,7 @@
 
                 openMessageModal(clientName, patientID) {
                     this.messageClient = clientName;
-                    this.currentPatientID = patientID; 
+                    this.currentPatientID = patientID;
                     this.messageText = '';
                     this.showMessageModal = true;
                 },
@@ -704,7 +737,9 @@
                                 'X-CSRF-TOKEN': '{{ csrf_token() }}',
                                 'Accept': 'application/json'
                             },
-                            body: JSON.stringify({ patient_id: Number(patientId) })
+                            body: JSON.stringify({
+                                patient_id: Number(patientId)
+                            })
                         });
 
                         const json = await res.json();
@@ -732,7 +767,9 @@
                                 'X-CSRF-TOKEN': '{{ csrf_token() }}',
                                 'Accept': 'application/json'
                             },
-                            body: JSON.stringify({ patient_id: Number(patientId) })
+                            body: JSON.stringify({
+                                patient_id: Number(patientId)
+                            })
                         });
 
                         const json = await res.json();
@@ -748,4 +785,4 @@
         }
     </script>
 
-</x-app1>   
+</x-app1>
