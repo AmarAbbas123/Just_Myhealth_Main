@@ -215,9 +215,9 @@
                             <p class="text-sm text-gray-500 mt-2">No links added.</p>
                         </template>
                         <div class="mt-2 space-y-1">
-                            <template x-for="(link, index) in selectedSession.session_note_resources" :key="index">
-                                <a :href="link" class="block text-sm text-blue-700 underline break-all"
-                                    x-text="link"></a>
+                            <template x-for="(resource, index) in selectedSession.session_note_resources" :key="index">
+                                <a :href="resource.url" class="block text-sm text-blue-700 underline break-all"
+                                    x-text="resource.name"></a>
                             </template>
                         </div>
                     </div>

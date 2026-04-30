@@ -54,10 +54,16 @@ class UsrTherapyHistoryController extends Controller
                     return null;
                 }
 
-                return route('usr.therapy.history.resource.download', [
-                    'history_id' => $history->ID,
-                    'index' => $index + 1,
-                ]);
+                $path = $this->normalizeSessionResourcePath((string) $value);
+                $name = $path ? basename($path) : ('Resource ' . ($index + 1));
+
+                return [
+                    'url' => route('usr.therapy.history.resource.download', [
+                        'history_id' => $history->ID,
+                        'index' => $index + 1,
+                    ]),
+                    'name' => $name,
+                ];
             })
             ->filter()
             ->values()

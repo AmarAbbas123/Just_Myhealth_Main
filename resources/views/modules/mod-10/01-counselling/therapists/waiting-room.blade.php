@@ -16,10 +16,6 @@
         <!-- Header -->
         <div class="flex flex-wrap items-center justify-between gap-3">
             <x-page-header />
-            {{-- <button @click="showAdmitAll=true"
-                class="px-3 py-2 bg-indigo-600 text-white rounded-lg shadow hover:bg-indigo-700 transition">
-                🚑 Admit All Patients
-            </button> --}}
         </div>
 
         <div x-show="notesStatusMessage" x-cloak
@@ -150,22 +146,6 @@
 
             </table>
         </div>
-
-        <!-- Admit All Modal -->
-        {{-- <div x-show="showAdmitAll" x-transition
-            class="fixed inset-0 z-40 flex items-center justify-center bg-black bg-opacity-40">
-            <div @click.away="showAdmitAll=false" class="bg-white dark:bg-gray-800 rounded-lg p-6 w-full max-w-md">
-                <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-100">Admit All Patients</h3>
-                <p class="text-sm text-gray-500 mt-2">Are you sure you want to admit all waiting patients?</p>
-                <div class="mt-4 flex justify-end gap-2">
-                    <button @click="showAdmitAll=false"
-                        class="px-3 py-2 bg-gray-100 text-gray-700 text-sm font-medium rounded-lg shadow hover:bg-gray-200 transition">❌
-                        Cancel</button>
-                    <button @click="admitAll()" class="px-3 py-2 bg-teal-600 text-white rounded-md">Confirm Admit
-                        All</button>
-                </div>
-            </div>
-        </div> --}}
 
         <!-- Start Session Modal -->
         <div x-show="showSession" x-cloak x-transition
@@ -323,8 +303,6 @@
 
     {{-- zegocloud video Session  --}}
     <script src="https://unpkg.com/@zegocloud/zego-uikit-prebuilt@2.9.3/zego-uikit-prebuilt.js"></script>
-    {{-- <script src="https://unpkg.com/@zegocloud/zego-uikit-prebuilt/zego-uikit-prebuilt.js"></script> --}}
-    {{-- <script src="https://unpkg.com/@zegocloud/zego-uikit-prebuilt@latest/zego-uikit-prebuilt.js"></script> --}}
 
     <script>
         window.waitingRoomApp = function() {
@@ -366,8 +344,7 @@
                         if (!this.showNotesModal) return;
                         this.notesStatusMessage = event.data.message || 'Session notes saved.';
                     }
-                },
-                showAdmitAll: false,
+                },                
                 showSession: false,
                 showMessageModal: false,
                 currentClient: null,
@@ -390,6 +367,9 @@
                 onboardingPatientLabel: '',
                 onboardingQa: [],
                 onboardingIssue: '',
+                sessionReminderTimer: null,
+                showSessionReminderPopup: false,
+
 
                 async markTherapistEntered() {
                     if (!this.currentCalendarID) return;
@@ -477,11 +457,15 @@
                             showUserList: true,
                             maxUsers: 2,
 
-                            // 🟢 AUTO-START RECORDING WHEN ROOM IS READY
+                            // 🟢 On Join Room, start the reminder timer and set the manual session flag
                             onJoinRoom: () => {
                                 console.log('Successfully joined room...');
                                 this.sessionStartedManually = true;
-                                // We wait 3 seconds to ensure the media stream is stable
+
+                                // ✅ START REMINDER TIMER (3 min for testing)
+                                this.startSessionReminderTimer();
+
+                                // AUTO-START RECORDING WHEN ROOM IS READY Wait 3 Seconds Ensure the media stream is stable
                                 // setTimeout(() => {
                                 //     this.triggerAutoRecording();
                                 // }, 3000);
@@ -504,6 +488,11 @@
                                 if (!this.currentCalendarID || this.sessionEndHandled) {
                                     window.ZEGO_LOCK = false;
                                     return;
+                                }
+
+                                if (this.sessionReminderTimer) {
+                                    clearTimeout(this.sessionReminderTimer);
+                                    this.sessionReminderTimer = null;
                                 }
                             
                                 this.sessionEndHandled = true; // ✅ ADD HERE
@@ -544,6 +533,20 @@
                         window.ZEGO_LOCK = false;
                     }
                 },
+
+                //Timer 45 Minutes Reminder 15 Minutes Left
+                startSessionReminderTimer() {
+                    // clear any existing timer (safety)
+                    if (this.sessionReminderTimer) {
+                        clearTimeout(this.sessionReminderTimer);
+                    }
+                
+                    // ⏱ 3 minutes for testing (180000 ms)
+                    this.sessionReminderTimer = setTimeout(() => {
+                        this.showSessionReminderPopup = true;
+                    }, 180000);
+                },
+
 
                 // 🟢 AUTOMATED RECORDING TRIGGER
                 // async triggerAutoRecording() {
@@ -588,7 +591,6 @@
                 //     } finally {
                 //         this.isProcessing = false;
                 //     }
-
                 // },
 
                 async endSession() {

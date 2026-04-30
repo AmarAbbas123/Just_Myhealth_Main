@@ -7,6 +7,22 @@
         'calendar_id' => $calendar_id,
         'embedded' => $embedded ? 1 : null,
     ]));
+    $resourceGroups = collect($sessionNoteResources)
+        ->groupBy('folder_key')
+        ->map(function ($items) {
+            $first = $items->first();
+            return [
+                'folder_key' => $first['folder_key'] ?? ('group::' . md5((string) ($first['folder'] ?? 'Root'))),
+                'folder' => $first['folder'] ?? 'Root',
+                'type' => $first['type'] ?? 'private',
+                'items' => $items->values(),
+            ];
+        })
+        ->values();
+    $selectedGroupKey = old('resource_group_key');
+    if (!$selectedGroupKey && $resourceGroups->isNotEmpty()) {
+        $selectedGroupKey = $resourceGroups->first()['folder_key'];
+    }
 @endphp
 
 <div id="session-notes-success-box"
@@ -58,26 +74,49 @@
             </div>
 
             <div class="space-y-3">
-                @forelse ($sessionNoteResources as $resource)
-                    <label class="flex items-center justify-between gap-3 rounded-md border border-gray-200 px-3 py-3 hover:bg-gray-50">
-                        <div class="flex items-center gap-3 min-w-0">
-                            <input type="checkbox"
-                                name="selected_resources[]"
-                                value="{{ $resource['url'] }}"
-                                class="session-resource-checkbox rounded border-gray-300 text-indigo-600"
-                                {{ in_array($resource['url'], $oldSelected, true) ? 'checked' : '' }}>
-                            <div class="min-w-0">
-                                <p class="text-sm text-gray-800 truncate">{{ $resource['name'] }}</p>
-                                <p class="text-xs text-gray-500">
-                                    {{ $resource['type'] === 'common' ? 'Common' : 'Private' }}
-                                </p>
-                            </div>
-                        </div>
-                        <a href="{{ $resource['url'] }}" target="_blank" class="text-xs text-blue-700 underline">Preview</a>
-                    </label>
-                @empty
+                @if ($resourceGroups->isEmpty())
                     <p class="text-sm text-gray-500">No collateral files found.</p>
-                @endforelse
+                @else
+                    <div>
+                        <label for="resource-group-select" class="block text-sm font-medium text-gray-700 mb-2">
+                            Folder
+                        </label>
+                        <select id="resource-group-select" name="resource_group_key"
+                            class="w-full rounded-md border-gray-300 px-3 py-2 text-sm">
+                            @foreach ($resourceGroups as $group)
+                                <option value="{{ $group['folder_key'] }}"
+                                    {{ $selectedGroupKey === $group['folder_key'] ? 'selected' : '' }}>
+                                    {{ $group['folder'] }} ({{ $group['type'] === 'common' ? 'Common' : 'Private' }})
+                                </option>
+                            @endforeach
+                        </select>
+                    </div>
+
+                    @foreach ($resourceGroups as $group)
+                        <div class="resource-group space-y-3"
+                            data-group-key="{{ $group['folder_key'] }}"
+                            style="{{ $selectedGroupKey === $group['folder_key'] ? '' : 'display:none;' }}">
+                            @foreach ($group['items'] as $resource)
+                                <label class="flex items-center justify-between gap-3 rounded-md border border-gray-200 px-3 py-3 hover:bg-gray-50">
+                                    <div class="flex items-center gap-3 min-w-0">
+                                        <input type="checkbox"
+                                            name="selected_resources[]"
+                                            value="{{ $resource['url'] }}"
+                                            class="session-resource-checkbox rounded border-gray-300 text-indigo-600"
+                                            {{ in_array($resource['url'], $oldSelected, true) ? 'checked' : '' }}>
+                                        <div class="min-w-0">
+                                            <p class="text-sm text-gray-800 truncate">{{ $resource['name'] }}</p>
+                                            <p class="text-xs text-gray-500">
+                                                {{ $resource['type'] === 'common' ? 'Common' : 'Private' }}
+                                            </p>
+                                        </div>
+                                    </div>
+                                    <a href="{{ $resource['url'] }}" target="_blank" class="text-xs text-blue-700 underline">Preview</a>
+                                </label>
+                            @endforeach
+                        </div>
+                    @endforeach
+                @endif
             </div>
         </div>
 
@@ -111,6 +150,8 @@
         const successBox = document.getElementById('session-notes-success-box');
         const errorBox = document.getElementById('session-notes-error-box');
         const checkboxes = Array.from(document.querySelectorAll('.session-resource-checkbox'));
+        const groupSelect = document.getElementById('resource-group-select');
+        const groups = Array.from(document.querySelectorAll('.resource-group'));
 
         function syncSelectionLimit() {
             const checked = checkboxes.filter((checkbox) => checkbox.checked);
@@ -124,6 +165,18 @@
         checkboxes.forEach((checkbox) => {
             checkbox.addEventListener('change', syncSelectionLimit);
         });
+
+        if (groupSelect && groups.length) {
+            const syncGroupVisibility = () => {
+                const selectedKey = groupSelect.value;
+                groups.forEach((group) => {
+                    group.style.display = group.dataset.groupKey === selectedKey ? '' : 'none';
+                });
+            };
+
+            groupSelect.addEventListener('change', syncGroupVisibility);
+            syncGroupVisibility();
+        }
 
         syncSelectionLimit();
 

@@ -177,7 +177,7 @@ class TherapistDocumentController extends Controller
 
     protected function folders()
     {
-        return [
+        return collect([
             'Bereavement / Losses',
             'Building self Esteem',
             'CBT (Cognitive Behavioral Therapy)',
@@ -196,6 +196,9 @@ class TherapistDocumentController extends Controller
             'Visualization',
             'Neurodiversion',
             'Communication'
-        ];
+        ])
+        ->sortBy(fn($item) => strtolower($item))
+        ->values()
+        ->toArray();
     }
 }

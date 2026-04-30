@@ -53,10 +53,16 @@ class SessionHistoryController extends Controller
                     return null;
                 }
 
-                return route('therap.session.history.resource.download', [
-                    'history_id' => $history->ID,
-                    'index' => $index + 1,
-                ]);
+                $path = $this->normalizeSessionResourcePath((string) $value);
+                $name = $path ? basename($path) : ('Resource ' . ($index + 1));
+
+                return [
+                    'url' => route('therap.session.history.resource.download', [
+                        'history_id' => $history->ID,
+                        'index' => $index + 1,
+                    ]),
+                    'name' => $name,
+                ];
             })
             ->filter()
             ->values()

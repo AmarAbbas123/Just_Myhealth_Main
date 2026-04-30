@@ -400,24 +400,32 @@ class WaitingRoomController extends Controller
         $files = [];
 
         foreach ($disk->allFiles('common') as $path) {
+            $folder = $this->therapyDocumentFolderLabel($path, 'common');
             $files[] = [
                 'name' => $this->therapyDocumentDisplayName($path, 'common'),
                 'path' => $path,
                 'type' => 'common',
+                'folder' => $folder,
+                'folder_key' => 'common::' . $folder,
                 'url' => $this->therapyDocumentPublicUrl($path),
             ];
         }
 
         foreach ($disk->allFiles('private/' . auth()->id()) as $path) {
+            $folder = $this->therapyDocumentFolderLabel($path, 'private/' . auth()->id());
             $files[] = [
                 'name' => $this->therapyDocumentDisplayName($path, 'private/' . auth()->id()),
                 'path' => $path,
                 'type' => 'private',
+                'folder' => $folder,
+                'folder_key' => 'private::' . $folder,
                 'url' => $this->therapyDocumentPublicUrl($path),
             ];
         }
 
-        usort($files, fn($a, $b) => strcmp($a['name'], $b['name']));
+        usort($files, function ($a, $b) {
+            return [$a['type'], $a['folder'], $a['name']] <=> [$b['type'], $b['folder'], $b['name']];
+        });
 
         return $files;
     }
@@ -441,6 +449,32 @@ class WaitingRoomController extends Controller
         }
 
         return basename($path);
+    }
+
+    protected function therapyDocumentFolderLabel(string $path, string $prefix): string
+    {
+        $prefix = trim($prefix, '/');
+        $path = trim($path, '/');
+
+        if (!str_starts_with($path, $prefix . '/')) {
+            return 'Root';
+        }
+
+        $relativePath = substr($path, strlen($prefix) + 1);
+        $folderPath = trim(dirname($relativePath), '/.');
+
+        if ($folderPath === '') {
+            return 'Root';
+        }
+
+        $segments = array_values(array_filter(explode('/', $folderPath), fn($segment) => $segment !== ''));
+
+        // Some older uploads are nested as common/{id}/{folder}/file; hide the numeric id.
+        if (count($segments) > 1 && ctype_digit($segments[0])) {
+            array_shift($segments);
+        }
+
+        return count($segments) ? implode(' / ', $segments) : 'Root';
     }
 
     protected function existingSessionNoteResources(SysUserType30SessionHistory $history): array
