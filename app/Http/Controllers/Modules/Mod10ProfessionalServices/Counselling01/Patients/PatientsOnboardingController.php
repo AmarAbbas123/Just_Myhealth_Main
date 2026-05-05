@@ -16,19 +16,54 @@ class PatientsOnboardingController extends Controller
     {
         $userId = auth()->id();
 
-        // load first unanswered question
         $answers = SysUserType30OnboardQuestionsAnswers::firstOrCreate(
             ['PatientUserID' => $userId],
             ['QuestionCompletionStatus' => 0]
         );
 
-        // find first unanswered question number
+        $totalQuestions = 40;
+
+        if ($answers->QuestionCompletionStatus == 1) {
+            $questions = SysUserType30OnboardQuestions::where('QuestionStatus', 1)
+                ->whereBetween('ID', [1, $totalQuestions])
+                ->orderBy('ID')
+                ->get();
+
+            return view('modules.mod-10.01-counselling.patients.patients-onboarding', [
+                'mode' => 'summary',
+                'questions' => $questions,
+                'answers' => $answers,
+                'totalQuestions' => $totalQuestions,
+            ]);
+        }
+
         $nextQuestion = $this->getNextQuestionNumber($answers);
 
-        // load question from questions table
+        if ($nextQuestion > $totalQuestions) {
+            $answers->QuestionCompletionStatus = 1;
+            $answers->save();
+
+            $questions = SysUserType30OnboardQuestions::where('QuestionStatus', 1)
+                ->whereBetween('ID', [1, $totalQuestions])
+                ->orderBy('ID')
+                ->get();
+
+            return view('modules.mod-10.01-counselling.patients.patients-onboarding', [
+                'mode' => 'summary',
+                'questions' => $questions,
+                'answers' => $answers,
+                'totalQuestions' => $totalQuestions,
+            ]);
+        }
+
         $question = SysUserType30OnboardQuestions::find($nextQuestion);
 
-        return view('modules.mod-10.01-counselling.patients.patients-onboarding', compact('question', 'nextQuestion'));
+        return view('modules.mod-10.01-counselling.patients.patients-onboarding', [
+            'mode' => 'wizard',
+            'question' => $question,
+            'nextQuestion' => $nextQuestion,
+            'totalQuestions' => $totalQuestions,
+        ]);
     }
 
 
@@ -82,6 +117,32 @@ class PatientsOnboardingController extends Controller
 
         return response()->json(['completed' => false, 'next_question' => $question, 'next_question_number' => $nextQ])
             ->header('Cache-Control', 'no-cache, no-store, must-revalidate');
+    }
+
+    public function updateonboardingAnswer(Request $request)
+    {
+        $request->validate([
+            'question_id' => 'required|integer|min:1|max:40',
+            'answer_text' => 'required|string|max:2028',
+            'answer_option_number' => 'nullable|integer',
+        ]);
+
+        $userId = auth()->id();
+
+        $answers = SysUserType30OnboardQuestionsAnswers::where('PatientUserID', $userId)->firstOrFail();
+
+        $qid = (int) $request->question_id;
+
+        $textCol = "Id{$qid}_Answer_text";
+        $optCol  = "Id{$qid}_AnswerOptionNumber";
+
+        $answers->$textCol = $request->answer_text;
+        $answers->$optCol  = $request->input('answer_option_number', 0);
+        $answers->save();
+
+        return response()->json([
+            'success' => true,
+        ])->header('Cache-Control', 'no-cache, no-store, must-revalidate');
     }
 
 

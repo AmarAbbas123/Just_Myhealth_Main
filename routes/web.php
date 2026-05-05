@@ -573,6 +573,7 @@ Route::controller(PatientsOnboardingController::class)
     ->group(function () {
         Route::get('/mod-10/01/usr-how-i-feel-questions', 'showonboardingquestions')->name('onboarding.start');
         Route::post('/mod-10/01/save-onboarding', 'saveonboardingAnswers')->name('onboarding.save');
+        Route::post('/mod-10/01/update-onboarding', 'updateonboardingAnswer')->name('onboarding.update');
     });
 
 //TherapistFinder

@@ -569,10 +569,10 @@
                         clearTimeout(this.sessionReminderTimer);
                     }
 
-                    // ⏱ 45 minutes for testing (2,700,000 ms)
+                    // ⏱ 45 minutes for testing (2700000 ms)
                     this.sessionReminderTimer = setTimeout(() => {
                         this.showSessionReminderPopup = true;
-                    }, 2,700,000);
+                    }, 2700000);
                 },
 
 
