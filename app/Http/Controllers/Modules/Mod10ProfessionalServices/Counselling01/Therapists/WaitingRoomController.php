@@ -75,9 +75,28 @@ class WaitingRoomController extends Controller
     // Video/Audio Session Started
     public function start(Request $request)
     {
-        $request->validate([
-            'calendar_id' => 'required|integer',
-        ]);
+    $request->validate([
+        'calendar_id'          => 'required|integer',
+        'screen_width'         => 'required|integer',
+        'physical_screen_width'=> 'required|integer',
+        'is_phone_device'      => 'required|boolean',
+        'device_platform'      => 'nullable|string|max:100',
+    ]);
+
+        
+        $minimumScreenWidth = 768;
+
+    // Block if UA says phone OR physical screen is too small
+    // physical_screen_width cannot be faked by "Desktop View" mode
+    if (
+        $request->boolean('is_phone_device') ||
+        (int) $request->physical_screen_width < $minimumScreenWidth
+    ) {
+        return response()->json([
+            'success' => false,
+            'message' => 'Therapists can only start sessions from a tablet, laptop, or desktop. Phone devices are not permitted.',
+        ], 403);
+    }
 
         $calendar = CommonCalendar::with(['patient', 'therapist'])->findOrFail($request->calendar_id);
 

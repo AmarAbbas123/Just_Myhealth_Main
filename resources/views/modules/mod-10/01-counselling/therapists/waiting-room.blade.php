@@ -23,6 +23,11 @@
             <span x-text="notesStatusMessage"></span>
         </div>
 
+        <div x-show="!therapistScreenAllowed" x-cloak
+            class="rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-800">
+            <span x-text="therapistScreenMessage"></span>
+        </div>
+
         <!-- Waiting List Table -->
         <div class="bg-white dark:bg-gray-800 rounded-lg p-4 shadow-sm">
             <table class="w-full text-sm text-left">
@@ -114,13 +119,15 @@
 
                                     @if (isset($sessionMap[$session->SessionType]))
                                         <button
-                                            @click="
-                                            currentClient='{{ $clientName }}';
-                                            roomID='{{ $session->SessionZegoCloudConnectID }}';
-                                            sessionType='{{ $session->SessionType }}';
-                                            currentCalendarID={{ $session->ID }};
-                                            markTherapistEntered();
-                                            showSession=true"
+                                            @click="prepareSessionStart({
+                                                clientName: @js($clientName),
+                                                roomID: @js($session->SessionZegoCloudConnectID),
+                                                sessionType: @js($session->SessionType),
+                                                calendarID: {{ $session->ID }}
+                                            })"
+                                            :disabled="!therapistScreenAllowed"
+                                            :title="therapistScreenAllowed ? '' : therapistScreenMessage"
+                                            :class="!therapistScreenAllowed ? 'opacity-50 cursor-not-allowed' : ''"
                                             class="px-3 py-1 {{ $sessionMap[$session->SessionType]['bg'] }} text-white rounded-md text-sm">
                                             {{ $sessionMap[$session->SessionType]['label'] }}
                                         </button>
@@ -183,7 +190,10 @@
                         class="px-3 py-2 bg-gray-100 text-gray-700 text-sm font-medium rounded-lg shadow hover:bg-gray-200 transition">❌
                         End Session</button>
                     <button @click="startSession(currentCalendarID)"
-                        class="px-3 py-2 bg-green-600 text-white rounded-md">Start Live
+                        :disabled="!therapistScreenAllowed"
+                        :title="therapistScreenAllowed ? '' : therapistScreenMessage"
+                        :class="therapistScreenAllowed ? 'bg-green-600 hover:bg-green-700' : 'bg-gray-400 cursor-not-allowed'"
+                        class="px-3 py-2 text-white rounded-md">Start Live
                         Session</button>
                 </div>
             </div>
@@ -336,11 +346,17 @@
         window.waitingRoomApp = function() {
             return {
                 init() {
+                    this.updateScreenSize();
+                    this._onResize = () => this.updateScreenSize();
+                    window.addEventListener('resize', this._onResize);
                     this._onNotesWindowMessage = (event) => this.handleNotesWindowMessage(event);
                     window.addEventListener('message', this._onNotesWindowMessage);
                 },
 
                 destroy() {
+                    if (this._onResize) {
+                        window.removeEventListener('resize', this._onResize);
+                    }
                     if (this._onNotesWindowMessage) {
                         window.removeEventListener('message', this._onNotesWindowMessage);
                     }
@@ -397,6 +413,55 @@
                 onboardingIssue: '',
                 sessionReminderTimer: null,
                 showSessionReminderPopup: false,
+                minimumSessionWidth: 768,
+                screenWidth: 0,
+                screenHeight: 0,
+                physicalScreenWidth: 0,
+                physicalScreenHeight: 0,
+                isPhoneDevice: false,
+
+                get therapistScreenAllowed() {
+                    // Block if:
+                    // 1. UA says phone OS (catches most cases)
+                    // 2. Physical screen width < 768 (catches desktop-view trick on phones)
+                    // Browser window width alone is NOT enough — desktop view fakes it
+                    return !this.isPhoneDevice && this.physicalScreenWidth >= this.minimumSessionWidth;
+                },
+
+                get therapistScreenMessage() {
+                    return `Therapists can only start sessions from a tablet, laptop, or desktop. `
+                        + `Phone devices are not permitted even in desktop view mode. `
+                        + `Your device screen width is ${this.physicalScreenWidth}px.`;
+                },
+
+                updateScreenSize() {
+                    this.screenWidth    = window.innerWidth  || 0;
+                    this.screenHeight   = window.innerHeight || 0;
+                    this.physicalScreenWidth  = window.screen?.width  || 0;
+                    this.physicalScreenHeight = window.screen?.height || 0;
+                
+                    const ua = navigator.userAgent || '';
+                    this.isPhoneDevice =
+                        /iPhone|iPod/.test(ua) ||
+                        (/Android/.test(ua) && /Mobile/.test(ua)) ||
+                        /Windows Phone/.test(ua);
+                },
+
+                prepareSessionStart(session) {
+                    this.updateScreenSize();
+
+                    if (!this.therapistScreenAllowed) {
+                        alert(this.therapistScreenMessage);
+                        return;
+                    }
+
+                    this.currentClient = session.clientName;
+                    this.roomID = session.roomID;
+                    this.sessionType = session.sessionType;
+                    this.currentCalendarID = session.calendarID;
+                    this.markTherapistEntered();
+                    this.showSession = true;
+                },
 
 
                 async markTherapistEntered() {
@@ -415,6 +480,13 @@
                 },
 
                 async startSession(calendarID) {
+                    this.updateScreenSize();
+
+                    if (!this.therapistScreenAllowed) {
+                        alert(this.therapistScreenMessage);
+                        return;
+                    }
+
                     try {
                         const res = await fetch('/therapist/session/start', {
                             method: 'POST',
@@ -424,14 +496,27 @@
                                 'Accept': 'application/json'
                             },
                             body: JSON.stringify({
-                                calendar_id: calendarID
+                                calendar_id:           calendarID,
+                                screen_width:          this.screenWidth,
+                                physical_screen_width: this.physicalScreenWidth,
+                                is_phone_device:       this.isPhoneDevice,
+                                device_platform:       navigator.userAgentData?.platform || navigator.platform || null
                             })
                         });
 
                         if (!res.ok) {
-                            const text = await res.text();
-                            console.error('START SESSION FAILED:', text);
-                            alert('Session start failed — check console');
+                            let errorMessage = 'Session start failed - check console';
+
+                            try {
+                                const json = await res.json();
+                                errorMessage = json.message || errorMessage;
+                                console.error('START SESSION FAILED:', json);
+                            } catch (jsonError) {
+                                const text = await res.text();
+                                console.error('START SESSION FAILED:', text);
+                            }
+
+                            alert(errorMessage);
                             return;
                         }
 
