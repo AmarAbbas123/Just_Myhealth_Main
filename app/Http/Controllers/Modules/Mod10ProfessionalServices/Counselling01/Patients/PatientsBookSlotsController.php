@@ -15,6 +15,8 @@ use Carbon\Carbon;
 
 class PatientsBookSlotsController extends Controller
 {
+    private const PATIENT_SESSION_DISPLAY_MINUTES = 45;
+
      // For TimeZone Display
     private function formatTimezoneOffset(string $tz): string
 {
@@ -283,6 +285,7 @@ class PatientsBookSlotsController extends Controller
 
             $startLocal = $startUtc->copy()->setTimezone($displayTimeZone);
             $endLocal = $endUtc->copy()->setTimezone($displayTimeZone);
+            $displayEndLocal = $startLocal->copy()->addMinutes(self::PATIENT_SESSION_DISPLAY_MINUTES);
             $day = $startLocal->toDateString();
 
             if (!array_key_exists($day, $week)) {
@@ -294,6 +297,8 @@ class PatientsBookSlotsController extends Controller
                 'type' => $e->CalendarEntryType, // Available / Busy / Blocked / Emergency
                 'time_from' => $startLocal->format('H:i'),
                 'time_to' => $endLocal->format('H:i'),
+                'display_time_to' => $displayEndLocal->format('H:i'),
+                'display_duration_minutes' => self::PATIENT_SESSION_DISPLAY_MINUTES,
                 'session_type' => $e->SessionType,
                 'patient_user_id' => $e->PatientUserID,
                 'date' => $day,
@@ -344,6 +349,7 @@ class PatientsBookSlotsController extends Controller
 
             $startSlotLocal = $startUtc->copy()->setTimezone($displayTimeZone);
             $endSlotLocal = $endUtc->copy()->setTimezone($displayTimeZone);
+            $displayEndSlotLocal = $startSlotLocal->copy()->addMinutes(self::PATIENT_SESSION_DISPLAY_MINUTES);
             $day = $startSlotLocal->toDateString();
 
             if (!array_key_exists($day, $days)) {
@@ -355,6 +361,8 @@ class PatientsBookSlotsController extends Controller
                 'type' => $e->CalendarEntryType,
                 'time_from' => $startSlotLocal->format('H:i'),
                 'time_to' => $endSlotLocal->format('H:i'),
+                'display_time_to' => $displayEndSlotLocal->format('H:i'),
+                'display_duration_minutes' => self::PATIENT_SESSION_DISPLAY_MINUTES,
                 'session_type' => $e->SessionType,
                 'patient_user_id' => $e->PatientUserID,
                 'date' => $day,

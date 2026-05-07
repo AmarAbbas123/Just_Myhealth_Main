@@ -13,6 +13,7 @@ use Illuminate\Http\Request;
 
 class PatientsCalendarController extends Controller
 {
+    private const PATIENT_SESSION_DISPLAY_MINUTES = 45;
 
     public function index()
     {
@@ -93,7 +94,7 @@ class PatientsCalendarController extends Controller
                 'date'      => $sessionStartLocal->format('Y-m-d'),
                 'start'     => $sessionStartLocal->format('H:i'),
                 'end'       => $sessionEndLocal->format('H:i'),
-                'duration'  => $sessionStartLocal->diffInMinutes($sessionEndLocal),
+                'duration'  => self::PATIENT_SESSION_DISPLAY_MINUTES,
 
                 // THERAPIST
                 'therapist_name' =>

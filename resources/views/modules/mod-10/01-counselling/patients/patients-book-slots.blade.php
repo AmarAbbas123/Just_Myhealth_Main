@@ -97,6 +97,8 @@
                                                                         date: slot.date,
                                                                         start: slot.time_from,
                                                                         end: slot.time_to,
+                                                                        displayEnd: slot.display_time_to,
+                                                                        duration: slot.display_duration_minutes,
                                                                         therapy_types: ['Video','Audio','Message'],
                                                                         type: slot.type
                                                                     }, therapistId)"
@@ -134,6 +136,8 @@
                                                                         date: slot.date,
                                                                         start: slot.time_from,
                                                                         end: slot.time_to,
+                                                                        displayEnd: slot.display_time_to,
+                                                                        duration: slot.display_duration_minutes,
                                                                         therapy_types: ['Video','Audio','Message'],
                                                                         type: slot.type
                                                                     }, therapistId)"
@@ -184,6 +188,7 @@
                         @csrf
 
                         <input type="hidden" name="date" :value="$store.booking.slot.date">
+                        <input type="hidden" name="time_to" :value="$store.booking.slot.end">
 
                         <div class="grid grid-cols-2 gap-3">
                             <div>
@@ -194,9 +199,13 @@
 
                             <div>
                                 <label class="text-sm">To</label>
-                                <input required name="time_to" type="time" class="w-full border p-2 rounded"
-                                    :value="$store.booking.slot.end" readonly>
+                                <input required type="time" class="w-full border p-2 rounded"
+                                    :value="$store.booking.slot.displayEnd" readonly>
                             </div>
+                        </div>
+
+                        <div class="mt-3 rounded border border-indigo-100 bg-indigo-50 px-3 py-2 text-sm text-indigo-800">
+                            Session duration: <strong x-text="`${$store.booking.slot.duration} minutes`"></strong>
                         </div>
 
                         <div class="mt-3">
@@ -233,11 +242,17 @@
                     date: null,
                     start: null,
                     end: null,
+                    displayEnd: null,
+                    duration: 45,
                 },
                 therapistId: null,
 
                 open(slot, therapistId) {
-                    this.slot = slot;
+                    this.slot = {
+                        ...slot,
+                        displayEnd: slot.displayEnd || slot.end,
+                        duration: slot.duration || 45,
+                    };
                     this.therapistId = therapistId;
                     this.isOpen = true;
                 },
