@@ -348,10 +348,17 @@
                 },
 
                 formatTime(seconds) {
-                    const h = String(Math.floor(seconds / 3600)).padStart(2, '0');
-                    const m = String(Math.floor((seconds % 3600) / 60)).padStart(2, '0');
-                    const s = String(seconds % 60).padStart(2, '0');
-                    return `${h}:${m}:${s}`;
+                    if (seconds <= 0) return "00 : 00 : 00";
+                
+                    const d = Math.floor(seconds / (3600 * 24));
+                    const h = Math.floor((seconds % (3600 * 24)) / 3600);
+                    const m = Math.floor((seconds % 3600) / 60);
+                
+                    const dd = String(d).padStart(2, '0');
+                    const hh = String(h).padStart(2, '0');
+                    const mm = String(m).padStart(2, '0');
+                
+                    return `${dd}D : ${hh}H : ${mm}M`;
                 },
 
                 /* =============================
