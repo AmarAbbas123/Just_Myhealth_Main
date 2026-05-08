@@ -13,7 +13,7 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Validation\ValidationException;
 
-class IssuesController extends Controller
+class PatientsIssuesConcernsController extends Controller
 {
     public function index()
     {

@@ -51,7 +51,7 @@ use App\Http\Controllers\Modules\Mod10ProfessionalServices\Counselling01\Patient
 use App\Http\Controllers\Modules\Mod10ProfessionalServices\Counselling01\Patients\PatientsCalendarController;
 use App\Http\Controllers\Modules\Mod10ProfessionalServices\Counselling01\Patients\UsrTherapyHistoryController;
 use App\Http\Controllers\Modules\Mod10ProfessionalServices\Counselling01\Patients\UsrPreviousTherapistsController;
-use App\Http\Controllers\Modules\Mod10ProfessionalServices\Counselling01\Patients\IssuesController;
+use App\Http\Controllers\Modules\Mod10ProfessionalServices\Counselling01\Patients\PatientsIssuesConcernsController;
 
 //mod-10 Therapists 
 use App\Http\Controllers\Modules\Mod10ProfessionalServices\Counselling01\Therapists\BioDetailsController;
@@ -628,7 +628,7 @@ Route::controller(UsrPreviousTherapistsController::class)
         Route::post('/mod-10/01/usr-previous-therapists', 'showDetails');
     });
 
-    Route::controller(IssuesController::class)
+    Route::controller(PatientsIssuesConcernsController::class)
     ->middleware(['auth', 'usertype:user'])
     ->group(function () {
         Route::get('/mod-10/01/usr-raise-issue', 'index')->name('usr-raise-issue');
