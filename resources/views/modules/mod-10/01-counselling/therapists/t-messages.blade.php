@@ -90,13 +90,13 @@
                                     <div x-show="msg.sender === 'patient'" class="flex items-start gap-3">
                                         <img :src="activeChat.avatar" class="w-8 h-8 rounded-full">
                                         <div class="bg-gray-100 dark:bg-gray-700 rounded-lg p-3 max-w-xs">
-                                            <p class="text-sm" x-text="msg.text"></p>
+                                            <p class="text-sm" x-html="formatMessage(msg.text)"></p>
                                             <p class="text-xs text-gray-400 mt-1" x-text="msg.time"></p>
                                         </div>
                                     </div>
                                     <div x-show="msg.sender === 'therapist'" class="flex justify-end">
                                         <div class="bg-green-600 text-white rounded-lg shadow p-3 max-w-xs">
-                                            <p class="text-sm" x-text="msg.text"></p>
+                                            <p class="text-sm" x-html="formatMessage(msg.text)"></p>
                                             <p class="text-xs text-purple-200 mt-1 text-right" x-text="msg.time"></p>
                                         </div>
                                     </div>
@@ -326,9 +326,55 @@
 
                 truncateText(text, limit = 20) {
                     if (!text) return '';
-                    const clean = String(text).replace(/<[^>]*>/g, '');
+                    const clean = String(text)
+                        .replace(/<a\s+[^>]*href=(["'])(.*?)\1[^>]*>([\s\S]*?)<\/a>/gi, '$3')
+                        .replace(/\[([^\]]+)\]\((https?:\/\/[^)\s]+)\)/gi, '$1')
+                        .replace(/<[^>]*>/g, '');
                     if (clean.length <= limit) return clean;
                     return clean.slice(0, limit) + '...';
+                },
+
+                escapeHtml(value) {
+                    const div = document.createElement('div');
+                    div.textContent = value ?? '';
+                    return div.innerHTML;
+                },
+
+                safeLinkHtml(url, label) {
+                    try {
+                        const parsed = new URL(url, window.location.origin);
+                        if (!['http:', 'https:'].includes(parsed.protocol)) {
+                            return this.escapeHtml(label);
+                        }
+
+                        return `<a href="${this.escapeHtml(parsed.href)}" target="_blank" rel="noopener noreferrer" class="font-semibold underline text-blue-600 dark:text-blue-300">${this.escapeHtml(label)}</a>`;
+                    } catch (e) {
+                        return this.escapeHtml(label);
+                    }
+                },
+
+                formatMessage(text) {
+                    if (!text) return '';
+
+                    const raw = String(text);
+                    const htmlAnchor = raw.match(/<a\s+[^>]*href=(["'])(.*?)\1[^>]*>([\s\S]*?)<\/a>/i);
+                    const markdownLink = raw.match(/\[([^\]]+)\]\((https?:\/\/[^)\s]+)\)/i);
+                    const linkMatch = htmlAnchor || markdownLink;
+
+                    if (!linkMatch) {
+                        return this.escapeHtml(raw).replace(/\n/g, '<br>');
+                    }
+
+                    const fullMatch = linkMatch[0];
+                    const url = htmlAnchor ? linkMatch[2] : linkMatch[2];
+                    const label = htmlAnchor ? linkMatch[3].replace(/<[^>]*>/g, '').trim() : linkMatch[1].trim();
+                    const [before, after = ''] = raw.split(fullMatch);
+
+                    return [
+                        this.escapeHtml(before).replace(/\n/g, '<br>'),
+                        this.safeLinkHtml(url, label || 'Join Session'),
+                        this.escapeHtml(after).replace(/\n/g, '<br>'),
+                    ].join('');
                 },
 
                 getReadKey() {
