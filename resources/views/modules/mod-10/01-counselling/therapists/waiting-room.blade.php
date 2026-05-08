@@ -125,9 +125,6 @@
                                                 sessionType: @js($session->SessionType),
                                                 calendarID: {{ $session->ID }}
                                             })"
-                                            :disabled="!therapistScreenAllowed"
-                                            :title="therapistScreenAllowed ? '' : therapistScreenMessage"
-                                            :class="!therapistScreenAllowed ? 'opacity-50 cursor-not-allowed' : ''"
                                             class="px-3 py-1 {{ $sessionMap[$session->SessionType]['bg'] }} text-white rounded-md text-sm">
                                             {{ $sessionMap[$session->SessionType]['label'] }}
                                         </button>
@@ -189,11 +186,7 @@
                     <button @click="endSession()"
                         class="px-3 py-2 bg-gray-100 text-gray-700 text-sm font-medium rounded-lg shadow hover:bg-gray-200 transition">❌
                         End Session</button>
-                    <button @click="startSession(currentCalendarID)"
-                        :disabled="!therapistScreenAllowed"
-                        :title="therapistScreenAllowed ? '' : therapistScreenMessage"
-                        :class="therapistScreenAllowed ? 'bg-green-600 hover:bg-green-700' : 'bg-gray-400 cursor-not-allowed'"
-                        class="px-3 py-2 text-white rounded-md">Start Live
+                    <button @click="startSession(currentCalendarID)" class="px-3 py-2 bg-green-600 hover:bg-green-700 text-white rounded-md">Start Live
                         Session</button>
                 </div>
             </div>
@@ -335,6 +328,37 @@
             </div>
         </div>
 
+
+        <!-- Phone Blocked Modal -->
+        <div x-show="showPhoneBlockedModal" x-cloak x-transition
+            class="fixed inset-0 z-[90] flex items-center justify-center bg-black bg-opacity-50 p-4">
+            <div class="bg-white dark:bg-gray-800 rounded-lg p-6 w-full max-w-md shadow-xl">
+                <div class="flex justify-between items-center mb-4">
+                    <h3 class="text-base font-semibold text-gray-800 dark:text-gray-100">
+                        Session Unavailable
+                    </h3>
+                    <button @click="showPhoneBlockedModal=false"
+                        class="text-gray-400 hover:text-gray-600 text-xl leading-none">&times;</button>
+                </div>
+
+                <div class="flex items-start gap-3">
+                    <span class="text-2xl">📱</span>
+                    <p class="text-sm text-gray-600 dark:text-gray-300 leading-relaxed">
+                        The session start button is disabled as you are using a mobile device.
+                        Reconnect using a large screen device <strong>(Tablet, Laptop or Desktop)</strong> and try
+                        again.
+                    </p>
+                </div>
+
+                <div class="mt-5 flex justify-end">
+                    <button @click="showPhoneBlockedModal=false"
+                        class="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-sm rounded-md transition">
+                        OK, Got it
+                    </button>
+                </div>
+            </div>
+        </div>
+
         <div id="videoContainer" class="w-full h-[70vh] mt-4 rounded-lg overflow-hidden"></div>
 
     </div>
@@ -419,6 +443,7 @@
                 physicalScreenWidth: 0,
                 physicalScreenHeight: 0,
                 isPhoneDevice: false,
+                showPhoneBlockedModal: false,
 
                 get therapistScreenAllowed() {
                     // Block if:
@@ -429,17 +454,17 @@
                 },
 
                 get therapistScreenMessage() {
-                    return `Therapists can only start sessions from a tablet, laptop, or desktop. `
-                        + `Phone devices are not permitted even in desktop view mode. `
-                        + `Your device screen width is ${this.physicalScreenWidth}px.`;
+                    return `Therapists can only start sessions from a tablet, laptop, or desktop. ` +
+                        `Phone devices are not permitted even in desktop view mode. ` +
+                        `Your device screen width is ${this.physicalScreenWidth}px.`;
                 },
 
                 updateScreenSize() {
-                    this.screenWidth    = window.innerWidth  || 0;
-                    this.screenHeight   = window.innerHeight || 0;
-                    this.physicalScreenWidth  = window.screen?.width  || 0;
+                    this.screenWidth = window.innerWidth || 0;
+                    this.screenHeight = window.innerHeight || 0;
+                    this.physicalScreenWidth = window.screen?.width || 0;
                     this.physicalScreenHeight = window.screen?.height || 0;
-                
+
                     const ua = navigator.userAgent || '';
                     this.isPhoneDevice =
                         /iPhone|iPod/.test(ua) ||
@@ -451,7 +476,7 @@
                     this.updateScreenSize();
 
                     if (!this.therapistScreenAllowed) {
-                        alert(this.therapistScreenMessage);
+                        this.showPhoneBlockedModal = true;
                         return;
                     }
 
@@ -483,7 +508,7 @@
                     this.updateScreenSize();
 
                     if (!this.therapistScreenAllowed) {
-                        alert(this.therapistScreenMessage);
+                        this.showPhoneBlockedModal = true;
                         return;
                     }
 
@@ -496,11 +521,12 @@
                                 'Accept': 'application/json'
                             },
                             body: JSON.stringify({
-                                calendar_id:           calendarID,
-                                screen_width:          this.screenWidth,
+                                calendar_id: calendarID,
+                                screen_width: this.screenWidth,
                                 physical_screen_width: this.physicalScreenWidth,
-                                is_phone_device:       this.isPhoneDevice,
-                                device_platform:       navigator.userAgentData?.platform || navigator.platform || null
+                                is_phone_device: this.isPhoneDevice,
+                                device_platform: navigator.userAgentData?.platform || navigator
+                                    .platform || null
                             })
                         });
 
