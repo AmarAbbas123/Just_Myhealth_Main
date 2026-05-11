@@ -13,7 +13,7 @@ use Illuminate\Http\Request;
 
 class PatientsCalendarController extends Controller
 {
-    private const PATIENT_SESSION_DISPLAY_MINUTES = 45;
+    private const PATIENT_SESSION_DISPLAY_MINUTES = 50;
 
     public function index()
     {

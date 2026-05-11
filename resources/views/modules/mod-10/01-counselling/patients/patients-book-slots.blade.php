@@ -243,7 +243,7 @@
                     start: null,
                     end: null,
                     displayEnd: null,
-                    duration: 45,
+                    duration: 50,
                 },
                 therapistId: null,
 
@@ -251,7 +251,7 @@
                     this.slot = {
                         ...slot,
                         displayEnd: slot.displayEnd || slot.end,
-                        duration: slot.duration || 45,
+                        duration: slot.duration || 50,
                     };
                     this.therapistId = therapistId;
                     this.isOpen = true;

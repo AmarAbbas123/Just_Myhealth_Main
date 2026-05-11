@@ -15,7 +15,7 @@ use Carbon\Carbon;
 
 class PatientsBookSlotsController extends Controller
 {
-    private const PATIENT_SESSION_DISPLAY_MINUTES = 45;
+    private const PATIENT_SESSION_DISPLAY_MINUTES = 50;
 
      // For TimeZone Display
     private function formatTimezoneOffset(string $tz): string
