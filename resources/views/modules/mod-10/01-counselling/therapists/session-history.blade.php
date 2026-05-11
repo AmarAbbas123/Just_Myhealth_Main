@@ -131,11 +131,12 @@
 
                             <!-- Actions -->
                             @php
-                            $clientName = trim(
-                                ($session->patient?->userAttributes?->FirstName ?? '') . ' ' .
-                                ($session->patient?->userAttributes?->LastName ?? '')
-                            );
-                        @endphp
+                                $clientName = trim(
+                                    ($session->patient?->userAttributes?->FirstName ?? '') .
+                                        ' ' .
+                                        ($session->patient?->userAttributes?->LastName ?? ''),
+                                );
+                            @endphp
 
 
                             <td class="px-4 py-3 text-right">
@@ -162,78 +163,152 @@
         <div x-show="isMessageModalOpen" @click.self="closeModal"
             class="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50 p-4" x-transition>
 
-            <div class="bg-white dark:bg-gray-800 rounded-lg w-full max-w-lg p-6 shadow-lg" @click.stop>
+            <div class="bg-white dark:bg-gray-800 rounded-lg w-full max-w-lg p-6 shadow-lg flex flex-col max-h-[90vh]"
+                @click.stop>
 
-                <h2 class="text-lg font-semibold text-gray-800 dark:text-gray-100 mb-2">
+                <h2 class="text-lg font-semibold text-gray-800 dark:text-gray-100 mb-1">
                     Session Details
                 </h2>
-
-                <p class="text-sm text-gray-500 mb-4">
-                    Complete information about this session.
-                </p>
+                <p class="text-sm text-gray-500 mb-4">Complete information about this session.</p>
 
                 <!-- Loading -->
-                <div x-show="loading" class="text-center text-gray-500">
-                    Loading session details...
-                </div>
+                <div x-show="loading" class="text-center text-gray-500 py-6">Loading session details...</div>
 
-                <!-- Data -->
-                <div x-show="!loading" class="space-y-3 text-sm">
+                <!-- Scrollable Content -->
+                <div x-show="!loading" class="overflow-y-auto flex-1 space-y-3 text-sm pr-1">
 
-                    <div><b>Date:</b>
-                        <span x-text="selectedSession.session_started_date"></span>
-                    </div>
+                    <div><b>Date:</b> <span x-text="selectedSession.session_started_date"></span></div>
+                    <div><b>Patient:</b> <span x-text="selectedSession.patient"></span></div>
+                    <div><b>Media Type:</b> <span x-text="selectedSession.media_type"></span></div>
+                    <div><b>Duration:</b> <span x-text="selectedSession.duration"></span></div>
 
-                    <div><b>Patient:</b>
-                        <span x-text="selectedSession.patient"></span>
-                    </div>
-
-                    <div><b>Media Type:</b>
-                        <span x-text="selectedSession.media_type"></span>
-                    </div>
-
-                    <div><b>Duration:</b>
-                        <span x-text="selectedSession.duration"></span>
-                    </div>
-
-                    {{-- <div><b>Recording:</b>
-                        <template x-if="selectedSession.recording">
-                            <a :href="`/recordings/${selectedSession.id}`" target="_blank" class="text-blue-600 underline">
-                                View Recording
-                            </a>
+                    <!-- ─── NOTES ─── -->
+                    <div>
+                        <b>Therapy Notes:</b>
+                        <!-- VIEW mode -->
+                        <template x-if="!editMode">
+                            <p class="mt-2 px-3 py-2 bg-gray-100 text-gray-700 text-sm rounded shadow">
+                                <span x-text="selectedSession.therapist_notes || 'No notes added.'"></span>
+                            </p>
                         </template>
-
-                        <template x-if="!selectedSession.recording">
-                            <span>Not available</span>
+                        <!-- EDIT mode -->
+                        <template x-if="editMode">
+                            <textarea x-model="editNotes" rows="5"
+                                class="mt-2 w-full border border-gray-300 dark:border-gray-600 rounded-md px-3 py-2 text-sm bg-gray-50 dark:bg-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-sky-400"
+                                placeholder="Write session notes…"></textarea>
                         </template>
-                    </div> --}}
-
-                    <div><b>Therapy Notes:</b> <br><br>
-                        <p class="px-3 py-2 bg-gray-100 text-gray-700 text-sm font-medium shadow">
-                            <span x-text="selectedSession.therapist_notes"></span>
-                        </p>
                     </div>
 
+                    <!-- ─── RESOURCES ─── -->
                     <div>
                         <b>Support Collateral Links:</b>
-                        <template x-if="selectedSession.session_note_resources.length === 0">
-                            <p class="text-sm text-gray-500 mt-2">No links added.</p>
+
+                        <!-- VIEW mode -->
+                        <template x-if="!editMode">
+                            <div class="mt-2 space-y-1">
+                                <template x-if="selectedSession.session_note_resources.length === 0">
+                                    <p class="text-sm text-gray-500">No documents attached.</p>
+                                </template>
+                                <template x-for="(resource, index) in selectedSession.session_note_resources"
+                                    :key="index">
+                                    <a :href="resource.url" class="block text-sm text-blue-700 underline break-all"
+                                        x-text="resource.name"></a>
+                                </template>
+                            </div>
                         </template>
-                        <div class="mt-2 space-y-1">
-                            <template x-for="(resource, index) in selectedSession.session_note_resources" :key="index">
-                                <a :href="resource.url" class="block text-sm text-blue-700 underline break-all"
-                                    x-text="resource.name"></a>
-                            </template>
-                        </div>
+
+
+                        <!-- EDIT mode -->
+                        <template x-if="editMode">
+                            <div class="mt-2 space-y-2">
+
+                                <!-- Existing files with Remove button -->
+                                <template x-for="(resource, index) in selectedSession.session_note_resources"
+                                    :key="index">
+                                    <div
+                                        class="flex items-center justify-between bg-gray-50 dark:bg-gray-700 rounded px-3 py-1.5 border border-gray-200 dark:border-gray-600">
+                                        <span class="text-sm text-blue-700 dark:text-blue-400 break-all"
+                                            x-text="resource.name"></span>
+                                        <button type="button" @click="removeResource(resource)"
+                                            class="ml-2 flex-shrink-0 text-xs px-2 py-1 bg-red-100 text-red-600 rounded hover:bg-red-200 transition">
+                                            🗑 Remove
+                                        </button>
+                                    </div>
+                                </template>
+
+                                <!-- Slot count feedback -->
+                                <p class="text-xs text-gray-400"
+                                    x-text="`${selectedSession.session_note_resources.length + newFiles.length}/8 attachments used`">
+                                </p>
+
+                                <!-- Upload new files (only show if slots remain) -->
+                                <template x-if="(selectedSession.session_note_resources.length + newFiles.length) < 8">
+                                    <div>
+                                        <label class="block text-xs text-gray-500 dark:text-gray-300 mb-1"
+                                            x-text="`Attach new documents (max ${8 - selectedSession.session_note_resources.length - newFiles.length} more):`">
+                                        </label>
+                                        <input type="file" multiple @change="onFileChange($event)"
+                                            accept=".pdf,.doc,.docx,.png,.jpg,.jpeg"
+                                            class="text-sm text-red-600 dark:text-gray-300 file:mr-3 file:py-1 file:px-3 file:rounded file:border-0 file:text-sm file:bg-sky-100 file:text-sky-700 hover:file:bg-sky-200">
+
+                                        <!-- Preview chosen new files -->
+                                        <template x-if="newFiles.length > 0">
+                                            <ul class="mt-1 space-y-0.5">
+                                                <template x-for="(f, i) in newFiles" :key="i">
+                                                    <li
+                                                        class="flex items-center justify-between text-xs text-gray-600 dark:text-gray-300">
+                                                        <span x-text="f.name"></span>
+                                                        <button type="button" @click="removeNewFile(i)"
+                                                            class="text-red-400 hover:text-red-600 ml-2">✕</button>
+                                                    </li>
+                                                </template>
+                                            </ul>
+                                        </template>
+                                    </div>
+                                </template>
+
+                            </div>
+                        </template>
                     </div>
+
+                    <!-- Save error -->
+                    <p x-show="saveError" x-text="saveError" class="text-red-500 text-xs mt-1"></p>
 
                 </div>
 
-                <div class="mt-6 flex justify-end">
-                    <button @click="closeModal"
-                        class="px-3 py-2 bg-gray-100 text-gray-700 text-sm font-medium rounded-lg shadow hover:bg-gray-200 transition">
-                        Close
-                    </button>
+                <!-- ─── FOOTER BUTTONS ─── -->
+                <div class="mt-5 flex justify-between items-center gap-2 flex-wrap border-t pt-4 dark:border-gray-700">
+
+                    <!-- Left: Edit / Cancel -->
+                    <div class="flex gap-2">
+                        <template x-if="!editMode">
+                            <button @click="startEdit"
+                                class="px-3 py-2 bg-amber-500 text-white text-sm font-medium rounded-lg shadow hover:bg-amber-600 transition">
+                                ✏️ Edit Notes
+                            </button>
+                        </template>
+                        <template x-if="editMode">
+                            <button @click="cancelEdit"
+                                class="px-3 py-2 bg-gray-200 text-gray-700 text-sm font-medium rounded-lg shadow hover:bg-gray-300 transition">
+                                Cancel
+                            </button>
+                        </template>
+                    </div>
+
+                    <!-- Right: Save / Close -->
+                    <div class="flex gap-2">
+                        <template x-if="editMode">
+                            <button @click="saveEdits" :disabled="saving"
+                                class="px-3 py-2 bg-emerald-600 text-white text-sm font-medium rounded-lg shadow hover:bg-emerald-700 transition disabled:opacity-50">
+                                <span x-text="saving ? 'Saving…' : '💾 Save Changes'"></span>
+                            </button>
+                        </template>
+                        <button @click="closeModal"
+                            class="px-3 py-2 bg-gray-100 text-gray-700 text-sm font-medium rounded-lg shadow hover:bg-gray-200 transition">
+                            Close
+                        </button>
+                    </div>
+
                 </div>
 
             </div>
@@ -247,22 +322,34 @@
             return {
                 isMessageModalOpen: false,
                 loading: false,
+                editMode: false,
+                saving: false,
+                saveError: '',
+
+                // Edit state
+                editNotes: '',
+                newFiles: [], // File objects queued for upload
 
                 selectedSession: {
+                    id: null,
                     patient: '',
                     media_type: '',
                     session_started_date: '',
                     duration: '',
                     recording: '',
                     therapist_notes: '',
-                    session_note_resources: []
+                    session_note_resources: [] // [{url, name, index}]
                 },
 
                 async openDetailsModal(calendarId, patientName) {
                     this.isMessageModalOpen = true;
                     this.loading = true;
+                    this.editMode = false;
+                    this.saveError = '';
+                    this.newFiles = [];
 
                     this.selectedSession = {
+                        id: calendarId,
                         patient: patientName,
                         media_type: '',
                         session_started_date: '',
@@ -289,42 +376,28 @@
                         const d = json.data;
 
                         this.selectedSession.media_type = d.media_type ?? 'N/A';
-
-                        // Date ONLY (already formatted by controller)
                         this.selectedSession.session_started_date = d.session_started_date ?? 'N/A';
+                        this.selectedSession.recording = d.recording ?? '';
+                        this.selectedSession.therapist_notes = d.therapist_notes ?? '';
+                        this.selectedSession.session_note_resources =
+                            Array.isArray(d.session_note_resources) ? d.session_note_resources : [];
 
-                        // Duration calculation
+                        // Duration
                         if (d.session_started_time && d.session_ended_time) {
                             const start = new Date(`1970-01-01T${d.session_started_time}`);
                             const end = new Date(`1970-01-01T${d.session_ended_time}`);
-
                             const diffMs = end - start;
-
                             if (diffMs > 0) {
                                 const mins = Math.floor(diffMs / 60000);
                                 const hrs = Math.floor(mins / 60);
                                 const remM = mins % 60;
-
-                                this.selectedSession.duration =
-                                    hrs > 0 ? `${hrs}h ${remM}m` : `${remM}m`;
+                                this.selectedSession.duration = hrs > 0 ? `${hrs}h ${remM}m` : `${remM}m`;
                             } else {
                                 this.selectedSession.duration = 'Not entered';
                             }
                         } else {
                             this.selectedSession.duration = 'Not entered';
                         }
-
-                        this.selectedSession.recording =
-                            d.recording ?? '';
-
-                        this.selectedSession.id = calendarId;
-    
-
-                        this.selectedSession.therapist_notes =
-                            d.therapist_notes ?? '';
-
-                        this.selectedSession.session_note_resources =
-                            Array.isArray(d.session_note_resources) ? d.session_note_resources : [];
 
                     } catch (e) {
                         console.error(e);
@@ -334,8 +407,136 @@
                     }
                 },
 
+                startEdit() {
+                    this.editNotes = this.selectedSession.therapist_notes;
+                    this.newFiles = [];
+                    this.saveError = '';
+                    this.editMode = true;
+                },
+
+                cancelEdit() {
+                    this.editMode = false;
+                    this.newFiles = [];
+                    this.saveError = '';
+                },
+
+                onFileChange(event) {
+                    const incoming = Array.from(event.target.files);
+                    const remaining = 4 - this.selectedSession.session_note_resources.length;
+                    // Respect the 4-slot cap
+                    const toAdd = incoming.slice(0, remaining);
+                    this.newFiles = [...this.newFiles, ...toAdd];
+                    // Reset input so re-selecting same file triggers change
+                    event.target.value = '';
+                },
+
+                removeNewFile(index) {
+                    this.newFiles.splice(index, 1);
+                },
+
+                async removeResource(resource) {
+                    if (!confirm(`Remove "${resource.name}"?`)) return;
+
+                    try {
+                        const res = await fetch('/mod-10/my-session-history/remove-resource', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                                'Accept': 'application/json'
+                            },
+                            body: JSON.stringify({
+                                history_id: this.selectedSession.id,
+                                index: resource.index
+                            })
+                        });
+
+                        const json = await res.json();
+                        if (json.success) {
+                            // Remove from local list immediately
+                            this.selectedSession.session_note_resources =
+                                this.selectedSession.session_note_resources.filter(r => r.index !== resource.index);
+                        } else {
+                            alert('Could not remove resource: ' + (json.message ?? 'Unknown error'));
+                        }
+                    } catch (e) {
+                        console.error(e);
+                        alert('Failed to remove resource.');
+                    }
+                },
+
+                async saveEdits() {
+                    this.saving = true;
+                    this.saveError = '';
+
+                    try {
+                        const form = new FormData();
+                        form.append('history_id', this.selectedSession.id);
+                        form.append('therapist_notes', this.editNotes);
+
+                        this.newFiles.forEach(file => {
+                            form.append('resources[]', file);
+                        });
+
+                        const res = await fetch('/mod-10/my-session-history/update-notes', {
+                            method: 'POST',
+                            headers: {
+                                'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                                'Accept': 'application/json'
+                            },
+                            body: form
+                        });
+
+                        const json = await res.json();
+
+                        if (json.success) {
+                            // Reflect notes change locally
+                            this.selectedSession.therapist_notes = this.editNotes;
+                            this.newFiles = [];
+                            this.editMode = false;
+                            // Reload resources from server to get fresh URLs
+                            await this.refreshResources();
+                        } else {
+                            this.saveError = json.message ?? 'Could not save changes.';
+                        }
+
+                    } catch (e) {
+                        console.error(e);
+                        this.saveError = 'An error occurred while saving.';
+                    } finally {
+                        this.saving = false;
+                    }
+                },
+
+                async refreshResources() {
+                    try {
+                        const res = await fetch('/therapist/session-history/details', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                                'Accept': 'application/json'
+                            },
+                            body: JSON.stringify({
+                                calendar_id: this.selectedSession.id
+                            })
+                        });
+                        const json = await res.json();
+                        if (json.success) {
+                            this.selectedSession.session_note_resources =
+                                Array.isArray(json.data.session_note_resources) ?
+                                json.data.session_note_resources : [];
+                        }
+                    } catch (e) {
+                        console.error('Failed to refresh resources', e);
+                    }
+                },
+
                 closeModal() {
                     this.isMessageModalOpen = false;
+                    this.editMode = false;
+                    this.newFiles = [];
+                    this.saveError = '';
                 }
             }
         }

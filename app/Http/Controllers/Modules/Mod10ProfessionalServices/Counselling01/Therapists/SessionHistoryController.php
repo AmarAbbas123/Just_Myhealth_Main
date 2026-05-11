@@ -62,6 +62,7 @@ class SessionHistoryController extends Controller
                         'index' => $index + 1,
                     ]),
                     'name' => $name,
+                    'index' => $index + 1,
                 ];
             })
             ->filter()
@@ -171,4 +172,102 @@ class SessionHistoryController extends Controller
 
         return redirect((string) $request->getUri());
     }
+
+
+    public function updateSessionNotes(Request $request)
+{
+    $request->validate([
+        'history_id'      => 'required|integer',
+        'therapist_notes' => 'nullable|string',
+        'resources'       => 'nullable|array|max:4',
+        'resources.*'     => 'file|max:10240|mimes:pdf,doc,docx,png,jpg,jpeg',
+    ]);
+
+    $history = SysUserType30SessionHistory::where('ID', $request->history_id)
+        ->where('AllocatedTherapistUserID', auth()->id())
+        ->firstOrFail();
+
+    // Update notes
+    $history->TherapistNotes = $request->therapist_notes;
+
+    // Handle new file uploads — find empty slots (1–4)
+    if ($request->hasFile('resources')) {
+        $slots = [
+            1 => 'SessionNotesResource1',
+            2 => 'SessionNotesResource2',
+            3 => 'SessionNotesResource3',
+            4 => 'SessionNotesResource4',
+        ];
+
+        // Collect currently occupied slots
+        $occupied = [];
+        foreach ($slots as $i => $col) {
+            if (!empty($history->$col)) {
+                $occupied[] = $i;
+            }
+        }
+
+        $freeSlots = array_diff(array_keys($slots), $occupied);
+        $freeSlots = array_values($freeSlots);
+
+        foreach ($request->file('resources') as $idx => $file) {
+            if (!isset($freeSlots[$idx])) {
+                break; // No more slots
+            }
+            $slotIndex = $freeSlots[$idx];
+            $col       = $slots[$slotIndex];
+
+            $originalName = $file->getClientOriginalName();
+            $path = $file->storeAs(
+                'session-notes/' . $history->ID,
+                $originalName,
+                'therapy_docs'
+            );
+
+            $history->$col = $path;
+        }
+    }
+
+    $history->save();
+
+    return response()->json(['success' => true]);
+}
+
+public function removeSessionResource(Request $request)
+{
+    $request->validate([
+        'history_id' => 'required|integer',
+        'index'      => 'required|integer|between:1,4',
+    ]);
+
+    $history = SysUserType30SessionHistory::where('ID', $request->history_id)
+        ->where('AllocatedTherapistUserID', auth()->id())
+        ->firstOrFail();
+
+    $colMap = [
+        1 => 'SessionNotesResource1',
+        2 => 'SessionNotesResource2',
+        3 => 'SessionNotesResource3',
+        4 => 'SessionNotesResource4',
+    ];
+
+    $col   = $colMap[$request->index];
+    $value = $history->$col;
+
+    if (empty($value)) {
+        return response()->json(['success' => false, 'message' => 'Resource not found'], 404);
+    }
+
+    $path = $this->normalizeSessionResourcePath((string) $value);
+    if ($path && Storage::disk('therapy_docs')->exists($path)) {
+        Storage::disk('therapy_docs')->delete($path);
+    }
+
+    $history->$col = null;
+    $history->save();
+
+    return response()->json(['success' => true]);
+}
+
+
 }

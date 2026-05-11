@@ -500,6 +500,8 @@ Route::controller(SessionHistoryController::class)
     ->middleware(['auth', 'usertype:user,therapist'])
     ->group(function () {
         Route::get('/mod-10/my-session-history', 'sessionHistory')->name('therap.session.history');
+        Route::post('/mod-10/my-session-history/update-notes', 'updateSessionNotes');
+        Route::post('/mod-10/my-session-history/remove-resource', 'removeSessionResource');
         Route::post('therapist/session-history/details', 'showDetails');
         Route::get('/recordings/{id}', 'getRecording');
         Route::get('/mod-10/therapist/session-history/{history_id}/resource/{index}', 'downloadSessionResource')->whereNumber('history_id')->whereNumber('index')->name('therap.session.history.resource.download');    
