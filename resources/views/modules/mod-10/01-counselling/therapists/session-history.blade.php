@@ -1,4 +1,19 @@
 <x-app1>
+    @php
+        $resourceGroups = collect($sessionNoteResources ?? [])
+            ->groupBy('folder_key')
+            ->map(function ($items) {
+                $first = $items->first();
+                return [
+                    'folder_key' => $first['folder_key'] ?? 'group::' . md5((string) ($first['folder'] ?? 'Root')),
+                    'folder' => $first['folder'] ?? 'Root',
+                    'type' => $first['type'] ?? 'private',
+                    'items' => $items->values(),
+                ];
+            })
+            ->values();
+    @endphp
+
     <div x-data="sessionHistory()" class="space-y-6">
 
         <!-- Header -->
@@ -220,52 +235,76 @@
 
                         <!-- EDIT mode -->
                         <template x-if="editMode">
-                            <div class="mt-2 space-y-2">
+                            <div class="mt-2 space-y-3">
 
-                                <!-- Existing files with Remove button -->
-                                <template x-for="(resource, index) in selectedSession.session_note_resources"
-                                    :key="index">
-                                    <div
-                                        class="flex items-center justify-between bg-gray-50 dark:bg-gray-700 rounded px-3 py-1.5 border border-gray-200 dark:border-gray-600">
-                                        <span class="text-sm text-blue-700 dark:text-blue-400 break-all"
-                                            x-text="resource.name"></span>
-                                        <button type="button" @click="removeResource(resource)"
-                                            class="ml-2 flex-shrink-0 text-xs px-2 py-1 bg-red-100 text-red-600 rounded hover:bg-red-200 transition">
-                                            🗑 Remove
-                                        </button>
-                                    </div>
-                                </template>
-
-                                <!-- Slot count feedback -->
-                                <p class="text-xs text-gray-400"
-                                    x-text="`${selectedSession.session_note_resources.length + newFiles.length}/8 attachments used`">
-                                </p>
-
-                                <!-- Upload new files (only show if slots remain) -->
-                                <template x-if="(selectedSession.session_note_resources.length + newFiles.length) < 8">
-                                    <div>
-                                        <label class="block text-xs text-gray-500 dark:text-gray-300 mb-1"
-                                            x-text="`Attach new documents (max ${8 - selectedSession.session_note_resources.length - newFiles.length} more):`">
-                                        </label>
-                                        <input type="file" multiple @change="onFileChange($event)"
-                                            accept=".pdf,.doc,.docx,.png,.jpg,.jpeg"
-                                            class="text-sm text-red-600 dark:text-gray-300 file:mr-3 file:py-1 file:px-3 file:rounded file:border-0 file:text-sm file:bg-sky-100 file:text-sky-700 hover:file:bg-sky-200">
-
-                                        <!-- Preview chosen new files -->
-                                        <template x-if="newFiles.length > 0">
-                                            <ul class="mt-1 space-y-0.5">
-                                                <template x-for="(f, i) in newFiles" :key="i">
-                                                    <li
-                                                        class="flex items-center justify-between text-xs text-gray-600 dark:text-gray-300">
-                                                        <span x-text="f.name"></span>
-                                                        <button type="button" @click="removeNewFile(i)"
-                                                            class="text-red-400 hover:text-red-600 ml-2">✕</button>
-                                                    </li>
-                                                </template>
-                                            </ul>
+                                <!-- Currently attached -->
+                                <template x-if="selectedResourcePaths.length > 0">
+                                    <div class="space-y-1">
+                                        <p class="text-xs font-medium text-gray-600 dark:text-gray-300">Currently
+                                            attached</p>
+                                        <template x-for="resource in selectedResourcesForDisplay()"
+                                            :key="resource.path">
+                                            <div
+                                                class="flex items-center justify-between gap-2 rounded-md bg-gray-50 dark:bg-gray-700 px-3 py-2">
+                                                <span class="text-sm text-blue-700 dark:text-blue-400 truncate"
+                                                    x-text="resource.name"></span>
+                                                <button type="button" @click="toggleResource(resource.path, false)"
+                                                    class="text-xs px-2 py-1 bg-red-100 text-red-600 rounded hover:bg-red-200 transition">
+                                                    Remove
+                                                </button>
+                                            </div>
                                         </template>
                                     </div>
                                 </template>
+
+                                <!-- Type toggle: Common / Private -->
+                                <div class="flex gap-2">
+                                    <button type="button" @click="selectedResourceType = 'common'"
+                                        :class="selectedResourceType === 'common'
+                                            ?
+                                            'bg-sky-600 text-white' :
+                                            'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300'"
+                                        class="px-4 py-1.5 rounded-full text-sm font-medium transition">
+                                        🌐 Common
+                                    </button>
+                                    <button type="button" @click="selectedResourceType = 'private'"
+                                        :class="selectedResourceType === 'private'
+                                            ?
+                                            'bg-sky-600 text-white' :
+                                            'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300'"
+                                        class="px-4 py-1.5 rounded-full text-sm font-medium transition">
+                                        🔒 Private
+                                    </button>
+                                </div>
+
+                                <!-- File list for selected type -->
+                                <div class="space-y-2 max-h-52 overflow-y-auto pr-1">
+                                    <template x-if="itemsForSelectedType().length === 0">
+                                        <p class="text-sm text-gray-500">No files in this category.</p>
+                                    </template>
+                                    <template x-for="resource in itemsForSelectedType()" :key="resource.path">
+                                        <label
+                                            class="flex items-center justify-between gap-3 rounded-md border border-gray-200 dark:border-gray-600 px-3 py-2 hover:bg-gray-50 dark:hover:bg-gray-700 cursor-pointer">
+                                            <div class="flex items-center gap-3 min-w-0">
+                                                <input type="checkbox" :checked="isResourceSelected(resource.path)"
+                                                    :disabled="!isResourceSelected(resource.path) && selectedResourcePaths
+                                                        .length >= 8"
+                                                    @change="toggleResource(resource.path, $event.target.checked)"
+                                                    class="rounded border-gray-300 text-indigo-600">
+                                                <p class="text-sm text-gray-800 dark:text-gray-100 truncate"
+                                                    x-text="resource.name"></p>
+                                            </div>
+                                            <a :href="resource.url" target="_blank"
+                                                class="text-xs text-blue-700 dark:text-blue-400 underline flex-shrink-0">
+                                                Preview
+                                            </a>
+                                        </label>
+                                    </template>
+                                </div>
+
+                                <p class="text-xs text-gray-400"
+                                    x-text="`${selectedResourcePaths.length}/8 attachments selected`">
+                                </p>
 
                             </div>
                         </template>
@@ -328,7 +367,10 @@
 
                 // Edit state
                 editNotes: '',
-                newFiles: [], // File objects queued for upload
+                selectedResourceType: 'common',
+                availableResourceGroups: @json($resourceGroups),
+                selectedResourceGroupKey: @json($resourceGroups->first()['folder_key'] ?? ''),
+                selectedResourcePaths: [],
 
                 selectedSession: {
                     id: null,
@@ -346,7 +388,7 @@
                     this.loading = true;
                     this.editMode = false;
                     this.saveError = '';
-                    this.newFiles = [];
+                    this.selectedResourcePaths = [];
 
                     this.selectedSession = {
                         id: calendarId,
@@ -409,60 +451,68 @@
 
                 startEdit() {
                     this.editNotes = this.selectedSession.therapist_notes;
-                    this.newFiles = [];
+                    this.selectedResourceType = 'common';
+                    this.selectedResourcePaths = this.selectedSession.session_note_resources
+                        .map(resource => resource.path)
+                        .filter(Boolean);
+                    if (!this.selectedResourceGroupKey && this.availableResourceGroups.length > 0) {
+                        this.selectedResourceGroupKey = this.availableResourceGroups[0].folder_key;
+                    }
                     this.saveError = '';
                     this.editMode = true;
                 },
 
                 cancelEdit() {
                     this.editMode = false;
-                    this.newFiles = [];
+                    this.selectedResourceType = 'common';
+                    this.selectedResourcePaths = [];
                     this.saveError = '';
                 },
 
-                onFileChange(event) {
-                    const incoming = Array.from(event.target.files);
-                    const remaining = 4 - this.selectedSession.session_note_resources.length;
-                    // Respect the 4-slot cap
-                    const toAdd = incoming.slice(0, remaining);
-                    this.newFiles = [...this.newFiles, ...toAdd];
-                    // Reset input so re-selecting same file triggers change
-                    event.target.value = '';
+                currentResourceGroupItems() {
+                    const group = this.availableResourceGroups.find(
+                        item => item.folder_key === this.selectedResourceGroupKey
+                    );
+
+                    return group?.items ?? [];
                 },
 
-                removeNewFile(index) {
-                    this.newFiles.splice(index, 1);
+                allAvailableResources() {
+                    return this.availableResourceGroups.flatMap(group => group.items ?? []);
                 },
 
-                async removeResource(resource) {
-                    if (!confirm(`Remove "${resource.name}"?`)) return;
+                selectedResourcesForDisplay() {
+                    const resourcesByPath = new Map(
+                        this.allAvailableResources().map(resource => [resource.path, resource])
+                    );
 
-                    try {
-                        const res = await fetch('/mod-10/my-session-history/remove-resource', {
-                            method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/json',
-                                'X-CSRF-TOKEN': '{{ csrf_token() }}',
-                                'Accept': 'application/json'
-                            },
-                            body: JSON.stringify({
-                                history_id: this.selectedSession.id,
-                                index: resource.index
-                            })
-                        });
+                    return this.selectedResourcePaths.map(path => {
+                        const resource = resourcesByPath.get(path) ?? {
+                            path,
+                            name: path
+                        };
+                        return {
+                            ...resource,
+                            name: resource.path.split('/').pop() || resource.name // ← clean name
+                        };
+                    });
+                },
 
-                        const json = await res.json();
-                        if (json.success) {
-                            // Remove from local list immediately
-                            this.selectedSession.session_note_resources =
-                                this.selectedSession.session_note_resources.filter(r => r.index !== resource.index);
-                        } else {
-                            alert('Could not remove resource: ' + (json.message ?? 'Unknown error'));
+                isResourceSelected(path) {
+                    return this.selectedResourcePaths.includes(path);
+                },
+
+                toggleResource(path, checked) {
+                    if (checked) {
+                        if (this.selectedResourcePaths.length >= 8 || this.isResourceSelected(path)) {
+                            return;
                         }
-                    } catch (e) {
-                        console.error(e);
-                        alert('Failed to remove resource.');
+
+                        this.selectedResourcePaths.push(path);
+                        return;
                     }
+
+                    this.selectedResourcePaths = this.selectedResourcePaths.filter(item => item !== path);
                 },
 
                 async saveEdits() {
@@ -474,8 +524,8 @@
                         form.append('history_id', this.selectedSession.id);
                         form.append('therapist_notes', this.editNotes);
 
-                        this.newFiles.forEach(file => {
-                            form.append('resources[]', file);
+                        this.selectedResourcePaths.forEach(path => {
+                            form.append('selected_resources[]', path);
                         });
 
                         const res = await fetch('/mod-10/my-session-history/update-notes', {
@@ -492,7 +542,7 @@
                         if (json.success) {
                             // Reflect notes change locally
                             this.selectedSession.therapist_notes = this.editNotes;
-                            this.newFiles = [];
+                            this.selectedResourcePaths = [];
                             this.editMode = false;
                             // Reload resources from server to get fresh URLs
                             await this.refreshResources();
@@ -532,10 +582,21 @@
                     }
                 },
 
+                itemsForSelectedType() {
+                    return this.availableResourceGroups
+                        .flatMap(group => group.items ?? [])
+                        .filter(resource => resource.type === this.selectedResourceType)
+                        .map(resource => ({
+                            ...resource,
+                            name: resource.path.split('/').pop() || resource.name
+                        }));
+                },
+
                 closeModal() {
                     this.isMessageModalOpen = false;
                     this.editMode = false;
-                    this.newFiles = [];
+                    this.selectedResourceType = 'common';
+                    this.selectedResourcePaths = [];
                     this.saveError = '';
                 }
             }

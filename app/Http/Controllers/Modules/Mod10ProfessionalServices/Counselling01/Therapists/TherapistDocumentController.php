@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Modules\Mod10ProfessionalServices\Counselling01\T
 
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Storage;
+use App\Models\SysUserType30SessionHistory;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 
@@ -167,6 +168,9 @@ class TherapistDocumentController extends Controller
             Storage::disk('therapy_docs')->delete($path);
         }
 
+        // ─── Null out any session history columns referencing this path ───
+        $this->clearDeletedFileFromSessionHistory($path);
+
         return back()->with('success', 'File deleted');
     }
 
@@ -201,4 +205,55 @@ class TherapistDocumentController extends Controller
         ->values()
         ->toArray();
     }
+
+    //For Clearing the columns in Session History that reference the deleted file:
+protected function clearDeletedFileFromSessionHistory(string $deletedPath): void
+{
+    $columns = [
+        'SessionNotesResource1',
+        'SessionNotesResource2',
+        'SessionNotesResource3',
+        'SessionNotesResource4',
+        'SessionNotesResource5',
+        'SessionNotesResource6',
+        'SessionNotesResource7',
+        'SessionNotesResource8',
+    ];
+
+    $sessions = SysUserType30SessionHistory::where('AllocatedTherapistUserID', auth()->id())
+        ->get();
+
+    foreach ($sessions as $session) {
+        $changed = false;
+
+        foreach ($columns as $col) {
+            if (empty($session->$col)) {
+                continue;
+            }
+
+            $storedPath = $session->$col;
+
+
+            $parsedPath = parse_url($storedPath, PHP_URL_PATH);
+            $normalized = is_string($parsedPath) ? ltrim($parsedPath, '/') : $storedPath;
+
+            $prefix = 'storage/therapy-documents/';
+            if (str_starts_with($normalized, $prefix)) {
+                $normalized = substr($normalized, strlen($prefix));
+            }
+
+            $normalized = urldecode($normalized);
+
+            if ($normalized === $deletedPath || $storedPath === $deletedPath) {
+                $session->$col = null;
+                $changed = true;
+            }
+        }
+
+        if ($changed) {
+            $session->save();
+        }
+    }
+}
+
 }

@@ -316,7 +316,7 @@
                 </div>
 
                 <p class="text-sm text-gray-600">
-                    Scheduled Session has 15 minutes remaining
+                    Note: This session is scheduled to end in 5 Minutes
                 </p>
 
                 <div class="mt-4 flex justify-end">
