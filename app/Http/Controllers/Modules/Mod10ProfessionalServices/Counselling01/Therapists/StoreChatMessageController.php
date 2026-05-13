@@ -4,9 +4,7 @@ namespace App\Http\Controllers\Modules\Mod10ProfessionalServices\Counselling01\T
 
 use App\Http\Controllers\Controller;
 use App\Models\SysUserMessageHistory;
-use App\Models\User;
-use App\Notifications\TherapistMessageReceivedNotification;
-use App\Notifications\UserMessageReceivedNotification;
+use App\Services\UserMessageService;
 use Illuminate\Http\Request;
 
 class StoreChatMessageController extends Controller
@@ -21,16 +19,12 @@ class StoreChatMessageController extends Controller
 
         $user = auth()->user();
 
-        $message = SysUserMessageHistory::create([
-            'FromUserID'      => $user->ID,
-            'FromUserType'    => (int) $user->UserType,
-            'ToUserID'        => (int) $request->to_user_id,
-            'ToUserType'      => (int) $request->to_user_type,
-            'MessageDateTime' => now(),
-            'MessageContent'  => $request->message,
-        ]);
-
-        $this->sendMessageNotification($user, $message);
+        app(UserMessageService::class)->send(
+            $user,
+            (int) $request->to_user_id,
+            (int) $request->to_user_type,
+            $request->message
+        );
 
         return response()->json(['success' => true]);
     }
@@ -65,49 +59,4 @@ class StoreChatMessageController extends Controller
             });
     }
 
-    protected function sendMessageNotification(User $sender, SysUserMessageHistory $message): void
-    {
-        $recipient = User::find($message->ToUserID);
-
-        if (!$recipient || empty($recipient->Email)) {
-            return;
-        }
-
-        if ((int) $sender->UserType === 1 && (int) $message->ToUserType === 30) {
-            $this->notifyTherapistWhenPatientMessages($sender, $recipient, $message);
-            return;
-        }
-
-        if ((int) $sender->UserType === 30 && (int) $message->ToUserType === 1) {
-            $this->notifyUserWhenTherapistMessages($sender, $recipient, $message);
-        }
-    }
-
-    protected function notifyTherapistWhenPatientMessages(User $sender, User $therapist, SysUserMessageHistory $message): void
-    {
-        $sender->loadMissing('userAttributes');
-
-        $senderFullName = trim(collect([
-            $sender->userAttributes->FirstName ?? null,
-            $sender->userAttributes->LastName ?? null,
-        ])->filter()->implode(' '));
-
-        if ($senderFullName === '') {
-            $senderFullName = $sender->UserName ?: 'User';
-        }
-
-        $therapist->notify(new TherapistMessageReceivedNotification(
-            $message,
-            $sender->UserName ?: 'User',
-            $senderFullName
-        ));
-    }
-
-    protected function notifyUserWhenTherapistMessages(User $sender, User $user, SysUserMessageHistory $message): void
-    {
-        $user->notify(new UserMessageReceivedNotification(
-            $message,
-            $sender->UserName ?: 'Therapist'
-        ));
-    }
 }

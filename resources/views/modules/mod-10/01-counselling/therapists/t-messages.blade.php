@@ -353,28 +353,46 @@
                     }
                 },
 
+                fileNameFromUrl(url) {
+                    try {
+                        const parsed = new URL(url, window.location.origin);
+                        const file = parsed.pathname.split('/').filter(Boolean).pop() || 'Resource';
+                        return decodeURIComponent(file);
+                    } catch (e) {
+                        return 'Resource';
+                    }
+                },
+
                 formatMessage(text) {
                     if (!text) return '';
 
-                    const raw = String(text);
-                    const htmlAnchor = raw.match(/<a\s+[^>]*href=(["'])(.*?)\1[^>]*>([\s\S]*?)<\/a>/i);
-                    const markdownLink = raw.match(/\[([^\]]+)\]\((https?:\/\/[^)\s]+)\)/i);
-                    const linkMatch = htmlAnchor || markdownLink;
+                    let raw = String(text);
+                    raw = raw.replace(/<a\s+[^>]*href=(["'])(.*?)\1[^>]*>([\s\S]*?)<\/a>/gi, (_match, _quote, url, label) => {
+                        let cleanLabel = String(label || '').replace(/<[^>]*>/g, '').trim();
+                        if (!cleanLabel || /^Resource\s+\d+$/i.test(cleanLabel)) {
+                            cleanLabel = this.fileNameFromUrl(url);
+                        }
+                        return `[${cleanLabel}](${url})`;
+                    });
+                    raw = raw
+                        .replace(/<br\s*\/?>/gi, '\n')
+                        .replace(/<\/(p|div)>/gi, '\n')
+                        .replace(/<\/?strong>/gi, '')
+                        .replace(/<[^>]*>/g, '');
 
-                    if (!linkMatch) {
-                        return this.escapeHtml(raw).replace(/\n/g, '<br>');
+                    const linkPattern = /\[([^\]]+)\]\(((?:https?:\/\/|\/)[^)]+)\)/g;
+                    let html = '';
+                    let lastIndex = 0;
+                    let match;
+
+                    while ((match = linkPattern.exec(raw)) !== null) {
+                        html += this.escapeHtml(raw.slice(lastIndex, match.index)).replace(/\n/g, '<br>');
+                        html += this.safeLinkHtml(match[2], match[1]);
+                        lastIndex = match.index + match[0].length;
                     }
 
-                    const fullMatch = linkMatch[0];
-                    const url = htmlAnchor ? linkMatch[2] : linkMatch[2];
-                    const label = htmlAnchor ? linkMatch[3].replace(/<[^>]*>/g, '').trim() : linkMatch[1].trim();
-                    const [before, after = ''] = raw.split(fullMatch);
-
-                    return [
-                        this.escapeHtml(before).replace(/\n/g, '<br>'),
-                        this.safeLinkHtml(url, label || 'Join Session'),
-                        this.escapeHtml(after).replace(/\n/g, '<br>'),
-                    ].join('');
+                    html += this.escapeHtml(raw.slice(lastIndex)).replace(/\n/g, '<br>');
+                    return html;
                 },
 
                 getReadKey() {

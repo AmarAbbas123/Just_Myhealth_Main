@@ -3,10 +3,10 @@
 namespace App\Http\Controllers\Modules\Mod10ProfessionalServices\Counselling01\Therapists;
 
 use App\Http\Controllers\Controller;
-use App\Http\Controllers\Modules\Mod10ProfessionalServices\Counselling01\Therapists\StoreChatMessageController;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
 use App\Services\TherapistSessionStartNotificationToPatients;
+use App\Services\UserMessageService;
 use App\Models\CommonCalendar;
 use App\Models\SysSentAutoEmail;
 use App\Models\SysUserType30SessionHistory;
@@ -276,6 +276,10 @@ class WaitingRoomController extends Controller
             $history->AllocatedTherapistUserID = auth()->id();
         }
 
+        if (empty($history->PatientUserID)) {
+            $history->PatientUserID = CommonCalendar::whereKey($history->SessionCalendarID)->value('PatientUserID');
+        }
+
         $allowedResourcesByPath = collect($this->therapistDocumentsForNotes())->keyBy('path');
 
         $selectedResources = collect($request->input('selected_resources', []))
@@ -294,6 +298,21 @@ class WaitingRoomController extends Controller
         }
 
         $history->save();
+
+        $notesMessage = $this->buildSessionNotesMessage(
+            $history->TherapistNotes,
+            $this->existingSessionNoteResources($history),
+            (int) $history->ID
+        );
+
+        if (!empty($history->PatientUserID) && trim(strip_tags($notesMessage)) !== '') {
+            app(UserMessageService::class)->send(
+                auth()->user(),
+                (int) $history->PatientUserID,
+                1,
+                $notesMessage
+            );
+        }
 
         Log::info('saveSessionNotes:saved', [
             'auth_id' => auth()->id(),
@@ -503,6 +522,47 @@ class WaitingRoomController extends Controller
             ->filter()
             ->values()
             ->all();
+    }
+
+    protected function buildSessionNotesMessage(?string $notes, array $resources, int $historyId): string
+    {
+        $parts = [
+            'Post session notes are available.',
+        ];
+
+        $notes = trim((string) $notes);
+        if ($notes !== '') {
+            $parts[] = "Session Notes:\n" . $notes;
+        }
+
+        if (!empty($resources)) {
+            $links = collect($resources)
+                ->filter(fn($url) => is_string($url) && trim($url) !== '')
+                ->map(function ($url, $index) use ($historyId) {
+                    $label = $this->sessionResourceFileName($url) ?: 'Resource ' . ($index + 1);
+                    $downloadUrl = route('usr.therapy.history.resource.download', [
+                        'history_id' => $historyId,
+                        'index' => $index + 1,
+                    ]);
+
+                    return '- [' . $label . '](' . $downloadUrl . ')';
+                })
+                ->implode("\n");
+
+            if ($links !== '') {
+                $parts[] = "Support Resources:\n" . $links;
+            }
+        }
+
+        return implode("\n\n", $parts);
+    }
+
+    protected function sessionResourceFileName(string $url): string
+    {
+        $path = parse_url($url, PHP_URL_PATH);
+        $fileName = basename((string) ($path ?: $url));
+
+        return rawurldecode($fileName);
     }
 
     protected function normalizeSessionResourcePath(string $value): ?string

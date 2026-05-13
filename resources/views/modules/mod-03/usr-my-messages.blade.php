@@ -84,13 +84,13 @@
                                     <div x-show="!isMine(msg)" class="flex gap-2">
                                         <img :src="activeChat.avatar" class="w-8 h-8 rounded-full">
                                         <div class="bg-gray-100 rounded p-2 max-w-xs">
-                                            <p class="text-sm" x-html="msg.text"></p>
+                                            <p class="text-sm" x-html="formatMessage(msg.text)"></p>
                                             <p class="text-xs text-gray-400 mt-1" x-text="msg.time"></p>
                                         </div>
                                     </div>
                                     <div x-show="isMine(msg)" class="flex justify-end">
                                         <div class="bg-green-600 text-white rounded p-2 max-w-xs">
-                                            <p class="text-sm" x-html="msg.text"></p>
+                                            <p class="text-sm" x-html="formatMessage(msg.text)"></p>
                                             <p class="text-xs text-gray-400 mt-1" x-text="msg.time"></p>
                                         </div>
                                     </div>
@@ -383,6 +383,67 @@
                     const clean = String(text).replace(/<[^>]*>/g, '');
                     if (clean.length <= limit) return clean;
                     return clean.slice(0, limit) + '...';
+                },
+
+                escapeHtml(value) {
+                    const div = document.createElement('div');
+                    div.textContent = value ?? '';
+                    return div.innerHTML;
+                },
+
+                fileNameFromUrl(url) {
+                    try {
+                        const parsed = new URL(url, window.location.origin);
+                        const file = parsed.pathname.split('/').filter(Boolean).pop() || 'Resource';
+                        return decodeURIComponent(file);
+                    } catch (e) {
+                        return 'Resource';
+                    }
+                },
+
+                safeLinkHtml(url, label) {
+                    try {
+                        const parsed = new URL(url, window.location.origin);
+                        if (!['http:', 'https:'].includes(parsed.protocol)) {
+                            return this.escapeHtml(label);
+                        }
+
+                        return `<a href="${this.escapeHtml(parsed.href)}" target="_blank" rel="noopener noreferrer" class="font-semibold underline text-blue-600">${this.escapeHtml(label || this.fileNameFromUrl(url))}</a>`;
+                    } catch (e) {
+                        return this.escapeHtml(label);
+                    }
+                },
+
+                formatMessage(text) {
+                    if (!text) return '';
+
+                    let raw = String(text);
+                    raw = raw.replace(/<a\s+[^>]*href=(["'])(.*?)\1[^>]*>([\s\S]*?)<\/a>/gi, (_match, _quote, url, label) => {
+                        let cleanLabel = String(label || '').replace(/<[^>]*>/g, '').trim();
+                        if (!cleanLabel || /^Resource\s+\d+$/i.test(cleanLabel)) {
+                            cleanLabel = this.fileNameFromUrl(url);
+                        }
+                        return `[${cleanLabel}](${url})`;
+                    });
+                    raw = raw
+                        .replace(/<br\s*\/?>/gi, '\n')
+                        .replace(/<\/(p|div)>/gi, '\n')
+                        .replace(/<\/?strong>/gi, '')
+                        .replace(/<[^>]*>/g, '');
+
+                    const linkPattern = /\[([^\]]+)\]\(((?:https?:\/\/|\/)[^)]+)\)/g;
+                    let html = '';
+                    let lastIndex = 0;
+                    let match;
+
+                    while ((match = linkPattern.exec(raw)) !== null) {
+                        html += this.escapeHtml(raw.slice(lastIndex, match.index)).replace(/\n/g, '<br>');
+                        html += this.safeLinkHtml(match[2], match[1]);
+                        lastIndex = match.index + match[0].length;
+                    }
+
+                    html += this.escapeHtml(raw.slice(lastIndex)).replace(/\n/g, '<br>');
+                    return html;
                 },
 
                 getReadKey() {
