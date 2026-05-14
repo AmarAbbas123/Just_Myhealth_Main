@@ -33,8 +33,8 @@
             <div class="pb-14 text-justify">
                 <div class="container px-4 sm:px-8 xl:px-4">
                     <p class="mb-4 text-gray-800 text-lg md:text-xl lg:text-lg xl:text-xl leading-8 md:leading-9 break-words">JustMy.Health is the dynamic online health platform where social media meets health and wellness through education, empowerment, and personalized support.</p>
-                    <p class="mb-4 text-gray-800 text-lg md:text-xl lg:text-lg xl:text-xl leading-8 md:leading-9 break-words">JustMy.Health provides consumers with preventive and curative healthcare access, online counselling and therapy services, and tailored dietary programs—giving everyone the tools they need to improve their health, wellness, and longevity.</p>                    
-                    <p class="mb-4 text-gray-800 text-lg md:text-xl lg:text-lg xl:text-xl leading-8 md:leading-9 break-words">With global coverage and locally tailored support, JustMy.Health serves both individuals and organizations. Our platform empowers consumers directly while also delivering scalable B2B solutions for employers, clinics, wellness providers, and community partners seeking to elevate health outcomes worldwide.</p>
+                    <p class="mb-4 text-gray-800 text-lg md:text-xl lg:text-lg xl:text-xl leading-8 md:leading-9 break-words">JustMy.Health provides clients with preventive and curative healthcare access, online counselling and therapy services, and tailored dietary programs—giving everyone the tools they need to improve their health, wellness, and longevity.</p>                    
+                    <p class="mb-4 text-gray-800 text-lg md:text-xl lg:text-lg xl:text-xl leading-8 md:leading-9 break-words">With global coverage and locally tailored support, JustMy.Health serves both individuals and organizations. Our platform empowers clients directly while also delivering scalable B2B solutions for employers, clinics, wellness providers, and community partners seeking to elevate health outcomes worldwide.</p>
                 </div>
             </div>
             <!-- end of introduction -->
@@ -52,10 +52,10 @@
                     Therapeutic Practitioners
                 </h2>
                 <p class="text-sm sm:text-base md:text-lg lg:text-xl leading-relaxed text-[#243b45] mb-6 max-w-4xl mx-auto">
-                    Therapeutic Practitioners on JustMy.Health provide safe, supportive, and professional guidance to help users improve their mental, emotional, and overall wellbeing.
+                    Therapeutic Practitioners on JustMy.Health provide safe, supportive, and professional guidance to help clients improve their mental, emotional, and overall wellbeing.
                 </p>
                 <p class="text-sm sm:text-base md:text-lg lg:text-xl leading-relaxed text-[#243b45] max-w-5xl mx-auto">
-                    Each practitioner is fully verified, qualified, and committed to delivering ethical, person-centred care. Whether users need short-term support, structured therapy, or ongoing wellbeing guidance, our practitioners offer trusted, confidential services designed to empower healthier, more resilient lives.
+                    Each Therapeutic practitioner is fully verified, qualified, and committed to delivering ethical, person-centred care. Whether clients need short-term support, structured therapy, or ongoing wellbeing guidance, our Therapeutic practitioners offer trusted, confidential services designed to empower healthier, more resilient lives.
                 </p>
             </div>
 
@@ -140,6 +140,5 @@
     <script src="{{ asset('js/swiper.min.js') }}"></script>
     <script src="{{ asset('js/jquery.magnific-popup.js') }}"></script>
     <script src="{{ asset('js/scripts.js') }}"></script>
-
 
 </x-app-layout>

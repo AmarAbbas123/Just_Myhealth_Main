@@ -55,9 +55,9 @@
 
                     {{-- USER ACCOUNT --}}
                     <div class="bg-white rounded-2xl shadow-lg p-8 flex flex-col items-center text-center hover:shadow-2xl transition">
-                        <h2 class="text-xl font-semibold text-gray-800">USER Account</h2>
+                        <h2 class="text-xl font-semibold text-gray-800">CLIENT Account</h2>                        
                         <p class="text-4xl font-bold text-indigo-600 mt-4">&pound;<span class="text-3xl">FREE</span></p>
-                        <p class="mt-2 text-gray-500">The Standard User account allows access to:</p>
+                        <p class="mt-2 text-gray-500">The Standard CLIENT account allows access to:</p>
                         <ul class="mt-4 space-y-2 text-gray-700 text-left list-inside">
                             <li><b>&check;</b> Social Communications</li>
                             <li><b>&check;</b> Medical Data Feeds</li>

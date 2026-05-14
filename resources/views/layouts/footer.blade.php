@@ -3,7 +3,7 @@
 
             <div class="container px-4 sm:px-8">
                 <h4 class="mb-8 lg:max-w-3xl lg:mx-auto">
-                    JustMy Health is a healthcare platform designed to connect users with trusted therapists,
+                    JustMy Health is a healthcare platform designed to connect clients with trusted therapists,
                     healthcare providers, and wellness services.
                 </h4>
 
