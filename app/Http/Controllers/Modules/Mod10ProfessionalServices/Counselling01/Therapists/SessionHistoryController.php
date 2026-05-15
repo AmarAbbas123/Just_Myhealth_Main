@@ -26,7 +26,7 @@ class SessionHistoryController extends Controller
         $sessionNoteResources = $this->therapistDocumentsForNotes();
 
         return view(
-            'modules.mod-10.01-counselling.therapists.session-history',
+            'modules.mod-10.01-counselling.therapists.history.session-history',
             compact('sessions', 'sessionNoteResources')
         );
     }

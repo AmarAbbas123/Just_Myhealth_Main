@@ -61,6 +61,7 @@ use App\Http\Controllers\Modules\Mod10ProfessionalServices\Counselling01\Therapi
 use App\Http\Controllers\Modules\Mod10ProfessionalServices\Counselling01\Therapists\TherapistsBookSlotsController;
 use App\Http\Controllers\Modules\Mod10ProfessionalServices\Counselling01\Therapists\WaitingRoomController;
 use App\Http\Controllers\Modules\Mod10ProfessionalServices\Counselling01\Therapists\SessionHistoryController;
+use App\Http\Controllers\Modules\Mod10ProfessionalServices\Counselling01\Therapists\SessionHistoryByClientsController;  
 use App\Http\Controllers\Modules\Mod10ProfessionalServices\Counselling01\Therapists\FinancialManagementController;
 use App\Http\Controllers\Modules\Mod10ProfessionalServices\Counselling01\Therapists\ComplaintsIssuesController;
 use App\Http\Controllers\Modules\Mod10ProfessionalServices\Counselling01\Therapists\IdRegistrationController;
@@ -505,6 +506,15 @@ Route::controller(SessionHistoryController::class)
         Route::post('therapist/session-history/details', 'showDetails');
         Route::get('/recordings/{id}', 'getRecording');
         Route::get('/mod-10/therapist/session-history/{history_id}/resource/{index}', 'downloadSessionResource')->whereNumber('history_id')->whereNumber('index')->name('therap.session.history.resource.download');    
+    });
+
+//8️⃣ A Sessions History By Clients
+Route::controller(SessionHistoryByClientsController::class)
+    ->middleware(['auth', 'usertype:user,therapist'])
+    ->group(function () {
+        Route::get('/mod-10/my-session-history-user', 'sessionHistoryclients')->name('therap.session.history.clients');
+        Route::get('/mod-10/my-session-history-user-dates', 'sessionHistoryClientDates')->name('therap.session.history.clients.dates');
+        Route::get('/mod-10/my-session-history-user-notes', 'sessionHistoryClientNotes')->name('therap.session.history.clients.notes');
     });
 
 

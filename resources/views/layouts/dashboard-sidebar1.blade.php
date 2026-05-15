@@ -340,6 +340,11 @@
                 ) {
                     $name = trim($item->DisplayName);
 
+                    // Hide menu items with empty display names
+                    if (empty($name)) {
+                        return null;
+                    }
+
                     /** 1️⃣ Always remove deeply restricted therapy types */
                     if (in_array($name, $restrictedNames)) {
                         return null;

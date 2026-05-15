@@ -116,7 +116,7 @@
 
                         try {
                             // ✅ Fetch items for the current user type column (1-based access)
-                            $allItems = SysMenuDisplayOption::where($userTypeCol, 1)->orderBy('DisplayName')->get();
+                            $allItems = SysMenuDisplayOption::where($userTypeCol, 1)->whereNotNull('DisplayName')->orderBy('DisplayName')->get();
 
                             // ✅ Inline recursive closure (no redeclare issue)
                             $buildTree = function ($items, $parentId = 0) use (&$buildTree) {
