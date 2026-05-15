@@ -101,6 +101,10 @@ class UsrTherapyHistoryController extends Controller
             2 => $history->SessionNotesResources2 ?? $history->SessionNotesResource2,
             3 => $history->SessionNotesResources3 ?? $history->SessionNotesResource3,
             4 => $history->SessionNotesResources4 ?? $history->SessionNotesResource4,
+            5 => $history->SessionNotesResources5 ?? $history->SessionNotesResource5,
+            6 => $history->SessionNotesResources6 ?? $history->SessionNotesResource6,
+            7 => $history->SessionNotesResources7 ?? $history->SessionNotesResource7,
+            8 => $history->SessionNotesResources8 ?? $history->SessionNotesResource8,
         ];
 
         if (!isset($resourceMap[$index]) || empty($resourceMap[$index])) {

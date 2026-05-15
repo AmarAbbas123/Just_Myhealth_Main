@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Storage;
 use App\Models\CommonCalendar;
 use App\Models\SysUserType30SessionHistory;
 use App\Models\User;
+use App\Services\UserMessageService;
 
 class SessionHistoryController extends Controller
 {
@@ -201,6 +202,9 @@ class SessionHistoryController extends Controller
         ->where('AllocatedTherapistUserID', auth()->id())
         ->firstOrFail();
 
+    $previousNotes = (string) ($history->TherapistNotes ?? '');
+    $previousResources = $this->existingSessionNoteResources($history);
+
     $history->TherapistNotes = $request->therapist_notes;
 
     $allowedResourcesByPath = collect($this->therapistDocumentsForNotes())->keyBy('path');
@@ -219,6 +223,28 @@ class SessionHistoryController extends Controller
     }
 
     $history->save();
+
+    $currentResources = $this->existingSessionNoteResources($history);
+
+    if (
+        !empty($history->PatientUserID)
+        && ($previousNotes !== (string) ($history->TherapistNotes ?? '') || $previousResources !== $currentResources)
+    ) {
+        $notesMessage = $this->buildSessionNotesMessage(
+            $history->TherapistNotes,
+            $currentResources,
+            (int) $history->ID
+        );
+
+        if (trim($notesMessage) !== '') {
+            app(UserMessageService::class)->send(
+                auth()->user(),
+                (int) $history->PatientUserID,
+                1,
+                $notesMessage
+            );
+        }
+    }
 
     return response()->json(['success' => true]);
 }
@@ -358,6 +384,56 @@ protected function sessionNoteResourceColumns(): array
         'SessionNotesResource7',
         'SessionNotesResource8',
     ];
+}
+
+protected function existingSessionNoteResources(SysUserType30SessionHistory $history): array
+{
+    return collect($this->sessionNoteResourceColumns())
+        ->map(fn($column) => $history->{$column})
+        ->filter()
+        ->values()
+        ->all();
+}
+
+protected function buildSessionNotesMessage(?string $notes, array $resources, int $historyId): string
+{
+    $parts = [
+        'Post session notes have been updated.',
+    ];
+
+    $notes = trim((string) $notes);
+    if ($notes !== '') {
+        $parts[] = "Session Notes:\n" . $notes;
+    }
+
+    if (!empty($resources)) {
+        $links = collect($resources)
+            ->filter(fn($url) => is_string($url) && trim($url) !== '')
+            ->map(function ($url, $index) use ($historyId) {
+                $label = $this->sessionResourceFileName($url) ?: 'Resource ' . ($index + 1);
+                $downloadUrl = route('usr.therapy.history.resource.download', [
+                    'history_id' => $historyId,
+                    'index' => $index + 1,
+                ]);
+
+                return '- [' . $label . '](' . $downloadUrl . ')';
+            })
+            ->implode("\n");
+
+        if ($links !== '') {
+            $parts[] = "Support Resources:\n" . $links;
+        }
+    }
+
+    return implode("\n\n", $parts);
+}
+
+protected function sessionResourceFileName(string $url): string
+{
+    $path = parse_url($url, PHP_URL_PATH);
+    $fileName = basename((string) ($path ?: $url));
+
+    return rawurldecode($fileName);
 }
 
 //make sure the the files exists for the non null columns values
