@@ -6,6 +6,7 @@ use App\Models\CommonCalendar;
 use App\Models\SysUserMessageHistory;
 use App\Models\SysUserType30OnboardQuestionsAnswers;
 use App\Models\User;
+use App\Services\UserTimeZoneService;
 use Carbon\Carbon;
 use Illuminate\Support\Collection;
 
@@ -69,23 +70,26 @@ class DashboardController extends Controller
 
     private function getPatientUpcomingSessions(User $patient): Collection
     {
+        $patientTimeZone = app(UserTimeZoneService::class)->getUserHomeTimezoneName($patient);
+        $startOfTodayUtc = Carbon::now($patientTimeZone)->startOfDay()->setTimezone('UTC');
+
         return CommonCalendar::query()
             ->where('PatientUserID', $patient->ID)
-            ->where('CalendarEntryType', 'Busy')
-            ->where('SessionDateTimeFrom', '>=', now())
+            ->where('SessionDateTimeFrom', '>=', $startOfTodayUtc)
             ->with(['therapist.userAttributes', 'therapist.type30'])
             ->orderBy('SessionDateTimeFrom')
             ->limit(3)
             ->get()
-            ->map(function (CommonCalendar $session) {
+            ->map(function (CommonCalendar $session) use ($patientTimeZone) {
                 $therapist = $session->therapist;
+                $sessionStartLocal = Carbon::parse($session->SessionDateTimeFrom, 'UTC')->setTimezone($patientTimeZone);
 
                 return [
                     'id' => $session->ID,
                     'title' => trim(($session->SessionType ?: 'Session') . ' Session'),
-                    'subtitle' => trim(($therapist?->UserName ?: 'Therapist') . ' - ' . optional($session->SessionDateTimeFrom)->format('H:i')),
+                    'subtitle' => trim(($therapist?->UserName ?: 'Therapist') . ' - ' . $sessionStartLocal->format('H:i')),
                     'person_name' => $this->displayName($therapist, 'Therapist'),
-                    'date_time' => optional($session->SessionDateTimeFrom)->format('Y-m-d H:i'),
+                    'date_time' => $sessionStartLocal->format('Y-m-d H:i'),
                     'avatar' => $this->avatarFor($therapist),
                 ];
             });
