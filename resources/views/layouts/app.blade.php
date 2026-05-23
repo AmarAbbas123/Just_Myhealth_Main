@@ -41,9 +41,6 @@
     <link href="{{ asset('css/fontawesome-all.css') }}" rel="stylesheet" />
     <link href="{{ asset('css/css/tailwind.output.css') }}" rel="stylesheet" />
 
-    <!-- Favicon -->
-    <link rel="icon" href="{{ asset('images/bg-6.png') }}" />
-
     <!-- Laravel Vite  Alpine CSS/JS-->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>

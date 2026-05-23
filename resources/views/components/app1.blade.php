@@ -26,6 +26,9 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
     <link href="{{ asset('css/css/tailwind.output.css') }}" rel="stylesheet" />
 
+        <!-- Favicon -->
+    <link rel="icon" href="{{ asset('images/favicon.ico') }}" />
+
     <!-- Initialize Dark Mode Preference BEFORE Alpine loads -->
     <script>
         // On page load, set theme from localStorage (before Alpine & Tailwind apply)

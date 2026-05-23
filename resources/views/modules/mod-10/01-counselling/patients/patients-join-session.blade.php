@@ -1,4 +1,4 @@
-<x-app1>
+    <x-app1>
     <script>
         window.ZEGO_PATIENT = null;
         window.ZEGO_PATIENT_LOCK = false;

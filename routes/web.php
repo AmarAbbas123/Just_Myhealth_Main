@@ -725,3 +725,5 @@ Route::get('/{slug?}', function ($slug = null) {
 
     return view('modules.dynamic-dashboard', compact('menu', 'children'));
 })->where('slug', '.*')->middleware('auth');
+
+

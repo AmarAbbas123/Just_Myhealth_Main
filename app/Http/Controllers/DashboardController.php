@@ -97,6 +97,22 @@ class DashboardController extends Controller
 
     private function getTherapistChats(User $therapist): Collection
     {
+        $incomingIds = SysUserMessageHistory::query()
+            ->withoutGlobalScopes()
+            ->where('ToUserID', $therapist->ID)
+            ->pluck('FromUserID')
+            ->filter(fn ($id) => (int) $id > 0)
+            ->unique()
+            ->values();
+
+        $outgoingIds = SysUserMessageHistory::query()
+            ->withoutGlobalScopes()
+            ->where('FromUserID', $therapist->ID)
+            ->pluck('ToUserID')
+            ->filter(fn ($id) => (int) $id > 0)
+            ->unique()
+            ->values();
+
         $bookedPatientIds = CommonCalendar::query()
             ->where('TherapistUserID', $therapist->ID)
             ->where('CalendarEntryType', 'Busy')
@@ -109,7 +125,19 @@ class DashboardController extends Controller
             ->where('QuestionCompletionStatus', 1)
             ->pluck('PatientUserID');
 
-        $patientIds = $bookedPatientIds->intersect($completedPatientIds)->values();
+        $finalBookedPatientIds = $bookedPatientIds
+            ->intersect($completedPatientIds)
+            ->values();
+
+        $contactIds = $incomingIds
+            ->merge($outgoingIds)
+            ->unique()
+            ->values();
+
+        $patientIds = $contactIds
+            ->merge($finalBookedPatientIds)
+            ->unique()
+            ->values();
 
         if ($patientIds->isEmpty()) {
             return collect();
@@ -117,7 +145,6 @@ class DashboardController extends Controller
 
         $patients = User::query()
             ->with(['userAttributes', 'type30'])
-            ->where('UserType', 1)
             ->whereIn('ID', $patientIds)
             ->get();
 
@@ -126,6 +153,22 @@ class DashboardController extends Controller
 
     private function getPatientChats(User $patient): Collection
     {
+        $incomingIds = SysUserMessageHistory::query()
+            ->withoutGlobalScopes()
+            ->where('ToUserID', $patient->ID)
+            ->pluck('FromUserID')
+            ->filter(fn ($id) => (int) $id > 0)
+            ->unique()
+            ->values();
+
+        $outgoingIds = SysUserMessageHistory::query()
+            ->withoutGlobalScopes()
+            ->where('FromUserID', $patient->ID)
+            ->pluck('ToUserID')
+            ->filter(fn ($id) => (int) $id > 0)
+            ->unique()
+            ->values();
+
         $bookedTherapistIds = CommonCalendar::query()
             ->where('PatientUserID', $patient->ID)
             ->where('CalendarEntryType', 'Busy')
@@ -134,14 +177,24 @@ class DashboardController extends Controller
             ->unique()
             ->values();
 
-        if ($bookedTherapistIds->isEmpty()) {
+        $contactIds = $incomingIds
+            ->merge($outgoingIds)
+            ->unique()
+            ->values();
+
+        $therapistIds = $bookedTherapistIds
+            ->merge($contactIds)
+            ->unique()
+            ->values();
+
+        if ($therapistIds->isEmpty()) {
             return collect();
         }
 
         $therapists = User::query()
             ->with(['userAttributes', 'type30'])
             ->where('UserType', 30)
-            ->whereIn('ID', $bookedTherapistIds)
+            ->whereIn('ID', $therapistIds)
             ->get();
 
         return $this->buildChatList($patient, $therapists, 30);
@@ -164,6 +217,7 @@ class DashboardController extends Controller
         $peerIds = $peers->pluck('ID')->map(fn ($id) => (int) $id)->values();
 
         $messages = SysUserMessageHistory::query()
+            ->withoutGlobalScopes()
             ->where(function ($query) use ($currentUser, $peerIds) {
                 $query->where('FromUserID', $currentUser->ID)
                     ->whereIn('ToUserID', $peerIds);
@@ -176,7 +230,7 @@ class DashboardController extends Controller
             ->get();
 
         $messagesByPeer = $messages->groupBy(function (SysUserMessageHistory $message) use ($currentUser) {
-            return $message->FromUserID === $currentUser->ID
+            return (int) $message->FromUserID === (int) $currentUser->ID
                 ? (int) $message->ToUserID
                 : (int) $message->FromUserID;
         });
@@ -206,7 +260,7 @@ class DashboardController extends Controller
                     'time' => $latestMessage?->MessageDateTime?->format('H:i') ?: '',
                     'dateTime' => $latestMessage?->MessageDateTime?->format('d M Y') ?: '',
                     'messages' => $peerMessages,
-                    'toUserType' => $peerType,
+                    'toUserType' => (int) ($peer->UserType ?: $peerType),
                     'sort_at' => $latestMessage?->MessageDateTime?->timestamp ?: 0,
                 ];
             })
