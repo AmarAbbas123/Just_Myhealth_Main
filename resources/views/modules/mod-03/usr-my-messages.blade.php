@@ -38,7 +38,7 @@
                                 <div class="flex justify-between items-center">
                                     <p class="font-medium" x-text="therapist.name"></p>
                                     <div class="flex items-center gap-2">
-                                        <p class="text-xs text-gray-400" x-text="therapist.time ?? ''"></p>
+                                        <p class="text-xs text-gray-400" x-text="formatDateTimeLabel(therapist)"></p>
                                         <span x-show="(therapist.unread || 0) > 0"
                                             class="min-w-[18px] h-[18px] px-1 text-[10px] leading-[18px] text-center rounded-full bg-red-600 text-white"
                                             x-text="therapist.unread"></span>
@@ -62,7 +62,7 @@
                             <div>
                                 <p class="font-semibold text-gray-800 dark:text-gray-100" x-text="activeChat.name">
                                 </p>
-                                <p class="text-xs text-gray-500 dark:text-gray-400" x-text="activeChat.dateTime">
+                                <p class="text-xs text-gray-500 dark:text-gray-400" x-text="formatDateTimeLabel(activeChat)">
                                 </p>
                             </div>
                         </div>
@@ -78,20 +78,20 @@
                             </div>
                         </div>
 
-                        <div class="flex-1 overflow-y-auto p-4 space-y-3" x-ref="chatWindow">
+                        <div class="flex-1 overflow-y-auto p-4 space-y-3" x-ref="chatWindow" @scroll="trackScroll()">
                             <template x-for="msg in activeChat.messages" :key="msg.id">
                                 <div>
                                     <div x-show="!isMine(msg)" class="flex gap-2">
                                         <img :src="activeChat.avatar" class="w-8 h-8 rounded-full">
                                         <div class="bg-gray-100 rounded p-2 max-w-xs">
                                             <p class="text-sm" x-html="formatMessage(msg.text)"></p>
-                                            <p class="text-xs text-gray-400 mt-1" x-text="msg.time"></p>
+                                            <p class="text-xs text-gray-400 mt-1" x-text="formatDateTimeLabel(msg)"></p>
                                         </div>
                                     </div>
                                     <div x-show="isMine(msg)" class="flex justify-end">
                                         <div class="bg-green-600 text-white rounded p-2 max-w-xs">
                                             <p class="text-sm" x-html="formatMessage(msg.text)"></p>
-                                            <p class="text-xs text-gray-400 mt-1" x-text="msg.time"></p>
+                                            <p class="text-xs text-gray-400 mt-1" x-text="formatDateTimeLabel(msg)"></p>
                                         </div>
                                     </div>
                                 </div>
@@ -527,6 +527,23 @@
                         this.stickToBottom = true;
                         this.$refs.chatWindow.scrollTop = this.$refs.chatWindow.scrollHeight;
                     }
+                },
+
+                trackScroll() {
+                    this.stickToBottom = this.isNearBottom();
+                },
+
+                isNearBottom() {
+                    const el = this.$refs.chatWindow;
+                    if (!el) return true;
+                    return el.scrollHeight - el.scrollTop - el.clientHeight < 48;
+                },
+
+                formatDateTimeLabel(item) {
+                    if (!item) return '';
+                    const date = item.dateTime || item.date || '';
+                    const time = item.time || '';
+                    return [date, time].filter(Boolean).join(' ');
                 },
 
                 updateChatMeta(chat, messages) {

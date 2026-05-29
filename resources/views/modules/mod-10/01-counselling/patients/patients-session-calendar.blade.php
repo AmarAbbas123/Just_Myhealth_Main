@@ -99,6 +99,18 @@
                                 <div class="font-mono text-base tracking-wider text-yellow-800"
                                     x-text="formatTime(session.remainingSeconds)">
                                 </div>
+
+                                <form method="POST" :action="session.enter_waiting_room_url" class="mt-2 w-full">
+                                    @csrf
+                                    <button type="submit"
+                                        :disabled="!canEnterWaitingRoom(session)"
+                                        :class="canEnterWaitingRoom(session)
+                                            ? 'bg-green-600 text-white hover:bg-green-700 shadow-sm'
+                                            : 'bg-gray-200 text-gray-400 cursor-not-allowed blur-[0.3px] opacity-70'"
+                                        class="w-full px-5 py-2 rounded-full text-sm font-semibold transition">
+                                        Enter Waiting Room
+                                    </button>
+                                </form>
                             </div>
                         </template>
 
@@ -359,6 +371,10 @@
                     const mm = String(m).padStart(2, '0');
                 
                     return `${dd}D : ${hh}H : ${mm}M`;
+                },
+
+                canEnterWaitingRoom(session) {
+                    return Boolean(session.can_enter_waiting_room || session.remainingSeconds <= 900);
                 },
 
                 /* =============================

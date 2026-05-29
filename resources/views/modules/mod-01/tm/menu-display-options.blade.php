@@ -74,7 +74,7 @@
                                 <td class="px-3 py-2 whitespace-nowrap">{{ $item->DisplayName }}</td>
                                 <td class="px-3 py-2 whitespace-nowrap">{{ $item->MainPaneID }}</td>
                                 <td class="px-3 py-2 whitespace-nowrap">{{ $item->MainPaneLabel }}</td>
-                                <td class="px-3 py-2 whitespace-nowrap">{{ $item->TileText }}</td>
+                                <td class="px-3 py-2 whitespace-pre-line">{{ $item->TileText }}</td>
                                 <td class="px-3 py-2 whitespace-nowrap">{{ $item->Grouping }}</td>
                                 <td class="px-3 py-2 whitespace-nowrap">{{ $item->{'1'} }}</td>
                                 <td class="px-3 py-2 whitespace-nowrap">{{ $item->{'10'} }}</td>
@@ -119,10 +119,19 @@
                 <template x-for="field in fields" :key="field.name">
                     <div>
                         <label class="block text-sm font-medium" x-text="field.label"></label>
-                        <input type="text"
-                               :name="field.name"
-                               x-model="form[field.name]"
-                               class="w-full border rounded px-3 py-2">
+                        <template x-if="field.name === 'TileText'">
+                            <textarea rows="4"
+                                :name="field.name"
+                                x-model="form[field.name]"
+                                class="w-full border rounded px-3 py-2"></textarea>
+                        </template>
+
+                        <template x-if="field.name !== 'TileText'">
+                            <input type="text"
+                                :name="field.name"
+                                x-model="form[field.name]"
+                                class="w-full border rounded px-3 py-2">
+                        </template>
                     </div>
                 </template>
 

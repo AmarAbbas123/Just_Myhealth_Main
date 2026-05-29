@@ -147,9 +147,9 @@
                                     <div class="flex-1 min-w-0">
                                         <div class="flex items-center justify-between gap-2">
                                             <p class="font-semibold text-sm text-gray-900 dark:text-gray-100 truncate" x-text="patient.name"></p>
-                                            <p class="text-[10px] sm:text-xs text-gray-400" x-text="patient.time"></p>
+                                            <p class="text-[10px] sm:text-xs text-gray-400" x-text="formatDateTimeLabel(patient)"></p>
                                         </div>
-                                        <p class="mt-1 text-[11px] sm:text-xs text-gray-500 dark:text-gray-400 truncate" x-text="patient.lastMessage"></p>
+                                        <p class="mt-1 text-[11px] sm:text-xs text-gray-500 dark:text-gray-400 truncate" x-text="truncateText(patient.lastMessage)"></p>
                                         <p class="mt-1 text-[10px] text-gray-400 truncate" x-text="patient.dateTime"></p>
                                     </div>
                                 </button>
@@ -165,23 +165,23 @@
                                         <img :src="activeChat.avatar" alt="" class="w-10 h-10 rounded-full object-cover">
                                         <div>
                                             <p class="font-semibold text-gray-900 dark:text-gray-100" x-text="activeChat.name"></p>
-                                            <p class="text-xs text-gray-500 dark:text-gray-400" x-text="activeChat.dateTime"></p>
+                                            <p class="text-xs text-gray-500 dark:text-gray-400" x-text="formatDateTimeLabel(activeChat)"></p>
                                         </div>
                                     </div>
-                                    <div class="flex-1 overflow-y-auto p-4 space-y-4" x-ref="chatWindow">
+                                    <div class="flex-1 overflow-y-auto p-4 space-y-4" x-ref="chatWindow" @scroll="trackScroll()">
                                         <template x-for="msg in activeChat.messages" :key="msg.id">
                                             <div>
                                                 <div x-show="msg.sender === 'patient'" class="flex items-start gap-3">
                                                     <img :src="activeChat.avatar" alt="" class="w-8 h-8 rounded-full object-cover">
                                                     <div class="bg-gray-100 dark:bg-gray-700 rounded-lg p-3 max-w-xs">
-                                                        <p class="text-sm text-gray-800 dark:text-gray-100" x-text="msg.text"></p>
-                                                        <p class="text-xs text-gray-400 mt-1" x-text="msg.time"></p>
+                                                        <p class="text-sm text-gray-800 dark:text-gray-100" x-html="formatMessage(msg.text)"></p>
+                                                        <p class="text-xs text-gray-400 mt-1" x-text="formatDateTimeLabel(msg)"></p>
                                                     </div>
                                                 </div>
                                                 <div x-show="msg.sender === 'therapist'" class="flex justify-end">
                                                     <div class="bg-green-600 text-white rounded-lg shadow p-3 max-w-xs">
-                                                        <p class="text-sm" x-text="msg.text"></p>
-                                                        <p class="text-xs text-green-100 mt-1 text-right" x-text="msg.time"></p>
+                                                        <p class="text-sm" x-html="formatMessage(msg.text)"></p>
+                                                        <p class="text-xs text-green-100 mt-1 text-right" x-text="formatDateTimeLabel(msg)"></p>
                                                     </div>
                                                 </div>
                                             </div>
@@ -355,9 +355,9 @@
                                         <div class="flex-1 min-w-0">
                                             <div class="flex items-center justify-between gap-2">
                                                 <p class="font-semibold text-sm text-gray-900 dark:text-gray-100 truncate" x-text="chat.name"></p>
-                                                <p class="text-[10px] sm:text-xs text-gray-400" x-text="chat.time"></p>
+                                                <p class="text-[10px] sm:text-xs text-gray-400" x-text="formatDateTimeLabel(chat)"></p>
                                             </div>
-                                            <p class="mt-1 text-[11px] sm:text-xs text-gray-500 dark:text-gray-400 truncate" x-text="chat.lastMessage"></p>
+                                            <p class="mt-1 text-[11px] sm:text-xs text-gray-500 dark:text-gray-400 truncate" x-text="truncateText(chat.lastMessage)"></p>
                                             <p class="mt-1 text-[10px] text-gray-400 truncate" x-text="chat.dateTime"></p>
                                         </div>
                                     </button>
@@ -373,23 +373,23 @@
                                             <img :src="activeChat.avatar" alt="" class="w-10 h-10 rounded-full object-cover">
                                             <div>
                                                 <p class="font-semibold text-gray-900 dark:text-gray-100" x-text="activeChat.name"></p>
-                                                <p class="text-xs text-gray-500 dark:text-gray-400" x-text="activeChat.dateTime"></p>
+                                                <p class="text-xs text-gray-500 dark:text-gray-400" x-text="formatDateTimeLabel(activeChat)"></p>
                                             </div>
                                         </div>
-                                        <div class="flex-1 overflow-y-auto p-4 space-y-4" x-ref="chatWindow">
+                                        <div class="flex-1 overflow-y-auto p-4 space-y-4" x-ref="chatWindow" @scroll="trackScroll()">
                                             <template x-for="msg in activeChat.messages" :key="msg.id">
                                                 <div>
-                                                    <div x-show="msg.sender === 'patient'" class="flex items-start gap-3">
+                                                    <div x-show="msg.sender === 'therapist'" class="flex items-start gap-3">
                                                         <img :src="activeChat.avatar" alt="" class="w-8 h-8 rounded-full object-cover">
                                                         <div class="bg-gray-100 dark:bg-gray-700 rounded-lg p-3 max-w-xs">
-                                                            <p class="text-sm text-gray-800 dark:text-gray-100" x-text="msg.text"></p>
-                                                            <p class="text-xs text-gray-400 mt-1" x-text="msg.time"></p>
+                                                            <p class="text-sm text-gray-800 dark:text-gray-100" x-html="formatMessage(msg.text)"></p>
+                                                            <p class="text-xs text-gray-400 mt-1" x-text="formatDateTimeLabel(msg)"></p>
                                                         </div>
                                                     </div>
-                                                    <div x-show="msg.sender === 'user'" class="flex justify-end">
+                                                    <div x-show="msg.sender === 'patient'" class="flex justify-end">
                                                         <div class="bg-green-600 text-white rounded-lg shadow p-3 max-w-xs">
-                                                            <p class="text-sm" x-text="msg.text"></p>
-                                                            <p class="text-xs text-green-100 mt-1 text-right" x-text="msg.time"></p>
+                                                            <p class="text-sm" x-html="formatMessage(msg.text)"></p>
+                                                            <p class="text-xs text-green-100 mt-1 text-right" x-text="formatDateTimeLabel(msg)"></p>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -421,6 +421,7 @@
                 newMessage: '',
                 activeChat: null,
                 pollingTimer: null,
+                stickToBottom: true,
                 allItems: initialItems ?? [],
                 filteredItems: initialItems ?? [],
 
@@ -457,11 +458,14 @@
 
                     this.activeChat.messages = messages;
                     this.syncPreview(this.activeChat, messages);
-                    this.scrollChatToBottom();
+                    if (this.stickToBottom) {
+                        this.scrollChatToBottom();
+                    }
                 },
 
                 async setActiveChat(chat) {
                     this.activeChat = chat;
+                    this.stickToBottom = true;
                     await this.fetchLatestMessages();
                 },
 
@@ -483,6 +487,7 @@
                     });
 
                     this.newMessage = '';
+                    this.stickToBottom = true;
                     await this.fetchLatestMessages();
                 },
 
@@ -490,8 +495,10 @@
                     if (!messages.length) return;
 
                     const lastMessage = messages[messages.length - 1];
-                    chat.lastMessage = lastMessage.text;
+                    chat.lastMessage = this.truncateText(lastMessage.text ?? 'New message', 20);
                     chat.time = lastMessage.time;
+                    chat.dateTime = lastMessage.dateTime || lastMessage.date || chat.dateTime;
+                    chat.lastTimestamp = lastMessage.timestamp || chat.lastTimestamp;
                 },
 
                 scrollChatToBottom() {
@@ -500,6 +507,96 @@
                             this.$refs.chatWindow.scrollTop = this.$refs.chatWindow.scrollHeight;
                         }
                     });
+                },
+
+                trackScroll() {
+                    this.stickToBottom = this.isNearBottom();
+                },
+
+                isNearBottom() {
+                    const el = this.$refs.chatWindow;
+                    if (!el) return true;
+                    return el.scrollHeight - el.scrollTop - el.clientHeight < 48;
+                },
+
+                formatDateTimeLabel(item) {
+                    if (!item) return '';
+                    const date = item.dateTime || item.date || '';
+                    const time = item.time || '';
+                    return [date, time].filter(Boolean).join(' ');
+                },
+
+                truncateText(text, limit = 20) {
+                    if (!text) return '';
+                    const clean = String(text)
+                        .replace(/<a\s+[^>]*href=(["'])(.*?)\1[^>]*>([\s\S]*?)<\/a>/gi, '$3')
+                        .replace(/\[([^\]]+)\]\(((?:https?:\/\/|\/)[^)]+)\)/gi, '$1')
+                        .replace(/<br\s*\/?>/gi, ' ')
+                        .replace(/<[^>]*>/g, '')
+                        .trim();
+                    if (clean.length <= limit) return clean;
+                    return clean.slice(0, limit) + '...';
+                },
+
+                escapeHtml(value) {
+                    const div = document.createElement('div');
+                    div.textContent = value ?? '';
+                    return div.innerHTML;
+                },
+
+                fileNameFromUrl(url) {
+                    try {
+                        const parsed = new URL(url, window.location.origin);
+                        const file = parsed.pathname.split('/').filter(Boolean).pop() || 'Resource';
+                        return decodeURIComponent(file);
+                    } catch (e) {
+                        return 'Resource';
+                    }
+                },
+
+                safeLinkHtml(url, label) {
+                    try {
+                        const parsed = new URL(url, window.location.origin);
+                        if (!['http:', 'https:'].includes(parsed.protocol)) {
+                            return this.escapeHtml(label);
+                        }
+
+                        return `<a href="${this.escapeHtml(parsed.href)}" target="_blank" rel="noopener noreferrer" class="font-semibold underline text-blue-600 dark:text-blue-300">${this.escapeHtml(label || this.fileNameFromUrl(url))}</a>`;
+                    } catch (e) {
+                        return this.escapeHtml(label);
+                    }
+                },
+
+                formatMessage(text) {
+                    if (!text) return '';
+
+                    let raw = String(text);
+                    raw = raw.replace(/<a\s+[^>]*href=(["'])(.*?)\1[^>]*>([\s\S]*?)<\/a>/gi, (_match, _quote, url, label) => {
+                        let cleanLabel = String(label || '').replace(/<[^>]*>/g, '').trim();
+                        if (!cleanLabel || /^Resource\s+\d+$/i.test(cleanLabel)) {
+                            cleanLabel = this.fileNameFromUrl(url);
+                        }
+                        return `[${cleanLabel}](${url})`;
+                    });
+                    raw = raw
+                        .replace(/<br\s*\/?>/gi, '\n')
+                        .replace(/<\/(p|div)>/gi, '\n')
+                        .replace(/<\/?strong>/gi, '')
+                        .replace(/<[^>]*>/g, '');
+
+                    const linkPattern = /\[([^\]]+)\]\(((?:https?:\/\/|\/)[^)]+)\)/g;
+                    let html = '';
+                    let lastIndex = 0;
+                    let match;
+
+                    while ((match = linkPattern.exec(raw)) !== null) {
+                        html += this.escapeHtml(raw.slice(lastIndex, match.index)).replace(/\n/g, '<br>');
+                        html += this.safeLinkHtml(match[2], match[1]);
+                        lastIndex = match.index + match[0].length;
+                    }
+
+                    html += this.escapeHtml(raw.slice(lastIndex)).replace(/\n/g, '<br>');
+                    return html;
                 },
 
                 destroy() {

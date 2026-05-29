@@ -15,10 +15,6 @@
                 <x-page-header />
             </div>
 
-            <p class="text-sm text-gray-500 dark:text-gray-400 mb-6">
-                Please wait until your therapist starts the session.
-            </p>
-
             <div id="patientVideoContainer"
                 class="w-full h-[55vh] rounded-lg border border-dashed border-gray-300 dark:border-gray-700
                        flex items-center justify-center bg-gray-50 dark:bg-gray-800">

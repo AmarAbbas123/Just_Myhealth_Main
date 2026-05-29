@@ -12,7 +12,7 @@
 
         @unless($titleOnly)
             @if(!empty($menu->TileText))
-                <p class="mt-1 text-sm text-gray-600 dark:text-gray-400">
+                <p class="mt-1 text-sm text-gray-600 dark:text-gray-400 whitespace-pre-line">
                     {{ $menu->TileText }}
                 </p>
             @endif

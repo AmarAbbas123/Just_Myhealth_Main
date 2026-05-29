@@ -484,13 +484,20 @@ Route::middleware('auth')->post('/patient/session/joined', function (Request $re
         'sessionID' => 'required|integer',
     ]);
 
-    SysUserType30SessionHistory::where('SessionCalendarID', $request->sessionID)
+    $history = SysUserType30SessionHistory::where('SessionCalendarID', $request->sessionID)
         ->where('SessionZegoCloudConnectID', $request->roomID)
-        ->update([
-            'PatientUserID' => auth()->id(),
-            'PatientEnteredWaitingRoomDate' => now()->toDateString(),
-            'PatientEnteredWaitingRoomTime' => now()->toTimeString(),
-        ]);
+        ->first();
+
+    if ($history) {
+        $updates = ['PatientUserID' => auth()->id()];
+
+        if (!$history->PatientEnteredWaitingRoomDate || !$history->PatientEnteredWaitingRoomTime) {
+            $updates['PatientEnteredWaitingRoomDate'] = now()->toDateString();
+            $updates['PatientEnteredWaitingRoomTime'] = now()->toTimeString();
+        }
+
+        $history->update($updates);
+    }
 
     return response()->json(['success' => true]);
 });
@@ -613,6 +620,8 @@ Route::controller(PatientsCalendarController::class)
     ->middleware(['auth', 'usertype:user'])
     ->group(function () {
         Route::get('mod-10/01/usr-therapy-calendar', 'index');
+        Route::get('mod-10/01/usr-therapy-calendar-waiting-room', 'waitingRoom')->name('patient.calendar.waitingRoom');
+        Route::post('mod-10/01/usr-therapy-calendar/{calendar}/enter-waiting-room', 'enterWaitingRoom')->name('patient.calendar.enterWaitingRoom');
         Route::put('mod-10/01/usr-therapy-calendar/{calendar}/update-session-type', 'updateSessionType')->name('patient.calendar.updateSessionType');
         Route::patch('mod-10/01/usr-therapy-calendar/{calendar}/cancel', 'cancelSession')->name('patient.calendar.cancel');
         Route::get('/therapy/{therapy}', function ($therapy) {})->name('therapy.filter');
@@ -725,5 +734,3 @@ Route::get('/{slug?}', function ($slug = null) {
 
     return view('modules.dynamic-dashboard', compact('menu', 'children'));
 })->where('slug', '.*')->middleware('auth');
-
-

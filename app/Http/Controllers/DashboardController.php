@@ -246,6 +246,9 @@ class DashboardController extends Controller
                                 : ((int) $currentUser->UserType === 1 ? 'therapist' : 'patient'),
                             'text' => $message->MessageContent,
                             'time' => $message->MessageDateTime?->format('H:i') ?? '',
+                            'date' => $message->MessageDateTime?->format('d M Y') ?? '',
+                            'dateTime' => $message->MessageDateTime?->format('d M Y') ?? '',
+                            'timestamp' => $message->MessageDateTime?->toIso8601String() ?? '',
                         ];
                     })
                     ->values();
@@ -259,6 +262,7 @@ class DashboardController extends Controller
                     'lastMessage' => $latestMessage?->MessageContent ?: 'Start a new conversation',
                     'time' => $latestMessage?->MessageDateTime?->format('H:i') ?: '',
                     'dateTime' => $latestMessage?->MessageDateTime?->format('d M Y') ?: '',
+                    'lastTimestamp' => $latestMessage?->MessageDateTime?->toIso8601String() ?: '',
                     'messages' => $peerMessages,
                     'toUserType' => (int) ($peer->UserType ?: $peerType),
                     'sort_at' => $latestMessage?->MessageDateTime?->timestamp ?: 0,

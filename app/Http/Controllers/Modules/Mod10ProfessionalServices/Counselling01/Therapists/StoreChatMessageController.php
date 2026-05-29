@@ -55,6 +55,9 @@ class StoreChatMessageController extends Controller
                         : ($user->UserType == 1 ? 'therapist' : 'patient'),
                     'text'   => $m->MessageContent,
                     'time'   => $m->MessageDateTime->format('H:i'),
+                    'date'   => $m->MessageDateTime->format('d M Y'),
+                    'dateTime' => $m->MessageDateTime->format('d M Y'),
+                    'timestamp' => $m->MessageDateTime->toIso8601String(),
                 ];
             });
     }
