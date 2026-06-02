@@ -364,7 +364,8 @@
     </div>
 
     {{-- zegocloud video Session  --}}
-    <script src="https://unpkg.com/@zegocloud/zego-uikit-prebuilt@2.9.3/zego-uikit-prebuilt.js"></script>
+    <script src="https://unpkg.com/@zegocloud/zego-uikit-prebuilt@2.15.0/zego-uikit-prebuilt.js"></script>
+    <x-zego-virtual-background />
 
     <script>
         window.waitingRoomApp = function() {
@@ -581,7 +582,8 @@
                         );
 
                         const container = document.getElementById("videoContainer");
-                        window.ZEGO_INSTANCE = ZegoUIKitPrebuilt.create(kitToken);
+                        const backgroundProcessConfig = await window.loadJmhZegoBackgroundConfig();
+                        window.ZEGO_INSTANCE = ZegoUIKitPrebuilt.create(kitToken, backgroundProcessConfig);
 
                         window.ZEGO_INSTANCE.joinRoom({
                             container,
@@ -594,7 +596,12 @@
                             turnOnMicrophoneWhenJoining: true,
                             showTextChat: true,
                             showUserList: true,
+                            showBackgroundProcessButton: true,
                             maxUsers: 2,
+
+                            onLocalStreamCreated: () => {
+                                window.ZEGO_INSTANCE?.openBackgroundProcess?.();
+                            },
 
                             // 🟢 On Join Room, start the reminder timer and set the manual session flag
                             onJoinRoom: () => {

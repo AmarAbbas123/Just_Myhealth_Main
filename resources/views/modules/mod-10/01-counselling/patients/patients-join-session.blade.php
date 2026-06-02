@@ -63,9 +63,10 @@
 
 
     {{-- zegocloud video Session  --}}
-    <script src="https://unpkg.com/@zegocloud/zego-uikit-prebuilt@2.9.3/zego-uikit-prebuilt.js"></script>
+    <script src="https://unpkg.com/@zegocloud/zego-uikit-prebuilt@2.15.0/zego-uikit-prebuilt.js"></script>
     {{-- <script src="https://unpkg.com/@zegocloud/zego-uikit-prebuilt/zego-uikit-prebuilt.js"></script> --}}
     {{-- <script src="https://unpkg.com/@zegocloud/zego-uikit-prebuilt@latest/zego-uikit-prebuilt.js"></script> --}}
+    <x-zego-virtual-background />
 
     <script>
         const sessionID = @json($sessionId);
@@ -145,7 +146,8 @@
                     data.userName || 'Patient'
                 );
 
-                window.ZEGO_PATIENT = ZegoUIKitPrebuilt.create(kitToken);
+                const backgroundProcessConfig = await window.loadJmhZegoBackgroundConfig();
+                window.ZEGO_PATIENT = ZegoUIKitPrebuilt.create(kitToken, backgroundProcessConfig);
 
                 document.getElementById('joinSessionBtn')?.remove();
 
@@ -176,7 +178,12 @@
                     turnOnMicrophoneWhenJoining: true,
                     showTextChat: true,
                     showUserList: true,
+                    showBackgroundProcessButton: true,
                     maxUsers: 2,
+
+                    onLocalStreamCreated: () => {
+                        window.ZEGO_PATIENT?.openBackgroundProcess?.();
+                    },
                 });
 
                 // 4️⃣ Notify backend (DB update ONLY)

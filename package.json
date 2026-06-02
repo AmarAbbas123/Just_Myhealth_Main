@@ -16,6 +16,7 @@
         "vite": "^4.0.0"
     },
     "dependencies": {
+        "@zegocloud/zego-uikit-prebuilt": "^2.15.0",
         "apexcharts": "^5.3.6",
         "jquery": "^3.7.1",
         "magnific-popup": "^1.2.0",
