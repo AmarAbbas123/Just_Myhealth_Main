@@ -21,16 +21,16 @@ class WebhookController extends Controller
         $sig_header = $request->header('Stripe-Signature');
         $secret = config('services.stripe.webhook_secret');
 
-        Log::debug('Stripe webhook hit', [ 'has_signature' => !empty($sig_header), 'payload_len' => strlen($payload), ]);
+        Log::debug('Stripe webhook hit', ['has_signature' => !empty($sig_header), 'payload_len' => strlen($payload),]);
 
         try {
             $event = Webhook::constructEvent($payload, $sig_header, $secret);
         } catch (\Exception $e) {
-            Log::error('Stripe webhook signature failed', [ 'error' => $e->getMessage(), ]);
+            Log::error('Stripe webhook signature failed', ['error' => $e->getMessage(),]);
             return response('Invalid signature', 400);
         }
 
-        Log::debug('Stripe webhook event', [ 'type' => $event->type ?? null, 'id' => $event->id ?? null, ]);
+        Log::debug('Stripe webhook event', ['type' => $event->type ?? null, 'id' => $event->id ?? null,]);
 
         if ($event->type === 'checkout.session.completed') {
 
@@ -42,7 +42,7 @@ class WebhookController extends Controller
             $payment_type = (string) ($metadata->payment_type ?? '');
             $extra = json_decode($metadata->extra, true);
 
-            Log::debug('Stripe session metadata', [ 'user_id' => $user_id, 'user_type' => $user_type, 'payment_type' => $payment_type, ]);
+            Log::debug('Stripe session metadata', ['user_id' => $user_id, 'user_type' => $user_type, 'payment_type' => $payment_type,]);
 
             $transaction_id = $session->payment_intent;
             $amount = $session->amount_total / 100;
@@ -66,7 +66,7 @@ class WebhookController extends Controller
                         'updated_at' => $now,
                     ]);
                 } catch (\Throwable $e) {
-                    Log::error('Therapist registration insert failed', [ 'user_id' => $user_id, 'error' => $e->getMessage(), ]);
+                    Log::error('Therapist registration insert failed', ['user_id' => $user_id, 'error' => $e->getMessage(),]);
                 }
             }
 
@@ -85,11 +85,11 @@ class WebhookController extends Controller
                         'created_at' => $now,
                         'updated_at' => $now,
                     ]);
-                    Log::debug('Business registration fee recorded', [ 'user_id' => $user_id, 'amount' => $amount, 'currency' => $currency, ]);
+                    Log::debug('Business registration fee recorded', ['user_id' => $user_id, 'amount' => $amount, 'currency' => $currency,]);
                 } catch (\Throwable $e) {
-                    Log::error('Business registration insert failed', [ 'user_id' => $user_id, 'error' => $e->getMessage(), ]);
+                    Log::error('Business registration insert failed', ['user_id' => $user_id, 'error' => $e->getMessage(),]);
                 }
-            }                      
+            }
 
             if (($payment_type === 'session_purchase' || empty($payment_type)) && in_array($user_type, [1, 2, 3], true)) {
 
@@ -99,14 +99,14 @@ class WebhookController extends Controller
                     ]);
                     return response('not paid', 200);
                 }
-            
+
                 $transaction_id = $session->payment_intent;
                 $amount = $session->amount_total / 100;
                 $currency = strtoupper($session->currency);
-            
+
                 $extra = json_decode($metadata->extra ?? '{}', true) ?: [];
                 $credits = $extra['credits'] ?? ($session->metadata->credits ?? null);
-            
+
                 if (!$credits || !$transaction_id) {
                     Log::error('Session purchase webhook missing data', [
                         'user_id' => $user_id,
@@ -114,31 +114,37 @@ class WebhookController extends Controller
                     ]);
                     return response('invalid data', 400);
                 }
-            
+
                 try {
+
+                    $shouldSendNotification = false;
+
                     DB::transaction(function () use (
                         $user_id,
                         $credits,
                         $transaction_id,
                         $amount,
-                        $currency
+                        $currency,
+                        &$shouldSendNotification
                     ) {
-            
+
                         // 🔒 STRONG IDEMPOTENCY (WITH LOCK)
                         $exists = DB::table('sys_finance_user_type_30_service_credits')
                             ->where('TransactionID', $transaction_id)
                             ->lockForUpdate()
                             ->exists();
-            
+
                         if ($exists) {
+
                             Log::info('Duplicate webhook ignored', [
                                 'transaction_id' => $transaction_id
                             ]);
+
                             return;
                         }
-            
+
                         $now = Carbon::now();
-            
+
                         DB::table('sys_finance_user_type_30_service_credits')->insert([
                             'PatientUserID' => $user_id,
                             'NumberSessionsPurchased' => $credits,
@@ -151,26 +157,52 @@ class WebhookController extends Controller
                             'created_at' => $now,
                             'updated_at' => $now,
                         ]);
-            
-                        $user = User::find($user_id);
-                        if ($user) {
-                            $user->notify(new UserSessionPurchaseConfirmationNotification());
-                        }
+
+                        $shouldSendNotification = true;
                     });
-            
+
+                    // OUTSIDE TRANSACTION
+                    if ($shouldSendNotification) {
+
+                        $user = User::find($user_id);
+
+                        if ($user) {
+
+                            try {
+
+                                Log::info('Sending session purchase email', [
+                                    'user_id' => $user->id,
+                                    'email' => $user->email,
+                                ]);
+
+                                $user->notify(
+                                    new UserSessionPurchaseConfirmationNotification()
+                                );
+
+                                Log::info('Session purchase email sent successfully', [
+                                    'user_id' => $user->id,
+                                ]);
+                            } catch (\Throwable $e) {
+
+                                Log::error('Session purchase email failed', [
+                                    'user_id' => $user_id,
+                                    'error' => $e->getMessage(),
+                                ]);
+                            }
+                        }
+                    }
                 } catch (\Throwable $e) {
+
                     Log::error('Webhook transaction failed', [
                         'error' => $e->getMessage(),
                         'transaction_id' => $transaction_id
                     ]);
-            
+
                     return response('failed', 500);
                 }
-            
+
                 return response('ok', 200);
             }
-
-
         }
 
         return response('ok', 200);

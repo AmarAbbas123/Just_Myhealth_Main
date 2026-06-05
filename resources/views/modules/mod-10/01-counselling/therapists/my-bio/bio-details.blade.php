@@ -144,11 +144,20 @@
 
             <!-- Right Column: Bio Paragraphs -->
             <div class="lg:col-span-2 space-y-6 bg-white dark:bg-gray-800 rounded-lg p-6 shadow-sm">
-                <div class="flex justify-end border-b border-gray-200 dark:border-gray-700 pb-4">
+                <div class="flex justify-end gap-3 border-b border-gray-200 dark:border-gray-700 pb-4">
+                    
+                    <button
+                        x-show="hasAvailableParagraphSlot()"
+                        @click="addNextParagraph()"
+                        class="px-3 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700">
+                        + Add Paragraph
+                    </button>
+                    
                     <button @click="deleteAll()"
                         class="px-3 py-2 bg-red-600 text-white rounded-lg font-medium shadow hover:bg-red-700 transition">
                         🗑️ Delete All
                     </button>
+
                 </div>
                 <template x-for="(paragraph, index) in paragraphs()" :key="index">
                     <div class="space-y-1">
@@ -207,12 +216,12 @@
         <!-- Edit Paragraph Modal -->
         <div x-show="editModal" x-cloak x-transition.opacity
             class="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4">
-            <div @click.away="closeEdit()" class="bg-white dark:bg-gray-800 rounded-lg p-6 w-full max-w-md shadow-lg">
+            <div @click.away="closeEdit()" class="bg-white dark:bg-gray-800 rounded-lg p-6 w-full max-w-2xl lg:max-w-3xl max-h-[90vh] overflow-y-auto shadow-lg">
                 <div class="flex justify-between items-center mb-3">
                     <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-100" x-text="editTitle"></h3>
                     <button @click="closeEdit()" class="text-gray-500 hover:text-gray-700">✕</button>
                 </div>
-                <textarea rows="4" x-model="editValue" class="w-full rounded-md border-gray-200 px-3 py-2"></textarea>
+                <textarea rows="8" x-model="editValue" class="w-full min-h-[220px] rounded-md border-gray-200 px-3 py-3"></textarea>
                 <div class="flex justify-end gap-2 mt-4">
                     <button @click="closeEdit()"
                         class="px-3 py-2 bg-gray-100 text-gray-700 text-sm font-medium rounded-lg shadow hover:bg-gray-200 transition">❌
@@ -324,6 +333,25 @@
                     // reset file inputs in form if needed
                     if (this.$refs.addForm) this.$refs.addForm.reset();
                 },
+
+                addNextParagraph() {
+                    for (let i = 1; i <= 6; i++) {
+                        if (!this.bio?.['BioTextParagraph' + i]) {
+                            this.openEditParagraph(i - 1);
+                            return;
+                        }
+                    }
+                },
+
+                hasAvailableParagraphSlot() {
+                 for (let i = 1; i <= 6; i++) {
+                     if (!this.bio?.['BioTextParagraph' + i]) {
+                         return true;
+                     }
+                 }
+                 return false;
+                },
+
                 async submitAddForm() {
                     const fd = new FormData(this.$refs.addForm);
                     const res = await Alpine.store('bioUpdater').postData(this.storeUrl, fd);

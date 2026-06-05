@@ -319,8 +319,8 @@
                 str_contains($name, 'questionnaire');
         };
 
-        $filterRecursive = function ($items) use (
-            &$filterRecursive,
+        $lockRecursive = function ($items) use (
+            &$lockRecursive,
             $restrictedNames,
             $hideUntilOnboardComplete,
             $isCounsellingMenu,
@@ -330,7 +330,7 @@
         ) {
             return $items
                 ->map(function ($item) use (
-                    $filterRecursive,
+                    $lockRecursive,
                     $restrictedNames,
                     $hideUntilOnboardComplete,
                     $isCounsellingMenu,
@@ -339,6 +339,7 @@
                     $userType,
                 ) {
                     $name = trim($item->DisplayName);
+                    $item->isLocked = false;
 
                     // Hide menu items with empty display names
                     if (empty($name)) {
@@ -350,26 +351,28 @@
                         return null;
                     }
 
-                    /** 2️⃣ Hide items until onboarding complete (case 1 & 2) */
+                    /** 2️⃣ Lock items until onboarding complete (case 1 & 2) */
                     if (($userType == 1 && !$hasOnboardRow) || ($hasOnboardRow && $qcStatus == 0)) {
                         if (in_array($name, $hideUntilOnboardComplete)) {
-                            return null;
+                            $item->isLocked = true;
+                            $item->children = collect();
+                            return $item;
                         }
                     }
 
                     /** 3️⃣ Recurse into children */
                     if ($item->children && $item->children->isNotEmpty()) {
-                        $item->children = $filterRecursive($item->children)->filter()->values();
+                        $item->children = $lockRecursive($item->children)->filter()->values();
                     }
 
                     /** 4️⃣ Apply counselling-specific leaf rules */
                     if ($userType == 1 && $item->children->isEmpty() && $isCounsellingMenu($item)) {
                         if (!$hasOnboardRow && !in_array($name, ['Therapy Types', 'Purchase Sessions'])) {
-                            return null;
+                            $item->isLocked = true;
                         }
 
                         if ($hasOnboardRow && $qcStatus == 0 && $name !== 'Support Questionnaire') {
-                            return null;
+                            $item->isLocked = true;
                         }
                     }
 
@@ -385,7 +388,7 @@
                 ->values();
         };
 
-        $menuItems = $filterRecursive($menuItems);
+        $menuItems = $lockRecursive($menuItems);
 
         /* ---------- 2) Convert any "Therapy Types" node into a normal clickable item ---------- */
         $convertTherapy = function ($items) use (&$convertTherapy) {
@@ -405,8 +408,9 @@ $convertTherapy($menuItems);
 $renderMenu = function ($items, $level = 0) use (&$renderMenu) {
     static $i = 0;
     foreach ($items as $item) {
+        $isLocked = (bool) ($item->isLocked ?? false);
         echo '<li class="mb-1">';
-        if ($item->children->isNotEmpty()) {
+        if (!$isLocked && $item->children->isNotEmpty()) {
             // Parent node: collapsible group.
             echo '<details class="group">';
             echo '<summary class="sidebar-link flex items-center justify-between cursor-pointer">';
@@ -423,10 +427,17 @@ $renderMenu = function ($items, $level = 0) use (&$renderMenu) {
             echo '</ul>';
             echo '</details>';
         } else {
-            // Leaf node: normal clickable link.
-            echo '<a href="' . url(trim($item->MenuURL ?? '#', '/')) . '" class="sidebar-link">';
-            echo generateMenuIcon($item->DisplayName, $i++);
-            echo '<span>' . e($item->DisplayName) . '</span></a>';
+            if ($isLocked) {
+                // Locked patient menu item: visible, greyed out, and non-functional.
+                echo '<span class="sidebar-link sidebar-link--locked" aria-disabled="true" title="Complete onboarding to unlock this menu item">';
+                echo generateMenuIcon($item->DisplayName, $i++);
+                echo '<span>' . e($item->DisplayName) . '</span></span>';
+            } else {
+                // Leaf node: normal clickable link.
+                echo '<a href="' . url(trim($item->MenuURL ?? '#', '/')) . '" class="sidebar-link">';
+                echo generateMenuIcon($item->DisplayName, $i++);
+                echo '<span>' . e($item->DisplayName) . '</span></a>';
+            }
         }
         echo '</li>';
             }
@@ -467,6 +478,20 @@ $renderMenu = function ($items, $level = 0) use (&$renderMenu) {
     /* Active link */
     .sidebar-link.active {
         @apply bg-indigo-100 text-indigo-700 dark:bg-gray-700 dark:text-indigo-400;
+    }
+
+    .sidebar-link--locked {
+        cursor: not-allowed;
+        pointer-events: none;
+        opacity: 0.45;
+        filter: grayscale(1) blur(0.35px);
+        color: #9ca3af !important;
+        background: transparent !important;
+    }
+
+    .sidebar-link--locked svg,
+    .sidebar-link--locked span {
+        color: #9ca3af !important;
     }
 
     /* Details summary for main items with submenus */
