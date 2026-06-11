@@ -26,6 +26,7 @@ use App\Http\Controllers\Modules\Mod01SystemAdministration\ThrpistMangt\Therapis
 
 //mod-02 System Reporting
 use App\Http\Controllers\Modules\Mod02SystemReporting\ChartsDeviceOsBrowserController;
+use App\Http\Controllers\Modules\Mod02SystemReporting\LoginHistory90DaysController;
 use App\Http\Controllers\Modules\Mod02SystemReporting\UserNumbersController;
 use App\Http\Controllers\Modules\Mod02SystemReporting\FinanceReportsRevenueController;
 
@@ -316,6 +317,14 @@ Route::middleware(['auth', 'usertype:admins'])->group(function () {
 Route::middleware(['auth', 'usertype:admins'])->group(function () {
     Route::get('/mod-02/user-reports/device-os-browser', [ChartsDeviceOsBrowserController::class, 'index'])->name('reports.device.os.browser');
     Route::get('/mod-02/user-reports/device-os-browser/data', [ChartsDeviceOsBrowserController::class, 'data'])->name('reports.device.os.browser.data');
+});
+
+//Reporting login-history-90days
+Route::middleware(['auth', 'usertype:admins'])->group(function () {
+    Route::get('/mod-02/user-reports/login-history-90days', [LoginHistory90DaysController::class, 'index'])->name('reports.login.history');
+    Route::get('/mod-02/user-reports/user-login-history-90days', [LoginHistory90DaysController::class, 'index']);
+    Route::get('/mod-02/user-reports/login-history-90days/users/{userTypeRef}', [LoginHistory90DaysController::class, 'users'])->name('reports.login.history.users');
+    Route::get('/mod-02/user-reports/login-history-90days/data', [LoginHistory90DaysController::class, 'data'])->name('reports.login.history.data');
 });
 
 //Reporting user-numbers
