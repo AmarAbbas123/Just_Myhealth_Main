@@ -1,62 +1,84 @@
 <!-- resources/views/home.blade.php -->
 <x-app-layout>
     <!-- HERO AREA -->
-    <section class="relative min-h-screen flex flex-col justify-end z-0">
+    <!-- HERO AREA -->
+<section class="relative w-full h-[80vh] md:h-[100vh] pt-20 overflow-hidden">
+    <picture class="block w-full h-full">
+        <source media="(max-width: 767px)" srcset="{{ asset('images/welcome-page/jmh-header-mobile.png') }}">
+        <img src="{{ asset('images/welcome-page/hero-bg.png') }}" 
+             alt="Hero"
+             class="w-full h-full object-cover object-center">
+    </picture>
+    
+    <!-- Hero Content -->
+    <div class="absolute inset-0 flex items-center px-6 max-w-4xl text-white">
+        <!-- Your content goes here -->
+    </div>
+</section>
 
-        <!-- Background Image -->
-        <div class="absolute inset-0 -z-10">
-            <img src="{{ asset('images/welcome-page/hero-bg.png') }}" alt=""
-                class="w-full h-full object-cover object-bottom-right">
-        </div>
 
-        <!-- Navbar   is in resources/views/layouts/app.blade.php -->
+    <section class="bg-gradient-to-b from-[#f4fbfb] via-white to-[#eef8f7] py-16 md:py-24">
+        <div class="container mx-auto px-6 lg:px-12">
+            <div class="mx-auto grid max-w-6xl gap-10 lg:grid-cols-[0.85fr_1.15fr] lg:items-center">
+                <div>
+                    <p class="mb-5 inline-flex rounded-full border border-[#9ed9d7] bg-white px-4 py-2 text-xs font-semibold uppercase tracking-[0.22em] text-[#0f89a6] shadow-sm">
+                        JustMy.Health
+                    </p>
+                    <h2 class="max-w-xl text-3xl font-semibold leading-tight text-[#102f3a] sm:text-4xl md:text-5xl">
+                        Where social media meets health and wellness
+                    </h2>
+                    <p class="mt-6 max-w-md text-base leading-7 text-[#4b626b]">
+                        Education, empowerment, and personalized support in one connected health platform.
+                    </p>
+                    <div class="mt-8 flex flex-wrap gap-3">
+                        <span class="rounded-full bg-[#dff3f2] px-4 py-2 text-sm font-medium text-[#126579]">Preventive care</span>
+                        <span class="rounded-full bg-[#e8f5ee] px-4 py-2 text-sm font-medium text-[#285f4a]">Wellness support</span>
+                        <span class="rounded-full bg-[#eef2fb] px-4 py-2 text-sm font-medium text-[#314e83]">Global access</span>
+                    </div>
+                </div>
 
-        <!-- Hero Content -->
-        <div class="absolute top-32 left-0 z-10 w-full px-3 max-w-4xl text-white">
-
-            <!-- Intro -->
-            <div class="text-center">
-                <div class="container px-4 sm:px-6 md:px-8 lg:px-12 xl:px-20">
-                    <h3
-                        class="mb-6 text-gray-800 
-                               text-lg sm:text-xl md:text-2xl lg:text-3xl xl:text-4xl 
-                               leading-snug sm:leading-snug md:leading-tight lg:leading-tight xl:leading-tight
-                               tracking-normal sm:tracking-wide md:tracking-wider
-                               font-bold mx-auto max-w-4xl">
-                        <span class="whitespace-nowrap">WHERE SOCIAL MEDIA MEETS</span><br>
-                        <span class="whitespace-nowrap">HEALTH AND WELLNESS</span>
-                    </h3>
+                <div class="border-l-4 border-[#0f89a6] bg-white/75 py-2 pl-6 shadow-[0_24px_70px_-55px_rgba(16,106,124,0.65)] md:pl-8">
+                    <div class="space-y-5 text-base leading-8 text-[#243b45] md:text-lg">
+                        <p class="font-medium text-[#102f3a]">
+                            JustMy.Health is the dynamic online health platform where social media meets health and wellness through education, empowerment, and personalized support.
+                        </p>
+                        <p>
+                            JustMy.Health provides clients with preventive and curative healthcare access, online counselling and therapy services, and tailored dietary programs - giving everyone the tools they need to improve their health, wellness, and longevity.
+                        </p>
+                        <p>
+                            With global coverage and locally tailored support, JustMy.Health serves both individuals and organizations. Our platform empowers clients directly while also delivering scalable B2B solutions for employers, clinics, wellness providers, and community partners seeking to elevate health outcomes worldwide.
+                        </p>
+                    </div>
                 </div>
             </div>
-
-            <!-- Introduction -->
-            <div class="pb-14 text-justify">
-                <div class="container px-4 sm:px-8 xl:px-4">
-                    <p class="mb-4 text-gray-800 text-lg md:text-xl lg:text-lg xl:text-xl leading-8 md:leading-9 break-words">JustMy.Health is the dynamic online health platform where social media meets health and wellness through education, empowerment, and personalized support.</p>
-                    <p class="mb-4 text-gray-800 text-lg md:text-xl lg:text-lg xl:text-xl leading-8 md:leading-9 break-words">JustMy.Health provides clients with preventive and curative healthcare access, online counselling and therapy services, and tailored dietary programs—giving everyone the tools they need to improve their health, wellness, and longevity.</p>                    
-                    <p class="mb-4 text-gray-800 text-lg md:text-xl lg:text-lg xl:text-xl leading-8 md:leading-9 break-words">With global coverage and locally tailored support, JustMy.Health serves both individuals and organizations. Our platform empowers clients directly while also delivering scalable B2B solutions for employers, clinics, wellness providers, and community partners seeking to elevate health outcomes worldwide.</p>
-                </div>
-            </div>
-            <!-- end of introduction -->
-
-
         </div>
-
     </section>
+    {{-- End of Services --}}
+
+
+
 
     {{-- Services  --}}
-    <section class="pt-20 pb-14">
+    <section class="py-16 md:py-24">
         <div class="container mx-auto px-6 lg:px-12">
-            <div class="max-w-5xl mx-auto text-center mb-12 lg:mb-16">
-                <h2 class="text-4xl md:text-5xl lg:text-6xl font-semibold tracking-tight mb-6">
-                    Therapeutic Practitioners
-                </h2>
-                <p class="text-sm sm:text-base md:text-lg lg:text-xl leading-relaxed text-[#243b45] mb-6 max-w-4xl mx-auto">
-                    Therapeutic Practitioners on JustMy.Health provide safe, supportive, and professional guidance to help clients improve their mental, emotional, and overall wellbeing.
-                </p>
-                <p class="text-sm sm:text-base md:text-lg lg:text-xl leading-relaxed text-[#243b45] max-w-5xl mx-auto">
-                    Each Therapeutic practitioner is fully verified, qualified, and committed to delivering ethical, person-centred care. Whether clients need short-term support, structured therapy, or ongoing wellbeing guidance, our Therapeutic practitioners offer trusted, confidential services designed to empower healthier, more resilient lives.
-                </p>
+            <div class="mx-auto mb-12 grid max-w-6xl gap-8 lg:mb-16 lg:grid-cols-[0.8fr_1.2fr] lg:items-end">
+                <div>
+                    <p class="mb-4 text-xs font-semibold uppercase tracking-[0.22em] text-[#0f89a6]">
+                        Professional Support
+                    </p>
+                    <h3 class="text-3xl font-semibold leading-tight text-[#102f3a] sm:text-4xl md:text-5xl">
+                        Therapeutic Practitioners
+                    </h3>
+                </div>
+
+                <div class="space-y-5 border-l-4 border-[#9ed9d7] pl-6 text-base leading-8 text-[#243b45] md:text-lg">
+                    <p class="font-medium text-[#102f3a]">
+                        Therapeutic Practitioners on JustMy.Health provide safe, supportive, and professional guidance to help clients improve their mental, emotional, and overall wellbeing.
+                    </p>
+                    <p>
+                        Each Therapeutic practitioner is fully verified, qualified, and committed to delivering ethical, person-centred care. Whether clients need short-term support, structured therapy, or ongoing wellbeing guidance, our Therapeutic practitioners offer trusted, confidential services designed to empower healthier, more resilient lives.
+                    </p>
+                </div>
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-3 gap-8 xl:gap-10">
@@ -97,7 +119,8 @@
         <div class="container mx-auto px-6 lg:px-12">
             <div class="mx-auto max-w-6xl rounded-[2rem] bg-white px-6 py-10 md:px-10 md:py-12 shadow-[0_32px_90px_-48px_rgba(20,97,109,0.45)] ring-1 ring-[#d7eceb]">
             <div class="max-w-5xl">
-                <h2 class="text-3xl md:text-4xl lg:text-5xl font-semibold mb-4">The Guided Path:</h2>
+                
+                <h2 class="max-w-xl text-3xl font-semibold leading-tight text-[#102f3a] sm:text-4xl md:text-5xl pb-4">The Guided Path:</h2>
                 <p class="text-sm sm:text-base md:text-lg lg:text-xl leading-relaxed text-[#243b45] mb-8">
                     The Guided Path is a simple, people-centric journey designed to help you take control of your health through connection, collaboration, and shared knowledge. It begins by connecting you with peers, health providers, NGOs, and volunteers who understand your specific condition.
                 </p>
@@ -140,5 +163,6 @@
     <script src="{{ asset('js/swiper.min.js') }}"></script>
     <script src="{{ asset('js/jquery.magnific-popup.js') }}"></script>
     <script src="{{ asset('js/scripts.js') }}"></script>
+
 
 </x-app-layout>
