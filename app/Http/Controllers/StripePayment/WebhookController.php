@@ -106,6 +106,11 @@ class WebhookController extends Controller
 
                 $extra = json_decode($metadata->extra ?? '{}', true) ?: [];
                 $credits = $extra['credits'] ?? ($session->metadata->credits ?? null);
+                $sessionType = strtoupper($extra['session_type'] ?? 'INDIVIDUAL');
+
+                if (!in_array($sessionType, ['INDIVIDUAL', 'COUPLES'], true)) {
+                    $sessionType = 'INDIVIDUAL';
+                }
 
                 if (!$credits || !$transaction_id) {
                     Log::error('Session purchase webhook missing data', [
@@ -125,6 +130,7 @@ class WebhookController extends Controller
                         $transaction_id,
                         $amount,
                         $currency,
+                        $sessionType,
                         &$shouldSendNotification
                     ) {
 
@@ -148,6 +154,7 @@ class WebhookController extends Controller
                         DB::table('sys_finance_user_type_30_service_credits')->insert([
                             'PatientUserID' => $user_id,
                             'NumberSessionsPurchased' => $credits,
+                            'SessionType' => $sessionType,
                             'CreditDate' => $now->format('Y-m-d'),
                             'CreditTime' => $now->format('H:i:s'),
                             'CreditValue' => $amount,

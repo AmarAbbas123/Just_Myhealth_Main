@@ -52,13 +52,16 @@ class StripeService
         }
 
         if ($type === 'session_purchase') {
+            $sessionType = $data['session_type'] ?? 'INDIVIDUAL';
+            $sessionTypeLabel = ucfirst(strtolower($sessionType));
+
             $lineItem = [
                 'price_data' => [
                     'currency' => config('services.stripe.currency', 'gbp'),
                     'product_data' => [
-                        'name' => "Session Credit Pack ({$data['credits']} sessions)",
+                        'name' => "{$sessionTypeLabel} Session Credit Pack ({$data['credits']} sessions)",
                     ],
-                    'unit_amount' => $data['amount'] * 100,
+                    'unit_amount' => (int) round($data['amount'] * 100),
                 ],
                 'quantity' => 1,
             ];

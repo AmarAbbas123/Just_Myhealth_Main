@@ -11,6 +11,7 @@ class SysFinanceUserType30ServiceCredits extends Model
         'PatientUserID',
         'AllocatedTherapistUserID',
         'NumberSessionsPurchased',
+        'SessionType',
         'CreditDate',
         'CreditTime',
         'CreditValue',
