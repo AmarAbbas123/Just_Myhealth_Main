@@ -545,6 +545,8 @@ Route::controller(FinancialManagementController::class)
     ->middleware(['auth', 'usertype:therapist'])
     ->group(function () {
         Route::get('mod-10/my-financials', 'financialManagement')->name('therap.financial.management');
+        Route::get('mod-10/mb/my-bank-details', 'bankDetails')->name('therap.bank.details');
+        Route::post('mod-10/mb/my-bank-details', 'storeBankDetails')->name('therap.bank.details.store');
     });
 
 //🔟 Complaints & Issues       

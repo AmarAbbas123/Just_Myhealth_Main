@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Modules\Mod10ProfessionalServices\Counselling01\Therapists;
 
 use App\Http\Controllers\Controller;
+use App\Models\SysFinanceUserType30BankDetails;
 use App\Models\SysFinanceUserType30ServiceDebits;
 use App\Models\SysUserType30SessionHistory;
 use Illuminate\Http\Request;
@@ -13,6 +14,38 @@ use Carbon\Carbon;
 
 class FinancialManagementController extends Controller
 {
+    public function bankDetails()
+    {
+        $bankDetails = SysFinanceUserType30BankDetails::where('TherapistUserID', auth()->id())->first();
+
+        return view('modules.mod-10.01-counselling.therapists.bank-details', compact('bankDetails'));
+    }
+
+    public function storeBankDetails(Request $request)
+    {
+        $validated = $request->validate([
+            'NameOnAccount' => 'required|string|max:48',
+            'BankName' => 'required|string|max:64',
+            'BankIBAN' => 'nullable|string|max:32',
+            'BankSWIFT' => 'nullable|string|max:16',
+            'BankSort' => 'nullable|string|max:32',
+            'BankAccountNumber' => 'required|digits_between:1,8',
+            'BankDefaultCurrency' => 'required|in:GBP,EUR,USD',
+        ]);
+
+        $validated['BankIBAN'] = $validated['BankIBAN'] ? strtoupper(str_replace(' ', '', $validated['BankIBAN'])) : null;
+        $validated['BankSWIFT'] = $validated['BankSWIFT'] ? strtoupper(str_replace(' ', '', $validated['BankSWIFT'])) : null;
+        $validated['BankDefaultCurrency'] = strtoupper($validated['BankDefaultCurrency']);
+
+        SysFinanceUserType30BankDetails::updateOrCreate(
+            ['TherapistUserID' => auth()->id()],
+            $validated
+        );
+
+        return redirect()
+            ->route('therap.bank.details')
+            ->with('success', 'Bank details saved successfully.');
+    }
 
     public function financialManagement(Request $request)
     {
