@@ -293,7 +293,7 @@
     $index = 0;
 @endphp
 
-<ul class="mt-6 text-gray-800 dark:text-gray-200">
+<ul class="mt-6 text-gray-800 dark:text-gray-200 sidebar-menu">
 
     @php
 
@@ -413,14 +413,14 @@ $renderMenu = function ($items, $level = 0) use (&$renderMenu) {
         if (!$isLocked && $item->children->isNotEmpty()) {
             // Parent node: collapsible group.
             echo '<details class="group">';
-            echo '<summary class="sidebar-link flex items-center justify-between cursor-pointer">';
-            echo "<div class='flex items-center gap-2'>";
+            echo '<summary class="sidebar-link flex items-center justify-between cursor-pointer" data-tooltip="' . e($item->DisplayName) . '">';
+            echo "<div class='flex items-center gap-2 min-w-0'>";
             echo generateMenuIcon($item->DisplayName, $i++);
-            echo '<span>' . e($item->DisplayName) . '</span>';
+            echo '<span class="sidebar-label">' . e($item->DisplayName) . '</span>';
             echo '</div>';
-            echo "<span class='arrow text-gray-400 transition-transform duration-200 group-open:rotate-90 ml-1'>▶</span>";
+            echo "<span class='arrow text-gray-400 transition-transform duration-200 group-open:rotate-90 ml-1' aria-hidden='true'>▶</span>";
             echo '</summary>';
-            echo "<ul class='ml-" .
+            echo "<ul class='sidebar-submenu-panel ml-" .
                 (4 + $level * 2) .
                 " pl-2 border-l border-gray-200 dark:border-gray-700 mt-1 space-y-1'>";
             $renderMenu($item->children, $level + 1);
@@ -429,14 +429,14 @@ $renderMenu = function ($items, $level = 0) use (&$renderMenu) {
         } else {
             if ($isLocked) {
                 // Locked patient menu item: visible, greyed out, and non-functional.
-                echo '<span class="sidebar-link sidebar-link--locked" aria-disabled="true" title="Complete onboarding to unlock this menu item">';
+                echo '<span class="sidebar-link sidebar-link--locked" aria-disabled="true" data-tooltip="' . e($item->DisplayName) . ' — Locked">';
                 echo generateMenuIcon($item->DisplayName, $i++);
-                echo '<span>' . e($item->DisplayName) . '</span></span>';
+                echo '<span class="sidebar-label">' . e($item->DisplayName) . '</span></span>';
             } else {
                 // Leaf node: normal clickable link.
-                echo '<a href="' . url(trim($item->MenuURL ?? '#', '/')) . '" class="sidebar-link">';
+                echo '<a href="' . url(trim($item->MenuURL ?? '#', '/')) . '" class="sidebar-link" data-tooltip="' . e($item->DisplayName) . '">';
                 echo generateMenuIcon($item->DisplayName, $i++);
-                echo '<span>' . e($item->DisplayName) . '</span></a>';
+                echo '<span class="sidebar-label">' . e($item->DisplayName) . '</span></a>';
             }
         }
         echo '</li>';
@@ -448,13 +448,29 @@ $renderMenu = function ($items, $level = 0) use (&$renderMenu) {
 </ul>
 
 <style>
+    /* Prevent any horizontal scroll inside sidebar */
+    aside.z-20 {
+        overflow-x: clip !important;
+    }
+
+    aside.z-20::-webkit-scrollbar:horizontal {
+        display: none;
+        height: 0;
+    }
+
+    .sidebar-menu-wrap,
+    .sidebar-menu {
+        max-width: 100%;
+        overflow-x: clip;
+    }
+
     /* Sidebar link styling */
     .sidebar-link {
-        @apply flex items-center gap-2 px-5 py-2.5 text-sm font-medium rounded-lg transition-all duration-150 w-full whitespace-nowrap overflow-hidden hover:text-indigo-600 hover:bg-indigo-50 dark:hover:bg-gray-700 dark:hover:text-indigo-400;
+        @apply flex items-center gap-2 px-4 py-2.5 text-sm font-medium rounded-lg transition-all duration-150 w-full max-w-full whitespace-nowrap overflow-hidden hover:text-indigo-600 hover:bg-indigo-50 dark:hover:bg-gray-700 dark:hover:text-indigo-400;
         display: flex;
         align-items: center;
-        white-space: normal;
         margin-bottom: 6px;
+        box-sizing: border-box;
     }
 
     /* Sidebar icons */
@@ -464,15 +480,16 @@ $renderMenu = function ($items, $level = 0) use (&$renderMenu) {
     }
 
     /* Sidebar text */
-    .sidebar-link span {
+    .sidebar-link .sidebar-label {
         @apply text-gray-700 dark:text-gray-200;
-        display: inline-block;
+        display: block;
         vertical-align: middle;
         line-height: 1.2;
-        overflow: visible;
-        text-overflow: unset;
-        white-space: normal;
-        word-break: break-word;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        min-width: 0;
+        flex: 1 1 auto;
     }
 
     /* Active link */
@@ -490,21 +507,189 @@ $renderMenu = function ($items, $level = 0) use (&$renderMenu) {
     }
 
     .sidebar-link--locked svg,
-    .sidebar-link--locked span {
+    .sidebar-link--locked .sidebar-label {
         color: #9ca3af !important;
+    }
+
+    /* Collapsed sidebar: icon-only mode */
+    aside.sidebar-collapsed {
+        overflow-x: clip !important;
+        overflow-y: auto;
+    }
+
+    aside.sidebar-collapsed::-webkit-scrollbar:horizontal {
+        display: none;
+        height: 0;
+    }
+
+    aside.sidebar-collapsed > div {
+        margin-left: 0 !important;
+        overflow-x: clip;
+    }
+
+    aside.sidebar-collapsed .sidebar-menu {
+        overflow-x: clip;
+    }
+
+    aside.sidebar-collapsed .sidebar-menu > li {
+        overflow: visible;
+    }
+
+    aside.sidebar-collapsed .sidebar-menu > li > .sidebar-link,
+    aside.sidebar-collapsed .sidebar-menu > li > details.group > summary.sidebar-link {
+        justify-content: center;
+        padding-left: 0.25rem;
+        padding-right: 0.25rem;
+        position: relative;
+        overflow: visible;
+        min-height: 2.5rem;
+        width: 100%;
+        max-width: 100%;
+        gap: 0;
+    }
+
+    /* Icon centered full-width — same as items without submenu */
+    aside.sidebar-collapsed .sidebar-menu > li > details.group > summary.sidebar-link > div {
+        flex: none;
+        width: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-width: 0;
+    }
+
+    aside.sidebar-collapsed .sidebar-menu > li > .sidebar-link > svg,
+    aside.sidebar-collapsed .sidebar-menu > li > details.group > summary.sidebar-link > div > svg {
+        width: 18px !important;
+        height: 18px !important;
+        margin: 0 !important;
+        flex-shrink: 0;
+    }
+
+    aside.sidebar-collapsed .sidebar-menu > li > .sidebar-link .sidebar-label,
+    aside.sidebar-collapsed .sidebar-menu > li > details.group > summary.sidebar-link .sidebar-label {
+        display: none !important;
+    }
+
+    /* Submenu arrow — corner badge, does not squeeze the main icon */
+    aside.sidebar-collapsed .sidebar-menu > li > details.group > summary.sidebar-link .arrow {
+        display: block !important;
+        position: absolute;
+        bottom: 2px;
+        right: 1px;
+        margin: 0;
+        font-size: 0.45rem;
+        line-height: 1;
+        opacity: 0.8;
+        flex-shrink: 0;
+        pointer-events: none;
+    }
+
+    aside.sidebar-collapsed .sidebar-menu > li > details.group {
+        position: static;
+    }
+
+    /* Flyout submenu panel (moved to body via JS when open) */
+    ul.sidebar-submenu-panel.sidebar-flyout-active {
+        position: fixed;
+        top: 0;
+        left: 0;
+        min-width: 240px;
+        max-width: 300px;
+        max-height: min(80vh, 520px);
+        overflow-y: auto;
+        overflow-x: hidden;
+        width: max-content;
+        margin: 0 !important;
+        padding: 0.5rem 0;
+        border-radius: 0.75rem;
+        background: white;
+        border: 1px solid #e5e7eb;
+        box-shadow: 0 12px 32px rgba(15, 23, 42, 0.18);
+        z-index: 9998;
+        white-space: normal;
+        list-style: none;
+    }
+
+    .dark ul.sidebar-submenu-panel.sidebar-flyout-active {
+        background: #1f2937;
+        border-color: #374151;
+    }
+
+    ul.sidebar-submenu-panel.sidebar-flyout-active .sidebar-link {
+        justify-content: flex-start;
+        padding-left: 1rem;
+        padding-right: 1rem;
+        overflow: visible;
+        white-space: nowrap;
+    }
+
+    ul.sidebar-submenu-panel.sidebar-flyout-active .sidebar-link .sidebar-label {
+        display: inline-block !important;
+    }
+
+    ul.sidebar-submenu-panel.sidebar-flyout-active .sidebar-link svg {
+        margin-right: 0.75rem;
+    }
+
+    ul.sidebar-submenu-panel.sidebar-flyout-active .sidebar-submenu-panel {
+        margin-left: 0.75rem !important;
+        padding-left: 0.5rem !important;
+        border-left: 1px solid #e5e7eb !important;
+    }
+
+    .dark ul.sidebar-submenu-panel.sidebar-flyout-active .sidebar-submenu-panel {
+        border-left-color: #374151 !important;
+    }
+
+    ul.sidebar-submenu-panel.sidebar-flyout-active details.group > summary.sidebar-link {
+        justify-content: space-between;
+        padding-right: 0.75rem;
+    }
+
+    ul.sidebar-submenu-panel.sidebar-flyout-active details.group > summary.sidebar-link .arrow {
+        display: block !important;
+        font-size: 0.75rem;
+        margin-left: auto;
+    }
+
+    ul.sidebar-submenu-panel.sidebar-flyout-active details.group > ul {
+        position: relative;
+        display: none;
+        box-shadow: none;
+        border: none;
+        padding: 0;
+        margin: 0 0 0 0.75rem;
+        min-width: 0;
+        max-width: none;
+    }
+
+    ul.sidebar-submenu-panel.sidebar-flyout-active details.group[open] > ul {
+        display: block;
+    }
+
+    /* Hide flyout while closed (not portaled) */
+    aside.sidebar-collapsed .sidebar-menu > li > details.group:not([open]) > ul.sidebar-submenu-panel {
+        display: none !important;
     }
 
     /* Details summary for main items with submenus */
     details.group>summary.sidebar-link {
         justify-content: space-between;
-        /* icon + text left, arrow right */
         width: 100%;
+        max-width: 100%;
         padding-right: 0.4rem;
-        /* tidy spacing */
+        overflow: hidden;
+        box-sizing: border-box;
+    }
+
+    details.group>summary.sidebar-link > div {
+        min-width: 0;
+        flex: 1 1 auto;
         overflow: hidden;
     }
 
-    /* Arrow icon at the end of summary */
+    /* Arrow icon at the end of summary (expanded sidebar) */
     details.group>summary.sidebar-link .arrow {
         margin-left: auto;
         font-size: 0.75rem;
@@ -520,7 +705,7 @@ $renderMenu = function ($items, $level = 0) use (&$renderMenu) {
     }
 
     /* Text inside summary */
-    details.group>summary.sidebar-link span {
+    details.group>summary.sidebar-link .sidebar-label {
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
@@ -529,15 +714,288 @@ $renderMenu = function ($items, $level = 0) use (&$renderMenu) {
     /* Submenu ul spacing */
     details.group>ul {
         overflow-x: hidden;
+        max-width: 100%;
     }
 
-    /* Optional: prevent horizontal scroll for entire sidebar */
-    .sidebar-menu,
-    .sidebar-submenu {
+    /* Sidebar menu list */
+    .sidebar-menu {
         max-width: 100%;
         overflow-x: hidden;
-        text-overflow: ellipsis;
-        white-space: nowrap;
-        /* keep in one line */
+    }
+
+    .sidebar-menu > li {
+        max-width: 100%;
+        overflow: hidden;
     }
 </style>
+
+<div id="sidebar-flyout-tooltip" class="sidebar-flyout-tooltip" role="tooltip" aria-hidden="true">
+    <span class="sidebar-flyout-tooltip__text"></span>
+</div>
+
+<style>
+    .sidebar-flyout-tooltip {
+        position: fixed;
+        z-index: 9999;
+        display: none;
+        pointer-events: none;
+        padding: 0.5rem 0.875rem;
+        background: #1F9CA1;
+        color: #fff;
+        font-size: 0.8125rem;
+        font-weight: 600;
+        letter-spacing: 0.01em;
+        line-height: 1.25;
+        border-radius: 0.5rem;
+        box-shadow: 0 8px 24px rgba(31, 156, 161, 0.35), 0 2px 8px rgba(15, 23, 42, 0.12);
+        white-space: nowrap;
+        max-width: 240px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .sidebar-flyout-tooltip.is-visible {
+        display: block;
+    }
+
+    .sidebar-flyout-tooltip::before {
+        content: '';
+        position: absolute;
+        left: -5px;
+        top: 50%;
+        transform: translateY(-50%);
+        border-width: 5px 5px 5px 0;
+        border-style: solid;
+        border-color: transparent #1F9CA1 transparent transparent;
+    }
+
+    .sidebar-flyout-tooltip.is-left::before {
+        left: auto;
+        right: -5px;
+        border-width: 5px 0 5px 5px;
+        border-color: transparent transparent transparent #1F9CA1;
+    }
+
+    .dark .sidebar-flyout-tooltip {
+        background: #1F9CA1;
+        box-shadow: 0 8px 24px rgba(31, 156, 161, 0.45), 0 2px 8px rgba(0, 0, 0, 0.3);
+    }
+
+    .dark .sidebar-flyout-tooltip::before {
+        border-color: transparent #1F9CA1 transparent transparent;
+    }
+
+    .dark .sidebar-flyout-tooltip.is-left::before {
+        border-color: transparent transparent transparent #1F9CA1;
+    }
+</style>
+
+<script>
+    (function () {
+        const tooltip = document.getElementById('sidebar-flyout-tooltip');
+        if (!tooltip) return;
+
+        if (!tooltip.dataset.bound) {
+            document.body.appendChild(tooltip);
+            tooltip.dataset.bound = '1';
+        }
+
+        const tooltipText = tooltip.querySelector('.sidebar-flyout-tooltip__text');
+        let activeLink = null;
+
+        function isSidebarCollapsed() {
+            return document.querySelector('aside.sidebar-collapsed') !== null;
+        }
+
+        function hideTooltip() {
+            tooltip.classList.remove('is-visible', 'is-left');
+            tooltip.setAttribute('aria-hidden', 'true');
+            activeLink = null;
+        }
+
+        function showTooltip(link) {
+            if (!isSidebarCollapsed()) return hideTooltip();
+
+            const text = link.getAttribute('data-tooltip');
+            if (!text) return hideTooltip();
+
+            if (link.tagName === 'SUMMARY' && link.closest('details.group[open]')) {
+                return hideTooltip();
+            }
+
+            activeLink = link;
+            tooltipText.textContent = text;
+            tooltip.classList.add('is-visible');
+            tooltip.classList.remove('is-left');
+            tooltip.setAttribute('aria-hidden', 'false');
+
+            const rect = link.getBoundingClientRect();
+            tooltip.style.visibility = 'hidden';
+            tooltip.classList.add('is-visible');
+            const tipRect = tooltip.getBoundingClientRect();
+            tooltip.style.visibility = 'visible';
+
+            let left = rect.right + 10;
+            let top = rect.top + (rect.height / 2) - (tipRect.height / 2);
+            let flipLeft = false;
+
+            if (left + tipRect.width > window.innerWidth - 8) {
+                left = rect.left - tipRect.width - 10;
+                flipLeft = true;
+            }
+            top = Math.max(8, Math.min(top, window.innerHeight - tipRect.height - 8));
+
+            tooltip.style.left = left + 'px';
+            tooltip.style.top = top + 'px';
+            tooltip.classList.toggle('is-left', flipLeft);
+        }
+
+        function getFlyoutPanel(details) {
+            const id = details.dataset.flyoutId;
+            if (id) {
+                const portaled = document.querySelector('ul.sidebar-submenu-panel[data-flyout-id="' + id + '"]');
+                if (portaled) return portaled;
+            }
+            return details.querySelector(':scope > ul.sidebar-submenu-panel');
+        }
+
+        function isTopLevelFlyout(details) {
+            return details.matches('.sidebar-menu > li > details.group');
+        }
+
+        function portalFlyoutBack(details, ul) {
+            if (!details || !ul || ul.dataset.portaled !== '1') return;
+            details.appendChild(ul);
+            ul.dataset.portaled = '0';
+            ul.classList.remove('sidebar-flyout-active');
+            ul.style.cssText = '';
+        }
+
+        function positionFlyoutSubmenu(details) {
+            if (!isTopLevelFlyout(details)) return;
+
+            const ul = getFlyoutPanel(details);
+            const summary = details.querySelector(':scope > summary');
+            if (!ul || !summary) return;
+
+            if (!isSidebarCollapsed()) {
+                portalFlyoutBack(details, ul);
+                return;
+            }
+
+            if (!details.open) {
+                portalFlyoutBack(details, ul);
+                return;
+            }
+
+            if (ul.dataset.portaled !== '1') {
+                document.body.appendChild(ul);
+                ul.dataset.portaled = '1';
+            }
+
+            ul.classList.add('sidebar-flyout-active');
+            ul.style.display = 'block';
+            ul.style.visibility = 'hidden';
+
+            const rect = summary.getBoundingClientRect();
+            let top = rect.top;
+            let left = rect.right + 8;
+            const ulRect = ul.getBoundingClientRect();
+
+            if (left + ulRect.width > window.innerWidth - 8) {
+                left = Math.max(8, rect.left - ulRect.width - 8);
+            }
+            if (top + ulRect.height > window.innerHeight - 8) {
+                top = Math.max(8, window.innerHeight - ulRect.height - 8);
+            }
+
+            ul.style.top = top + 'px';
+            ul.style.left = left + 'px';
+            ul.style.visibility = 'visible';
+        }
+
+        function closeAllFlyouts() {
+            document.querySelectorAll('aside.sidebar-collapsed .sidebar-menu > li > details.group[open]').forEach(function (d) {
+                d.removeAttribute('open');
+                portalFlyoutBack(d, getFlyoutPanel(d));
+            });
+        }
+
+        function repositionOpenFlyouts() {
+            document.querySelectorAll('aside.sidebar-collapsed details.group[open]').forEach(positionFlyoutSubmenu);
+        }
+
+        function resetFlyouts() {
+            document.querySelectorAll('.sidebar-menu > li > details.group').forEach(function (details) {
+                details.removeAttribute('open');
+                portalFlyoutBack(details, getFlyoutPanel(details));
+            });
+        }
+
+        document.querySelectorAll('.sidebar-menu > li > details.group').forEach(function (details, index) {
+            if (!details.dataset.flyoutId) {
+                details.dataset.flyoutId = 'flyout-' + index;
+            }
+            const ul = details.querySelector(':scope > ul.sidebar-submenu-panel');
+            if (ul) ul.dataset.flyoutId = details.dataset.flyoutId;
+        });
+
+        document.addEventListener('toggle', function (e) {
+            const details = e.target;
+            if (!details.matches('details.group')) return;
+
+            if (isSidebarCollapsed() && isTopLevelFlyout(details) && details.open) {
+                document.querySelectorAll('aside.sidebar-collapsed .sidebar-menu > li > details.group[open]').forEach(function (other) {
+                    if (other !== details) {
+                        other.removeAttribute('open');
+                        portalFlyoutBack(other, getFlyoutPanel(other));
+                    }
+                });
+            }
+
+            if (isTopLevelFlyout(details)) {
+                positionFlyoutSubmenu(details);
+            }
+        }, true);
+
+        document.addEventListener('click', function (e) {
+            if (!isSidebarCollapsed()) return;
+
+            const inFlyout = e.target.closest('ul.sidebar-flyout-active');
+            const inTopSummary = e.target.closest('aside.sidebar-collapsed .sidebar-menu > li > details.group > summary');
+            const inSidebarIcon = e.target.closest('aside.sidebar-collapsed .sidebar-menu > li > .sidebar-link, aside.sidebar-collapsed .sidebar-menu > li > details.group > summary');
+
+            if (!inFlyout && !inSidebarIcon) {
+                closeAllFlyouts();
+            }
+        });
+
+        document.addEventListener('mouseover', function (e) {
+            const link = e.target.closest('aside.sidebar-collapsed [data-tooltip]');
+            if (!link) return;
+            if (link.closest('ul.sidebar-flyout-active')) return;
+            showTooltip(link);
+        });
+
+        document.addEventListener('mouseout', function (e) {
+            if (!activeLink) return;
+            const to = e.relatedTarget;
+            if (to && (activeLink === to || activeLink.contains(to))) return;
+            hideTooltip();
+        });
+
+        document.addEventListener('scroll', function () {
+            hideTooltip();
+            repositionOpenFlyouts();
+        }, true);
+
+        window.addEventListener('resize', function () {
+            hideTooltip();
+            if (isSidebarCollapsed()) {
+                repositionOpenFlyouts();
+            } else {
+                resetFlyouts();
+            }
+        });
+    })();
+</script>

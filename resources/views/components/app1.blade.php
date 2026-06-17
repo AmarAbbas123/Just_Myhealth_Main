@@ -69,15 +69,16 @@
 
         {{-- Sidebar (both desktop + mobile handled) --}}
         <aside
-            class="z-20 w-64 overflow-y-auto bg-white dark:bg-gray-800 transition-all duration-300 ease-in-out transform
+            class="z-20 w-64 overflow-y-auto overflow-x-clip bg-white dark:bg-gray-800 transition-all duration-300 ease-in-out transform
                 fixed inset-y-0 left-0 md:translate-x-0"
             :class="{
                 '-translate-x-full': !isSideMenuOpen && window.innerWidth < 768,
                 'translate-x-0': isSideMenuOpen || window.innerWidth >= 768,
-                'w-16': !isSidebarOpen && window.innerWidth >= 768,
+                'sidebar-collapsed w-16': !isSidebarOpen && window.innerWidth >= 768,
                 'w-64': isSidebarOpen && window.innerWidth >= 768
             }">
-            <div class="py-4 text-gray-500 dark:text-gray-400 ml-3">
+            <div class="py-4 text-gray-500 dark:text-gray-400 min-w-0 max-w-full overflow-x-clip"
+                :class="isSidebarOpen || window.innerWidth < 768 ? 'ml-3' : 'px-0'">
                 <div class="flex items-center justify-between">
                     @php $userType = auth()->user()?->UserType; @endphp
                     <a href="/dashboard" class="text-lg font-bold text-gray-800 dark:text-gray-200"
@@ -141,7 +142,7 @@
                     }
                 @endphp
 
-                <aside class="h-full">
+                <aside class="h-full sidebar-menu-wrap min-w-0 max-w-full overflow-x-clip">
                     @include($sidebarFile, [
                         'menuItems' => $menuItems,
                         'qcStatus' => $qcStatus,

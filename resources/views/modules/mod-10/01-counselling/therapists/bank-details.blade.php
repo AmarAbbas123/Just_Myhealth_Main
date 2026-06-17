@@ -167,7 +167,7 @@
                             </div>
                         </div>
 
-                        <div class="mt-6 flex flex-col gap-3  border-gray-200 pt-5 sm:flex-row sm:items-center sm:justify-between">
+                        <div class="mt-6 flex flex-col gap-3  border-gray-200  sm:flex-row sm:items-center sm:justify-between">
                             
 
                             <button
