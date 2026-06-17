@@ -1,6 +1,6 @@
 
 <header class="z-10 py-4 bg-white shadow-md dark:bg-gray-800">
-    <div class="container flex items-center justify-between h-full px-6 mx-auto text-primary dark:text-primary">
+    <div class="container flex items-center justify-between h-full  mx-auto text-primary dark:text-primary">
 
         <!-- Mobile hamburger -->
         <button

@@ -542,7 +542,7 @@ $renderMenu = function ($items, $level = 0) use (&$renderMenu) {
         padding-right: 0.25rem;
         position: relative;
         overflow: visible;
-        min-height: 2.5rem;
+        min-height: 1.7rem;
         width: 100%;
         max-width: 100%;
         gap: 0;
@@ -575,10 +575,10 @@ $renderMenu = function ($items, $level = 0) use (&$renderMenu) {
     aside.sidebar-collapsed .sidebar-menu > li > details.group > summary.sidebar-link .arrow {
         display: block !important;
         position: absolute;
-        bottom: 2px;
+        bottom: 0.5px;
         right: 1px;
         margin: 0;
-        font-size: 0.45rem;
+        font-size: 0.55rem;
         line-height: 1;
         opacity: 0.8;
         flex-shrink: 0;
@@ -614,6 +614,7 @@ $renderMenu = function ($items, $level = 0) use (&$renderMenu) {
     .dark ul.sidebar-submenu-panel.sidebar-flyout-active {
         background: #1f2937;
         border-color: #374151;
+        color:white;
     }
 
     ul.sidebar-submenu-panel.sidebar-flyout-active .sidebar-link {
@@ -640,6 +641,7 @@ $renderMenu = function ($items, $level = 0) use (&$renderMenu) {
 
     .dark ul.sidebar-submenu-panel.sidebar-flyout-active .sidebar-submenu-panel {
         border-left-color: #374151 !important;
+        color:white;
     }
 
     ul.sidebar-submenu-panel.sidebar-flyout-active details.group > summary.sidebar-link {
@@ -740,8 +742,8 @@ $renderMenu = function ($items, $level = 0) use (&$renderMenu) {
         display: none;
         pointer-events: none;
         padding: 0.5rem 0.875rem;
-        background: #1F9CA1;
-        color: #fff;
+        background: white;
+        color: black;
         font-size: 0.8125rem;
         font-weight: 600;
         letter-spacing: 0.01em;
@@ -777,7 +779,7 @@ $renderMenu = function ($items, $level = 0) use (&$renderMenu) {
     }
 
     .dark .sidebar-flyout-tooltip {
-        background: #1F9CA1;
+        background: white;
         box-shadow: 0 8px 24px rgba(31, 156, 161, 0.45), 0 2px 8px rgba(0, 0, 0, 0.3);
     }
 
