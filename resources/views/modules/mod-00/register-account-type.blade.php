@@ -39,7 +39,7 @@
 
         <!-- PAGE HEADING -->
         <section class="py-12">
-            <div class="mx-auto max-w-3xl rounded-3xl border border-indigo-200 bg-indigo-50/80 px-8 py-10 text-center shadow-xl shadow-indigo-100">
+            <div class="mx-auto max-w-3xl rounded-3xl  bg-indigo-50/80 px-8 py-10 text-center shadow-xl shadow-indigo-100">
                 <h1 class="text-3xl md:text-4xl font-bold text-slate-900">
                     Select Account Type
                 </h1>
