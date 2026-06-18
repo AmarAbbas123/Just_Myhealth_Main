@@ -38,13 +38,15 @@
 
 
         <!-- PAGE HEADING -->
-        <section class="py-12 text-center">
-            <h1 class="text-3xl md:text-4xl font-bold text-gray-800">
-                Select Account Type
-            </h1>
-            <p class="mt-3 text-gray-500 max-w-2xl mx-auto">
-                Choose the account type that best fits your needs and get started today.
-            </p>
+        <section class="py-12">
+            <div class="mx-auto max-w-3xl rounded-3xl border border-indigo-200 bg-indigo-50/80 px-8 py-10 text-center shadow-xl shadow-indigo-100">
+                <h1 class="text-3xl md:text-4xl font-bold text-slate-900">
+                    Select Account Type
+                </h1>
+                <p class="mt-4 text-gray-600 max-w-2xl mx-auto leading-relaxed">
+                    Choose the account type that best fits your needs and get started today.
+                </p>
+            </div>
         </section>
 
         {{-- MAIN CONTENT --}}
@@ -53,73 +55,159 @@
 
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
 
-                    {{-- USER ACCOUNT --}}
-                    <div class="bg-white rounded-2xl shadow-lg p-8 flex flex-col items-center text-center hover:shadow-2xl transition">
-                        <h2 class="text-xl font-semibold text-gray-800">CLIENT Account</h2>                        
-                        <p class="text-4xl font-bold text-indigo-600 mt-4">&pound;<span class="text-3xl">FREE</span></p>
-                        <p class="mt-2 text-gray-500">The Standard CLIENT account allows access to:</p>
-                        <ul class="mt-4 space-y-2 text-gray-700 text-left list-inside">
-                            <li><b>&check;</b> Social Communications</li>
-                            <li><b>&check;</b> Medical Data Feeds</li>
-                            <li><b>&check;</b> Medical Practitioners</li>
-                            <li><b>&check;</b> Therapy Services</li>
-                            <li><b>&check;</b> Peer Support</li>
-                            <li><b>&check;</b> Business Services</li>
-                            <li><b>&check;</b> eCommerce</li>
-                        </ul>
-                        <a href="{{ route('register', ['type' => 'user']) }}"
-                           class="mt-6 bg-indigo-600 text-white px-6 py-2 rounded-lg shadow hover:bg-indigo-700 transition">
-                            Create Account
-                        </a>
+                    {{-- CLIENT ACCOUNT --}}
+                    <div class="group relative overflow-hidden rounded-3xl border border-indigo-200 bg-white shadow-sm transition duration-300 hover:-translate-y-1 hover:shadow-xl">
+                        <div class="h-1.5 bg-gradient-to-r from-indigo-500 to-violet-500"></div>
+                        <div class="p-6 sm:p-8">
+                            <div class="flex flex-col gap-3">
+                                <div class="inline-flex items-center justify-between gap-3">
+                                    <span class="inline-flex rounded-full bg-indigo-50 px-3 py-1 text-xs font-semibold uppercase tracking-[0.2em] text-indigo-700">Client</span>
+                                    <span class="text-xs font-semibold uppercase tracking-[0.2em] text-slate-500">Personal</span>
+                                </div>
+                                <div>
+                                    <h3 class="text-2xl font-semibold text-slate-900">CLIENT Account</h3>
+                                    <p class="mt-3 text-sm leading-6 text-slate-600">The Standard CLIENT account allows access to:</p>
+                                </div>
+                                <div class="mt-5 rounded-3xl bg-indigo-50 px-5 py-4 ring-1 ring-indigo-100">
+                                    <div class="text-sm text-indigo-700">Pricing</div>
+                                    <div class="mt-2 text-4xl font-bold text-slate-900">£Free</div>
+                                </div>
+                            </div>
+
+                            <div class="mt-7 space-y-3 text-sm text-slate-700">
+                                <div class="flex items-center gap-3">
+                                    <span class="inline-flex h-7 w-7 items-center justify-center rounded-full bg-indigo-100 text-indigo-700 text-xs font-bold">✓</span>
+                                    <span>Social Communications</span>
+                                </div>
+                                <div class="flex items-center gap-3">
+                                    <span class="inline-flex h-7 w-7 items-center justify-center rounded-full bg-indigo-100 text-indigo-700 text-xs font-bold">✓</span>
+                                    <span>Medical Data Feeds</span>
+                                </div>
+                                <div class="flex items-center gap-3">
+                                    <span class="inline-flex h-7 w-7 items-center justify-center rounded-full bg-indigo-100 text-indigo-700 text-xs font-bold">✓</span>
+                                    <span>Medical Practitioners</span>
+                                </div>
+                                <div class="flex items-center gap-3">
+                                    <span class="inline-flex h-7 w-7 items-center justify-center rounded-full bg-indigo-100 text-indigo-700 text-xs font-bold">✓</span>
+                                    <span>Therapy Services</span>
+                                </div>
+                                <div class="flex items-center gap-3">
+                                    <span class="inline-flex h-7 w-7 items-center justify-center rounded-full bg-indigo-100 text-indigo-700 text-xs font-bold">✓</span>
+                                    <span>Peer Support</span>
+                                </div>
+                                <div class="flex items-center gap-3">
+                                    <span class="inline-flex h-7 w-7 items-center justify-center rounded-full bg-indigo-100 text-indigo-700 text-xs font-bold">✓</span>
+                                    <span>Business Services</span>
+                                </div>
+                                <div class="flex items-center gap-3">
+                                    <span class="inline-flex h-7 w-7 items-center justify-center rounded-full bg-indigo-100 text-indigo-700 text-xs font-bold">✓</span>
+                                    <span>eCommerce</span>
+                                </div>
+                            </div>
+
+                            <a href="{{ route('register', ['type' => 'user']) }}" class="mt-8 inline-flex w-full items-center justify-center rounded-2xl bg-indigo-600 px-5 py-3 text-sm font-semibold text-white shadow-lg shadow-indigo-500/20 transition duration-300 hover:bg-indigo-700">Create Account</a>
+                        </div>
                     </div>
 
                     {{-- THERAPIST ACCOUNT --}}
-                    <div class="bg-white rounded-2xl shadow-lg p-8 flex flex-col items-center text-center hover:shadow-2xl transition border-t-4 border-indigo-600">
-                        <h2 class="text-xl font-semibold text-gray-800">THERAPIST</h2>
-                        <p class="text-sm text-gray-500">(Professional Services)</p>
-                        @if ($therapistFeeWaived ?? false)
-                            <p class="text-4xl font-bold text-indigo-600 mt-4">&pound;<span class="text-3xl">FREE</span></p>
-                        @else
-                            <p class="text-4xl font-bold text-indigo-600 mt-4">
-                                &pound;{{ $therapistFeeAmount }}
-                                <span class="text-base text-gray-500">/ annual</span>
-                            </p>
-                        @endif
-                        <p class="mt-2 text-gray-500">The Professional Therapist account allows:</p>
-                        <ul class="mt-4 space-y-2 text-gray-700 text-left list-inside">
-                            <li><b>&check;</b> Professional Presence</li>
-                            <li><b>&check;</b> Personal BIO</li>
-                            <li><b>&check;</b> Availability Calendar</li>
-                            <li><b>&check;</b> Booking Engine</li>
-                            <li><b>&check;</b> Secure Online Sessions</li>
-                            <li><b>&check;</b> Session Recordings</li>
-                        </ul>
-                        <a href="{{ route('register', ['type' => 'therapist']) }}"
-                           class="mt-6 bg-indigo-600 text-white px-6 py-2 rounded-lg shadow hover:bg-indigo-700 transition">
-                            Create Account
-                        </a>
+                    <div class="group relative overflow-hidden rounded-3xl border border-gray-200 bg-white shadow-sm transition duration-300 hover:-translate-y-1 hover:shadow-xl">
+                        <div class="h-1.5 bg-gradient-to-r from-indigo-500 to-violet-500"></div>
+                        <div class="p-6 sm:p-8">
+                            <div class="flex flex-col gap-3">
+                                <div class="inline-flex items-center justify-between gap-3">
+                                    <span class="inline-flex rounded-full bg-indigo-50 px-3 py-1 text-xs font-semibold uppercase tracking-[0.2em] text-indigo-700">Therapist</span>
+                                    <span class="text-xs font-semibold uppercase tracking-[0.2em] text-slate-500">Professional</span>
+                                </div>
+                                <div>
+                                    <h3 class="text-2xl font-semibold text-slate-900">THERAPIST Account</h3>
+                                    <p class="mt-3 text-sm leading-6 text-slate-600">The Professional Therapist account allows:</p>
+                                </div>
+                                <div class="mt-5 rounded-3xl bg-indigo-50 px-5 py-4 ring-1 ring-indigo-100 text-slate-900">
+                                    <div class="text-sm text-indigo-700">Annual fee</div>
+                                    <div class="mt-2 text-4xl font-bold">
+                                        @if ($therapistFeeWaived ?? false)
+                                            £Free
+                                        @else
+                                            &pound;{{ $therapistFeeAmount }}<span class="text-base font-medium text-slate-500">/ annual</span>
+                                        @endif
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="mt-7 space-y-3 text-sm text-slate-700">
+                                <div class="flex items-center gap-3">
+                                    <span class="inline-flex h-7 w-7 items-center justify-center rounded-full bg-indigo-100 text-indigo-700 text-xs font-bold">✓</span>
+                                    <span>Professional Presence</span>
+                                </div>
+                                <div class="flex items-center gap-3">
+                                    <span class="inline-flex h-7 w-7 items-center justify-center rounded-full bg-indigo-100 text-indigo-700 text-xs font-bold">✓</span>
+                                    <span>Personal BIO</span>
+                                </div>
+                                <div class="flex items-center gap-3">
+                                    <span class="inline-flex h-7 w-7 items-center justify-center rounded-full bg-indigo-100 text-indigo-700 text-xs font-bold">✓</span>
+                                    <span>Availability Calendar</span>
+                                </div>
+                                <div class="flex items-center gap-3">
+                                    <span class="inline-flex h-7 w-7 items-center justify-center rounded-full bg-indigo-100 text-indigo-700 text-xs font-bold">✓</span>
+                                    <span>Booking Engine</span>
+                                </div>
+                                <div class="flex items-center gap-3">
+                                    <span class="inline-flex h-7 w-7 items-center justify-center rounded-full bg-indigo-100 text-indigo-700 text-xs font-bold">✓</span>
+                                    <span>Secure Online Sessions</span>
+                                </div>
+                                <div class="flex items-center gap-3">
+                                    <span class="inline-flex h-7 w-7 items-center justify-center rounded-full bg-indigo-100 text-indigo-700 text-xs font-bold">✓</span>
+                                    <span>Session Recordings</span>
+                                </div>
+                            </div>
+
+                            <a href="{{ route('register', ['type' => 'therapist']) }}" class="mt-8 inline-flex w-full items-center justify-center rounded-2xl bg-indigo-600 px-5 py-3 text-sm font-semibold text-white shadow-lg shadow-indigo-500/20 transition duration-300 hover:bg-indigo-700">Create Account</a>
+                        </div>
                     </div>
 
                     {{-- BUSINESS ACCOUNT --}}
-                    <div class="bg-white rounded-2xl shadow-lg p-8 flex flex-col items-center text-center hover:shadow-2xl transition">
-                        <h2 class="text-xl font-semibold text-gray-800">BUSINESS</h2>
-                        <p class="text-sm text-gray-500">(Local Business Account)</p>
-                        <p class="text-4xl font-bold text-indigo-600 mt-4">
-                            &pound;{{ $feeBusiness->CurrencyGBP }}
-                            <span class="text-base text-gray-500">/ annual</span>
-                        </p>
-                        <p class="mt-2 text-gray-500">The Local Business account provides access to:</p>
-                        <ul class="mt-4 space-y-2 text-gray-700 text-left list-inside">
-                            <li><b>&check;</b> Social Communications</li>
-                            <li><b>&check;</b> B2B / B2C / G2B / G2C</li>
-                            <li><b>&check;</b> eCommerce Store</li>
-                            <li><b>&check;</b> Services Provision</li>
-                            <li><b>&check;</b> Peer Support</li>
-                        </ul>
-                        <a href="{{ route('register', ['type' => 'business']) }}"
-                           class="mt-6 bg-indigo-600 text-white px-6 py-2 rounded-lg shadow hover:bg-indigo-700 transition">
-                            Create Account
-                        </a>
+                    <div class="group relative overflow-hidden rounded-3xl border border-indigo-200 bg-white shadow-sm transition duration-300 hover:-translate-y-1 hover:shadow-xl">
+                        <div class="h-1.5 bg-gradient-to-r from-indigo-500 to-violet-500"></div>
+                        <div class="p-6 sm:p-8">
+                            <div class="flex flex-col gap-3">
+                                <div class="inline-flex items-center justify-between gap-3">
+                                    <span class="inline-flex rounded-full bg-indigo-50 px-3 py-1 text-xs font-semibold uppercase tracking-[0.2em] text-indigo-700">Business</span>
+                                    <span class="text-xs font-semibold uppercase tracking-[0.2em] text-slate-500">Local Trade</span>
+                                </div>
+                                <div>
+                                    <h3 class="text-2xl font-semibold text-slate-900">BUSINESS Account</h3>
+                                    <p class="mt-3 text-sm leading-6 text-slate-600">The Local Business account provides access to:</p>
+                                </div>
+                                <div class="mt-5 rounded-3xl bg-indigo-50 px-5 py-4 ring-1 ring-indigo-100">
+                                    <div class="text-sm text-indigo-700">Annual fee</div>
+                                    <div class="mt-2 text-4xl font-bold text-slate-900">&pound;{{ $feeBusiness->CurrencyGBP }}<span class="text-base font-medium text-slate-500">/ annual</span></div>
+                                </div>
+                            </div>
+
+                            <div class="mt-7 space-y-3 text-sm text-slate-700">
+                                <div class="flex items-center gap-3">
+                                    <span class="inline-flex h-7 w-7 items-center justify-center rounded-full bg-indigo-100 text-indigo-700 text-xs font-bold">✓</span>
+                                    <span>Social Communications</span>
+                                </div>
+                                <div class="flex items-center gap-3">
+                                    <span class="inline-flex h-7 w-7 items-center justify-center rounded-full bg-indigo-100 text-indigo-700 text-xs font-bold">✓</span>
+                                    <span>B2B / B2C / G2B / G2C</span>
+                                </div>
+                                <div class="flex items-center gap-3">
+                                    <span class="inline-flex h-7 w-7 items-center justify-center rounded-full bg-indigo-100 text-indigo-700 text-xs font-bold">✓</span>
+                                    <span>eCommerce Store</span>
+                                </div>
+                                <div class="flex items-center gap-3">
+                                    <span class="inline-flex h-7 w-7 items-center justify-center rounded-full bg-indigo-100 text-indigo-700 text-xs font-bold">✓</span>
+                                    <span>Services Provision</span>
+                                </div>
+                                <div class="flex items-center gap-3">
+                                    <span class="inline-flex h-7 w-7 items-center justify-center rounded-full bg-indigo-100 text-indigo-700 text-xs font-bold">✓</span>
+                                    <span>Peer Support</span>
+                                </div>
+                            </div>
+                            <a href="{{ route('register', ['type' => 'business']) }}" class="mt-8 inline-flex w-full items-center justify-center rounded-2xl bg-indigo-600 px-5 py-3 text-sm font-semibold text-white shadow-lg shadow-indigo-500/20 transition duration-300 hover:bg-indigo-700">Create Account</a>
+                        </div>
                     </div>
 
                 </div>
