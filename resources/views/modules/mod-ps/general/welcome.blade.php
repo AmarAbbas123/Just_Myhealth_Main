@@ -110,7 +110,7 @@
     <section class="py-16 md:py-24 bg-gradient-to-b from-[#f4fbfb] via-white to-[#eef8f7]">
         <div class="container mx-auto px-6 lg:px-12">
             <div class="mx-auto grid gap-10 lg:grid-cols-[0.95fr_1.05fr] lg:items-start">
-                <a href="{{ route('online-counselling') }}" class="group block overflow-hidden transition duration-300 hover:-translate-y-1">
+                <a href="{{ route('online-therapy') }}" class="group block overflow-hidden transition duration-300 hover:-translate-y-1">
                     <div class="relative w-full overflow-hidden rounded-[10px] shadow-[0_20px_60px_-20px_rgba(15,137,166,0.25)] transition duration-300 hover:-translate-y-1 hover:shadow-[0_28px_64px_-20px_rgba(15,137,166,0.35)]" style="aspect-ratio: 2 / 1;">
                         <img src="{{ asset('images/welcome-page/therapy-info-tile-1-1080x540.png') }}"
                              alt="Online Therapy"
@@ -147,7 +147,7 @@
                 </div>
                 {{-- CTA --}}
                 <div>
-                    <a href="{{ route('online-counselling') }}"
+                    <a href="{{ route('online-therapy') }}"
                        class="inline-flex items-center gap-2 rounded-full bg-[#0f89a6] px-6 py-3 text-sm font-semibold text-white transition duration-200 hover:bg-[#0b7087]">
                         Read more
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>

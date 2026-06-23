@@ -11,9 +11,9 @@
             </svg>
             <span>Home</span>
             <span class="text-white/40">&rsaquo;</span>
-            <span class="text-white font-semibold">Online Consuling</span>
+            <span class="text-white font-semibold">Online Therapy</span>
         </div>
-        <h1 class="text-4xl lg:text-5xl font-bold text-white tracking-tight mb-4">Online Consuling </h1>
+        <h1 class="text-4xl lg:text-5xl font-bold text-white tracking-tight mb-4">Online Therapy</h1>
     </div>
 </section>
 
