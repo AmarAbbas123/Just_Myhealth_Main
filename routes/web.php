@@ -173,6 +173,7 @@ Route::view('/user-driven-people-focused', 'modules.mod-ps.home-page-top-carouse
 // Services Pages
 Route::view('/mod-ps/services/online-counselling', 'modules.mod-ps.services.online-counselling')->name('online-counselling');
 Route::view('/mod-ps/services/online-therapy', 'modules.mod-ps.services.online-therapy')->name('online-therapy');
+Route::view('/mod-ps/services/online-coaching', 'modules.mod-ps.services.online-coaching')->name('online-coaching');
 Route::view('/mod-ps/services/personal-training', 'modules.mod-ps.services.personal-training')->name('personal-training');
 Route::view('/mod-ps/services/eating-for-health', 'modules.mod-ps.services.eating-for-health')->name('eating-for-health');
 
