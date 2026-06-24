@@ -2,7 +2,7 @@
 <x-app-layout>
 
 <!-- Hero Section -->
-<section class="relative h-80 flex items-start lg:items-center pt-24 lg:pt-32" style="background: linear-gradient(135deg, #0a4a5c 0%, #1C9BA0 100%);">
+<section class="relative h-80 flex items-start items-center pt-24 lg:pt-32" style="background: linear-gradient(135deg, #0a4a5c 0%, #1C9BA0 100%);">
     <div class="absolute inset-0" style="background: radial-gradient(circle at 75% 50%, rgba(255,255,255,0.07), transparent 60%), radial-gradient(circle at 15% 80%, rgba(0,0,0,0.18), transparent 50%);"></div>
     <div class="relative px-6 lg:px-20 max-w-4xl">
         <div class="inline-flex items-center space-x-2 text-sm lg:text-base font-medium text-white/90 bg-white/10 backdrop-blur-md border border-white/20 px-5 py-2 rounded-full shadow-lg mb-6">
@@ -39,8 +39,8 @@
                 </div>
                 <div>
                     <p class="text-xs font-semibold uppercase tracking-[0.2em] text-[#1C9BA0] mb-2">Our Promise</p>
-                    <h2 class="text-3xl font-bold text-[#1C9BA0] mb-3">Why Choose Us?</h2>
-                    <div class="w-10 h-[3px] rounded-full bg-[#1C9BA0] mb-5"></div>
+                    <h2 class="mt-3 mb-5 text-3xl font-semibold leading-tight text-[#102f3a] sm:text-4xl md:text-5xl">Why Choose Us?</h2>
+                    
                     <p class="text-gray-600 text-base leading-relaxed">
                         Our aim is to be one of the most outstanding online therapy provisions. We aim to match
                         you with a client within 15 minutes of you signing up. We understand that there can be long waiting
@@ -88,7 +88,7 @@
         <div class="container mx-auto px-4 md:px-6 lg:px-12">
             <div class="text-center mb-10">
                 <p class="text-xs font-semibold uppercase tracking-[0.2em] text-[#1C9BA0] mb-2">What We Stand For</p>
-                <h2 class="text-3xl font-bold text-[#1C9BA0]">Our Core Values</h2>
+                <h2 class="mt-3 mb-5 text-3xl font-semibold leading-tight text-[#102f3a] sm:text-4xl md:text-5xl">Our Core Values</h2>
             </div>
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                 @foreach ([
@@ -119,7 +119,7 @@
                             {!! $card['icon'] !!}
                         </svg>
                     </div>
-                    <h3 class="text-[10.5px] font-bold uppercase tracking-[0.08em] text-[#1C9BA0] mb-2">{{ $card['title'] }}</h3>
+                    <h3 class="text-[10.5px] font-bold uppercase tracking-[0.08em] text-[#1C9BA0] ">{{ $card['title'] }}</h3>
                     <p class="text-xs text-[#4b626b] leading-relaxed">{{ $card['desc'] }}</p>
                 </div>
                 @endforeach
@@ -134,8 +134,8 @@
             {{-- Left Text --}}
             <div class="lg:col-span-2 space-y-4">
                 <p class="text-xs font-semibold uppercase tracking-[0.2em] text-[#1C9BA0]">Investment in Your Wellbeing</p>
-                <h2 class="text-3xl font-bold text-[#1C9BA0]">Therapy Process &amp; Cost</h2>
-                <div class="w-10 h-[3px] rounded-full bg-[#1C9BA0]"></div>
+                <h2 class="mt-3 mb-5 text-3xl font-semibold leading-tight text-[#102f3a] sm:text-4xl md:text-5xl">Therapy Process &amp; Cost</h2>
+                
                 <p class="text-gray-600 leading-relaxed">Therapy is an iterative process which encompasses multiple sessions arranged at a defined frequency to allow time to absorb, adjust, and benefit.</p>
                 <p class="text-gray-600 leading-relaxed">To minimize costs, we provide therapy sessions as monthly blocks containing <span class="font-semibold text-[#102f3a]">four sessions</span>.</p>
                 <p class="text-gray-600 leading-relaxed">The cost of therapy ranges from <span class="font-semibold text-[#1C9BA0]">&pound;50 to &pound;70 per week</span> (billed every 4 weeks). Variation depends on location, type of therapy, preferences, and therapist availability.</p>
