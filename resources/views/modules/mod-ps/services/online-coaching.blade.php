@@ -1,4 +1,4 @@
-{{-- Online Therapy --}}
+{{-- Online Coaching --}}
 <x-app-layout>
 
 <!-- Hero Section -->
@@ -17,159 +17,256 @@
     </div>
 </section>
 
-<div class="container-fluid mx-auto bg-white min-h-screen">
 
-    {{-- Intro Band --}}
-    <div class="border-b border-[#d4f0ee] py-8 px-4 md:px-6 lg:px-20">
-        <p class="max-w-4xl mx-auto text-center text-base leading-relaxed text-[#4b626b]">
-            At JustMy.Health, we believe in the power of personalized therapy to help you achieve mental wellness and
-            emotional balance. Our secure platform offers one-to-one therapy sessions tailored to your unique needs,
-            ensuring you receive the support and guidance you deserve.
-        </p>
-    </div>
+    </section>
 
-    {{-- Why Choose Us + Feature Cards --}}
-    <section class="bg-gradient-to-b from-[#f0fbfa] to-white py-16">
-        <div class="container mx-auto px-4 md:px-6 lg:px-12">
+    <!-- Navbar is in layouts/app.blade.php -->
 
-            {{-- Why grid --}}
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-10 items-center mb-14">
-                <div class="overflow-hidden rounded-[20px] shadow-[0_20px_60px_-20px_rgba(28,155,160,0.28)]">
-                    <img src="{{ asset('images/welcome-page/therapyjourney.png') }}" alt="Therapy Journey" class="w-full h-auto object-cover">
-                </div>
+    <section class="bg-gradient-to-b from-[#f4fbfb] via-white to-[#eef8f7] py-8 md:py-12">
+        <div class="container mx-auto px-6 lg:px-12">
+            <div class="mx-auto grid max-w-6xl gap-10 lg:grid-cols-[0.85fr_1.15fr] lg:items-center">
                 <div>
-                    <p class="text-xs font-semibold uppercase tracking-[0.2em] text-[#1C9BA0] mb-2">Our Promise</p>
-                    <h2 class="mt-3 mb-5 text-3xl font-semibold leading-tight text-[#102f3a] sm:text-4xl md:text-5xl">Why Choose Us?</h2>
-                    
-                    <p class="text-gray-600 text-base leading-relaxed">
-                        Our aim is to be one of the most outstanding online therapy provisions. We aim to match
-                        you with a client within 15 minutes of you signing up. We understand that there can be long waiting
-                        times to see a therapist — such experience can sometimes escalate the distress you are experiencing.
-                        We further aim for you to be able to access therapy within two days of signing up. We work with you
-                        according to your presenting issues, and therefore the best therapist is allocated to facilitate your needs.
-                        We aim to have resources such as worksheets which will explain more about the issues you are experiencing.
-                        Please know we have your interest at heart — use the accessible email to reach out if there is a complaint or concern.
+                    <p class="mb-5 inline-flex rounded-full border border-[#9ed9d7] bg-white px-4 py-2 text-xs font-semibold uppercase tracking-[0.22em] text-[#0f89a6] shadow-sm">
+                        JustMy.Health - Coaching
+                    </p>
+                    <h2 class="max-w-xl text-2xl font-semibold leading-tight text-[#102f3a] sm:text-3xl md:text-4xl">
+                        Online Coaching to boost wellbeing
+                    </h2>
+                    <p class="mt-6 max-w-md text-base leading-7 text-[#4b626b]">
+                        Coaching focuses on helping you understand your thoughts and feelings, navigate difficult situations, and build practical tools for everyday wellbeing. Ideal for stress, relationships, grief, and emotional overwhelm.
                     </p>
                 </div>
-            </div>
 
-            {{-- Feature Cards --}}
-            <div class="grid grid-cols-1 sm:grid-cols-4 gap-4">
-                @foreach ([
-                    ['emoji' => '🔐', 'icon' => 'authentication', 'title' => 'Secure User Authentication', 'desc' => 'Implement multi-factor authentication to protect user accounts.'],
-                    ['emoji' => '🎭', 'icon' => 'anonymous',       'title' => 'Anonymous Profiles',          'desc' => 'Offer the option for clients to use anonymous profiles if they prefer.'],
-                    ['emoji' => '💬', 'icon' => 'message',         'title' => 'Confidential Messaging',      'desc' => 'Use encrypted messaging systems for secure communication between therapists and clients.'],
-                    ['emoji' => '🛡️', 'icon' => 'security',       'title' => 'Regular Security Audits',     'desc' => 'Conduct regular security audits and vulnerability assessments.'],
-                    ['emoji' => '📋', 'icon' => 'compliance',      'title' => 'Compliance with Regulations', 'desc' => 'Adhere to HIPAA or GDPR standards for data protection and privacy.'],
-                    ['emoji' => '📄', 'icon' => 'policies',        'title' => 'Transparent Policies',        'desc' => 'Make privacy policies and terms of service easily accessible and clear.'],
-                    ['emoji' => '📅', 'icon' => 'schedule',        'title' => 'Private Scheduling',          'desc' => 'Integrate secure calendar systems for booking and managing appointments.'],
-                    ['emoji' => '🚪', 'icon' => 'waiting-room',    'title' => 'Virtual Waiting Rooms',       'desc' => 'Use virtual waiting rooms to maintain session confidentiality.'],
-                    ['emoji' => '📁', 'icon' => 'document',        'title' => 'Secure Document Sharing',     'desc' => 'Allow for the safe exchange of therapy notes and resources.'],
-                    ['emoji' => '✅', 'icon' => 'verification',    'title' => 'Therapist Verification',      'desc' => 'Verify the credentials of therapists to ensure they are qualified professionals.'],
-                ] as $card)
-                <div class="flex items-start gap-4 bg-white border border-[#b2e0dc] rounded-2xl p-5 transition duration-200 hover:-translate-y-0.5 hover:shadow-[0_12px_32px_-8px_rgba(28,155,160,0.18)]">
-                    <div class="w-11 h-11 flex-shrink-0 rounded-[12px] flex items-center justify-center text-lg shadow-[0_6px_14px_-4px_rgba(28,155,160,0.35)]"
-                         style="background: linear-gradient(135deg, #1C9BA0, #34c5bb);">
-                        {{ $card['emoji'] }}
-                    </div>
-                    <div>
-                        <h3 class="text-sm font-semibold text-[#102f3a] mb-1">{{ $card['title'] }}</h3>
-                        <p class="text-xs text-[#4b626b] leading-relaxed">{{ $card['desc'] }}</p>
+                <div class="border-l-4 border-[#0f89a6] bg-white/75 py-2 pl-6 shadow-[0_24px_70px_-55px_rgba(16,106,124,0.65)] md:pl-8">
+                    <div class="space-y-5 text-base leading-8 text-[#243b45] md:text-lg">
+                        <p class="font-medium text-[#102f3a]">
+                            Online Coaching focuses on helping you move forward with clarity and confidence. Your coach works with you to understand what’s holding you back, identify your strengths, and develop practical strategies you can apply in everyday life. It’s ideal when you want support with stress, motivation, communication, relationships, or navigating life’s challenges in a more empowered way.
+                        </p>
+                        <p>
+                            Coaching is future‑oriented and action‑based. Instead of exploring deep emotional patterns, your coach helps you set achievable goals, build new habits, and create positive change step by step. Together, you’ll work on improving resilience, strengthening decision‑making, and developing tools that support your wellbeing in real‑world situations.
+                        </p>
+                        <p>
+                            Online Coaching is flexible, accessible, and designed to meet you where you are. Whether you need short‑term guidance or ongoing support, your coach adapts to your pace and priorities. You get a supportive space to reflect, reset, and grow — all from the comfort of your home, at times that work for you.
+                        </p>
                     </div>
                 </div>
-                @endforeach
-            </div>
-
-        </div>
-    </section>
-
-    {{-- Core Values --}}
-    <section class="bg-white py-16">
-        <div class="container mx-auto px-4 md:px-6 lg:px-12">
-            <div class="text-center mb-10">
-                <p class="text-xs font-semibold uppercase tracking-[0.2em] text-[#1C9BA0] mb-2">What We Stand For</p>
-                <h2 class="mt-3 mb-5 text-3xl font-semibold leading-tight text-[#102f3a] sm:text-4xl md:text-5xl">Our Core Values</h2>
-            </div>
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                @foreach ([
-                    ['title' => 'RESPECT',         'desc' => 'We have great admiration for the effort that you have made in seeking help, valuing your worth, feelings and boundaries.',
-                     'icon' => '<path d="M12 21C12 21 4 13.5 4 8.5a5 5 0 0 1 8-4 5 5 0 0 1 8 4c0 5-8 12.5-8 12.5z"/>'],
-                    ['title' => 'COMMITMENT',      'desc' => 'We are dedicated to work professionally, skillfully and to communicate effectively.',
-                     'icon' => '<polyline points="20 6 9 17 4 12"/>'],
-                    ['title' => 'DIVERSITY',       'desc' => 'We value your differences of background, sexuality, age, religion, gender, ethnicity, physical ability and your experiences.',
-                     'icon' => '<circle cx="9" cy="7" r="3"/><circle cx="15" cy="7" r="3"/><path d="M3 20c0-4 3-6 6-6"/><path d="M21 20c0-4-3-6-6-6"/>'],
-                    ['title' => 'CLIENT FOCUS',   'desc' => 'Putting the client at the centre of the therapy, being present, understanding and focussing on the presenting needs.',
-                     'icon' => '<circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/>'],
-                    ['title' => 'INTEGRITY',       'desc' => 'Being honest, trustworthy and having strong unwavering moral and ethical principles — doing the right thing even when difficult.',
-                     'icon' => '<path d="M12 3l2.5 5.5L20 9.5l-4 4 1 5.5L12 16.5 7 19l1-5.5-4-4 5.5-1z"/>'],
-                    ['title' => 'CONFIDENTIALITY','desc' => 'One of our most fundamental obligations — protecting private and sensitive information to build trust in professional relationships.',
-                     'icon' => '<rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/>'],
-                    ['title' => 'ACCOUNTABILITY', 'desc' => 'We are obligated to accept and demonstrate responsibility — a core principle in data protection and organisation governance.',
-                     'icon' => '<path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/>'],
-                    ['title' => 'INCLUSIVITY',    'desc' => 'All individuals are unique and welcome at JustMy.Health — valued, respected, with a sense of belonging for everyone.',
-                     'icon' => '<circle cx="12" cy="5" r="2"/><circle cx="5" cy="19" r="2"/><circle cx="19" cy="19" r="2"/><path d="M12 7v4m0 0L6 18m6-7l6 11"/>'],
-                ] as $card)
-                <div class="relative overflow-hidden bg-white border border-[#b2e0dc] rounded-[18px] p-5 transition duration-200 hover:-translate-y-1 hover:shadow-[0_16px_36px_-10px_rgba(28,155,160,0.2)]">
-                    {{-- Top accent bar --}}
-                    <div class="absolute top-0 left-0 right-0 h-[3px] rounded-t-[18px]" style="background: linear-gradient(90deg, #1C9BA0, #34c5bb);"></div>
-                    {{-- Icon --}}
-                    <div class="w-11 h-11 rounded-[12px] flex items-center justify-center mb-4 shadow-[0_6px_14px_-4px_rgba(28,155,160,0.35)]"
-                         style="background: linear-gradient(135deg, #1C9BA0, #34c5bb);">
-                        <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-                            {!! $card['icon'] !!}
-                        </svg>
-                    </div>
-                    <h3 class="text-[10.5px] font-bold uppercase tracking-[0.08em] text-[#102f3a] ">{{ $card['title'] }}</h3>
-                    <p class="text-xs text-[#4b626b] leading-relaxed">{{ $card['desc'] }}</p>
-                </div>
-                @endforeach
             </div>
         </div>
     </section>
+    {{-- End of Services --}}
 
-    {{-- Pricing --}}
-    <section class="w-full bg-gradient-to-b from-[#f0fbfa] to-[#e8f8f7] py-16 px-4 sm:px-6 lg:px-8">
-        <div class="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-3 gap-10 items-start">
+    <section class="bg-gradient-to-b from-[#f4fbfb] via-white to-[#eef8f7] py-8 md:py-12">
+        <div class="container mx-auto px-6 lg:px-12">
+            <div class="mx-auto grid max-w-6xl gap-10 lg:grid-cols-[0.85fr_1.15fr] lg:items-center">
+                <div>
+                    <p class="mb-5 inline-flex rounded-full border border-[#9ed9d7] bg-white px-4 py-2 text-xs font-semibold uppercase tracking-[0.22em] text-[#0f89a6] shadow-sm">
+                        JustMy.Health - Coaching
+                    </p>
+                    <h2 class="max-w-xl text-3xl font-semibold leading-tight text-[#102f3a] sm:text-4xl md:text-4xl">
+                        What You Can Expect
+                    </h2>
+                    <p class="mt-6 max-w-md text-base leading-7 text-[#4b626b]">
 
-            {{-- Left Text --}}
-            <div class="lg:col-span-2 space-y-4">
-                <p class="text-xs font-semibold uppercase tracking-[0.2em] text-[#1C9BA0]">Investment in Your Wellbeing</p>
-                <h2 class="mt-3 mb-5 text-3xl font-semibold leading-tight text-[#102f3a] sm:text-4xl md:text-5xl">Therapy Process &amp; Cost</h2>
-                
-                <p class="text-gray-600 leading-relaxed">Therapy is an iterative process which encompasses multiple sessions arranged at a defined frequency to allow time to absorb, adjust, and benefit.</p>
-                <p class="text-gray-600 leading-relaxed">To minimize costs, we provide therapy sessions as monthly blocks containing <span class="font-semibold text-[#102f3a]">four sessions</span>.</p>
-                <p class="text-gray-600 leading-relaxed">The cost of therapy ranges from <span class="font-semibold text-[#1C9BA0]">&pound;50 to &pound;70 per week</span> (billed every 4 weeks). Variation depends on location, type of therapy, preferences, and therapist availability.</p>
-                <p class="text-gray-600 leading-relaxed">You can cancel your membership at any time, for any reason.</p>
-            </div>
-
-            {{-- Pricing Card --}}
-            <div class="bg-white rounded-[20px] border border-[#b2e0dc] shadow-[0_20px_60px_-20px_rgba(28,155,160,0.22)] overflow-hidden">
-                <div class="px-6 py-6 text-center" style="background: linear-gradient(135deg, #1C9BA0, #0b7087);">
-                    <p class="text-2xl font-bold text-white">&pound;50 – &pound;70</p>
-                    <p class="text-sm text-white/70 mt-1">per weekly session</p>
+                    </p>
                 </div>
-                <div class="px-6 py-6">
-                    <ul class="space-y-3 mb-6">
-                        @foreach(['End-to-End Encryption','Confidential Messaging','Private Scheduling','Secure Document Sharing','Session Recording Controls','Emergency Support','Virtual Waiting Rooms','Therapist Verification'] as $feature)
-                        <li class="flex items-center gap-3 text-sm text-[#4b626b]">
+
+                <div class="border-l-4 border-[#0f89a6] bg-white/75 py-2 pl-6 shadow-[0_24px_70px_-55px_rgba(16,106,124,0.65)] md:pl-8">
+                    <div class="space-y-5 text-base leading-8 text-[#243b45] md:text-lg">
+                        <p class="font-medium text-[#102f3a]">
+                            Online Coaching gives you a supportive space to reflect, reset, and take meaningful steps toward the life you want. Your coach helps you understand what’s getting in the way, clarify your goals, and build practical strategies you can apply immediately — whether you’re navigating stress, relationship challenges, low motivation, or emotional overwhelm. This is a forward‑focused process designed to help you make real progress in everyday life.
+                        </p>
+                        <p>
+                            Coaching is action‑oriented. Instead of exploring deep emotional patterns, your coach works with you to develop new habits, strengthen communication, improve decision‑making, and build emotional resilience. Together, you’ll identify what supports your wellbeing and create a personalised plan that helps you stay grounded, confident, and in control of your next steps.
+                        </p>
+                        <p>
+                            Your coaching journey is flexible and shaped around your lifestyle. Whether you prefer short‑term guidance or ongoing support, your coach works at your pace and focuses on what matters most to you. Sessions are designed to be practical, encouraging, and easy to integrate into your daily routine — giving you the clarity and momentum to move forward with confidence.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    {{-- End of Services --}}
+
+    <section class="bg-gradient-to-b from-[#f4fbfb] via-white to-[#eef8f7] py-8 md:py-12">
+        <div class="container mx-auto px-6 lg:px-12">
+            <div class="mx-auto grid max-w-6xl gap-10 lg:grid-cols-[0.85fr_1.15fr] lg:items-center">
+                <div>
+                    <p class="mb-5 inline-flex rounded-full border border-[#9ed9d7] bg-white px-4 py-2 text-xs font-semibold uppercase tracking-[0.22em] text-[#0f89a6] shadow-sm">
+                        JustMy.Health - Coaching
+                    </p>
+                    <h2 class="max-w-xl text-3xl font-semibold leading-tight text-[#102f3a] sm:text-4xl md:text-4xl">
+                        Your Coach, Matched to Your Needs
+                    </h2>
+                    <p class="mt-6 max-w-md text-base leading-7 text-[#4b626b]">
+
+                    </p>
+                </div>
+
+                <div class="border-l-4 border-[#0f89a6] bg-white/75 py-2 pl-6 shadow-[0_24px_70px_-55px_rgba(16,106,124,0.65)] md:pl-8">
+                    <div class="space-y-5 text-base leading-8 text-[#243b45] md:text-lg">
+                        <p class="font-medium text-[#102f3a]">
+                            We match you with a coach whose style, experience, and approach align with the goals you want to work on. Whether you’re looking to improve confidence, strengthen communication, manage stress, or navigate life changes, your coach is selected to ensure they’re the right fit for your personal growth journey.
+                        </p>
+                        <p>
+                            Your coach brings a practical, forward‑focused approach to each session. They help you clarify what you want to achieve, identify what’s getting in the way, and build strategies you can apply in real life. This is a collaborative process designed to help you gain momentum, stay accountable, and make meaningful progress.
+                        </p>
+                        <p>
+                            From the very beginning, your coach works with you at your pace and in your preferred style — whether you thrive with structured guidance, reflective conversations, or step‑by‑step planning. You’re matched not just for compatibility, but for the type of support that helps you move forward with confidence.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    {{-- End of Services --}}
+
+    <section class="bg-gradient-to-b from-[#f4fbfb] via-white to-[#eef8f7] py-8 md:py-12">
+        <div class="container mx-auto px-6 lg:px-12">
+            <div class="mx-auto grid max-w-6xl gap-10 lg:grid-cols-[0.85fr_1.15fr] lg:items-center">
+                <div>
+                    <p class="mb-5 inline-flex rounded-full border border-[#9ed9d7] bg-white px-4 py-2 text-xs font-semibold uppercase tracking-[0.22em] text-[#0f89a6] shadow-sm">
+                        JustMy.Health - Coaching
+                    </p>
+                    <h2 class="max-w-xl text-3xl font-semibold leading-tight text-[#102f3a] sm:text-4xl md:text-4xl">
+                        A Safe, Confidential Space
+                    </h2>
+                    <p class="mt-6 max-w-md text-base leading-7 text-[#4b626b]">
+
+                    </p>
+                </div>
+
+                <div class="border-l-4 border-[#0f89a6] bg-white/75 py-2 pl-6 shadow-[0_24px_70px_-55px_rgba(16,106,124,0.65)] md:pl-8">
+                    <div class="space-y-5 text-base leading-8 text-[#243b45] md:text-lg">
+                        <p class="font-medium text-[#102f3a]">
+                            Online Coaching provides a supportive, judgement‑free space where you can talk openly about what’s happening in your life. Your conversations with your coach are private and handled with care, giving you the confidence to explore challenges, reflect on your experiences, and focus on what you want to change.
+                        </p>
+                        <p>
+                            Your coach creates a respectful, encouraging environment where you can express yourself honestly and work through everyday stress, relationship issues, communication difficulties, or moments of emotional overwhelm. This is a space designed to help you feel heard, understood, and supported — without pressure or expectation.
+                        </p>
+                        <p>
+                            All sessions take place through secure, encrypted communication, ensuring your privacy is protected. With a coach who listens, guides, and empowers you, you can focus on building clarity, confidence, and momentum in a safe and comfortable setting.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    {{-- End of Services --}}
+
+    <section class="bg-gradient-to-b from-[#f4fbfb] via-white to-[#eef8f7] py-8 md:py-12">
+        <div class="container mx-auto px-6 lg:px-12">
+            <div class="mx-auto grid max-w-6xl gap-10 lg:grid-cols-[0.85fr_1.15fr] lg:items-center">
+                <div>
+                    <p class="mb-5 inline-flex rounded-full border border-[#9ed9d7] bg-white px-4 py-2 text-xs font-semibold uppercase tracking-[0.22em] text-[#0f89a6] shadow-sm">
+                        JustMy.Health - Coaching
+                    </p>
+                    <h2 class="max-w-xl text-3xl font-semibold leading-tight text-[#102f3a] sm:text-4xl md:text-4xl">
+                        Support That Fits Your Life
+                    </h2>
+                    <p class="mt-6 max-w-md text-base leading-7 text-[#4b626b]">
+
+                    </p>
+                </div>
+
+                <div class="border-l-4 border-[#0f89a6] bg-white/75 py-2 pl-6 shadow-[0_24px_70px_-55px_rgba(16,106,124,0.65)] md:pl-8">
+                    <div class="space-y-5 text-base leading-8 text-[#243b45] md:text-lg">
+                        <p class="font-medium text-[#102f3a]">
+                            Online Coaching is designed to fit naturally into your daily routine, giving you support that adapts to your lifestyle and goals. Whether you prefer short, focused sessions or a more steady rhythm, your coach works with you to create a structure that keeps you moving forward without adding pressure to your schedule.
+                        </p>
+                        <p>
+                            Coaching focuses on practical steps you can apply right away. Your coach helps you build new habits, strengthen resilience, and make meaningful changes at a pace that feels realistic and sustainable. Each session is shaped around what you need most — clarity, motivation, accountability, or a space to reflect and reset.
+                        </p>
+                        <p>
+                            With flexible scheduling, secure online access, and a supportive coach who understands your priorities, you can work on your personal growth from wherever you feel most comfortable. It’s guidance that fits your life, not the other way around — helping you build confidence, momentum, and a sense of control in your everyday world.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    {{-- End of Services --}}
+
+
+
+
+    <div class="container-fluid mx-auto pt-10 px-4 md:px-6 lg:px-4 bg-white min-h-screen">
+
+        <p class="text-justify mb-16 mx-auto pt-2 px-4 md:px-6 lg:px-20">
+            At JustMy.Health, we believe in the power of personalized coaching to help you achieve mental wellness and
+            emotional balance. Our secure platform offers one-to-one coaching sessions tailored to your unique needs,
+            ensuring you receive the support and guidance you deserve.
+        </p>
+
+
+        {{-- Pricing --}}
+        <section class="w-full bg-gradient-to-b from-[#f0fbfa] to-[#e8f8f7] py-16 px-4 sm:px-6 lg:px-8">
+            <div class="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-3 gap-10 items-start">
+
+                {{-- Left Text --}}
+                <div class="lg:col-span-2 space-y-4">
+                    <p class="text-xs font-semibold uppercase tracking-[0.2em] text-[#1C9BA0]">Investment in Your Wellbeing</p>
+                    <h2 class="mt-3 mb-5 text-3xl font-semibold leading-tight text-[#102f3a] sm:text-4xl md:text-4xl">Coaching Process &amp; Cost</h2>
+
+                    <p class="text-gray-600 leading-relaxed">Coaching is an iterative process which encompasses multiple sessions arranged at a defined frequency to allow time to absorb, adjust, and benefit.</p>
+                    <p class="text-gray-600 leading-relaxed">To minimize costs, we provide coaching sessions as monthly blocks containing <span class="font-semibold text-[#102f3a]">four sessions</span>.</p>
+                    <p class="text-gray-600 leading-relaxed">The cost of coaching ranges from <span class="font-semibold text-[#1C9BA0]">&pound;50 to &pound;70 per week</span> (billed every 4 weeks). Variation depends on location, type of therapy, preferences, and therapist availability.</p>
+                    <p class="text-gray-600 leading-relaxed">You can cancel your membership at any time, for any reason.</p>
+                </div>
+
+                {{-- Pricing Card --}}
+                <div class="bg-white rounded-[20px] border border-[#b2e0dc] shadow-[0_20px_60px_-20px_rgba(28,155,160,0.22)] overflow-hidden">
+                    <div class="px-6 py-6 text-center" style="background: linear-gradient(135deg, #1C9BA0, #0b7087);">
+                        <p class="text-2xl font-bold text-white">&pound;50 – &pound;70</p>
+                        <p class="text-sm text-white/70 mt-1">per weekly session</p>
+                    </div>
+                    <div class="px-6 py-6">
+                        <ul class="space-y-3 mb-6">
+                            @foreach(['End-to-End Encryption','Confidential Messaging','Private Scheduling','Secure Document Sharing','Session Recording Controls','Emergency Support','Virtual Waiting Rooms','Therapist Verification'] as $feature)
+                                <li class="flex items-center gap-3 text-sm text-[#4b626b]">
                             <span class="w-5 h-5 flex-shrink-0 rounded-full bg-[#e0f8f6] flex items-center justify-center">
                                 <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="#1C9BA0" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 13l4 4L19 7"/></svg>
                             </span>
-                            {{ $feature }}
-                        </li>
-                        @endforeach
-                    </ul>
-                    <a href="{{ route('login') }}"
-                       class="block w-full text-center text-sm font-semibold text-white rounded-xl py-3 transition duration-200"
-                       style="background: #1C9BA0;"
-                       onmouseover="this.style.background='#157c81'" onmouseout="this.style.background='#1C9BA0'">
-                        Login or Register to view Availability
-                    </a>
+                                    {{ $feature }}
+                                </li>
+                            @endforeach
+                        </ul>
+                        <a href="{{ route('login') }}"
+                           class="block w-full text-center text-sm font-semibold text-white rounded-xl py-3 transition duration-200"
+                           style="background: #1C9BA0;"
+                           onmouseover="this.style.background='#157c81'" onmouseout="this.style.background='#1C9BA0'">
+                            Login or Register to view Availability
+                        </a>
+                    </div>
                 </div>
-            </div>
 
-        </div>
-    </section>
+            </div>
+        </section>
+
+        <section class="bg-gradient-to-b from-[#f0fbfa] to-white py-16">
+            <div class="container mx-auto px-4 md:px-6 lg:px-12">
+
+                {{-- Why grid --}}
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-10 items-center mb-14">
+                    <div class="overflow-hidden rounded-[20px] shadow-[0_20px_60px_-20px_rgba(28,155,160,0.28)]">
+                        <img src="{{ asset('images/welcome-page/therapyjourney.png') }}" alt="Therapy Journey" class="w-full h-auto object-cover">
+                    </div>
+                    <div>
+                        <p class="text-xs font-semibold uppercase tracking-[0.2em] text-[#1C9BA0] mb-2">Our Process</p>
+                        <h2 class="mt-3 mb-5 text-3xl font-semibold leading-tight text-[#102f3a] sm:text-4xl md:text-4xl">Engage and Benefit</h2>
+
+                        <p class="text-gray-600 text-base leading-relaxed">
+                            Coaching helps you make sense of your thoughts and emotions, build resilience, and take steps toward a healthier, more balanced life — at your pace, in your way.
+                        </p>
+                    </div>
+                </div>
+
+
+            </div>
+        </section>
+
+
+
 
 </div>
 
