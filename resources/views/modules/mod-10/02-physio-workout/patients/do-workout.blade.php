@@ -64,7 +64,10 @@
             repsBadForm: 0,
             currentAngle: 180,
             feedbackText: 'Position yourself so your full body is visible',
-            feedbackColor: 'bg-black/50 text-white',
+            feedbackColor: 'bg-slate-800/80 text-white',
+            guidanceTitle: 'Get ready',
+            guidanceText: 'Stand in frame and begin the movement slowly.',
+            guidanceTone: 'bg-[#E7FAF8] text-slate-700',
 
             repState: 'up',
             currentRepMinAngle: 180,
@@ -78,6 +81,23 @@
                 if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
                     this.cameraError = 'Camera access is not available in this browser. Use Chrome/Edge on localhost or HTTPS.';
                 }
+            },
+
+            getBodyPartLabel() {
+                const joint = this.rule?.joint || 'shoulder';
+                const labels = {
+                    shoulder: 'arm',
+                    elbow: 'arm',
+                    knee: 'leg',
+                    hip: 'hip',
+                };
+                return labels[joint] || 'body';
+            },
+
+            setGuidance(title, text, tone = 'bg-[#E7FAF8] text-slate-700') {
+                this.guidanceTitle = title;
+                this.guidanceText = text;
+                this.guidanceTone = tone;
             },
 
             async startCamera() {
@@ -120,7 +140,8 @@
 
                     this.cameraStarted = true;
                     this.feedbackText = 'AI model ready. Stand fully in frame.';
-                    this.feedbackColor = 'bg-blue-600/70 text-white';
+                    this.feedbackColor = 'bg-[#1C9BA0]/90 text-white';
+                    this.setGuidance('Camera ready', 'Stand tall, keep your whole body visible, and move slowly.', 'bg-[#1C9BA0]/90 text-white');
                     this.detectLoop();
                 } catch (error) {
                     this.stopCameraTracks();
@@ -195,7 +216,8 @@
                         this.processAngles(lm);
                     } else {
                         this.feedbackText = 'Make sure your full body is visible';
-                        this.feedbackColor = 'bg-black/50 text-white';
+                        this.feedbackColor = 'bg-slate-800/80 text-white';
+                        this.setGuidance('Full body visible', 'Step back a little so your head, torso and limbs are all visible.', 'bg-amber-600/80 text-white');
                     }
 
                     requestAnimationFrame(loop);
@@ -225,20 +247,24 @@
                 const downMax = Number(this.rule.down_angle_max);
                 const upMin = Number(this.rule.up_angle_min);
                 const tolerance = Number(this.rule.good_form_tolerance ?? 0);
+                const part = this.getBodyPartLabel();
 
                 if (this.repState === 'up' && angle <= downMax) {
                     this.repState = 'down';
                     this.feedbackText = 'Good - now return to start';
-                    this.feedbackColor = 'bg-blue-600/70 text-white';
+                    this.feedbackColor = 'bg-[#1C9BA0]/90 text-white';
+                    this.setGuidance('Move back', `Lower your ${part} slowly until it reaches about ${downMax}° or less.`, 'bg-[#1C9BA0]/90 text-white');
                 } else if (this.repState === 'down' && angle >= upMin) {
                     this.repState = 'up';
                     this.completeRep(downMax, upMin, tolerance);
                 } else if (this.repState === 'up') {
                     this.feedbackText = 'Begin the movement';
-                    this.feedbackColor = 'bg-black/50 text-white';
+                    this.feedbackColor = 'bg-slate-800/80 text-white';
+                    this.setGuidance('Lift up', `Raise your ${part} slowly until you reach about ${upMin}° or more.`, 'bg-[#E7FAF8] text-slate-700');
                 } else {
                     this.feedbackText = 'Keep going...';
-                    this.feedbackColor = 'bg-blue-600/70 text-white';
+                    this.feedbackColor = 'bg-[#1C9BA0]/90 text-white';
+                    this.setGuidance('Stay controlled', `Keep lowering your ${part} smoothly and hold the position briefly.`, 'bg-[#1C9BA0]/90 text-white');
                 }
             },
 
@@ -251,13 +277,15 @@
                 if (isGoodForm) {
                     this.repsGoodForm++;
                     this.feedbackText = `Rep ${this.repsCompleted} - nice form!`;
-                    this.feedbackColor = 'bg-green-600/80 text-white';
+                    this.feedbackColor = 'bg-[#1C9BA0]/90 text-white';
+                    this.setGuidance('Nice form', 'That rep looked smooth and controlled. Keep the same rhythm.', 'bg-[#1C9BA0]/90 text-white');
                 } else {
                     this.repsBadForm++;
                     this.feedbackText = !reachedDepth
                         ? `Rep ${this.repsCompleted} - go deeper next time`
                         : `Rep ${this.repsCompleted} - extend further next time`;
                     this.feedbackColor = 'bg-amber-600/80 text-white';
+                    this.setGuidance('Adjust your range', 'Try a slightly deeper or fuller movement next time for better form.', 'bg-amber-600/80 text-white');
                 }
 
                 this.repDetails.push({
@@ -340,11 +368,19 @@
             <x-page-header />
         </div>
 
-        <div class="bg-white shadow rounded-xl p-6 mb-4 border border-gray-100">
-            <h2 class="text-xl font-semibold text-gray-800">{{ $assignment->exercise->ExerciseName }}</h2>
-            <p class="text-gray-500 text-sm mt-1">{{ $assignment->exercise->Instructions }}</p>
-            <p class="text-gray-400 text-xs mt-2">Target: {{ $assignment->RepsTarget }} reps ·
-                {{ $assignment->SetsTarget }} sets</p>
+        <div class="relative overflow-hidden rounded-3xl border border-[#1C9BA0]/20 bg-gradient-to-r from-[#1C9BA0] via-[#24B5B8] to-[#59D4C7] p-6 mb-4 text-white shadow-[0_12px_40px_rgba(28,155,160,0.25)]">
+            <div class="absolute inset-0 bg-[radial-gradient(circle_at_top_left,_rgba(255,255,255,0.28),_transparent_45%)]"></div>
+            <div class="relative flex flex-col lg:flex-row lg:items-end lg:justify-between gap-4">
+                <div>
+                    <p class="text-sm uppercase tracking-[0.28em] text-white/80">Physio exercise</p>
+                    <h2 class="text-2xl font-semibold mt-1">{{ $assignment->exercise->ExerciseName }}</h2>
+                    <p class="text-white/90 text-sm mt-2">{{ $assignment->exercise->Instructions }}</p>
+                </div>
+                <div class="rounded-2xl border border-white/25 bg-white/20 px-4 py-3 backdrop-blur-sm">
+                    <p class="text-xs uppercase tracking-[0.24em] text-white/80">Target</p>
+                    <p class="text-sm font-semibold">{{ $assignment->RepsTarget }} reps · {{ $assignment->SetsTarget }} sets</p>
+                </div>
+            </div>
         </div>
 
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -363,7 +399,7 @@
                     <div class="absolute inset-0 flex flex-col items-center justify-center gap-3 bg-black/70">
                         <button @click="startCamera()"
                             :disabled="isLoadingCamera || !!cameraError && !navigator.mediaDevices"
-                            class="px-6 py-3 bg-indigo-600 text-white rounded-lg shadow hover:bg-indigo-700 transition disabled:opacity-60 disabled:cursor-not-allowed">
+                            class="px-6 py-3 bg-[#1C9BA0] text-white rounded-lg shadow hover:bg-[#18848F] transition disabled:opacity-60 disabled:cursor-not-allowed">
                             <span x-text="isLoadingCamera ? 'Starting camera and AI...' : 'Start Camera & Begin'"></span>
                         </button>
                         <p x-show="cameraError" x-text="cameraError"
@@ -377,23 +413,39 @@
             </div>
 
             <!-- Live stats -->
-            <div class="bg-white shadow rounded-xl p-6 border border-gray-100 space-y-4">
-                <div>
-                    <p class="text-sm text-gray-500">Reps completed</p>
-                    <p class="text-3xl font-bold text-gray-800"><span x-text="repsCompleted"></span> / <span
-                            x-text="repsTarget"></span></p>
+            <div class="bg-white shadow rounded-2xl p-6 border border-gray-100 space-y-4">
+                <div class="rounded-2xl border border-[#1C9BA0]/20 bg-[#E7FAF8] p-4 shadow-sm" :class="guidanceTone">
+                    <p class="text-xs uppercase tracking-[0.2em] text-[#1C9BA0]">Live guidance</p>
+                    <h3 class="text-lg font-semibold mt-1 text-slate-800" x-text="guidanceTitle"></h3>
+                    <p class="text-sm mt-2 text-slate-700" x-text="guidanceText"></p>
                 </div>
-                <div>
-                    <p class="text-sm text-gray-500">Good form</p>
-                    <p class="text-2xl font-semibold text-green-600" x-text="repsGoodForm"></p>
+
+                <div class="rounded-xl border border-gray-200 bg-gray-50 p-4">
+                    <div class="flex items-center justify-between">
+                        <p class="text-sm text-gray-500">Progress</p>
+                        <span class="text-xs font-semibold uppercase tracking-[0.2em] text-[#1C9BA0]">Set in motion</span>
+                    </div>
+                    <div class="mt-3 h-2 rounded-full bg-gray-200">
+                        <div class="h-2 rounded-full bg-[#1C9BA0] transition-all" :style="`width:${Math.min(100, (repsCompleted / repsTarget) * 100)}%`"></div>
+                    </div>
+                    <p class="mt-2 text-2xl font-semibold text-gray-800"><span x-text="repsCompleted"></span> / <span x-text="repsTarget"></span> reps</p>
                 </div>
-                <div>
-                    <p class="text-sm text-gray-500">Needs correction</p>
-                    <p class="text-2xl font-semibold text-red-500" x-text="repsBadForm"></p>
+
+                <div class="grid grid-cols-2 gap-3 text-sm">
+                    <div class="rounded-xl border border-green-100 bg-green-50 p-3">
+                        <p class="text-gray-500">Good form</p>
+                        <p class="text-xl font-semibold text-green-700" x-text="repsGoodForm"></p>
+                    </div>
+                    <div class="rounded-xl border border-red-100 bg-red-50 p-3">
+                        <p class="text-gray-500">Needs correction</p>
+                        <p class="text-xl font-semibold text-red-600" x-text="repsBadForm"></p>
+                    </div>
                 </div>
-                <div>
+
+                <div class="rounded-xl border border-gray-200 p-4">
                     <p class="text-sm text-gray-500">Current angle</p>
-                    <p class="text-lg text-gray-700"><span x-text="Math.round(currentAngle)"></span>&deg;</p>
+                    <p class="text-2xl font-semibold text-gray-800"><span x-text="Math.round(currentAngle)"></span>&deg;</p>
+                    <p class="text-xs text-gray-500 mt-1">Target range: up <span x-text="rule?.up_angle_min ?? 0"></span>&deg; · down <span x-text="rule?.down_angle_max ?? 0"></span>&deg;</p>
                 </div>
 
                 <button @click="finishSet()" x-show="cameraStarted"

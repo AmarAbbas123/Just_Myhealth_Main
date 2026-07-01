@@ -5,37 +5,79 @@
             <x-page-header />
         </div>
 
-        <h2 class="text-xl font-semibold text-gray-800">{{ $assignment->exercise->ExerciseName }} — History</h2>
+        <div class="rounded-3xl border border-[#1C9BA0]/15 bg-white p-6 shadow-[0_10px_30px_rgba(28,155,160,0.08)]">
+            <div class="flex flex-wrap items-start justify-between gap-3">
+                <div>
+                    <p class="text-xs font-semibold uppercase tracking-[0.24em] text-[#1C9BA0]">History log</p>
+                    <h2 class="text-2xl font-semibold tracking-tight text-gray-900 mt-1">
+                        {{ $assignment->exercise->ExerciseName }}
+                    </h2>
+                    <p class="text-sm text-gray-500 mt-1">A clear view of each session, form quality, and exercise duration.</p>
+                </div>
+                <div class="rounded-2xl bg-[#E7FAF8] px-3 py-2 text-sm font-semibold text-[#1C9BA0]">
+                    {{ $sessions->count() }} session{{ $sessions->count() === 1 ? '' : 's' }}
+                </div>
+            </div>
+        </div>
 
-        <div class="bg-white shadow rounded-xl p-6 border border-gray-100">
-            <table class="w-full text-sm">
-                <thead>
-                    <tr class="text-left text-gray-500 border-b">
-                        <th class="py-2">Date</th>
-                        <th class="py-2">Reps</th>
-                        <th class="py-2">Good Form</th>
-                        <th class="py-2">Bad Form</th>
-                        <th class="py-2">Avg Score</th>
-                        <th class="py-2">Duration</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @forelse($sessions as $session)
-                        <tr class="border-b">
-                            <td class="py-2">{{ $session->AttemptedAt->format('d M Y, H:i') }}</td>
-                            <td class="py-2">{{ $session->RepsCompleted }}</td>
-                            <td class="py-2 text-green-600">{{ $session->RepsGoodForm }}</td>
-                            <td class="py-2 text-red-500">{{ $session->RepsBadForm }}</td>
-                            <td class="py-2 font-semibold">{{ $session->AvgFormScore }}%</td>
-                            <td class="py-2">{{ $session->DurationSeconds }}s</td>
-                        </tr>
-                    @empty
+        <div class="overflow-hidden rounded-3xl border border-gray-100 bg-white shadow-[0_10px_30px_rgba(15,23,42,0.06)]">
+            <div class="overflow-x-auto">
+                <table class="w-full whitespace-nowrap text-left text-sm leading-6">
+                    <thead class="border-b border-gray-100 bg-[#F7FCFC] text-xs font-semibold uppercase tracking-[0.2em] text-gray-500">
                         <tr>
-                            <td colspan="6" class="py-3 text-gray-400">No sessions logged yet.</td>
+                            <th scope="col" class="py-3.5 pl-6 pr-3">Date</th>
+                            <th scope="col" class="py-3.5 px-3">Reps</th>
+                            <th scope="col" class="py-3.5 px-3 text-emerald-600">Good Form</th>
+                            <th scope="col" class="py-3.5 px-3 text-rose-500">Bad Form</th>
+                            <th scope="col" class="py-3.5 px-3">Avg Score</th>
+                            <th scope="col" class="py-3.5 pl-3 pr-6 text-right">Duration</th>
                         </tr>
-                    @endforelse
-                </tbody>
-            </table>
+                    </thead>
+                    <tbody class="divide-y divide-gray-100 bg-white">
+                        @forelse($sessions as $session)
+                            <tr class="transition-colors duration-150 hover:bg-[#F7FCFC]">
+                                <td class="py-4 pl-6 pr-3 font-medium text-gray-900">
+                                    {{ $session->AttemptedAt->format('d M Y, H:i') }}
+                                </td>
+                                <td class="py-4 px-3 font-semibold text-gray-700">
+                                    {{ $session->RepsCompleted }}
+                                </td>
+                                <td class="py-4 px-3">
+                                    <span class="inline-flex items-center rounded-full bg-emerald-50 px-2.5 py-1 text-xs font-semibold text-emerald-700 ring-1 ring-inset ring-emerald-600/10">
+                                        {{ $session->RepsGoodForm }}
+                                    </span>
+                                </td>
+                                <td class="py-4 px-3">
+                                    <span class="inline-flex items-center rounded-full bg-rose-50 px-2.5 py-1 text-xs font-semibold text-rose-700 ring-1 ring-inset ring-rose-600/10">
+                                        {{ $session->RepsBadForm }}
+                                    </span>
+                                </td>
+                                <td class="py-4 px-3">
+                                    <span class="inline-flex items-center rounded-full px-2.5 py-1 text-xs font-semibold ring-1 ring-inset {{ $session->AvgFormScore >= 80 ? 'bg-emerald-50 text-emerald-700 ring-emerald-600/20' : ($session->AvgFormScore >= 50 ? 'bg-amber-50 text-amber-700 ring-amber-600/10' : 'bg-rose-50 text-rose-700 ring-rose-600/10') }}">
+                                        {{ $session->AvgFormScore }}%
+                                    </span>
+                                </td>
+                                <td class="py-4 pl-3 pr-6 text-right text-gray-500">
+                                    {{ $session->DurationSeconds }}s
+                                </td>
+                            </tr>
+                        @empty
+                            <tr>
+                                <td colspan="6" class="py-12 px-6 text-center">
+                                    <div class="mx-auto flex max-w-sm flex-col items-center">
+                                        <div class="mb-3 flex h-10 w-10 items-center justify-center rounded-full border border-gray-100 bg-gray-50 text-gray-400">
+                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="h-5 w-5">
+                                                <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                                            </svg>
+                                        </div>
+                                        <p class="text-sm font-medium text-gray-900">No sessions logged yet.</p>
+                                    </div>
+                                </td>
+                            </tr>
+                        @endforelse
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
 

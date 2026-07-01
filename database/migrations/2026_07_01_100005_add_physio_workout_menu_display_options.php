@@ -23,6 +23,13 @@ return new class extends Migration
             patientFlag: 1,
             therapistFlag: 0
         );
+
+        $this->upsertMenuOption(
+            displayName: 'Patient Progress',
+            menuUrl: '/mod-10/02/exercise-library',
+            patientFlag: 0,
+            therapistFlag: 1
+        );
     }
 
     /**

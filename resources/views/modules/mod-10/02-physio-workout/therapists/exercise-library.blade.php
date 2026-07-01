@@ -2,12 +2,27 @@
 
     <div class="space-y-6" x-data="{ showForm: false }">
 
-        <div class="flex justify-between mb-4">
+        <div class="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between mb-4">
             <x-page-header />
-            <button @click="showForm = !showForm"
-                class="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition">
-                + New Exercise
-            </button>
+            <div class="flex flex-wrap gap-2">
+                <a href="{{ route('workout.patient.progress', ['patientId' => auth()->id()]) }}"
+                    class="px-4 py-2 bg-white border border-[#1C9BA0]/20 text-[#1C9BA0] rounded-lg hover:bg-[#E7FAF8] transition text-sm font-semibold">
+                    Patient Progress
+                </a>
+                <button @click="showForm = !showForm"
+                    class="px-4 py-2 bg-[#1C9BA0] text-white rounded-lg hover:bg-[#18848F] transition">
+                    + New Exercise
+                </button>
+            </div>
+        </div>
+
+        <div class="relative overflow-hidden rounded-3xl border border-[#1C9BA0]/20 bg-gradient-to-r from-[#1C9BA0] via-[#24B5B8] to-[#59D4C7] p-6 text-white shadow-[0_12px_40px_rgba(28,155,160,0.2)]">
+            <div class="absolute inset-0 bg-[radial-gradient(circle_at_top_left,_rgba(255,255,255,0.28),_transparent_45%)]"></div>
+            <div class="relative">
+                <p class="text-sm uppercase tracking-[0.24em] text-white/80">Therapist workspace</p>
+                <h2 class="text-2xl font-semibold mt-1">Exercise library</h2>
+                <p class="text-sm text-white/90 mt-2">Create form-checking exercises, assign them to patients, and review patient progress in one place.</p>
+            </div>
         </div>
 
         @if (session('success'))
@@ -15,7 +30,7 @@
         @endif
 
         <!-- New exercise form -->
-        <div x-show="showForm" x-cloak class="bg-white shadow rounded-xl p-6 border border-gray-100">
+        <div x-show="showForm" x-cloak class="bg-white shadow rounded-2xl p-6 border border-gray-100">
             <form action="{{ route('workout.library.store') }}" method="POST" class="space-y-4">
                 @csrf
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -96,7 +111,7 @@
                 </div>
 
                 <button type="submit"
-                    class="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition">
+                    class="px-4 py-2 bg-[#1C9BA0] text-white rounded-lg hover:bg-[#18848F] transition">
                     Save Exercise
                 </button>
             </form>
@@ -105,7 +120,7 @@
         <!-- Library list -->
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
             @forelse($exercises as $exercise)
-                <div class="bg-white shadow rounded-xl p-6 border border-gray-100" x-data="{ showAssign: false }">
+                <div class="bg-white shadow rounded-2xl p-6 border border-gray-100" x-data="{ showAssign: false }">
                     <div class="flex justify-between items-start">
                         <div>
                             <h3 class="font-semibold text-gray-800">{{ $exercise->ExerciseName }}</h3>
@@ -126,7 +141,7 @@
 
                     <div class="flex gap-2 mt-4">
                         <button @click="showAssign = !showAssign"
-                            class="px-3 py-1.5 bg-indigo-600 text-white rounded text-sm hover:bg-indigo-700">
+                            class="px-3 py-1.5 bg-[#1C9BA0] text-white rounded text-sm hover:bg-[#18848F]">
                             Assign to Patient
                         </button>
                         <form action="{{ route('workout.library.delete', $exercise) }}" method="POST"
@@ -188,7 +203,7 @@
                                 </div>
 
                                 <button type="submit"
-                                    class="px-3 py-1.5 bg-green-600 text-white rounded text-sm hover:bg-green-700">
+                                    class="px-3 py-1.5 bg-[#1C9BA0] text-white rounded text-sm hover:bg-[#18848F]">
                                     Confirm Assignment
                                 </button>
                             </form>
