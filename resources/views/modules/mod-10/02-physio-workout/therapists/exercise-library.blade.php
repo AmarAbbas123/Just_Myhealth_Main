@@ -2,26 +2,43 @@
 
     <div class="space-y-6" x-data="{ showForm: false }">
 
-        <div class="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between mb-4">
+        <div class="mb-4 flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
             <x-page-header />
-            <div class="flex flex-wrap gap-2">
-                <a href="{{ route('workout.patient.progress', ['patientId' => auth()->id()]) }}"
-                    class="px-4 py-2 bg-white border border-[#1C9BA0]/20 text-[#1C9BA0] rounded-lg hover:bg-[#E7FAF8] transition text-sm font-semibold">
-                    Patient Progress
-                </a>
+            <div class="flex flex-wrap items-center gap-2">
+                @if($clients->isNotEmpty())
+                    <a href="{{ route('workout.patient.progress', ['patientId' => $clients->first()->ID]) }}"
+                        class="inline-flex items-center rounded-full border border-[#1C9BA0]/20 bg-white px-4 py-2 text-sm font-semibold text-[#1C9BA0] shadow-sm transition hover:bg-[#E7FAF8]">
+                        Patient Progress
+                    </a>
+                    <select onchange="if(this.value) window.location.href=this.value"
+                        class="rounded-full border border-[#1C9BA0]/20 bg-white px-8 py-2 text-sm font-semibold text-[#1C9BA0] shadow-sm focus:border-[#1C9BA0] focus:ring-[#1C9BA0]/30">
+                        @foreach($clients as $client)
+                            <option value="{{ route('workout.patient.progress', ['patientId' => $client->ID]) }}">
+                                {{ $client->UserName }}
+                            </option>
+                        @endforeach
+                    </select>
+                @else
+                    <span class="inline-flex items-center rounded-full border border-[#1C9BA0]/20 bg-white px-4 py-2 text-sm font-semibold text-[#1C9BA0] shadow-sm">
+                        No patients available yet
+                    </span>
+                @endif
                 <button @click="showForm = !showForm"
-                    class="px-4 py-2 bg-[#1C9BA0] text-white rounded-lg hover:bg-[#18848F] transition">
+                    class="inline-flex items-center rounded-full bg-[#1C9BA0] px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-[#18848F]">
                     + New Exercise
                 </button>
             </div>
         </div>
 
-        <div class="relative overflow-hidden rounded-3xl border border-[#1C9BA0]/20 bg-gradient-to-r from-[#1C9BA0] via-[#24B5B8] to-[#59D4C7] p-6 text-white shadow-[0_12px_40px_rgba(28,155,160,0.2)]">
-            <div class="absolute inset-0 bg-[radial-gradient(circle_at_top_left,_rgba(255,255,255,0.28),_transparent_45%)]"></div>
-            <div class="relative">
-                <p class="text-sm uppercase tracking-[0.24em] text-white/80">Therapist workspace</p>
-                <h2 class="text-2xl font-semibold mt-1">Exercise library</h2>
-                <p class="text-sm text-white/90 mt-2">Create form-checking exercises, assign them to patients, and review patient progress in one place.</p>
+        <div class="relative overflow-hidden rounded-3xl bg-gradient-to-r from-[#1C9BA0] via-[#24B5B8] to-[#59D4C7] p-6 text-white shadow-[0_12px_36px_rgba(28,155,160,0.22)] border border-[#1C9BA0]/20">
+            <div class="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-[#1C9BA0] to-[#59D4C7] z-10"></div>
+            <div class="relative overflow-hidden rounded-3xl bg-white/10 p-6">
+                <div class="absolute inset-0 bg-[radial-gradient(circle_at_top_left,_rgba(255,255,255,0.3),_transparent_45%)]"></div>
+                <div class="relative">
+                    <p class="text-sm uppercase tracking-[0.28em] text-white/80">Therapist workspace</p>
+                    <h2 class="mt-2 text-3xl font-semibold">Exercise library</h2>
+                    <p class="mt-3 max-w-2xl text-sm text-white/90">Create AI-guided exercises, assign them to patients, and review performance in one place.</p>
+                </div>
             </div>
         </div>
 
@@ -30,7 +47,7 @@
         @endif
 
         <!-- New exercise form -->
-        <div x-show="showForm" x-cloak class="bg-white shadow rounded-2xl p-6 border border-gray-100">
+        <div x-show="showForm" x-cloak class="rounded-3xl border border-gray-100 bg-white p-6 shadow-[0_10px_30px_rgba(15,23,42,0.06)]">
             <form action="{{ route('workout.library.store') }}" method="POST" class="space-y-4">
                 @csrf
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -118,42 +135,45 @@
         </div>
 
         <!-- Library list -->
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div class="grid grid-cols-1 gap-5 md:grid-cols-2">
             @forelse($exercises as $exercise)
-                <div class="bg-white shadow rounded-2xl p-6 border border-gray-100" x-data="{ showAssign: false }">
-                    <div class="flex justify-between items-start">
+                <div class="relative overflow-hidden rounded-[24px] border border-gray-100 bg-white p-6 shadow-[0_10px_30px_rgba(15,23,42,0.06)] transition hover:-translate-y-0.5" x-data="{ showAssign: false }">
+                    <div class="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-[#1C9BA0] to-[#59D4C7]"></div>
+                    <div class="flex items-start justify-between gap-3">
                         <div>
                             <h3 class="font-semibold text-gray-800">{{ $exercise->ExerciseName }}</h3>
-                            <p class="text-sm text-gray-500">{{ $exercise->BodyPart }} ·
-                                {{ $exercise->ExerciseType }}</p>
+                            <p class="mt-1 text-sm text-gray-500">{{ $exercise->BodyPart }} · {{ $exercise->ExerciseType }}</p>
                         </div>
-                        <span
-                            class="text-xs px-2 py-1 rounded {{ $exercise->IsActive ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-500' }}">
+                        <span class="rounded-full px-2.5 py-1 text-xs font-semibold {{ $exercise->IsActive ? 'bg-[#E7FAF8] text-[#1C9BA0]' : 'bg-gray-100 text-gray-500' }}">
                             {{ $exercise->IsActive ? 'Active' : 'Inactive' }}
                         </span>
                     </div>
-                    <p class="text-sm text-gray-600 mt-2">{{ $exercise->Instructions }}</p>
-                    <p class="text-xs text-gray-400 mt-2">
-                        Down &le; {{ $exercise->AngleRuleConfig['down_angle_max'] }}&deg; ·
-                        Up &ge; {{ $exercise->AngleRuleConfig['up_angle_min'] }}&deg; ·
-                        Tolerance {{ $exercise->AngleRuleConfig['good_form_tolerance'] }}&deg;
-                    </p>
 
-                    <div class="flex gap-2 mt-4">
+                    <div class="mt-4 rounded-2xl bg-[#F7FCFC] p-3">
+                        <p class="text-sm text-gray-600">{{ $exercise->Instructions }}</p>
+                    </div>
+
+                    <div class="mt-4 flex flex-wrap gap-2 text-xs text-gray-500">
+                        <span class="rounded-full bg-gray-100 px-2.5 py-1">Down ≤ {{ $exercise->AngleRuleConfig['down_angle_max'] }}°</span>
+                        <span class="rounded-full bg-gray-100 px-2.5 py-1">Up ≥ {{ $exercise->AngleRuleConfig['up_angle_min'] }}°</span>
+                        <span class="rounded-full bg-gray-100 px-2.5 py-1">Tolerance {{ $exercise->AngleRuleConfig['good_form_tolerance'] }}°</span>
+                    </div>
+
+                    <div class="mt-5 flex flex-wrap gap-2">
                         <button @click="showAssign = !showAssign"
-                            class="px-3 py-1.5 bg-[#1C9BA0] text-white rounded text-sm hover:bg-[#18848F]">
+                            class="rounded-lg bg-[#1C9BA0] px-3 py-2 text-sm font-semibold text-white hover:bg-[#18848F]">
                             Assign to Patient
                         </button>
                         <form action="{{ route('workout.library.delete', $exercise) }}" method="POST"
                             onsubmit="return confirm('Remove this exercise from your library?')">
                             @csrf
                             @method('DELETE')
-                            <button type="submit" class="px-3 py-1.5 bg-red-600 text-white rounded text-sm">Delete</button>
+                            <button type="submit" class="rounded-lg bg-red-600 px-3 py-2 text-sm font-semibold text-white hover:bg-red-700">Delete</button>
                         </form>
                     </div>
 
                     <!-- Assign form, pulled from this therapist's actual client list -->
-                    <div x-show="showAssign" x-cloak class="mt-4 pt-4 border-t border-gray-100">
+                    <div x-show="showAssign" x-cloak class="mt-4 border-t border-gray-100 pt-4">
                         @if($clients->isEmpty())
                             <p class="text-sm text-gray-400">
                                 You don't have any clients yet — a patient must have had a session with you before
@@ -203,7 +223,7 @@
                                 </div>
 
                                 <button type="submit"
-                                    class="px-3 py-1.5 bg-[#1C9BA0] text-white rounded text-sm hover:bg-[#18848F]">
+                                    class="px-3 py-2 bg-[#1C9BA0] text-white rounded-lg shadow hover:bg-[#18848F] transition">
                                     Confirm Assignment
                                 </button>
                             </form>

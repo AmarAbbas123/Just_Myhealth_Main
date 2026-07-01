@@ -369,6 +369,7 @@
         </div>
 
         <div class="relative overflow-hidden rounded-3xl border border-[#1C9BA0]/20 bg-gradient-to-r from-[#1C9BA0] via-[#24B5B8] to-[#59D4C7] p-6 mb-4 text-white shadow-[0_12px_40px_rgba(28,155,160,0.25)]">
+            <div class="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-[#1C9BA0] to-[#59D4C7] z-10"></div>
             <div class="absolute inset-0 bg-[radial-gradient(circle_at_top_left,_rgba(255,255,255,0.28),_transparent_45%)]"></div>
             <div class="relative flex flex-col lg:flex-row lg:items-end lg:justify-between gap-4">
                 <div>
@@ -483,7 +484,7 @@
                     <input type="text" name="Notes" maxlength="1000" class="w-full border-gray-300 rounded-lg mt-1">
                 </div>
                 <div class="md:col-span-3">
-                    <button type="submit" class="px-4 py-2 bg-gray-700 text-white rounded-lg hover:bg-gray-800 transition">
+                    <button type="submit" class="px-4 py-2 py-3 bg-[#1C9BA0] text-white rounded-lg shadow hover:bg-[#18848F] transition">
                         Save Self-Reported Set
                     </button>
                 </div>

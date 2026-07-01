@@ -6,11 +6,13 @@
         </div>
 
         <div class="relative overflow-hidden rounded-3xl border border-[#1C9BA0]/20 bg-gradient-to-r from-[#1C9BA0] via-[#24B5B8] to-[#59D4C7] p-6 text-white shadow-[0_12px_40px_rgba(28,155,160,0.2)]">
+            <div class="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-[#1C9BA0] to-[#59D4C7] z-10"></div>
             <div class="absolute inset-0 bg-[radial-gradient(circle_at_top_left,_rgba(255,255,255,0.28),_transparent_45%)]"></div>
             <div class="relative">
                 <p class="text-sm uppercase tracking-[0.24em] text-white/80">Patient progress</p>
                 <h2 class="text-2xl font-semibold mt-1">Workout history and form review</h2>
                 <p class="text-sm text-white/90 mt-2">Review assigned exercises, rep counts, and AI-form results for this patient.</p>
+                <p class="text-sm text-white/80 mt-4">Showing progress for <span class="font-semibold">{{ $patient->UserName }}</span></p>
             </div>
         </div>
 
