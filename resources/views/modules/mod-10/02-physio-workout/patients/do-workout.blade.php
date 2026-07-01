@@ -368,45 +368,79 @@
             <x-page-header />
         </div>
 
-        <div class="relative overflow-hidden rounded-3xl border border-[#1C9BA0]/20 bg-gradient-to-r from-[#1C9BA0] via-[#24B5B8] to-[#59D4C7] p-6 mb-4 text-white shadow-[0_12px_40px_rgba(28,155,160,0.25)]">
-            <div class="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-[#1C9BA0] to-[#59D4C7] z-10"></div>
-            <div class="absolute inset-0 bg-[radial-gradient(circle_at_top_left,_rgba(255,255,255,0.28),_transparent_45%)]"></div>
-            <div class="relative flex flex-col lg:flex-row lg:items-end lg:justify-between gap-4">
-                <div>
-                    <p class="text-sm uppercase tracking-[0.28em] text-white/80">Physio exercise</p>
-                    <h2 class="text-2xl font-semibold mt-1">{{ $assignment->exercise->ExerciseName }}</h2>
-                    <p class="text-white/90 text-sm mt-2">{{ $assignment->exercise->Instructions }}</p>
+        <!-- ============== NEW HEADER ============== -->
+        <div class="rounded-2xl border border-slate-200 bg-white shadow-sm overflow-hidden">
+            <div class="flex flex-col md:flex-row">
+
+                <!-- Icon + identity block -->
+                <div class="flex items-center gap-4 p-6 md:w-2/3">
+                    <div class="flex h-14 w-14 shrink-0 items-center justify-center rounded-xl bg-[#EAFBFA] text-[#1C9BA0]">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                        </svg>
+                    </div>
+                    <div class="min-w-0">
+                        <p class="text-xs font-semibold uppercase tracking-[0.2em] text-[#1C9BA0]">AI-guided exercise</p>
+                        <h2 class="text-xl md:text-2xl font-semibold text-slate-900 mt-0.5 truncate">
+                            {{ $assignment->exercise->ExerciseName }}
+                        </h2>
+                        <p class="text-sm text-slate-500 mt-1 line-clamp-2">
+                            {{ $assignment->exercise->Instructions }}
+                        </p>
+                    </div>
                 </div>
-                <div class="rounded-2xl border border-white/25 bg-white/20 px-4 py-3 backdrop-blur-sm">
-                    <p class="text-xs uppercase tracking-[0.24em] text-white/80">Target</p>
-                    <p class="text-sm font-semibold">{{ $assignment->RepsTarget }} reps · {{ $assignment->SetsTarget }} sets</p>
+
+                <!-- Stat chips -->
+                <div class="grid grid-cols-3 divide-x divide-slate-100 border-t md:border-t-0 md:border-l border-slate-100 md:w-1/3">
+                    <div class="flex flex-col items-center justify-center px-3 py-4 text-center">
+                        <span class="text-lg font-semibold text-slate-900">{{ $assignment->RepsTarget }}</span>
+                        <span class="text-[11px] uppercase tracking-wide text-slate-400 mt-0.5">Reps</span>
+                    </div>
+                    <div class="flex flex-col items-center justify-center px-3 py-4 text-center">
+                        <span class="text-lg font-semibold text-slate-900">{{ $assignment->SetsTarget }}</span>
+                        <span class="text-[11px] uppercase tracking-wide text-slate-400 mt-0.5">Sets</span>
+                    </div>
+                    <div class="flex flex-col items-center justify-center px-3 py-4 text-center">
+                        <span class="text-lg font-semibold text-slate-900">{{ $assignment->exercise->BodyPart ?? '—' }}</span>
+                        <span class="text-[11px] uppercase tracking-wide text-slate-400 mt-0.5">Focus</span>
+                    </div>
                 </div>
             </div>
+
+            <!-- Thin progress rail tied to live rep count -->
+            <div class="h-1.5 w-full bg-slate-100">
+                <div class="h-1.5 bg-[#1C9BA0] transition-all duration-300"
+                    :style="`width:${Math.min(100, (repsCompleted / repsTarget) * 100)}%`"></div>
+            </div>
         </div>
+        <!-- ============== END NEW HEADER ============== -->
 
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
 
             <!-- Camera + skeleton overlay -->
-            <div class="lg:col-span-2 bg-black rounded-xl overflow-hidden relative" style="aspect-ratio:4/3;">
+            <div class="lg:col-span-2 rounded-2xl border border-slate-200 bg-black overflow-hidden relative shadow-sm" style="aspect-ratio:4/3;">
                 <video x-ref="video" class="w-full h-full object-cover" autoplay playsinline muted></video>
                 <canvas x-ref="canvas" class="absolute top-0 left-0 w-full h-full"></canvas>
 
                 <!-- Live feedback banner -->
-                <div class="absolute bottom-0 left-0 right-0 p-4 text-center font-semibold text-lg"
+                <div class="absolute bottom-0 left-0 right-0 p-4 text-center font-semibold text-lg backdrop-blur-sm"
                     :class="feedbackColor"
                     x-text="feedbackText"></div>
 
                 <template x-if="!cameraStarted">
-                    <div class="absolute inset-0 flex flex-col items-center justify-center gap-3 bg-black/70">
+                    <div class="absolute inset-0 flex flex-col items-center justify-center gap-3 bg-slate-900/80">
                         <button @click="startCamera()"
                             :disabled="isLoadingCamera || !!cameraError && !navigator.mediaDevices"
-                            class="px-6 py-3 bg-[#1C9BA0] text-white rounded-lg shadow hover:bg-[#18848F] transition disabled:opacity-60 disabled:cursor-not-allowed">
+                            class="inline-flex items-center gap-2 px-6 py-3 bg-[#1C9BA0] text-white font-medium rounded-xl shadow-lg shadow-[#1C9BA0]/20 hover:bg-[#18848F] transition disabled:opacity-60 disabled:cursor-not-allowed">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                            </svg>
                             <span x-text="isLoadingCamera ? 'Starting camera and AI...' : 'Start Camera & Begin'"></span>
                         </button>
                         <p x-show="cameraError" x-text="cameraError"
                             class="max-w-md px-4 text-center text-sm font-medium text-red-100"></p>
                         <button @click="$refs.manualEntryBlock.scrollIntoView({behavior:'smooth'})"
-                            class="text-sm text-gray-300 underline hover:text-white">
+                            class="text-sm text-slate-300 underline decoration-slate-500 underline-offset-2 hover:text-white">
                             Camera not working? Log this set manually
                         </button>
                     </div>
@@ -414,77 +448,95 @@
             </div>
 
             <!-- Live stats -->
-            <div class="bg-white shadow rounded-2xl p-6 border border-gray-100 space-y-4">
-                <div class="rounded-2xl border border-[#1C9BA0]/20 bg-[#E7FAF8] p-4 shadow-sm" :class="guidanceTone">
-                    <p class="text-xs uppercase tracking-[0.2em] text-[#1C9BA0]">Live guidance</p>
-                    <h3 class="text-lg font-semibold mt-1 text-slate-800" x-text="guidanceTitle"></h3>
-                    <p class="text-sm mt-2 text-slate-700" x-text="guidanceText"></p>
+            <div class="bg-white shadow-sm rounded-2xl p-5 border border-slate-200 space-y-4">
+
+                <div class="rounded-xl border border-[#1C9BA0]/15 p-4" :class="guidanceTone">
+                    <p class="text-[11px] font-semibold uppercase tracking-[0.2em] text-[#1C9BA0]">Live guidance</p>
+                    <h3 class="text-base font-semibold mt-1 text-slate-800" x-text="guidanceTitle"></h3>
+                    <p class="text-sm mt-1.5 text-slate-600" x-text="guidanceText"></p>
                 </div>
 
-                <div class="rounded-xl border border-gray-200 bg-gray-50 p-4">
-                    <div class="flex items-center justify-between">
-                        <p class="text-sm text-gray-500">Progress</p>
-                        <span class="text-xs font-semibold uppercase tracking-[0.2em] text-[#1C9BA0]">Set in motion</span>
+                <div class="rounded-xl border border-slate-200 bg-slate-50 p-4">
+                    <div class="flex items-center justify-between mb-2">
+                        <p class="text-xs font-semibold uppercase tracking-wide text-slate-400">Reps completed</p>
+                        <span class="text-xs font-semibold text-[#1C9BA0]" x-text="`${repsCompleted}/${repsTarget}`"></span>
                     </div>
-                    <div class="mt-3 h-2 rounded-full bg-gray-200">
-                        <div class="h-2 rounded-full bg-[#1C9BA0] transition-all" :style="`width:${Math.min(100, (repsCompleted / repsTarget) * 100)}%`"></div>
-                    </div>
-                    <p class="mt-2 text-2xl font-semibold text-gray-800"><span x-text="repsCompleted"></span> / <span x-text="repsTarget"></span> reps</p>
-                </div>
-
-                <div class="grid grid-cols-2 gap-3 text-sm">
-                    <div class="rounded-xl border border-green-100 bg-green-50 p-3">
-                        <p class="text-gray-500">Good form</p>
-                        <p class="text-xl font-semibold text-green-700" x-text="repsGoodForm"></p>
-                    </div>
-                    <div class="rounded-xl border border-red-100 bg-red-50 p-3">
-                        <p class="text-gray-500">Needs correction</p>
-                        <p class="text-xl font-semibold text-red-600" x-text="repsBadForm"></p>
+                    <div class="h-2 rounded-full bg-slate-200 overflow-hidden">
+                        <div class="h-2 rounded-full bg-[#1C9BA0] transition-all"
+                            :style="`width:${Math.min(100, (repsCompleted / repsTarget) * 100)}%`"></div>
                     </div>
                 </div>
 
-                <div class="rounded-xl border border-gray-200 p-4">
-                    <p class="text-sm text-gray-500">Current angle</p>
-                    <p class="text-2xl font-semibold text-gray-800"><span x-text="Math.round(currentAngle)"></span>&deg;</p>
-                    <p class="text-xs text-gray-500 mt-1">Target range: up <span x-text="rule?.up_angle_min ?? 0"></span>&deg; · down <span x-text="rule?.down_angle_max ?? 0"></span>&deg;</p>
+                <div class="grid grid-cols-2 gap-3">
+                    <div class="rounded-xl border border-emerald-100 bg-emerald-50 px-3 py-3">
+                        <p class="text-xs text-emerald-700/80">Good form</p>
+                        <p class="text-2xl font-semibold text-emerald-700 mt-0.5" x-text="repsGoodForm"></p>
+                    </div>
+                    <div class="rounded-xl border border-rose-100 bg-rose-50 px-3 py-3">
+                        <p class="text-xs text-rose-700/80">Needs work</p>
+                        <p class="text-2xl font-semibold text-rose-600 mt-0.5" x-text="repsBadForm"></p>
+                    </div>
+                </div>
+
+                <div class="rounded-xl border border-slate-200 px-4 py-3 flex items-center justify-between">
+                    <div>
+                        <p class="text-xs text-slate-400">Current angle</p>
+                        <p class="text-xl font-semibold text-slate-800"><span x-text="Math.round(currentAngle)"></span>&deg;</p>
+                    </div>
+                    <p class="text-[11px] text-slate-400 text-right leading-tight">
+                        Target<br>
+                        up <span x-text="rule?.up_angle_min ?? 0"></span>&deg; · down <span x-text="rule?.down_angle_max ?? 0"></span>&deg;
+                    </p>
                 </div>
 
                 <button @click="finishSet()" x-show="cameraStarted"
-                    class="w-full px-4 py-2 bg-gray-800 text-white rounded-lg hover:bg-gray-900 transition">
+                    class="w-full px-4 py-2.5 bg-slate-900 text-white font-medium rounded-xl hover:bg-slate-800 transition">
                     Finish Set & Save
                 </button>
 
                 <template x-if="submitted">
-                    <div class="bg-green-100 text-green-800 px-3 py-2 rounded text-sm" x-text="submitMessage"></div>
+                    <div class="rounded-xl bg-emerald-50 border border-emerald-100 text-emerald-800 px-3 py-2.5 text-sm" x-text="submitMessage"></div>
                 </template>
             </div>
         </div>
 
         <!-- Manual fallback: for patients without a usable camera/lighting -->
-        <div x-ref="manualEntryBlock" class="bg-white shadow rounded-xl p-6 border border-gray-100">
-            <h3 class="font-semibold text-gray-800">Log this set manually</h3>
-            <p class="text-sm text-gray-500 mt-1">
-                No AI form-checking with this option — your therapist will see it marked as self-reported.
-            </p>
+        <div x-ref="manualEntryBlock" class="rounded-2xl border border-slate-200 bg-white shadow-sm p-6">
+            <div class="flex items-start gap-3">
+                <div class="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-slate-100 text-slate-500">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                    </svg>
+                </div>
+                <div>
+                    <h3 class="font-semibold text-slate-800">Log this set manually</h3>
+                    <p class="text-sm text-slate-500 mt-0.5">
+                        No AI form-checking with this option — your therapist will see it marked as self-reported.
+                    </p>
+                </div>
+            </div>
+
             <form action="{{ route('workout.result.manual.store', $assignment) }}" method="POST"
-                class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
+                class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-5">
                 @csrf
                 <div>
-                    <label class="text-sm text-gray-600">Reps completed</label>
+                    <label class="text-sm font-medium text-slate-600">Reps completed</label>
                     <input type="number" name="RepsCompleted" min="0" max="500" required
-                        class="w-full border-gray-300 rounded-lg mt-1">
+                        class="w-full rounded-lg border-slate-300 mt-1 focus:border-[#1C9BA0] focus:ring-[#1C9BA0]">
                 </div>
                 <div>
-                    <label class="text-sm text-gray-600">How many felt like good form?</label>
+                    <label class="text-sm font-medium text-slate-600">How many felt like good form?</label>
                     <input type="number" name="RepsGoodForm" min="0" max="500" required
-                        class="w-full border-gray-300 rounded-lg mt-1">
+                        class="w-full rounded-lg border-slate-300 mt-1 focus:border-[#1C9BA0] focus:ring-[#1C9BA0]">
                 </div>
                 <div>
-                    <label class="text-sm text-gray-600">Notes (optional)</label>
-                    <input type="text" name="Notes" maxlength="1000" class="w-full border-gray-300 rounded-lg mt-1">
+                    <label class="text-sm font-medium text-slate-600">Notes (optional)</label>
+                    <input type="text" name="Notes" maxlength="1000"
+                        class="w-full rounded-lg border-slate-300 mt-1 focus:border-[#1C9BA0] focus:ring-[#1C9BA0]">
                 </div>
                 <div class="md:col-span-3">
-                    <button type="submit" class="px-4 py-2 py-3 bg-[#1C9BA0] text-white rounded-lg shadow hover:bg-[#18848F] transition">
+                    <button type="submit"
+                        class="px-5 py-2.5 bg-[#1C9BA0] text-white font-medium rounded-xl shadow-sm hover:bg-[#18848F] transition">
                         Save Self-Reported Set
                     </button>
                 </div>

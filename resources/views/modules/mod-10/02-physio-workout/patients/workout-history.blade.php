@@ -5,20 +5,52 @@
             <x-page-header />
         </div>
 
-        <div class="rounded-3xl border border-[#1C9BA0]/15 bg-white p-6 shadow-[0_10px_30px_rgba(28,155,160,0.08)]">
-            <div class="flex flex-wrap items-start justify-between gap-3">
-                <div>
-                    <p class="text-xs font-semibold uppercase tracking-[0.24em] text-[#1C9BA0]">History log</p>
-                    <h2 class="text-2xl font-semibold tracking-tight text-gray-900 mt-1">
-                        {{ $assignment->exercise->ExerciseName }}
-                    </h2>
-                    <p class="text-sm text-gray-500 mt-1">A clear view of each session, form quality, and exercise duration.</p>
+        <!-- ============== HEADER (matches do-workout.blade.php) ============== -->
+        <div class="rounded-2xl border border-slate-200 bg-white shadow-sm overflow-hidden">
+            <div class="flex flex-col md:flex-row">
+
+                <!-- Icon + identity block -->
+                <div class="flex items-center gap-4 p-6 md:w-2/3">
+                    <div class="flex h-14 w-14 shrink-0 items-center justify-center rounded-xl bg-[#EAFBFA] text-[#1C9BA0]">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                        </svg>
+                    </div>
+                    <div class="min-w-0">
+                        <p class="text-xs font-semibold uppercase tracking-[0.2em] text-[#1C9BA0]">History log</p>
+                        <h2 class="text-xl md:text-2xl font-semibold text-slate-900 mt-0.5 truncate">
+                            {{ $assignment->exercise->ExerciseName }}
+                        </h2>
+                        <p class="text-sm text-slate-500 mt-1">
+                            A clear view of each session, form quality, and exercise duration.
+                        </p>
+                    </div>
                 </div>
-                <div class="rounded-2xl bg-[#E7FAF8] px-3 py-2 text-sm font-semibold text-[#1C9BA0]">
-                    {{ $sessions->count() }} session{{ $sessions->count() === 1 ? '' : 's' }}
+
+                <!-- Stat chips -->
+                <div class="grid grid-cols-3 divide-x divide-slate-100 border-t md:border-t-0 md:border-l border-slate-100 md:w-1/3">
+                    <div class="flex flex-col items-center justify-center px-3 py-4 text-center">
+                        <span class="text-lg font-semibold text-slate-900">{{ $sessions->count() }}</span>
+                        <span class="text-[11px] uppercase tracking-wide text-slate-400 mt-0.5">Sessions</span>
+                    </div>
+                    <div class="flex flex-col items-center justify-center px-3 py-4 text-center">
+                        <span class="text-lg font-semibold text-slate-900">{{ round($sessions->avg('AvgFormScore') ?? 0) }}%</span>
+                        <span class="text-[11px] uppercase tracking-wide text-slate-400 mt-0.5">Avg score</span>
+                    </div>
+                    <div class="flex flex-col items-center justify-center px-3 py-4 text-center">
+                        <span class="text-lg font-semibold text-slate-900">{{ $sessions->max('AvgFormScore') ?? 0 }}%</span>
+                        <span class="text-[11px] uppercase tracking-wide text-slate-400 mt-0.5">Best score</span>
+                    </div>
                 </div>
             </div>
+
+            <!-- Thin progress rail reflecting average form score -->
+            <div class="h-1.5 w-full bg-slate-100">
+                <div class="h-1.5 bg-[#1C9BA0] transition-all duration-300"
+                    style="width: {{ min(100, round($sessions->avg('AvgFormScore') ?? 0)) }}%"></div>
+            </div>
         </div>
+        <!-- ============== END HEADER ============== -->
 
         <div class="overflow-hidden rounded-3xl border border-gray-100 bg-white shadow-[0_10px_30px_rgba(15,23,42,0.06)]">
             <div class="overflow-x-auto">

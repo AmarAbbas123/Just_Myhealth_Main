@@ -5,16 +5,59 @@
             <x-page-header />
         </div>
 
-        <div class="relative overflow-hidden rounded-3xl border border-[#1C9BA0]/20 bg-gradient-to-r from-[#1C9BA0] via-[#24B5B8] to-[#59D4C7] p-6 text-white shadow-[0_12px_40px_rgba(28,155,160,0.2)]">
-            <div class="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-[#1C9BA0] to-[#59D4C7] z-10"></div>
-            <div class="absolute inset-0 bg-[radial-gradient(circle_at_top_left,_rgba(255,255,255,0.28),_transparent_45%)]"></div>
-            <div class="relative">
-                <p class="text-sm uppercase tracking-[0.24em] text-white/80">Patient progress</p>
-                <h2 class="text-2xl font-semibold mt-1">Workout history and form review</h2>
-                <p class="text-sm text-white/90 mt-2">Review assigned exercises, rep counts, and AI-form results for this patient.</p>
-                <p class="text-sm text-white/80 mt-4">Showing progress for <span class="font-semibold">{{ $patient->UserName }}</span></p>
+        <!-- ============== HEADER (matches patient-side pages) ============== -->
+        <div class="rounded-2xl border border-slate-200 bg-white shadow-sm overflow-hidden">
+            <div class="flex flex-col md:flex-row">
+
+                <!-- Icon + identity block -->
+                <div class="flex items-center gap-4 p-6 md:w-2/3">
+                    <div class="flex h-14 w-14 shrink-0 items-center justify-center rounded-xl bg-[#EAFBFA] text-[#1C9BA0]">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3" />
+                        </svg>
+                    </div>
+                    <div class="min-w-0">
+                        <p class="text-xs font-semibold uppercase tracking-[0.2em] text-[#1C9BA0]">Patient progress</p>
+                        <h2 class="text-xl md:text-2xl font-semibold text-slate-900 mt-0.5">
+                            {{ $patient->UserName ?? 'Workout history and form review' }}
+                        </h2>
+                        <p class="text-sm text-slate-500 mt-1">
+                            Review assigned exercises, rep counts, and AI-form results for this patient.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Stat chips -->
+                <div class="grid grid-cols-3 divide-x divide-slate-100 border-t md:border-t-0 md:border-l border-slate-100 md:w-1/3">
+                    <div class="flex flex-col items-center justify-center px-3 py-4 text-center">
+                        <span class="text-lg font-semibold text-slate-900">{{ $assignments->count() }}</span>
+                        <span class="text-[11px] uppercase tracking-wide text-slate-400 mt-0.5">Plans</span>
+                    </div>
+                    <div class="flex flex-col items-center justify-center px-3 py-4 text-center">
+                        <span class="text-lg font-semibold text-slate-900">
+                            {{ $assignments->sum(fn($a) => $a->sessions->count()) }}
+                        </span>
+                        <span class="text-[11px] uppercase tracking-wide text-slate-400 mt-0.5">Sessions</span>
+                    </div>
+                    <div class="flex flex-col items-center justify-center px-3 py-4 text-center">
+                        @php
+                            $allSessions = $assignments->flatMap->sessions;
+                        @endphp
+                        <span class="text-lg font-semibold text-slate-900">
+                            {{ $allSessions->count() ? round($allSessions->avg('AvgFormScore')) : 0 }}%
+                        </span>
+                        <span class="text-[11px] uppercase tracking-wide text-slate-400 mt-0.5">Avg score</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Thin progress rail reflecting overall average form score -->
+            <div class="h-1.5 w-full bg-slate-100">
+                <div class="h-1.5 bg-[#1C9BA0] transition-all duration-300"
+                    style="width: {{ $allSessions->count() ? min(100, round($allSessions->avg('AvgFormScore'))) : 0 }}%"></div>
             </div>
         </div>
+        <!-- ============== END HEADER ============== -->
 
         @forelse($assignments as $assignment)
             <div class="bg-white shadow rounded-2xl p-6 border border-gray-100">

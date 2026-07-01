@@ -10,13 +10,48 @@
             <div class="bg-green-100 text-green-800 px-3 py-2 rounded mb-4">{{ session('success') }}</div>
         @endif
 
-        <div class="relative overflow-hidden rounded-3xl border border-[#1C9BA0]/20 bg-gradient-to-r from-[#1C9BA0] via-[#24B5B8] to-[#59D4C7] p-6 text-white shadow-[0_12px_40px_rgba(28,155,160,0.2)]">
-            <div class="absolute inset-0 bg-[radial-gradient(circle_at_top_left,_rgba(255,255,255,0.28),_transparent_45%)]"></div>
-            <div class="relative">
-                <h2 class="text-xl font-semibold">Your physiotherapy plan</h2>
-                <p class="text-sm text-white/90 mt-1">Use the progress view to track your reps and see how each session is improving.</p>
+        <!-- ============== HEADER (matches do-workout.blade.php) ============== -->
+        <div class="rounded-2xl border border-slate-200 bg-white shadow-sm overflow-hidden">
+            <div class="flex flex-col md:flex-row">
+
+                <!-- Icon + identity block -->
+                <div class="flex items-center gap-4 p-6 md:w-2/3">
+                    <div class="flex h-14 w-14 shrink-0 items-center justify-center rounded-xl bg-[#EAFBFA] text-[#1C9BA0]">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
+                        </svg>
+                    </div>
+                    <div class="min-w-0">
+                        <p class="text-xs font-semibold uppercase tracking-[0.2em] text-[#1C9BA0]">Your physiotherapy plan</p>
+                        <h2 class="text-xl md:text-2xl font-semibold text-slate-900 mt-0.5">My Workouts</h2>
+                        <p class="text-sm text-slate-500 mt-1">
+                            Track your reps and see how each AI-checked session is improving.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Stat chips -->
+                <div class="grid grid-cols-3 divide-x divide-slate-100 border-t md:border-t-0 md:border-l border-slate-100 md:w-1/3">
+                    <div class="flex flex-col items-center justify-center px-3 py-4 text-center">
+                        <span class="text-lg font-semibold text-slate-900">{{ $assignments->count() }}</span>
+                        <span class="text-[11px] uppercase tracking-wide text-slate-400 mt-0.5">Active</span>
+                    </div>
+                    <div class="flex flex-col items-center justify-center px-3 py-4 text-center">
+                        <span class="text-lg font-semibold text-slate-900">{{ $assignments->sum('FrequencyPerWeek') }}</span>
+                        <span class="text-[11px] uppercase tracking-wide text-slate-400 mt-0.5">Sessions/wk</span>
+                    </div>
+                    <div class="flex flex-col items-center justify-center px-3 py-4 text-center">
+                        <span class="text-lg font-semibold text-slate-900">
+                            {{ $assignments->pluck('exercise.BodyPart')->filter()->unique()->count() }}
+                        </span>
+                        <span class="text-[11px] uppercase tracking-wide text-slate-400 mt-0.5">Focus areas</span>
+                    </div>
+                </div>
             </div>
+
+            <div class="h-1.5 w-full bg-gradient-to-r from-[#1C9BA0] to-[#59D4C7]"></div>
         </div>
+        <!-- ============== END HEADER ============== -->
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
             @forelse($assignments as $assignment)
@@ -57,8 +92,10 @@
                     </div>
                 </div>
             @empty
-                <p class="text-gray-500 col-span-2">No workouts assigned yet. Check back once your therapist assigns
-                    one.</p>
+                <div class="col-span-2 rounded-3xl border border-dashed border-[#1C9BA0]/20 bg-[#F7FCFC] p-10 text-center">
+                    <p class="text-sm font-medium text-gray-900">No workouts assigned yet.</p>
+                    <p class="text-sm text-gray-500 mt-1">Check back once your therapist assigns one.</p>
+                </div>
             @endforelse
         </div>
     </div>

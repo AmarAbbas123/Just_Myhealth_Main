@@ -141,15 +141,15 @@ class WorkoutExerciseController extends Controller
     }
 
     // Therapist view of a patient's AI-scored progress on assigned workouts
-    public function patientProgress($patientId)
-    {
-        $patient = User::findOrFail($patientId);
+   public function patientProgress($patientId)
+{
+    $patient = \App\Models\User::findOrFail($patientId);
 
-        $assignments = SysWorkoutAssignment::with(['exercise', 'sessions'])
-            ->where('TherapistID', Auth::id())
-            ->where('PatientID', $patientId)
-            ->get();
+    $assignments = SysWorkoutAssignment::with(['exercise', 'sessions'])
+        ->where('TherapistID', Auth::id())
+        ->where('PatientID', $patientId)
+        ->get();
 
-        return view('modules.mod-10.02-physio-workout.therapists.patient-progress', compact('assignments', 'patient'));
-    }
+    return view('modules.mod-10.02-physio-workout.therapists.patient-progress', compact('assignments', 'patient'));
+}
 }

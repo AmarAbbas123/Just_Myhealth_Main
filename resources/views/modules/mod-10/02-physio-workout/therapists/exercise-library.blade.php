@@ -1,46 +1,99 @@
 <x-app1>
 
-    <div class="space-y-6" x-data="{ showForm: false }">
+    <div class="space-y-6" x-data="{ showForm: false, selectedPatientUrl: '' }">
 
-        <div class="mb-4 flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+        <!-- Top action bar: page title + single primary action -->
+        <div class="mb-4 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
             <x-page-header />
-            <div class="flex flex-wrap items-center gap-2">
+            <button @click="showForm = !showForm"
+                class="inline-flex items-center justify-center gap-2 rounded-full bg-[#1C9BA0] px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-[#18848F] sm:w-auto">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" />
+                </svg>
+                <span x-text="showForm ? 'Close Form' : 'New Exercise'"></span>
+            </button>
+        </div>
+
+        <!-- Patient progress lookup: one clear control, doesn't navigate until you choose AND confirm -->
+        <div class="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
+            <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                <div class="flex items-center gap-3">
+                    <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-[#EAFBFA] text-[#1C9BA0]">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3" />
+                        </svg>
+                    </div>
+                    <div>
+                        <p class="text-sm font-semibold text-slate-800">Check a patient's progress</p>
+                        <p class="text-xs text-slate-500">Choose a patient to review their AI-tracked sessions.</p>
+                    </div>
+                </div>
+
                 @if($clients->isNotEmpty())
-                    <a href="{{ route('workout.patient.progress', ['patientId' => $clients->first()->ID]) }}"
-                        class="inline-flex items-center rounded-full border border-[#1C9BA0]/20 bg-white px-4 py-2 text-sm font-semibold text-[#1C9BA0] shadow-sm transition hover:bg-[#E7FAF8]">
-                        Patient Progress
-                    </a>
-                    <select onchange="if(this.value) window.location.href=this.value"
-                        class="rounded-full border border-[#1C9BA0]/20 bg-white px-8 py-2 text-sm font-semibold text-[#1C9BA0] shadow-sm focus:border-[#1C9BA0] focus:ring-[#1C9BA0]/30">
-                        @foreach($clients as $client)
-                            <option value="{{ route('workout.patient.progress', ['patientId' => $client->ID]) }}">
-                                {{ $client->UserName }}
-                            </option>
-                        @endforeach
-                    </select>
+                    <div class="flex items-center gap-2">
+                        <select x-model="selectedPatientUrl"
+                            class="min-w-[200px] rounded-full border border-slate-200 bg-white px-4 py-2 text-sm font-medium text-slate-700 shadow-sm focus:border-[#1C9BA0] focus:ring-[#1C9BA0]/30">
+                            <option value="">Select a patient...</option>
+                            @foreach($clients as $client)
+                                <option value="{{ route('workout.patient.progress', ['patientId' => $client->ID]) }}">
+                                    {{ $client->UserName }}
+                                </option>
+                            @endforeach
+                        </select>
+                        <button @click="if (selectedPatientUrl) window.location.href = selectedPatientUrl"
+                            :disabled="!selectedPatientUrl"
+                            class="rounded-full bg-[#1C9BA0] px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-[#18848F] disabled:cursor-not-allowed disabled:bg-slate-200 disabled:text-slate-400 disabled:shadow-none">
+                            View Progress
+                        </button>
+                    </div>
                 @else
-                    <span class="inline-flex items-center rounded-full border border-[#1C9BA0]/20 bg-white px-4 py-2 text-sm font-semibold text-[#1C9BA0] shadow-sm">
+                    <span class="inline-flex items-center rounded-full border border-slate-200 bg-slate-50 px-4 py-2 text-sm font-medium text-slate-400">
                         No patients available yet
                     </span>
                 @endif
-                <button @click="showForm = !showForm"
-                    class="inline-flex items-center rounded-full bg-[#1C9BA0] px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-[#18848F]">
-                    + New Exercise
-                </button>
             </div>
         </div>
 
-        <div class="relative overflow-hidden rounded-3xl bg-gradient-to-r from-[#1C9BA0] via-[#24B5B8] to-[#59D4C7] p-6 text-white shadow-[0_12px_36px_rgba(28,155,160,0.22)] border border-[#1C9BA0]/20">
-            <div class="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-[#1C9BA0] to-[#59D4C7] z-10"></div>
-            <div class="relative overflow-hidden rounded-3xl bg-white/10 p-6">
-                <div class="absolute inset-0 bg-[radial-gradient(circle_at_top_left,_rgba(255,255,255,0.3),_transparent_45%)]"></div>
-                <div class="relative">
-                    <p class="text-sm uppercase tracking-[0.28em] text-white/80">Therapist workspace</p>
-                    <h2 class="mt-2 text-3xl font-semibold">Exercise library</h2>
-                    <p class="mt-3 max-w-2xl text-sm text-white/90">Create AI-guided exercises, assign them to patients, and review performance in one place.</p>
+        <!-- ============== HEADER (matches patient-side pages) ============== -->
+        <div class="rounded-2xl border border-slate-200 bg-white shadow-sm overflow-hidden">
+            <div class="flex flex-col md:flex-row">
+
+                <!-- Icon + identity block -->
+                <div class="flex items-center gap-4 p-6 md:w-2/3">
+                    <div class="flex h-14 w-14 shrink-0 items-center justify-center rounded-xl bg-[#EAFBFA] text-[#1C9BA0]">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+                        </svg>
+                    </div>
+                    <div class="min-w-0">
+                        <p class="text-xs font-semibold uppercase tracking-[0.2em] text-[#1C9BA0]">Therapist workspace</p>
+                        <h2 class="text-xl md:text-2xl font-semibold text-slate-900 mt-0.5">Exercise Library</h2>
+                        <p class="text-sm text-slate-500 mt-1">
+                            Create AI-guided exercises, assign them to patients, and review performance in one place.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Stat chips -->
+                <div class="grid grid-cols-3 divide-x divide-slate-100 border-t md:border-t-0 md:border-l border-slate-100 md:w-1/3">
+                    <div class="flex flex-col items-center justify-center px-3 py-4 text-center">
+                        <span class="text-lg font-semibold text-slate-900">{{ $exercises->count() }}</span>
+                        <span class="text-[11px] uppercase tracking-wide text-slate-400 mt-0.5">Exercises</span>
+                    </div>
+                    <div class="flex flex-col items-center justify-center px-3 py-4 text-center">
+                        <span class="text-lg font-semibold text-slate-900">{{ $exercises->where('IsActive', true)->count() }}</span>
+                        <span class="text-[11px] uppercase tracking-wide text-slate-400 mt-0.5">Active</span>
+                    </div>
+                    <div class="flex flex-col items-center justify-center px-3 py-4 text-center">
+                        <span class="text-lg font-semibold text-slate-900">{{ $clients->count() }}</span>
+                        <span class="text-[11px] uppercase tracking-wide text-slate-400 mt-0.5">Clients</span>
+                    </div>
                 </div>
             </div>
+
+            <div class="h-1.5 w-full bg-gradient-to-r from-[#1C9BA0] to-[#59D4C7]"></div>
         </div>
+        <!-- ============== END HEADER ============== -->
 
         @if (session('success'))
             <div class="bg-green-100 text-green-800 px-3 py-2 rounded mb-4">{{ session('success') }}</div>
