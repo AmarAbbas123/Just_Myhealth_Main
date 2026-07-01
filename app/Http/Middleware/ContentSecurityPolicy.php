@@ -39,6 +39,7 @@ class ContentSecurityPolicy
 
         $connectList = array_merge($zegoDomains, $relays, [
             "https://cdn.jsdelivr.net",
+            "https://storage.googleapis.com",
             "https://cdnjs.cloudflare.com",
             "https://unpkg.com",
             "https://www.google-analytics.com",
@@ -52,6 +53,7 @@ class ContentSecurityPolicy
             "'self'",
             "'unsafe-inline'",
             "'unsafe-eval'",
+            "'wasm-unsafe-eval'",
             "https://cdn.jsdelivr.net",
             "https://cdnjs.cloudflare.com",
             "https://code.jquery.com",
@@ -98,7 +100,7 @@ class ContentSecurityPolicy
             "script-src " . implode(' ', $scriptList),
             "style-src " . implode(' ', $styleList),
             "font-src 'self' data: https://fonts.gstatic.com https://cdn.jsdelivr.net https://fonts.bunny.net",
-            "img-src 'self' data: blob: https://cdn.jsdelivr.net https://images.unsplash.com",
+            "img-src 'self' data: blob: https://cdn.jsdelivr.net https://storage.googleapis.com https://images.unsplash.com",
             "connect-src 'self' " . implode(' ', $connectList),
             "object-src 'none'",
             "frame-src 'self' https://*.zegocloud.com",

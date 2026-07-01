@@ -716,6 +716,32 @@ Route::controller(SessionPurchaseController::class)
         Route::post('/pay/sessions/checkout', 'startCheckout')->name('pay.sessions.checkout');
     });
 
+// #####################  Mod-10/02 Physio Workout - Therapist side ->middleware(['auth', 'usertype:therapist'])#####
+// ##############################################################################################################
+Route::controller(WorkoutExerciseController::class)
+    ->middleware(['auth', 'usertype:therapist'])
+    ->group(function () {
+        Route::get('/mod-10/02/exercise-library', 'index')->name('workout.library.index');
+        Route::post('/mod-10/02/exercise-library/store', 'store')->name('workout.library.store');
+        Route::put('/mod-10/02/exercise-library/{exercise}/update', 'update')->name('workout.library.update');
+        Route::delete('/mod-10/02/exercise-library/{exercise}/delete', 'destroy')->name('workout.library.delete');
+
+        Route::post('/mod-10/02/assign', 'assign')->name('workout.assign');
+        Route::get('/mod-10/02/patient/{patientId}/progress', 'patientProgress')->name('workout.patient.progress');
+    });
+
+// #####################  Mod-10/02 Physio Workout - Patient side ->middleware(['auth', 'usertype:user'])###########
+// ##############################################################################################################
+Route::controller(DoWorkoutController::class)
+    ->middleware(['auth', 'usertype:user'])
+    ->group(function () {
+        Route::get('/mod-10/02/usr-my-workouts', 'index')->name('workout.my.index');
+        Route::get('/mod-10/02/usr-do-workout/{assignment}', 'show')->name('workout.do');
+        Route::post('/mod-10/02/usr-do-workout/{assignment}/result', 'storeResult')->name('workout.result.store');
+        Route::post('/mod-10/02/usr-do-workout/{assignment}/manual-result', 'storeManualResult')->name('workout.result.manual.store');
+        Route::get('/mod-10/02/usr-workout-history/{assignment}', 'history')->name('workout.history');
+    });
+
 /*
 |--------------------------------------------------------------------------
 | Catch-All Dynamic Route (must ALWAYS be last)
@@ -758,6 +784,8 @@ Route::get('/{slug?}', function ($slug = null) {
     return view('modules.dynamic-dashboard', compact('menu', 'children'));
 })->where('slug', '.*')->middleware('auth');
 
+/*
+
 // #####################  Mod-10/02 Physio Workout — Therapist side ->middleware(['auth', 'usertype:therapist'])#####
 // ##############################################################################################################
 Route::controller(WorkoutExerciseController::class)
@@ -771,7 +799,9 @@ Route::controller(WorkoutExerciseController::class)
         Route::post('/mod-10/02/assign', 'assign')->name('workout.assign');
         Route::get('/mod-10/02/patient/{patientId}/progress', 'patientProgress')->name('workout.patient.progress');
     });
+*/
 
+/*
 // #####################  Mod-10/02 Physio Workout — Patient side ->middleware(['auth', 'usertype:user'])###########
 // ##############################################################################################################
 Route::controller(DoWorkoutController::class)
@@ -783,3 +813,4 @@ Route::controller(DoWorkoutController::class)
         Route::post('/mod-10/02/usr-do-workout/{assignment}/manual-result', 'storeManualResult')->name('workout.result.manual.store');
         Route::get('/mod-10/02/usr-workout-history/{assignment}', 'history')->name('workout.history');
     });
+*/
