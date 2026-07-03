@@ -24,6 +24,9 @@ return [
     'postmark' => [
         'token' => env('POSTMARK_TOKEN'),
     ],
+    'groq' => [
+        'key' => env('GROQ_API_KEY'),
+    ],
 
     'ses' => [
         'key' => env('AWS_ACCESS_KEY_ID'),
