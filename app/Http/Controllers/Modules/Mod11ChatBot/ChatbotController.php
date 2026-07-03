@@ -1,197 +1,152 @@
-{{--
-    Floating help chatbot. Include this once, near the closing </body> tag of
-    your main layout (e.g. resources/views/components/app1.blade.php):
+<?php
 
-        <x-chatbot />
+namespace App\Http\Controllers\Modules\Mod11ChatBot;
 
-    Requires a CSRF meta tag in <head>, which Laravel's default layouts
-    already include:
+use App\Http\Controllers\Controller;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 
-        <meta name="csrf-token" content="{{ csrf_token() }}">
---}}
+class ChatbotController extends Controller
+{
+    /**
+     * Keep this in sync with how your app actually works. This is what the
+     * bot is allowed to talk about — update the sections below whenever a
+     * page, flow, or route changes.
+     */
+    protected function systemPrompt(): string
+    {
+        return <<<PROMPT
+You are a friendly, knowledgeable help assistant embedded in an online
+counselling / therapy platform (with a physiotherapy AI-workout module).
+Your job is to help patients and therapists use the app — answer ANY
+question about how the app works, where to find things, or how to do
+something in it. You never give medical or mental-health advice, diagnoses,
+or treatment recommendations — for those, tell the person to ask their
+therapist directly.
 
-<style>
-    /* Safety net in case the global stylesheet doesn't define this already —
-       without it, elements with x-cloak can flash visible before Alpine
-       finishes initializing. */
-    [x-cloak] { display: none !important; }
-</style>
+Keep answers short (2-5 sentences), friendly, and specific. Use plain
+language. When relevant, tell the person exactly which button, page, or menu
+to use. If a question is genuinely outside the app (unrelated topics),
+politely say you can only help with using this app.
 
-<div
-    x-data="chatbotWidget()"
-    x-init="init()"
-    class="fixed bottom-5 right-5 z-50 flex flex-col items-end"
->
-    <!-- Chat panel -->
-    <div
-        x-show="open"
-        x-transition:enter="transition ease-out duration-200"
-        x-transition:enter-start="opacity-0 translate-y-3 scale-95"
-        x-transition:enter-end="opacity-100 translate-y-0 scale-100"
-        x-transition:leave="transition ease-in duration-150"
-        x-transition:leave-start="opacity-100 translate-y-0 scale-100"
-        x-transition:leave-end="opacity-0 translate-y-3 scale-95"
-        x-cloak
-        class="mb-3 flex h-[520px] w-[360px] max-w-[90vw] flex-col overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-2xl"
-    >
-        <!-- Header -->
-        <div class="flex items-center justify-between gap-3 bg-gradient-to-r from-[#1C9BA0] to-[#18848F] px-4 py-3.5">
-            <div class="flex items-center gap-2.5">
-                <div class="flex h-8 w-8 items-center justify-center rounded-full bg-white/15 text-white">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4.5 w-4.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-6l-4 4v-4z" />
-                    </svg>
-                </div>
-                <div>
-                    <p class="text-sm font-semibold text-white">Help Assistant</p>
-                    <p class="text-[11px] text-white/80">Ask about bookings, payment & more</p>
-                </div>
-            </div>
-            <button @click="open = false" class="rounded-full p-1 text-white/80 hover:bg-white/10 hover:text-white">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
-                </svg>
-            </button>
-        </div>
+HOW THE APP WORKS — use this as your knowledge base:
 
-        <!-- Messages -->
-        <div x-ref="scrollArea" class="flex-1 space-y-3 overflow-y-auto bg-[#F7FCFC] px-4 py-4">
-            <template x-for="(msg, index) in messages" :key="index">
-                <div class="flex" :class="msg.role === 'user' ? 'justify-end' : 'justify-start'">
-                    <div
-                        class="max-w-[80%] rounded-2xl px-3.5 py-2.5 text-sm leading-relaxed whitespace-pre-wrap"
-                        :class="msg.role === 'user'
-                            ? 'bg-[#1C9BA0] text-white rounded-br-md'
-                            : 'bg-white text-slate-700 border border-slate-200 rounded-bl-md'"
-                        x-text="msg.content"
-                    ></div>
-                </div>
-            </template>
+ACCOUNT & LOGIN
+- Patients and therapists log in from the login page; "Forgot password"
+  resets a password by email. Social login (Google etc.) is also available.
+- Profile, avatar, and header image are edited from the Profile page.
 
-            <!-- Typing indicator -->
-            <div x-show="loading" x-cloak class="flex justify-start">
-                <div class="flex items-center gap-1 rounded-2xl rounded-bl-md border border-slate-200 bg-white px-3.5 py-3">
-                    <span class="h-1.5 w-1.5 animate-bounce rounded-full bg-slate-400" style="animation-delay:0ms"></span>
-                    <span class="h-1.5 w-1.5 animate-bounce rounded-full bg-slate-400" style="animation-delay:150ms"></span>
-                    <span class="h-1.5 w-1.5 animate-bounce rounded-full bg-slate-400" style="animation-delay:300ms"></span>
-                </div>
-            </div>
-        </div>
+FINDING & BOOKING A THERAPIST (patient)
+- New patients answer a short "How I Feel" onboarding questionnaire first.
+- Patients use "Therapist Finder" to browse therapists by therapy type,
+  language, and availability.
+- On a therapist's booking page, patients pick an open calendar slot and
+  confirm — this creates a session on "My Therapy Calendar."
+- Sessions can be joined from the calendar once the time arrives, via the
+  waiting room. Sessions can be cancelled from the calendar as well.
 
-        <!-- Quick suggestions (only before the conversation starts) -->
-        <div x-show="messages.length <= 1" x-cloak class="flex flex-wrap gap-1.5 border-t border-slate-100 bg-white px-3 py-2.5">
-            <template x-for="q in suggestions" :key="q">
-                <button
-                    @click="send(q)"
-                    class="rounded-full border border-[#1C9BA0]/20 bg-[#EAFBFA] px-3 py-1.5 text-xs font-medium text-[#1C9BA0] hover:bg-[#1C9BA0]/10"
-                    x-text="q"
-                ></button>
-            </template>
-        </div>
+PAYMENT
+- Patients buy session credits from "My Finances" (session purchase page),
+  checked out securely via Stripe.
+- Therapist and business registration fees are also paid via Stripe checkout
+  during onboarding.
+- Payment success/cancellation is confirmed on-screen after checkout.
 
-        <!-- Input -->
-        <form @submit.prevent="send()" class="flex items-center gap-2 border-t border-slate-100 bg-white p-3">
-            <input
-                x-model="draft"
-                x-ref="input"
-                type="text"
-                placeholder="Type your question..."
-                :disabled="loading"
-                class="flex-1 rounded-full border-slate-200 bg-slate-50 px-4 py-2.5 text-sm focus:border-[#1C9BA0] focus:bg-white focus:ring-[#1C9BA0]/30 disabled:opacity-60"
-            >
-            <button
-                type="submit"
-                :disabled="loading || !draft.trim()"
-                class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[#1C9BA0] text-white transition hover:bg-[#18848F] disabled:cursor-not-allowed disabled:opacity-40"
-            >
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-4.5 w-4.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 19V5m0 0l-6 6m6-6l6 6" />
-                </svg>
-            </button>
-        </form>
-    </div>
+DURING A SESSION
+- Sessions run via secure video (and chat) once both people join the
+  waiting room. Therapists can start/end the session and add session notes.
+- After a session, patients can view it under "Therapy History," including
+  any notes or resources the therapist shared.
 
-    <!-- Floating bubble toggle -->
-    <button
-        @click="open = !open"
-        class="relative flex h-14 w-14 items-center justify-center rounded-full bg-[#1C9BA0] text-white shadow-lg shadow-[#1C9BA0]/30 transition hover:bg-[#18848F] hover:scale-105"
-    >
-        <svg x-show="!open" xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-6l-4 4v-4z" />
-        </svg>
-        <svg x-show="open" x-cloak xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
-        </svg>
-        <span
-            x-show="!open && messages.length <= 1"
-            class="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-amber-500 text-[10px] font-bold text-white"
-        >!</span>
-    </button>
-</div>
+THERAPIST PROFILE & TOOLS (therapist)
+- Therapists complete their profile in several sections: Bio Details,
+  Salutations & Languages, Therapy Types, Qualifications, ID & Registration,
+  and Collateral Documents.
+- Therapists manage their availability in "My Calendar," track sessions in
+  "Session History," and manage payouts in "My Financials" (bank details).
+- Complaints/issues and support tasks have their own sections under the
+  therapist's profile menu.
 
-<script>
-    function chatbotWidget() {
-        return {
-            open: false,
-            draft: '',
-            loading: false,
-            suggestions: [
-                'How do I book a session?',
-                'How do I pay?',
-                'How do I cancel a booking?',
-            ],
-            messages: [
-                { role: 'assistant', content: "Hi! I can help with booking sessions, payments, workouts, and account questions. What do you need help with?" },
-            ],
+PHYSIO WORKOUTS (AI exercise form-checking)
+- Therapists build exercises in "Exercise Library": pick a movement preset
+  (Knee Squat, Shoulder Raise, Elbow Curl, or Custom), fill in the name,
+  body part, and instructions, and the AI angle rules are set automatically
+  (adjustable).
+- Therapists click "Assign" on an exercise to assign it to a patient with
+  sets, reps, frequency per week, and optional notes.
+- Patients see assigned exercises under "My Workouts." Clicking "Start" uses
+  the camera and AI pose detection to count reps and check form live,
+  showing guidance like "lower X° more" and a good-form/adjust-form
+  indicator.
+- If the camera isn't available, patients can scroll down and "Log this set
+  manually" instead — this is marked as self-reported for the therapist.
+- "Progress" on any exercise shows a full history table: date, reps,
+  good/bad form counts, average score, and duration.
 
-            init() {
-                // Nothing to preload for now — kept as a hook for future
-                // persistence (e.g. restoring history from window.storage).
-            },
+GENERAL / SUPPORT
+- Patients can raise an issue or concern from "Raise an Issue."
+- Messaging between patients and therapists is available from "My
+  Messages."
 
-            scrollToBottom() {
-                this.$nextTick(() => {
-                    const el = this.$refs.scrollArea;
-                    if (el) el.scrollTop = el.scrollHeight;
-                });
-            },
-
-            async send(preset = null) {
-                const text = (preset ?? this.draft).trim();
-                if (!text || this.loading) return;
-
-                this.messages.push({ role: 'user', content: text });
-                this.draft = '';
-                this.loading = true;
-                this.scrollToBottom();
-
-                try {
-                    const csrfToken = document.querySelector('meta[name="csrf-token"]')?.content ?? '';
-
-                    const res = await fetch('{{ route('chatbot.ask') }}', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'Accept': 'application/json',
-                            'X-CSRF-TOKEN': csrfToken,
-                        },
-                        body: JSON.stringify({
-                            message: text,
-                            // Send prior turns (excluding the greeting) so the bot has context.
-                            history: this.messages.slice(1, -1),
-                        }),
-                    });
-
-                    const data = await res.json();
-                    this.messages.push({ role: 'assistant', content: data.reply || "Sorry, I couldn't get an answer just now." });
-                } catch (e) {
-                    this.messages.push({ role: 'assistant', content: 'Sorry, I could not reach the server. Please check your connection and try again.' });
-                } finally {
-                    this.loading = false;
-                    this.scrollToBottom();
-                    this.$nextTick(() => this.$refs.input?.focus());
-                }
-            },
-        };
+If you don't know the answer to something specific, say so honestly and
+suggest the person contact support rather than guessing.
+PROMPT;
     }
-</script>
+
+    public function ask(Request $request)
+    {
+        $validated = $request->validate([
+            'message' => 'required|string|max:1000',
+            'history' => 'array',
+            'history.*.role' => 'in:user,assistant',
+            'history.*.content' => 'string|max:2000',
+        ]);
+
+        // Bound token usage: only send the last few turns.
+        $history = array_slice($validated['history'] ?? [], -8);
+
+        // Groq uses the OpenAI-compatible chat format: system message goes
+        // inside the `messages` array (not a separate `system` field).
+        $messages = array_merge(
+            [['role' => 'system', 'content' => $this->systemPrompt()]],
+            $history,
+            [['role' => 'user', 'content' => $validated['message']]]
+        );
+
+        try {
+            $response = Http::withHeaders([
+                'Authorization' => 'Bearer '.config('services.groq.key'),
+                'Content-Type' => 'application/json',
+            ])->timeout(20)->post('https://api.groq.com/openai/v1/chat/completions', [
+                // Free-tier Groq models. llama-3.1-8b-instant is faster/cheaper
+                // on rate limits; llama-3.3-70b-versatile answers better.
+                'model' => 'llama-3.3-70b-versatile',
+                'max_tokens' => 400,
+                'temperature' => 0.4,
+                'messages' => $messages,
+            ]);
+
+            if (! $response->successful()) {
+                Log::error('Chatbot API error', ['body' => $response->body()]);
+
+                return response()->json([
+                    'reply' => "Sorry, I'm having trouble answering right now. Please try again in a moment.",
+                ]);
+            }
+
+            $data = $response->json();
+            $reply = $data['choices'][0]['message']['content'] ?? '';
+
+            return response()->json([
+                'reply' => $reply !== '' ? $reply : "I'm not sure how to answer that — could you rephrase?",
+            ]);
+        } catch (\Throwable $e) {
+            Log::error('Chatbot exception', ['message' => $e->getMessage()]);
+
+            return response()->json([
+                'reply' => 'Sorry, something went wrong. Please try again shortly.',
+            ]);
+        }
+    }
+}
