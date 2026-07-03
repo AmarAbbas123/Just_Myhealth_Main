@@ -99,7 +99,7 @@
 
         <!-- Quick suggestions (only before the conversation starts) -->
         <div x-show="messages.length <= 1" x-cloak class="border-t border-slate-100 bg-white px-3 pb-2.5 pt-5.5">
-            <p class="mb-2 px-1 text-[11px] font-medium uppercase tracking-wide text-slate-400">Popular questions</p>
+            <p class="mb-2 px-1 text-[10px] font-medium uppercase tracking-wide text-slate-400">Popular questions</p>
             <div class="flex flex-wrap gap-1.5">
                 <template x-for="q in suggestions" :key="q">
                     <button
