@@ -175,7 +175,7 @@
         </div>
     </div>
 
-
+    <x-chatbot />
 </body>
 
 </html>

@@ -71,6 +71,9 @@ use App\Http\Controllers\Modules\Mod10ProfessionalServices\Counselling01\Therapi
 use App\Http\Controllers\Modules\Mod10ProfessionalServices\Counselling01\Therapists\SearchMatchQuestionsController;
 use App\Http\Controllers\Modules\Mod10ProfessionalServices\Counselling01\Therapists\TherapistDocumentController;
 
+//Mod11 chatbot controller
+use App\Http\Controllers\Modules\Mod11ChatBot\ChatbotController;
+
 //mod-10/02 Physio Workout (AI exercise form checking)
 use App\Http\Controllers\Modules\Mod10ProfessionalServices\PhysioWorkout01\Therapists\WorkoutExerciseController;
 use App\Http\Controllers\Modules\Mod10ProfessionalServices\PhysioWorkout01\Patients\DoWorkoutController;
@@ -814,3 +817,10 @@ Route::controller(DoWorkoutController::class)
         Route::get('/mod-10/02/usr-workout-history/{assignment}', 'history')->name('workout.history');
     });
 */
+
+//chatbot
+Route::controller(ChatbotController::class)
+    ->middleware('throttle:20,1')
+    ->group(function () {
+        Route::post('/mod-11/chatbot/ask', 'ask')->name('chatbot.ask');
+    });

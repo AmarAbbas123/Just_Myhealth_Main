@@ -29,6 +29,11 @@
         return angle;
     }
 
+    // Solid hex colors for the live skeleton overlay.
+    const COLOR_GOOD = '#22C55E'; // emerald-500
+    const COLOR_BAD = '#EF4444';  // red-500
+    const COLOR_NEUTRAL = '#38BDF8'; // sky-400, used before we have a rule/angle yet
+
     window.workoutChecker = (config) => {
         // IMPORTANT: MediaPipe task objects must NOT live inside Alpine's
         // reactive x-data. Alpine (via @vue/reactivity) wraps everything in
@@ -63,18 +68,75 @@
             repsGoodForm: 0,
             repsBadForm: 0,
             currentAngle: 180,
+
+            // Live (per-frame) form status — drives the skeleton color and
+            // a small on-screen badge. null = no rule / no landmarks yet.
+            liveFormGood: null,
+
             feedbackText: 'Position yourself so your full body is visible',
             feedbackColor: 'bg-slate-800/80 text-white',
             guidanceTitle: 'Get ready',
             guidanceText: 'Stand in frame and begin the movement slowly.',
             guidanceTone: 'bg-[#E7FAF8] text-slate-700',
-            guidanceIcon: 'eye',
 
             repState: 'up',
             currentRepMinAngle: 180,
             currentRepMaxAngle: 0,
             repDetails: [],
             startTime: null,
+
+            // Simple emoji "how to do it" demo — start pose vs target pose,
+            // per joint type. Not meant to be anatomically precise, just a
+            // quick visual cue for the patient next to the camera.
+            poseEmojis: {
+                knee: { up: '🧍', down: '🧎', label: 'Bend your knees' },
+                shoulder: { up: '🧍', down: '🙋', label: 'Raise your arm' },
+                elbow: { up: '🧍', down: '💪', label: 'Curl your arm' },
+                hip: { up: '🧍', down: '🙇', label: 'Hinge at the hip' },
+            },
+
+            getPoseSet() {
+                const joint = this.rule?.joint || 'shoulder';
+                return this.poseEmojis[joint] || this.poseEmojis.shoulder;
+            },
+
+            // Normalized bounds regardless of whether "down" or "up" holds
+            // the numerically bigger angle (e.g. elbow curls have down > up).
+            getBounds() {
+                const downMax = Number(this.rule?.down_angle_max ?? 0);
+                const upMin = Number(this.rule?.up_angle_min ?? 180);
+                return {
+                    lower: Math.min(downMax, upMin),
+                    upper: Math.max(downMax, upMin),
+                    downMax,
+                    upMin,
+                };
+            },
+
+            // Percent along the Bent -> Straight bar the current angle sits at.
+            angleProgressPercent() {
+                const { lower, upper } = this.getBounds();
+                if (upper === lower) return 0;
+                const pct = ((this.currentAngle - lower) / (upper - lower)) * 100;
+                return Math.min(100, Math.max(0, pct));
+            },
+
+            // Degrees remaining until the patient reaches the target for the
+            // CURRENT phase of the rep (lowering vs raising). Used by both
+            // the angle card and anywhere else that needs a live countdown.
+            remainingToTarget() {
+                const { downMax, upMin } = this.getBounds();
+
+                if (this.repState === 'up') {
+                    // Heading toward the "down" threshold.
+                    const remaining = Math.round(this.currentAngle - downMax);
+                    return Math.max(0, remaining);
+                }
+
+                // Heading back toward the "up" threshold.
+                const remaining = Math.round(upMin - this.currentAngle);
+                return Math.max(0, remaining);
+            },
 
             async init() {
                 this.startTime = Date.now();
@@ -95,21 +157,10 @@
                 return labels[joint] || 'body';
             },
 
-            setGuidance(title, text, tone = 'bg-[#E7FAF8] text-slate-700', icon = 'eye') {
+            setGuidance(title, text, tone = 'bg-[#E7FAF8] text-slate-700') {
                 this.guidanceTitle = title;
                 this.guidanceText = text;
                 this.guidanceTone = tone;
-                this.guidanceIcon = icon; // 'up' | 'down' | 'check' | 'warning' | 'eye'
-            },
-
-            remainingToTarget() {
-                if (!this.rule?.down_angle_max || !this.rule?.up_angle_min) return 0;
-                const downMax = Number(this.rule.down_angle_max);
-                const upMin = Number(this.rule.up_angle_min);
-                const diff = this.repState === 'up'
-                    ? this.currentAngle - downMax   // still needs to lower
-                    : upMin - this.currentAngle;    // still needs to raise
-                return diff > 0 ? Math.round(diff) : 0;
             },
 
             async startCamera() {
@@ -153,7 +204,7 @@
                     this.cameraStarted = true;
                     this.feedbackText = 'AI model ready. Stand fully in frame.';
                     this.feedbackColor = 'bg-[#1C9BA0]/90 text-white';
-                    this.setGuidance('Camera ready', 'Stand tall, keep your whole body visible, and move slowly.', 'bg-[#1C9BA0]/90 text-white', 'eye');
+                    this.setGuidance('Camera ready', 'Stand tall, keep your whole body visible, and move slowly.', 'bg-[#1C9BA0]/90 text-white');
                     this.detectLoop();
                 } catch (error) {
                     this.stopCameraTracks();
@@ -203,6 +254,28 @@
                 return `Camera or AI model could not start${details}. Check internet access for MediaPipe and try again.`;
             },
 
+            // Pure calculation: given landmarks, returns the current joint
+            // angle AND whether it's inside the therapist's safe range.
+            // Does not touch rep state — safe to call purely for drawing.
+            getLiveAngleStatus(landmarks) {
+                if (!this.rule?.joint || !WORKOUT_JOINT_MAP[this.rule.joint]) {
+                    return { angle: this.currentAngle, isGood: null };
+                }
+
+                const sides = this.rule.side === 'both' ? ['left', 'right'] : [this.rule.side || 'left'];
+                const angles = sides.map(side => {
+                    const [aIdx, bIdx, cIdx] = WORKOUT_JOINT_MAP[this.rule.joint][side];
+                    return workoutAngleBetween(landmarks[aIdx], landmarks[bIdx], landmarks[cIdx]);
+                });
+                const angle = angles.reduce((sum, a) => sum + a, 0) / angles.length;
+
+                const { lower, upper } = this.getBounds();
+                const tolerance = Number(this.rule.good_form_tolerance ?? 0);
+                const isGood = angle >= (lower - tolerance) && angle <= (upper + tolerance);
+
+                return { angle, isGood };
+            },
+
             detectLoop() {
                 const video = this.$refs.video;
                 const canvas = this.$refs.canvas;
@@ -223,13 +296,33 @@
 
                     if (result.landmarks && result.landmarks.length > 0) {
                         const lm = result.landmarks[0];
-                        drawer.drawLandmarks(lm, { radius: 3 });
-                        drawer.drawConnectors(lm, native.PoseLandmarkerClass.POSE_CONNECTIONS);
+
+                        // Work out good/bad BEFORE drawing, so the skeleton
+                        // itself reflects live form quality.
+                        const status = this.getLiveAngleStatus(lm);
+                        this.liveFormGood = status.isGood;
+
+                        const skeletonColor = status.isGood === false
+                            ? COLOR_BAD
+                            : (status.isGood === true ? COLOR_GOOD : COLOR_NEUTRAL);
+
+                        drawer.drawLandmarks(lm, {
+                            radius: 4,
+                            color: skeletonColor,
+                            fillColor: skeletonColor,
+                            lineWidth: 1,
+                        });
+                        drawer.drawConnectors(lm, native.PoseLandmarkerClass.POSE_CONNECTIONS, {
+                            color: skeletonColor,
+                            lineWidth: 3,
+                        });
+
                         this.processAngles(lm);
                     } else {
+                        this.liveFormGood = null;
                         this.feedbackText = 'Make sure your full body is visible';
                         this.feedbackColor = 'bg-slate-800/80 text-white';
-                        this.setGuidance('Full body visible', 'Step back a little so your head, torso and limbs are all visible.', 'bg-amber-600/80 text-white', 'eye');
+                        this.setGuidance('Full body visible', 'Step back a little so your head, torso and limbs are all visible.', 'bg-amber-600/80 text-white');
                     }
 
                     requestAnimationFrame(loop);
@@ -242,7 +335,6 @@
                 if (!this.rule?.joint || !WORKOUT_JOINT_MAP[this.rule.joint]) {
                     this.feedbackText = 'This exercise needs an angle rule before AI checking can run.';
                     this.feedbackColor = 'bg-red-600/80 text-white';
-                    this.setGuidance('Setup needed', 'Ask your therapist to configure this exercise.', 'bg-red-600/80 text-white', 'warning');
                     return;
                 }
 
@@ -264,20 +356,28 @@
 
                 if (this.repState === 'up' && angle <= downMax) {
                     this.repState = 'down';
-                    this.feedbackText = 'Good depth — now come back up';
+                    this.feedbackText = 'Good - now return to start';
                     this.feedbackColor = 'bg-[#1C9BA0]/90 text-white';
-                    this.setGuidance('Step 2 of 2 — Raise up', `Slowly raise your ${part} back up to about ${upMin}° or more.`, 'bg-[#1C9BA0]/90 text-white', 'up');
+                    this.setGuidance('Move back', `Lower your ${part} slowly until it reaches about ${downMax}° or less.`, 'bg-[#1C9BA0]/90 text-white');
                 } else if (this.repState === 'down' && angle >= upMin) {
                     this.repState = 'up';
                     this.completeRep(downMax, upMin, tolerance);
                 } else if (this.repState === 'up') {
-                    this.feedbackText = 'Begin the movement';
-                    this.feedbackColor = 'bg-slate-800/80 text-white';
-                    this.setGuidance('Step 1 of 2 — Lower down', `Slowly lower your ${part} down to about ${downMax}° or less.`, 'bg-[#E7FAF8] text-slate-700', 'down');
+                    this.feedbackText = this.liveFormGood === false
+                        ? 'Out of safe range - ease back in'
+                        : 'Begin the movement';
+                    this.feedbackColor = this.liveFormGood === false
+                        ? 'bg-red-600/80 text-white'
+                        : 'bg-slate-800/80 text-white';
+                    this.setGuidance('Lift up', `Raise your ${part} slowly until you reach about ${upMin}° or more.`, 'bg-[#E7FAF8] text-slate-700');
                 } else {
-                    this.feedbackText = 'Keep going...';
-                    this.feedbackColor = 'bg-[#1C9BA0]/90 text-white';
-                    this.setGuidance('Step 2 of 2 — Raise up', `Keep raising your ${part} smoothly toward ${upMin}°.`, 'bg-[#1C9BA0]/90 text-white', 'up');
+                    this.feedbackText = this.liveFormGood === false
+                        ? 'Out of safe range - ease back in'
+                        : 'Keep going...';
+                    this.feedbackColor = this.liveFormGood === false
+                        ? 'bg-red-600/80 text-white'
+                        : 'bg-[#1C9BA0]/90 text-white';
+                    this.setGuidance('Stay controlled', `Keep lowering your ${part} smoothly and hold the position briefly.`, 'bg-[#1C9BA0]/90 text-white');
                 }
             },
 
@@ -291,14 +391,14 @@
                     this.repsGoodForm++;
                     this.feedbackText = `Rep ${this.repsCompleted} - nice form!`;
                     this.feedbackColor = 'bg-[#1C9BA0]/90 text-white';
-                    this.setGuidance('Nice form!', 'That rep looked smooth and controlled. Keep the same rhythm.', 'bg-[#1C9BA0]/90 text-white', 'check');
+                    this.setGuidance('Nice form', 'That rep looked smooth and controlled. Keep the same rhythm.', 'bg-[#1C9BA0]/90 text-white');
                 } else {
                     this.repsBadForm++;
                     this.feedbackText = !reachedDepth
                         ? `Rep ${this.repsCompleted} - go deeper next time`
                         : `Rep ${this.repsCompleted} - extend further next time`;
                     this.feedbackColor = 'bg-amber-600/80 text-white';
-                    this.setGuidance('Adjust your range', 'Try a slightly deeper or fuller movement next time for better form.', 'bg-amber-600/80 text-white', 'warning');
+                    this.setGuidance('Adjust your range', 'Try a slightly deeper or fuller movement next time for better form.', 'bg-amber-600/80 text-white');
                 }
 
                 this.repDetails.push({
@@ -381,41 +481,41 @@
             <x-page-header />
         </div>
 
-        <!-- ============== NEW HEADER ============== -->
+        <!-- ============== HEADER ============== -->
         <div class="rounded-2xl border border-slate-200 bg-white shadow-sm overflow-hidden">
-            <div class="flex flex-col md:flex-row">
+            <div class="flex flex-col md:flex-row md:items-stretch">
 
                 <!-- Icon + identity block -->
-                <div class="flex items-center gap-4 p-6 md:w-2/3">
-                    <div class="flex h-14 w-14 shrink-0 items-center justify-center rounded-xl bg-[#EAFBFA] text-[#1C9BA0]">
+                <div class="flex items-start gap-4 p-6 md:w-2/3">
+                    <div class="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-[#EAFBFA] text-[#1C9BA0] ring-1 ring-[#1C9BA0]/10">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
                         </svg>
                     </div>
-                    <div class="min-w-0">
+                    <div class="min-w-0 pt-0.5">
                         <p class="text-xs font-semibold uppercase tracking-[0.2em] text-[#1C9BA0]">AI-guided exercise</p>
-                        <h2 class="text-xl md:text-2xl font-semibold text-slate-900 mt-0.5 truncate">
+                        <h2 class="text-xl md:text-2xl font-semibold text-slate-900 mt-1 leading-snug truncate">
                             {{ $assignment->exercise->ExerciseName }}
                         </h2>
-                        <p class="text-sm text-slate-500 mt-1 line-clamp-2">
+                        <p class="text-sm text-slate-500 mt-1.5 leading-relaxed line-clamp-2">
                             {{ $assignment->exercise->Instructions }}
                         </p>
                     </div>
                 </div>
 
                 <!-- Stat chips -->
-                <div class="grid grid-cols-3 divide-x divide-slate-100 border-t md:border-t-0 md:border-l border-slate-100 md:w-1/3">
-                    <div class="flex flex-col items-center justify-center px-3 py-4 text-center">
-                        <span class="text-lg font-semibold text-slate-900">{{ $assignment->RepsTarget }}</span>
-                        <span class="text-[11px] uppercase tracking-wide text-slate-400 mt-0.5">Reps</span>
+                <div class="grid grid-cols-3 divide-x divide-slate-100 border-t md:border-t-0 md:border-l border-slate-100 md:w-1/3 bg-slate-50/60 md:bg-transparent">
+                    <div class="flex flex-col items-center justify-center px-3 py-5 text-center">
+                        <span class="text-xl font-semibold text-slate-900">{{ $assignment->RepsTarget }}</span>
+                        <span class="text-[11px] uppercase tracking-wide text-slate-400 mt-1">Reps</span>
                     </div>
-                    <div class="flex flex-col items-center justify-center px-3 py-4 text-center">
-                        <span class="text-lg font-semibold text-slate-900">{{ $assignment->SetsTarget }}</span>
-                        <span class="text-[11px] uppercase tracking-wide text-slate-400 mt-0.5">Sets</span>
+                    <div class="flex flex-col items-center justify-center px-3 py-5 text-center">
+                        <span class="text-xl font-semibold text-slate-900">{{ $assignment->SetsTarget }}</span>
+                        <span class="text-[11px] uppercase tracking-wide text-slate-400 mt-1">Sets</span>
                     </div>
-                    <div class="flex flex-col items-center justify-center px-3 py-4 text-center">
-                        <span class="text-lg font-semibold text-slate-900">{{ $assignment->exercise->BodyPart ?? '—' }}</span>
-                        <span class="text-[11px] uppercase tracking-wide text-slate-400 mt-0.5">Focus</span>
+                    <div class="flex flex-col items-center justify-center px-3 py-5 text-center">
+                        <span class="text-xl font-semibold text-slate-900">{{ $assignment->exercise->BodyPart ?? '—' }}</span>
+                        <span class="text-[11px] uppercase tracking-wide text-slate-400 mt-1">Focus</span>
                     </div>
                 </div>
             </div>
@@ -426,14 +526,32 @@
                     :style="`width:${Math.min(100, (repsCompleted / repsTarget) * 100)}%`"></div>
             </div>
         </div>
-        <!-- ============== END NEW HEADER ============== -->
+        <!-- ============== END HEADER ============== -->
 
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
 
             <!-- Camera + skeleton overlay -->
-            <div class="lg:col-span-2 rounded-2xl border border-slate-200 bg-black overflow-hidden relative shadow-sm" style="aspect-ratio:4/3;">
+            <div class="lg:col-span-2 rounded-2xl overflow-hidden relative shadow-sm border-4 transition-colors duration-300 bg-black"
+                :class="{
+                    'border-emerald-500': liveFormGood === true,
+                    'border-red-500': liveFormGood === false,
+                    'border-slate-200': liveFormGood === null
+                }"
+                style="aspect-ratio:4/3;">
                 <video x-ref="video" class="w-full h-full object-cover" autoplay playsinline muted></video>
                 <canvas x-ref="canvas" class="absolute top-0 left-0 w-full h-full"></canvas>
+
+                <!-- Live good/bad form badge -->
+                <div x-show="cameraStarted" x-cloak
+                    class="absolute top-3 right-3 flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-semibold text-white shadow-lg transition-colors duration-300"
+                    :class="{
+                        'bg-emerald-500': liveFormGood === true,
+                        'bg-red-500': liveFormGood === false,
+                        'bg-slate-500': liveFormGood === null
+                    }">
+                    <span class="h-2 w-2 rounded-full bg-white/90"></span>
+                    <span x-text="liveFormGood === true ? 'Good form' : (liveFormGood === false ? 'Adjust form' : 'Detecting...')"></span>
+                </div>
 
                 <!-- Live feedback banner -->
                 <div class="absolute bottom-0 left-0 right-0 p-4 text-center font-semibold text-lg backdrop-blur-sm"
@@ -463,45 +581,19 @@
             <!-- Live stats -->
             <div class="bg-white shadow-sm rounded-2xl p-5 border border-slate-200 space-y-4">
 
-                <!-- ============== UPDATED: LIVE GUIDANCE ============== -->
-                <div class="rounded-xl border border-[#1C9BA0]/15 p-4" :class="guidanceTone">
-                    <div class="flex items-center gap-3">
-                        <div class="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-white/70 text-[#1C9BA0]">
-                            <template x-if="guidanceIcon === 'down'">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 animate-bounce" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M19 14l-7 7m0 0l-7-7m7 7V3" />
-                                </svg>
-                            </template>
-                            <template x-if="guidanceIcon === 'up'">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 animate-bounce" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M5 10l7-7m0 0l7 7m-7-7v18" />
-                                </svg>
-                            </template>
-                            <template x-if="guidanceIcon === 'check'">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
-                                </svg>
-                            </template>
-                            <template x-if="guidanceIcon === 'warning'">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m0 3.75h.007v.008H12v-.008zM10.29 3.86L1.82 18a1.5 1.5 0 001.29 2.25h17.78A1.5 1.5 0 0022.18 18L13.71 3.86a1.5 1.5 0 00-2.42 0z" />
-                                </svg>
-                            </template>
-                            <template x-if="guidanceIcon === 'eye'">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-                                </svg>
-                            </template>
-                        </div>
-                        <div class="min-w-0">
-                            <p class="text-[11px] font-semibold uppercase tracking-[0.2em] text-[#1C9BA0]">Live guidance</p>
-                            <h3 class="text-lg font-bold mt-0.5 text-slate-800" x-text="guidanceTitle"></h3>
-                        </div>
-                    </div>
-                    <p class="text-sm mt-2.5 font-medium text-slate-600" x-text="guidanceText"></p>
+                <!-- How to do it: one figure that changes live with the pose -->
+                <div class="rounded-xl border border-[#1C9BA0]/15 bg-[#F7FCFC] p-4 text-center">
+                    <p class="text-[11px] font-semibold uppercase tracking-[0.2em] text-[#1C9BA0] mb-2">How to do it</p>
+                    <span class="inline-block text-5xl transition-transform duration-200"
+                        :class="repState === 'down' ? 'scale-110' : 'scale-100'"
+                        x-text="repState === 'down' ? getPoseSet().down : getPoseSet().up"></span>
+                    <h3 class="text-base font-semibold mt-1 text-slate-800" x-text="guidanceTitle"></h3>
+                    <p class="text-xs text-slate-500 mt-2" x-text="getPoseSet().label + ' slowly, then return to start.'"></p>
+                    
+                    <p class="text-xs mt-1.5 text-slate-600" x-text="guidanceText"></p>
                 </div>
-                <!-- ============== END LIVE GUIDANCE ============== -->
+
+               
 
                 <div class="rounded-xl border border-slate-200 bg-slate-50 p-4">
                     <div class="flex items-center justify-between mb-2">
@@ -525,38 +617,34 @@
                     </div>
                 </div>
 
-                <!-- ============== UPDATED: CURRENT ANGLE GAUGE ============== -->
-                <div class="rounded-xl border border-slate-200 px-4 py-4 space-y-3">
+                <!-- Current angle: dot marker between the "bent" and "straight" bounds -->
+                <div class="rounded-xl border border-slate-200 bg-white p-4">
                     <div class="flex items-center justify-between">
-                        <p class="text-xs text-slate-400">Current angle</p>
-                        <p class="text-2xl font-bold text-slate-800"><span x-text="Math.round(currentAngle)"></span>&deg;</p>
+                        <p class="text-sm text-slate-400">Current angle</p>
+                        <span class="text-2xl font-bold text-slate-900"><span x-text="Math.round(currentAngle)"></span>&deg;</span>
                     </div>
-
-                    <div class="relative h-3 rounded-full bg-slate-100 overflow-hidden">
-                        <div class="absolute inset-y-0 left-0 bg-[#1C9BA0]/25"
-                             :style="`width:${(Number(rule?.down_angle_max ?? 0)/180)*100}%`"></div>
-                        <div class="absolute inset-y-0 right-0 bg-[#1C9BA0]/25"
-                             :style="`width:${100 - (Number(rule?.up_angle_min ?? 180)/180)*100}%`"></div>
+                    <div class="relative mt-3 h-2 rounded-full bg-emerald-100">
+                        <div class="absolute inset-y-0 left-0 bg-rose-300"
+                             :style="`width:${(getBounds().lower / 180) * 100}%`"></div>
+                        <div class="absolute inset-y-0 right-0 bg-rose-300"
+                             :style="`width:${100 - (getBounds().upper / 180) * 100}%`"></div>
                         <div class="absolute top-1/2 -translate-y-1/2 -translate-x-1/2 h-4 w-4 rounded-full border-2 border-white shadow"
-                             :class="repState === 'down' ? 'bg-amber-500' : 'bg-[#1C9BA0]'"
-                             :style="`left:${Math.min(100, Math.max(0,(currentAngle/180)*100))}%`"></div>
+                             :class="repState === 'down' ? 'bg-rose-500' : 'bg-[#0E6A6F]' "
+                             :style="`left:${Math.min(100, Math.max(0, (currentAngle / 180) * 100))}%`"></div>
                     </div>
-
-                    <div class="flex justify-between text-[11px] text-slate-400">
+                    <div class="flex justify-between mt-2 text-xs text-slate-400">
                         <span>Bent (<span x-text="rule?.down_angle_max ?? 0"></span>&deg;)</span>
                         <span>Straight (<span x-text="rule?.up_angle_min ?? 0"></span>&deg;)</span>
                     </div>
-
-                    <p class="text-sm font-semibold text-center"
+                    <p class="text-sm font-semibold text-center mt-2"
                        :class="remainingToTarget() === 0 ? 'text-emerald-600' : 'text-slate-600'"
                        x-text="remainingToTarget() === 0
                            ? 'Target reached — nice!'
                            : (repState === 'up' ? `Lower ${remainingToTarget()}° more` : `Raise ${remainingToTarget()}° more`)"></p>
                 </div>
-                <!-- ============== END CURRENT ANGLE GAUGE ============== -->
 
                 <button @click="finishSet()" x-show="cameraStarted"
-                    class="w-full px-4 py-2.5 bg-slate-900 text-white font-medium rounded-xl hover:bg-slate-800 transition">
+                    class="w-full px-4 py-2.5 bg-[#1C9BA0] text-white font-medium rounded-xl hover:bg-[#18848F] transition">
                     Finish Set & Save
                 </button>
 

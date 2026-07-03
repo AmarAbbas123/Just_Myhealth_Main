@@ -5,41 +5,41 @@
             <x-page-header />
         </div>
 
-        <!-- ============== HEADER (matches do-workout.blade.php) ============== -->
+        <!-- ============== HEADER (unified style) ============== -->
         <div class="rounded-2xl border border-slate-200 bg-white shadow-sm overflow-hidden">
-            <div class="flex flex-col md:flex-row">
+            <div class="flex flex-col md:flex-row md:items-stretch">
 
                 <!-- Icon + identity block -->
-                <div class="flex items-center gap-4 p-6 md:w-2/3">
-                    <div class="flex h-14 w-14 shrink-0 items-center justify-center rounded-xl bg-[#EAFBFA] text-[#1C9BA0]">
+                <div class="flex items-start gap-4 p-6 md:w-2/3">
+                    <div class="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-[#EAFBFA] text-[#1C9BA0] ring-1 ring-[#1C9BA0]/10">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
                         </svg>
                     </div>
-                    <div class="min-w-0">
+                    <div class="min-w-0 pt-0.5">
                         <p class="text-xs font-semibold uppercase tracking-[0.2em] text-[#1C9BA0]">History log</p>
-                        <h2 class="text-xl md:text-2xl font-semibold text-slate-900 mt-0.5 truncate">
+                        <h2 class="text-xl md:text-2xl font-semibold text-slate-900 mt-1 leading-snug truncate">
                             {{ $assignment->exercise->ExerciseName }}
                         </h2>
-                        <p class="text-sm text-slate-500 mt-1">
+                        <p class="text-sm text-slate-500 mt-1.5 leading-relaxed line-clamp-2">
                             A clear view of each session, form quality, and exercise duration.
                         </p>
                     </div>
                 </div>
 
                 <!-- Stat chips -->
-                <div class="grid grid-cols-3 divide-x divide-slate-100 border-t md:border-t-0 md:border-l border-slate-100 md:w-1/3">
-                    <div class="flex flex-col items-center justify-center px-3 py-4 text-center">
-                        <span class="text-lg font-semibold text-slate-900">{{ $sessions->count() }}</span>
-                        <span class="text-[11px] uppercase tracking-wide text-slate-400 mt-0.5">Sessions</span>
+                <div class="grid grid-cols-3 divide-x divide-slate-100 border-t md:border-t-0 md:border-l border-slate-100 md:w-1/3 bg-slate-50/60 md:bg-transparent">
+                    <div class="flex flex-col items-center justify-center px-3 py-5 text-center">
+                        <span class="text-xl font-semibold text-slate-900">{{ $sessions->count() }}</span>
+                        <span class="text-[11px] uppercase tracking-wide text-slate-400 mt-1">Sessions</span>
                     </div>
-                    <div class="flex flex-col items-center justify-center px-3 py-4 text-center">
-                        <span class="text-lg font-semibold text-slate-900">{{ round($sessions->avg('AvgFormScore') ?? 0) }}%</span>
-                        <span class="text-[11px] uppercase tracking-wide text-slate-400 mt-0.5">Avg score</span>
+                    <div class="flex flex-col items-center justify-center px-3 py-5 text-center">
+                        <span class="text-xl font-semibold text-slate-900">{{ round($sessions->avg('AvgFormScore') ?? 0) }}%</span>
+                        <span class="text-[11px] uppercase tracking-wide text-slate-400 mt-1">Avg score</span>
                     </div>
-                    <div class="flex flex-col items-center justify-center px-3 py-4 text-center">
-                        <span class="text-lg font-semibold text-slate-900">{{ $sessions->max('AvgFormScore') ?? 0 }}%</span>
-                        <span class="text-[11px] uppercase tracking-wide text-slate-400 mt-0.5">Best score</span>
+                    <div class="flex flex-col items-center justify-center px-3 py-5 text-center">
+                        <span class="text-xl font-semibold text-slate-900">{{ $sessions->max('AvgFormScore') ?? 0 }}%</span>
+                        <span class="text-[11px] uppercase tracking-wide text-slate-400 mt-1">Best score</span>
                     </div>
                 </div>
             </div>

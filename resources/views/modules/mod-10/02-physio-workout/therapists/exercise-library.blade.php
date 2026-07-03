@@ -118,36 +118,36 @@
             </div>
         </div>
 
-        <!-- ============== HEADER ============== -->
+        <!-- ============== HEADER (unified style) ============== -->
         <div class="rounded-2xl border border-slate-200 bg-white shadow-sm overflow-hidden">
-            <div class="flex flex-col md:flex-row">
-                <div class="flex items-center gap-4 p-6 md:w-2/3">
-                    <div class="flex h-14 w-14 shrink-0 items-center justify-center rounded-xl bg-[#EAFBFA] text-[#1C9BA0]">
+            <div class="flex flex-col md:flex-row md:items-stretch">
+                <div class="flex items-start gap-4 p-6 md:w-2/3">
+                    <div class="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-[#EAFBFA] text-[#1C9BA0] ring-1 ring-[#1C9BA0]/10">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
                         </svg>
                     </div>
-                    <div class="min-w-0">
+                    <div class="min-w-0 pt-0.5">
                         <p class="text-xs font-semibold uppercase tracking-[0.2em] text-[#1C9BA0]">Therapist workspace</p>
-                        <h2 class="text-xl md:text-2xl font-semibold text-slate-900 mt-0.5">Exercise Library</h2>
-                        <p class="text-sm text-slate-500 mt-1">
+                        <h2 class="text-xl md:text-2xl font-semibold text-slate-900 mt-1 leading-snug">Exercise Library</h2>
+                        <p class="text-sm text-slate-500 mt-1.5 leading-relaxed line-clamp-2">
                             Create AI-guided exercises, assign them to patients, and review performance in one place.
                         </p>
                     </div>
                 </div>
 
-                <div class="grid grid-cols-3 divide-x divide-slate-100 border-t md:border-t-0 md:border-l border-slate-100 md:w-1/3">
-                    <div class="flex flex-col items-center justify-center px-3 py-4 text-center">
-                        <span class="text-lg font-semibold text-slate-900">{{ $exercises->count() }}</span>
-                        <span class="text-[11px] uppercase tracking-wide text-slate-400 mt-0.5">Exercises</span>
+                <div class="grid grid-cols-3 divide-x divide-slate-100 border-t md:border-t-0 md:border-l border-slate-100 md:w-1/3 bg-slate-50/60 md:bg-transparent">
+                    <div class="flex flex-col items-center justify-center px-3 py-5 text-center">
+                        <span class="text-xl font-semibold text-slate-900">{{ $exercises->count() }}</span>
+                        <span class="text-[11px] uppercase tracking-wide text-slate-400 mt-1">Exercises</span>
                     </div>
-                    <div class="flex flex-col items-center justify-center px-3 py-4 text-center">
-                        <span class="text-lg font-semibold text-slate-900">{{ $exercises->where('IsActive', true)->count() }}</span>
-                        <span class="text-[11px] uppercase tracking-wide text-slate-400 mt-0.5">Active</span>
+                    <div class="flex flex-col items-center justify-center px-3 py-5 text-center">
+                        <span class="text-xl font-semibold text-slate-900">{{ $exercises->where('IsActive', true)->count() }}</span>
+                        <span class="text-[11px] uppercase tracking-wide text-slate-400 mt-1">Active</span>
                     </div>
-                    <div class="flex flex-col items-center justify-center px-3 py-4 text-center">
-                        <span class="text-lg font-semibold text-slate-900">{{ $clients->count() }}</span>
-                        <span class="text-[11px] uppercase tracking-wide text-slate-400 mt-0.5">Clients</span>
+                    <div class="flex flex-col items-center justify-center px-3 py-5 text-center">
+                        <span class="text-xl font-semibold text-slate-900">{{ $clients->count() }}</span>
+                        <span class="text-[11px] uppercase tracking-wide text-slate-400 mt-1">Clients</span>
                     </div>
                 </div>
             </div>
@@ -162,43 +162,75 @@
         <!-- Library list -->
         <div class="grid grid-cols-1 gap-5 md:grid-cols-2">
             @forelse($exercises as $exercise)
-                <div class="relative overflow-hidden rounded-[24px] border border-gray-100 bg-white p-6 shadow-[0_10px_30px_rgba(15,23,42,0.06)] transition hover:-translate-y-0.5">
-                    <div class="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-[#1C9BA0] to-[#59D4C7]"></div>
-                    <div class="flex items-start justify-between gap-3">
-                        <div>
-                            <h3 class="font-semibold text-gray-800">{{ $exercise->ExerciseName }}</h3>
-                            <p class="mt-1 text-sm text-gray-500">{{ $exercise->BodyPart }} · {{ $exercise->ExerciseType }}</p>
+                <div class="group relative flex flex-col overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm transition hover:-translate-y-0.5 hover:shadow-md">
+                    <!-- Accent bar -->
+                    <div class="absolute  left-0 w-1 bg-gradient-to-b from-[#1C9BA0] to-[#59D4C7]"></div>
+
+                    <!-- Header row: icon, name, status -->
+                    <div class="flex items-start gap-4 p-5 pl-6">
+                        <div class="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-[#EAFBFA] text-[#1C9BA0]">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                            </svg>
                         </div>
-                        <span class="rounded-full px-2.5 py-1 text-xs font-semibold {{ $exercise->IsActive ? 'bg-[#E7FAF8] text-[#1C9BA0]' : 'bg-gray-100 text-gray-500' }}">
-                            {{ $exercise->IsActive ? 'Active' : 'Inactive' }}
+                        <div class="min-w-0 flex-1">
+                            <div class="flex items-start justify-between gap-2">
+                                <h3 class="font-semibold text-slate-900 truncate">{{ $exercise->ExerciseName }}</h3>
+                                <span class="inline-flex shrink-0 items-center gap-1 rounded-full px-2 py-0.5 text-[11px] font-semibold ring-1 ring-inset
+                                    {{ $exercise->IsActive ? 'bg-emerald-50 text-emerald-700 ring-emerald-600/10' : 'bg-slate-100 text-slate-500 ring-slate-500/10' }}">
+                                    <span class="h-1.5 w-1.5 rounded-full {{ $exercise->IsActive ? 'bg-emerald-500' : 'bg-slate-400' }}"></span>
+                                    {{ $exercise->IsActive ? 'Active' : 'Inactive' }}
+                                </span>
+                            </div>
+                            <p class="text-sm text-slate-500 mt-0.5">{{ $exercise->BodyPart }} · {{ $exercise->ExerciseType }}</p>
+                        </div>
+                    </div>
+
+                    <!-- Instructions -->
+                    <div class="px-5 pl-6">
+                        <div class="rounded-xl bg-slate-50 px-3 py-2.5">
+                            <p class="text-xs text-slate-600 line-clamp-2">{{ $exercise->Instructions }}</p>
+                        </div>
+                    </div>
+
+                    <!-- Angle rule pills -->
+                    <div class="mt-3 flex flex-wrap gap-1.5 px-5 pl-6">
+                        <span class="inline-flex items-center rounded-full bg-[#EAFBFA] px-2.5 py-1 text-[11px] font-medium text-[#1C9BA0]">
+                            Down ≤ {{ $exercise->AngleRuleConfig['down_angle_max'] }}°
+                        </span>
+                        <span class="inline-flex items-center rounded-full bg-[#EAFBFA] px-2.5 py-1 text-[11px] font-medium text-[#1C9BA0]">
+                            Up ≥ {{ $exercise->AngleRuleConfig['up_angle_min'] }}°
+                        </span>
+                        <span class="inline-flex items-center rounded-full bg-slate-100 px-2.5 py-1 text-[11px] font-medium text-slate-500">
+                            Tolerance {{ $exercise->AngleRuleConfig['good_form_tolerance'] }}°
                         </span>
                     </div>
 
-                    <div class="mt-4 rounded-2xl bg-[#F7FCFC] p-3">
-                        <p class="text-sm text-gray-600">{{ $exercise->Instructions }}</p>
-                    </div>
-
-                    <div class="mt-4 flex flex-wrap gap-2 text-xs text-gray-500">
-                        <span class="rounded-full bg-gray-100 px-2.5 py-1">Down ≤ {{ $exercise->AngleRuleConfig['down_angle_max'] }}°</span>
-                        <span class="rounded-full bg-gray-100 px-2.5 py-1">Up ≥ {{ $exercise->AngleRuleConfig['up_angle_min'] }}°</span>
-                        <span class="rounded-full bg-gray-100 px-2.5 py-1">Tolerance {{ $exercise->AngleRuleConfig['good_form_tolerance'] }}°</span>
-                    </div>
-
-                    <div class="mt-5 flex flex-wrap gap-2">
+                    <!-- Actions -->
+                    <div class="mt-4 flex items-center gap-2 border-t border-slate-100 p-5 pl-6 pt-4">
                         <button @click="openAssign({ id: {{ $exercise->ID }}, name: @js($exercise->ExerciseName), sets: {{ $exercise->DefaultSets }}, reps: {{ $exercise->DefaultReps }} })"
-                            class="rounded-lg bg-[#1C9BA0] px-3 py-2 text-sm font-semibold text-white hover:bg-[#18848F]">
-                            Assign to Patient
+                            class="inline-flex flex-1 items-center justify-center gap-1.5 rounded-xl bg-[#1C9BA0] px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[#18848F]">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z" />
+                            </svg>
+                            Assign
                         </button>
                         <form action="{{ route('workout.library.delete', $exercise) }}" method="POST"
                             onsubmit="return confirm('Remove this exercise from your library?')">
                             @csrf
                             @method('DELETE')
-                            <button type="submit" class="rounded-lg bg-red-600 px-3 py-2 text-sm font-semibold text-white hover:bg-red-700">Delete</button>
+                            <button type="submit"
+                                class="inline-flex items-center justify-center rounded-xl border border-rose-100 bg-rose-50 px-3.5 py-2.5 text-rose-600 transition hover:bg-rose-100"
+                                title="Delete exercise">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                </svg>
+                            </button>
                         </form>
                     </div>
                 </div>
             @empty
-                <div class="col-span-2 rounded-3xl border border-dashed border-[#1C9BA0]/20 bg-[#F7FCFC] p-10 text-center">
+                <div class="col-span-2 rounded-2xl border border-dashed border-[#1C9BA0]/20 bg-[#F7FCFC] p-10 text-center">
                     <p class="text-sm font-medium text-gray-900">No exercises yet.</p>
                     <p class="text-sm text-gray-500 mt-1">Click "New Exercise" above to add your first one.</p>
                 </div>
