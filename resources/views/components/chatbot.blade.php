@@ -36,7 +36,7 @@
         x-transition:leave-start="opacity-100 translate-y-0 scale-100"
         x-transition:leave-end="opacity-0 translate-y-3 scale-95"
         x-cloak
-        class="mb-3 flex h-[440px] max-h-[70vh] w-[360px] max-w-[90vw] flex-col overflow-hidden rounded-3xl border border-slate-200/70 bg-white shadow-[0_20px_60px_-15px_rgba(15,23,42,0.35)]"
+        class="mb-3 flex h-[460px] max-h-[70vh] w-[360px] max-w-[90vw] flex-col overflow-hidden rounded-3xl border border-slate-200/70 bg-white shadow-[0_20px_60px_-15px_rgba(15,23,42,0.35)]"
     >
         <!-- Header -->
         <div class="relative overflow-hidden bg-gradient-to-br from-[#22B3B8] via-[#1C9BA0] to-[#136E73] px-5 py-4">
@@ -67,7 +67,7 @@
         </div>
 
         <!-- Messages -->
-        <div x-ref="scrollArea" class="chatbot-scroll flex-1 space-y-3 overflow-y-auto bg-[#F5FBFB] bg-[radial-gradient(circle_at_1px_1px,rgba(28,155,160,0.07)_1px,transparent_0)] bg-[length:18px_18px] px-4 pb-5 pt-4">
+        <div x-ref="scrollArea" class="chatbot-scroll flex-1 space-y-3 overflow-y-auto bg-[#F5FBFB] bg-[radial-gradient(circle_at_1px_1px,rgba(28,155,160,0.07)_1px,transparent_0)] bg-[length:18px_18px] px-4 pb-5  pt-4">
             <template x-for="(msg, index) in messages" :key="index">
                 <div class="flex items-end gap-2" :class="msg.role === 'user' ? 'flex-row-reverse' : 'flex-row'">
                     <!-- avatar -->
@@ -98,8 +98,8 @@
         </div>
 
         <!-- Quick suggestions (only before the conversation starts) -->
-        <div x-show="messages.length <= 1" x-cloak class="border-t border-slate-100 bg-white px-3 pb-2.5 pt-5.5">
-            <p class="mb-2 px-1 text-[10px] font-medium uppercase tracking-wide text-slate-400">Popular questions</p>
+        <div x-show="messages.length <= 1" x-cloak class="border-t border-slate-100 bg-white px-3 pb-2.5 pt-3">
+           
             <div class="flex flex-wrap gap-1.5">
                 <template x-for="q in suggestions" :key="q">
                     <button
