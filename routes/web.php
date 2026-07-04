@@ -71,8 +71,7 @@ use App\Http\Controllers\Modules\Mod10ProfessionalServices\Counselling01\Therapi
 use App\Http\Controllers\Modules\Mod10ProfessionalServices\Counselling01\Therapists\SearchMatchQuestionsController;
 use App\Http\Controllers\Modules\Mod10ProfessionalServices\Counselling01\Therapists\TherapistDocumentController;
 
-//Mod11 chatbot controller
-use App\Http\Controllers\Modules\Mod11ChatBot\ChatbotController;
+
 
 //mod-10/02 Physio Workout (AI exercise form checking)
 use App\Http\Controllers\Modules\Mod10ProfessionalServices\PhysioWorkout01\Therapists\WorkoutExerciseController;
@@ -85,6 +84,14 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Stripe\Checkout\Session;
+
+//Mod11 chatbot controller
+use App\Http\Controllers\Modules\Mod11ChatBot\ChatbotController;
+
+//face routes
+use App\Http\Controllers\Auth\FaceLoginController;
+use App\Http\Controllers\Settings\FaceRegistrationController;
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -246,6 +253,27 @@ Route::post('/verify-current-password', function (Request $request) {
 // Social login
 Route::get('/auth/{provider}', [SocialAuthController::class, 'redirect'])->name('social.redirect');
 Route::get('/auth/{provider}/callback', [SocialAuthController::class, 'callback'])->name('social.callback');
+
+/*
+|--------------------------------------------------------------------------
+| Face Login Routes (must be above the catch-all /{slug?} route below,
+| otherwise the catch-all intercepts these URLs first and 404s)
+|--------------------------------------------------------------------------
+*/
+// Guest: face-scan login attempt from the login page
+Route::post('/login/face', [FaceLoginController::class, 'attempt'])
+    ->middleware('guest')
+    ->name('login.face');
+
+// Authenticated: manage face profile from Settings
+Route::middleware('auth')->group(function () {
+    Route::get('/settings/face-login', [FaceRegistrationController::class, 'edit'])
+        ->name('settings.face-login.edit');
+    Route::post('/settings/face-login', [FaceRegistrationController::class, 'store'])
+        ->name('settings.face-login.store');
+    Route::delete('/settings/face-login', [FaceRegistrationController::class, 'destroy'])
+        ->name('settings.face-login.destroy');
+});
 
 /*
 |--------------------------------------------------------------------------
@@ -745,6 +773,13 @@ Route::controller(DoWorkoutController::class)
         Route::get('/mod-10/02/usr-workout-history/{assignment}', 'history')->name('workout.history');
     });
 
+//chatbot
+Route::controller(ChatbotController::class)
+    ->middleware('throttle:20,1')
+    ->group(function () {
+        Route::post('/mod-11/chatbot/ask', 'ask')->name('chatbot.ask');
+    });
+
 /*
 |--------------------------------------------------------------------------
 | Catch-All Dynamic Route (must ALWAYS be last)
@@ -817,10 +852,3 @@ Route::controller(DoWorkoutController::class)
         Route::get('/mod-10/02/usr-workout-history/{assignment}', 'history')->name('workout.history');
     });
 */
-
-//chatbot
-Route::controller(ChatbotController::class)
-    ->middleware('throttle:20,1')
-    ->group(function () {
-        Route::post('/mod-11/chatbot/ask', 'ask')->name('chatbot.ask');
-    });

@@ -1,4 +1,3 @@
-
 <header class="z-10 py-4 bg-white shadow-md dark:bg-gray-800">
     <div class="container flex items-center justify-between h-full  mx-auto text-primary dark:text-primary">
 
@@ -137,6 +136,14 @@
                             <path d="M10.325 4.317a1.724 1.724 0 013.35 0 1.724 1.724 0 002.573 1.066 1.724 1.724 0 012.37 2.37 1.724 1.724 0 001.066 2.573 1.724 1.724 0 010 3.35 1.724 1.724 0 00-1.066 2.573 1.724 1.724 0 01-2.37 2.37 1.724 1.724 0 00-2.573 1.066 1.724 1.724 0 01-3.35 0 1.724 1.724 0 00-2.573-1.066 1.724 1.724 0 01-2.37-2.37 1.724 1.724 0 00-1.066-2.573 1.724 1.724 0 010-3.35 1.724 1.724 0 001.066-2.573 1.724 1.724 0 012.37-2.37 1.724 1.724 0 002.573-1.066z" />
                         </svg>
                         Settings
+                    </a>
+                    <a href="{{ route('settings.face-login.edit') }}"
+                        class="flex items-center w-full px-2 py-1 text-sm font-semibold rounded-md hover:bg-gray-100 dark:hover:bg-gray-800">
+                        <svg class="w-4 h-4 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                d="M9 9V7a3 3 0 016 0v2m-8 0h10a1 1 0 011 1v9a1 1 0 01-1 1H7a1 1 0 01-1-1v-9a1 1 0 011-1zM12 13.5v2" />
+                        </svg>
+                        Face Login
                     </a>
                     <form method="POST" action="{{ route('logout') }}" class="w-full">
                         @csrf
