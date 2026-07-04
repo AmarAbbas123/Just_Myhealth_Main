@@ -71,11 +71,11 @@
                             <span class="text-xs font-semibold uppercase tracking-[0.15em] text-slate-400">Personal</span>
                         </div>
 
-                        <h3 class="mt-4 text-xl font-semibold text-slate-900">CLIENT Account</h3>
+                        <h3 class="mt-5 text-xl font-semibold text-slate-900">CLIENT Account</h3>
                         
 
-                        <div class="mt-4 flex items-baseline gap-1.5">
-                            <span class="text-3xl font-bold text-slate-900">&pound;Free</span>
+                        <div class="mt-2 flex items-baseline gap-1.5">
+                            <span class="text-3xl font-bold text-[#1C9BA0]">&pound;Free</span>
 
                         </div>
 
@@ -123,16 +123,16 @@
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M12 21c-4.5-2.5-8-6-8-10.5A5.5 5.5 0 0112 6a5.5 5.5 0 018 4.5c0 4.5-3.5 8-8 10.5z" />
                             </svg>
                         </span>
-
-                        <h3 class="mt-4 text-xl font-semibold text-slate-900">THERAPIST</h3>
-                        <p class="text-sm font-medium text-slate-400">(Professional Services)</p>
+                        <div class=" mt-5 items-baseline ">
+                            <span class="mt-4 text-xl font-semibold text-slate-900">THERAPIST</span>
+                            <span class="text-sm font-medium text-slate-400">(Professional Services)</span>
                        
-
-                        <div class="mt-4 flex items-baseline gap-1.5">
+                        </div>
+                        <div class="mt-2 flex items-baseline gap-1.5">
                             @if ($therapistFeeWaived ?? false)
-                                <span class="text-3xl font-bold text-slate-900">&pound;Free</span>
+                                <span class="text-3xl font-bold text-[#1C9BA0]">&pound;Free</span>
                             @else
-                                <span class="text-3xl font-bold text-slate-900">&pound;{{ $therapistFeeAmount }}</span>
+                                <span class="text-3xl font-bold text-[#1C9BA0]">&pound;{{ $therapistFeeAmount }}</span>
                                 <span class="text-sm font-medium text-slate-400">/ annual</span>
                             @endif
                         </div>
@@ -179,13 +179,13 @@
                             </span>
                             <span class="text-xs font-semibold uppercase tracking-[0.15em] text-slate-400">Local trade</span>
                         </div>
+                        <div class=" mt-5 items-baseline ">
+                            <span class="mt-4 text-xl font-semibold text-slate-900">BUSINESS</span>
+                            <span class="text-sm font-medium text-slate-400">(Local Business Account)</span>
+                        </div>
 
-                        <h3 class="mt-4 text-xl font-semibold text-slate-900">BUSINESS</h3>
-                        <p class="text-sm font-medium text-slate-400">(Local Business Account)</p>
-                        
-
-                        <div class="mt-4 flex items-baseline gap-1.5">
-                            <span class="text-3xl font-bold text-slate-900">&pound;{{ $feeBusiness->CurrencyGBP }}</span>
+                        <div class="mt-2 flex items-baseline gap-1.5">
+                            <span class="text-3xl font-bold text-[#1C9BA0]">&pound;{{ $feeBusiness->CurrencyGBP }}</span>
                             <span class="text-sm font-medium text-slate-400">/ annual</span>
                         </div>
 
