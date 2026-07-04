@@ -10,55 +10,88 @@
         $roleOptions = config("user_types.$registerType") ?? [];
         $roleId = array_key_first($roleOptions);
         $roleLabel = $roleOptions[$roleId] ?? null;
-        $pageLabel = $roleLabel ? "$roleLabel Sign Up" : 'Create Account';
-        $heroTagline = $roleLabel ? "Create your {$roleLabel} account" : 'Start your account on JustMy.Health';
     @endphp
 
-    <div class="min-h-screen bg-slate-100 text-slate-900 py-10">
-        <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-            <div class="grid gap-8 overflow-hidden rounded-[2rem] border border-slate-200 bg-white shadow-lg shadow-slate-200/60 lg:grid-cols-[1.05fr_0.95fr]">
+    @if (session('error'))
+        <div class="mb-4 p-3 text-sm text-red-600 bg-red-100 rounded-lg">
+            {{ session('error') }}
+        </div>
+    @endif
+    @if (session('status'))
+        <div class="mb-4 p-3 text-green-700 bg-green-100 rounded-lg">
+            {{ session('status') }}
+        </div>
+    @endif
 
-                <div class="relative hidden overflow-hidden  lg:block">
+    <div class="min-h-screen flex items-center bg-slate-100 py-6">
+        <div class="mx-auto w-full max-w-5xl px-4 sm:px-6 lg:px-8">
+            <div class="grid overflow-hidden rounded-[2rem] border border-slate-200 bg-white shadow-xl shadow-slate-300/40 lg:grid-cols-2">
+
+                <!-- Visual side -->
+                <div class="relative hidden overflow-hidden lg:block">
                     <img src="{{ asset('images/bg-1.jpg') }}" alt="Sign up" class="h-full w-full object-cover" />
-                    <div class="absolute inset-0 bg-gradient-to-t from-white/90 via-white/60 to-transparent"></div>
-                    <div class="absolute inset-x-0 bottom-0 p-10">
-                        <span class="inline-flex rounded-full bg-indigo-100 px-4 py-2 text-xs font-semibold uppercase tracking-[0.35em] text-indigo-600">
+                    <div class="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-slate-950/30 to-transparent"></div>
+
+                    <div class="absolute inset-x-0 top-0 p-5">
+                        <div class="flex items-center gap-2 text-white">
+                            <span class="flex h-9 w-9 items-center justify-center rounded-xl bg-white/15 backdrop-blur">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                                </svg>
+                            </span>
+                            <span class="text-sm font-semibold tracking-wide">JustMy.Health</span>
+                        </div>
+                    </div>
+
+                    <div class="absolute inset-x-0 bottom-0 p-5">
+                        <span class="inline-flex items-center rounded-full bg-white/15 px-4 py-1.5 text-xs font-semibold uppercase tracking-[0.3em] text-white backdrop-blur">
                             Welcome to JustMy.Health
                         </span>
-                        <h2 class="mt-4 text-4xl font-semibold tracking-tight text-slate-950">
-                            {{ $heroTagline }}
-                        </h2>
-                        <p class="mt-4 max-w-lg text-sm leading-7 text-slate-600">
+                        <p class="mt-3 max-w-sm text-sm leading-6 text-white/80">
                             Build your profile, manage bookings, and deliver sessions securely with simplified onboarding.
                         </p>
                     </div>
                 </div>
 
-                <div class="px-6 py-8 sm:px-10 sm:py-10">
-                    <div class="max-w-2xl">
-                        <span class="inline-flex rounded-full bg-indigo-100 px-3 py-1 text-xs font-semibold uppercase tracking-[0.35em] text-indigo-600">
-                            Create account
-                        </span>
-                        <h1 class="mt-4 text-3xl font-bold tracking-tight text-slate-950 sm:text-4xl">
-                            {{ $pageLabel }}
-                        </h1>
-                        <p class="mt-3 max-w-xl text-sm leading-7 text-slate-600">
-                            Fill in your details below to register and start serving clients on JustMy.Health.
-                        </p>
+                <!-- Form side -->
+                <div class="px-6 py-5 sm:px-10 sm:py-6">
+                    <span class="inline-flex items-center gap-1.5 rounded-full bg-[#EAFBFA] px-3 py-1 text-xs font-semibold uppercase tracking-[0.3em] text-[#1C9BA0]">
+                        <span class="h-1.5 w-1.5 rounded-full bg-[#1C9BA0]"></span>
+                        Create account
+                    </span>
+
+                    <!-- Social login -->
+                    <div class="mt-4">
+                        <div class="grid grid-cols-3 gap-3">
+                            <a href="{{ route('social.redirect', 'google') }}"
+                                class="group flex h-10 items-center justify-center gap-2 rounded-2xl border border-slate-200 bg-white text-slate-700 shadow-sm transition hover:border-[#1C9BA0]/40 hover:bg-[#F7FCFC]">
+                                <img src="{{ asset('images/google-brands.svg') }}" alt="Google" class="h-4 w-4" />
+                            </a>
+                            <a href="{{ route('social.redirect', 'facebook') }}"
+                                class="group flex h-10 items-center justify-center gap-2 rounded-2xl border border-slate-200 bg-white text-slate-700 shadow-sm transition hover:border-[#1C9BA0]/40 hover:bg-[#F7FCFC]">
+                                <img src="{{ asset('images/facebook-f-brands.svg') }}" alt="Facebook" class="h-4 w-4" />
+                            </a>
+                            <a href="{{ route('social.redirect', 'twitter') }}"
+                                class="group flex h-10 items-center justify-center gap-2 rounded-2xl border border-slate-200 bg-white text-slate-700 shadow-sm transition hover:border-[#1C9BA0]/40 hover:bg-[#F7FCFC]">
+                                <img src="{{ asset('images/x-twitter-brands.svg') }}" alt="Twitter" class="h-4 w-4" />
+                            </a>
+                        </div>
+                        <div class="mt-3 flex items-center gap-3">
+                            <span class="h-px flex-1 bg-slate-200"></span>
+                            <span class="text-xs font-medium uppercase tracking-wide text-slate-400">Or register with email</span>
+                            <span class="h-px flex-1 bg-slate-200"></span>
+                        </div>
                     </div>
 
-                    <div class="mt-8 flex flex-wrap items-center gap-3">
-                        <a href="{{ route('social.redirect', 'google') }}" class="inline-flex h-11 w-11 items-center justify-center rounded-2xl bg-slate-100 text-slate-900 shadow-sm transition hover:bg-slate-200">
-                            <img src="{{ asset('images/google-brands.svg') }}" alt="Google" class="h-5 w-5" />
-                        </a>
-                        <a href="{{ route('social.redirect', 'facebook') }}" class="inline-flex h-11 w-11 items-center justify-center rounded-2xl bg-slate-100 text-slate-900 shadow-sm transition hover:bg-slate-200">
-                            <img src="{{ asset('images/facebook-f-brands.svg') }}" alt="Facebook" class="h-5 w-5" />
-                        </a>
-                        <a href="{{ route('social.redirect', 'twitter') }}" class="inline-flex h-11 w-11 items-center justify-center rounded-2xl bg-slate-100 text-slate-900 shadow-sm transition hover:bg-slate-200">
-                            <img src="{{ asset('images/x-twitter-brands.svg') }}" alt="Twitter" class="h-5 w-5" />
-                        </a>
-                        <span class="ml-auto text-sm text-slate-500">Or register with email</span>
-                    </div>
+                    @if ($errors->any())
+                        <div class="rounded-[10px] border border-red-200 bg-red-50 p-3 text-sm text-red-700 mt-3">
+                            <ul class="list-disc list-inside pl-5 space-y-1">
+                                @foreach ($errors->all() as $error)
+                                    <li>{{ $error }}</li>
+                                @endforeach
+                            </ul>
+                        </div>
+                    @endif
 
                     <form method="POST" action="{{ route('register') }}"
                         @submit.prevent="
@@ -74,164 +107,181 @@
                         });
                     }"
                         x-data="registrationForm()"
-                        class="mt-10 w-full rounded-[1.75rem] border border-slate-200 bg-slate-50 p-6 shadow-lg shadow-slate-200/50 space-y-6">
+                        class="mt-3 w-full space-y-3">
                         @csrf
 
-                        @if ($errors->any())
-                            <div class="rounded-3xl border border-red-200 bg-red-50 p-4 text-sm text-red-700">
-                                <ul class="list-disc pl-5 space-y-1">
-                                    @foreach ($errors->all() as $error)
-                                        <li>{{ $error }}</li>
-                                    @endforeach
-                                </ul>
-                            </div>
-                        @endif
-
-                        @php
-                            $type = request()->query('type'); // "user", "therapist", "business"
-                            $roleOptions = config("user_types.$type") ?? [];
-                            $roleId = array_key_first($roleOptions); // first (and only) role id
-                            $roleLabel = $roleOptions[$roleId] ?? null;
-                        @endphp
-
                         @if ($roleId && $roleLabel)
-                            <div x-data x-init="loadUserFields('{{ $roleId }}')" class="rounded-3xl border border-slate-200 bg-white p-4">
-                                <p class="text-sm text-slate-600">
-                                    Register as
-                                    <span class="font-semibold text-slate-950">{{ $roleLabel }}</span>
+                            <div x-data x-init="loadUserFields('{{ $roleId }}')" class="flex items-center gap-2 rounded-[10px] border border-[#1C9BA0]/20 bg-[#EAFBFA] px-4 py-2.5">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 flex-shrink-0 text-[#1C9BA0]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                </svg>
+                                <p class="text-sm text-slate-700">
+                                    Registering as <span class="font-semibold text-[#18848F]">{{ $roleLabel }}</span>
                                 </p>
                                 <input type="hidden" name="UserType" id="UserType" value="{{ $roleId }}">
                             </div>
                         @endif
 
-                        <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
-                            <div class="relative col-span-2">
-                                <x-text-input name="UserName" placeholder="UserName e.g RedRose47" x-model="UserName"
+                        <div>
+                            <label for="UserName" class="text-sm font-semibold text-slate-700">{{ __('Username') }}</label>
+                            <div class="relative mt-1.5">
+                                <span class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-4 text-slate-400">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                                    </svg>
+                                </span>
+                                <input id="UserName" name="UserName" placeholder="UserName e.g RedRose47" x-model="UserName"
                                     @input="validateUserName" @blur="checkUsernameExists"
-                                    class="w-full rounded-2xl border border-slate-300 bg-white px-4 py-3 text-slate-900 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
-                                    required />
+                                    class="block w-full rounded-[10px] border border-slate-200 bg-slate-50/70 pl-11 pr-4 py-2 text-slate-900 shadow-sm transition focus:border-[#1C9BA0] focus:bg-white focus:ring-[#1C9BA0] sm:text-sm"
+                                    x-bind:class="errors.UserName ? 'border-red-400 focus:border-red-400 focus:ring-red-400' : ''"
+                                    required autocomplete="username" />
                                 <button type="button"
-                                    class="absolute right-0 top-0 -translate-y-1/2 translate-x-1/2 inline-flex h-8 w-8 items-center justify-center rounded-full border border-slate-300 bg-white text-sm font-semibold text-slate-700 shadow-sm transition hover:bg-slate-100"
+                                    class="absolute -top-2 -right-2 flex h-6 w-6 items-center justify-center rounded-full border border-slate-300 bg-white text-xs font-semibold text-slate-500 shadow-sm transition hover:border-[#1C9BA0]/40 hover:text-[#1C9BA0]"
                                     @click="showInfo('username')" aria-label="Username help">?</button>
-                                <p x-text="errors.UserName" x-show="errors.UserName" class="mt-2 text-sm text-red-600"></p>
                             </div>
-
-                            <div class="relative col-span-2">
-                                <x-text-input name="Email" placeholder="Email e.g myname@mydomain.com" x-model="Email" @input="validateEmail"
-                                    @blur="() => { validateEmail(); }"
-                                    class="w-full rounded-2xl border border-slate-300 bg-white px-4 py-3 text-slate-900 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
-                                    required />
-                                <button type="button"
-                                    class="absolute right-0 top-0 -translate-y-1/2 translate-x-1/2 inline-flex h-8 w-8 items-center justify-center rounded-full border border-slate-300 bg-white text-sm font-semibold text-slate-700 shadow-sm transition hover:bg-slate-100"
-                                    @click="showInfo('email')" aria-label="Email help">?</button>
-                                <p x-text="errors.Email" x-show="errors.Email" class="mt-2 text-sm text-red-600"></p>
-                            </div>
-
-                            <div class="col-span-2">
-                                <div class="flex flex-col gap-4 md:flex-row">
-                                    <div class="w-full relative">
-                                        <input :type="showPassword ? 'text' : 'password'" x-model="Password" name="Password"
-                                            @input="validatePassword" placeholder="Password" required
-                                            class="block w-full rounded-2xl border border-slate-300 bg-white px-4 py-3 pr-12 text-slate-900 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
-                                            :class="{
-                                                'border-red-500': strength === 'weak' && Password.length > 0,
-                                                'border-yellow-500': strength === 'medium',
-                                                'border-green-500': strength === 'strong'
-                                            }" />
-                                        <p x-text="errors.Password" x-show="errors.Password" class="mt-2 text-sm text-red-600"></p>
-                                        <button type="button" @click="showPassword = !showPassword"
-                                            class="absolute right-3 top-3 text-slate-400 hover:text-slate-600">
-                                            <svg x-show="!showPassword" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5"
-                                                fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                    d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                    d="M2.458 12C3.732 7.943 7.523 5 12 5..." />
-                                            </svg>
-                                            <svg x-show="showPassword" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5"
-                                                fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                    d="M13.875 18.825A10.05 10.05 0 0112 19..." />
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                    d="M3 3l18 18" />
-                                            </svg>
-                                        </button>
-                                    </div>
-
-                                    <div class="w-full relative">
-                                        <input :type="showConfirmPassword ? 'text' : 'password'" name="Password_confirmation"
-                                            x-model="ConfirmPassword" @input="validateConfirmPassword"
-                                            placeholder="Confirm Password" required
-                                            class="block w-full rounded-2xl border border-slate-300 bg-white px-4 py-3 pr-12 text-slate-900 shadow-sm focus:border-indigo-500 focus:ring-indigo-500" />
-                                        <p x-show="errors.ConfirmPassword" x-text="errors.ConfirmPassword"
-                                            class="mt-2 text-sm text-red-600"></p>
-                                        <button type="button" @click="showConfirmPassword = !showConfirmPassword"
-                                            class="absolute right-3 top-3 text-slate-400 hover:text-slate-600">
-                                            <svg x-show="!showConfirmPassword" xmlns="http://www.w3.org/2000/svg"
-                                                class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                    d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                    d="M2.458 12C3.732 7.943 7.523 5 12 5c4.477 0 8.268..." />
-                                            </svg>
-                                            <svg x-show="showConfirmPassword" xmlns="http://www.w3.org/2000/svg"
-                                                class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                    d="M13.875 18.825A10.05 10.05 0 0112 19..." />
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                    d="M3 3l18 18" />
-                                            </svg>
-                                        </button>
-                                    </div>
-                                </div>
-                                <p class="text-sm text-slate-500 mt-2">
-                                    Password must contain minimum 8 characters, with at least one uppercase, lowercase, number, and special character.
-                                </p>
-                            </div>
+                            <p x-text="errors.UserName" x-show="errors.UserName" class="text-red-600 text-xs mt-1.5 font-medium"></p>
                         </div>
 
-                        <div id="dynamic-user-fields" class="grid grid-cols-1 gap-4 md:grid-cols-2"></div>
+                        <div>
+                            <label for="Email" class="text-sm font-semibold text-slate-700">{{ __('Email') }}</label>
+                            <div class="relative mt-1.5">
+                                <span class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-4 text-slate-400">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                                    </svg>
+                                </span>
+                                <input id="Email" name="Email" placeholder="Email e.g myname@mydomain.com" x-model="Email" @input="validateEmail"
+                                    @blur="() => { validateEmail(); }"
+                                    class="block w-full rounded-[10px] border border-slate-200 bg-slate-50/70 pl-11 pr-4 py-2 text-slate-900 shadow-sm transition focus:border-[#1C9BA0] focus:bg-white focus:ring-[#1C9BA0] sm:text-sm"
+                                    x-bind:class="errors.Email ? 'border-red-400 focus:border-red-400 focus:ring-red-400' : ''"
+                                    required autocomplete="email" />
+                                <button type="button"
+                                    class="absolute -top-2 -right-2 flex h-6 w-6 items-center justify-center rounded-full border border-slate-300 bg-white text-xs font-semibold text-slate-500 shadow-sm transition hover:border-[#1C9BA0]/40 hover:text-[#1C9BA0]"
+                                    @click="showInfo('email')" aria-label="Email help">?</button>
+                            </div>
+                            <p x-text="errors.Email" x-show="errors.Email" class="text-red-600 text-xs mt-1.5 font-medium"></p>
+                        </div>
+
+                        <div class="flex flex-col gap-3 md:flex-row">
+                            <div class="w-full">
+                                <label for="Password" class="text-sm font-semibold text-slate-700">{{ __('Password') }}</label>
+                                <div class="relative mt-1.5">
+                                    <span class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-4 text-slate-400">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 10-8 0v4h8z" />
+                                        </svg>
+                                    </span>
+                                    <input id="Password" :type="showPassword ? 'text' : 'password'" x-model="Password" name="Password"
+                                        @input="validatePassword" placeholder="Password" required autocomplete="new-password"
+                                        class="block w-full rounded-[10px] border border-slate-200 bg-slate-50/70 pl-11 pr-12 py-2 text-slate-900 shadow-sm transition focus:border-[#1C9BA0] focus:bg-white focus:ring-[#1C9BA0] sm:text-sm"
+                                        :class="{
+                                            'border-red-400 focus:border-red-400 focus:ring-red-400': strength === 'weak' && Password.length > 0,
+                                            'border-amber-400 focus:border-amber-400 focus:ring-amber-400': strength === 'medium',
+                                            'border-emerald-400 focus:border-emerald-400 focus:ring-emerald-400': strength === 'strong'
+                                        }" />
+                                    <button type="button" @click="showPassword = !showPassword"
+                                        class="absolute inset-y-0 right-3 flex items-center text-slate-400 hover:text-slate-600">
+                                        <svg x-show="!showPassword" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5"
+                                            fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                                        </svg>
+                                        <svg x-show="showPassword" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5"
+                                            fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M13.875 18.825A10.05 10.05 0 0112 19c-4.477 0-8.268-2.943-9.542-7a9.956 9.956 0 012.127-3.592M6.343 6.343A9.956 9.956 0 0112 5c4.478 0 8.268 2.943 9.542 7a9.958 9.958 0 01-4.132 4.132M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3l18 18" />
+                                        </svg>
+                                    </button>
+                                </div>
+                                <p x-text="errors.Password" x-show="errors.Password" class="text-red-600 text-xs mt-1.5 font-medium"></p>
+                            </div>
+
+                            <div class="w-full">
+                                <label for="ConfirmPassword" class="text-sm font-semibold text-slate-700">{{ __('Confirm Password') }}</label>
+                                <div class="relative mt-1.5">
+                                    <span class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-4 text-slate-400">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 10-8 0v4h8z" />
+                                        </svg>
+                                    </span>
+                                    <input id="ConfirmPassword" :type="showConfirmPassword ? 'text' : 'password'" name="Password_confirmation"
+                                        x-model="ConfirmPassword" @input="validateConfirmPassword"
+                                        placeholder="Confirm Password" required autocomplete="new-password"
+                                        class="block w-full rounded-[10px] border border-slate-200 bg-slate-50/70 pl-11 pr-12 py-2 text-slate-900 shadow-sm transition focus:border-[#1C9BA0] focus:bg-white focus:ring-[#1C9BA0] sm:text-sm"
+                                        x-bind:class="errors.ConfirmPassword ? 'border-red-400 focus:border-red-400 focus:ring-red-400' : ''" />
+                                    <button type="button" @click="showConfirmPassword = !showConfirmPassword"
+                                        class="absolute inset-y-0 right-3 flex items-center text-slate-400 hover:text-slate-600">
+                                        <svg x-show="!showConfirmPassword" xmlns="http://www.w3.org/2000/svg"
+                                            class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M2.458 12C3.732 7.943 7.523 5 12 5c4.477 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                                        </svg>
+                                        <svg x-show="showConfirmPassword" xmlns="http://www.w3.org/2000/svg"
+                                            class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M13.875 18.825A10.05 10.05 0 0112 19c-4.477 0-8.268-2.943-9.542-7a9.956 9.956 0 012.127-3.592M6.343 6.343A9.956 9.956 0 0112 5c4.478 0 8.268 2.943 9.542 7a9.958 9.958 0 01-4.132 4.132M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3l18 18" />
+                                        </svg>
+                                    </button>
+                                </div>
+                                <p x-show="errors.ConfirmPassword" x-text="errors.ConfirmPassword"
+                                    class="text-red-600 text-xs mt-1.5 font-medium"></p>
+                            </div>
+                        </div>
+                        <p class="text-xs leading-5 text-slate-500">
+                            Password must contain minimum 8 characters, with at least one uppercase, lowercase, number, and special character.
+                        </p>
+
+                        <div id="dynamic-user-fields" class="grid grid-cols-1 gap-3 md:grid-cols-2"></div>
 
                         <div x-show="showInfoModal" x-cloak class="fixed inset-0 z-50 flex items-center justify-center px-4">
-                            <div class="absolute inset-0 bg-slate-900/20" @click="closeInfo()"></div>
-                            <div class="relative w-full max-w-lg rounded-[1.5rem] bg-white p-6 shadow-2xl shadow-slate-200/60">
+                            <div class="absolute inset-0 bg-slate-900/30 backdrop-blur-sm" @click="closeInfo()"></div>
+                            <div class="relative w-full max-w-lg rounded-[1.5rem] bg-white p-6 shadow-2xl shadow-black/20">
                                 <div class="flex items-start justify-end gap-4 mb-4">
-                                    <button type="button" @click="closeInfo()" class="text-slate-500 hover:text-slate-900">✕</button>
+                                    <button type="button" @click="closeInfo()" class="text-slate-400 hover:text-slate-600">✕</button>
                                 </div>
-                                <div class="text-sm text-slate-700" x-html="infoText"></div>
+                                <div class="text-sm leading-6 text-slate-600" x-html="infoText"></div>
                                 <div class="mt-6 text-right">
-                                    <button type="button" @click="closeInfo()" class="rounded-2xl bg-indigo-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-indigo-500">Close</button>
+                                    <button type="button" @click="closeInfo()" class="rounded-[10px] bg-[#1C9BA0] px-4 py-2 text-sm font-semibold text-white shadow-lg shadow-[#1C9BA0]/25 transition hover:bg-[#18848F]">Close</button>
                                 </div>
                             </div>
                         </div>
 
-                        <div class="space-y-3 text-sm text-slate-700">
+                        <div class="space-y-2 text-sm text-slate-600">
                             <label class="flex items-center gap-3">
                                 <input type="checkbox" name="Terms" required
-                                    class="h-4 w-4 rounded border-slate-300 bg-white text-indigo-500 focus:ring-indigo-500" />
+                                    class="h-4 w-4 rounded border-slate-300 text-[#1C9BA0] focus:ring-[#1C9BA0]" />
                                 <span>Accept Terms and Conditions</span>
                             </label>
                             <label class="flex items-center gap-3">
                                 <input type="checkbox" name="Privacy" required
-                                    class="h-4 w-4 rounded border-slate-300 bg-white text-indigo-500 focus:ring-indigo-500" />
+                                    class="h-4 w-4 rounded border-slate-300 text-[#1C9BA0] focus:ring-[#1C9BA0]" />
                                 <span>Accept Privacy Policy</span>
                             </label>
                             <label class="flex items-center gap-3">
                                 <input type="checkbox" name="GDPR"
-                                    class="h-4 w-4 rounded border-slate-300 bg-white text-indigo-500 focus:ring-indigo-500" />
+                                    class="h-4 w-4 rounded border-slate-300 text-[#1C9BA0] focus:ring-[#1C9BA0]" />
                                 <span>I accept GDPR</span>
                             </label>
                         </div>
 
-                        <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-                            <a class="text-sm text-slate-600 transition hover:text-slate-900 underline" href="{{ route('login') }}">
-                                {{ __('Already registered?') }}
-                            </a>
-                            <x-primary-button class="w-full sm:w-auto px-6 py-3 text-sm font-semibold">
-                                {{ __('Register') }}
-                            </x-primary-button>
-                        </div>
+                        <button type="submit"
+                            class="w-full flex justify-center rounded-[10px] bg-[#1C9BA0] px-6 py-2.5 text-sm font-semibold text-white shadow-lg shadow-[#1C9BA0]/25 transition hover:bg-[#18848F] hover:shadow-xl hover:shadow-[#1C9BA0]/30">
+                            {{ __('Register') }}
+                        </button>
                     </form>
+
+                    <p class="text-center text-sm mt-4 text-slate-500">
+                        {{ __('Already registered?') }}
+                        <a href="{{ route('login') }}" class="font-semibold text-[#1C9BA0] hover:text-[#18848F] hover:underline">
+                            {{ __('Sign in') }}
+                        </a>
+                    </p>
                 </div>
             </div>
         </div>
@@ -246,6 +296,9 @@
     const medicalOptions = @json(config('medical_options'));
     const professionalOptions = @json(config('professional_options'));
 
+    const FIELD_CLASS = "w-full rounded-[10px] border border-slate-200 bg-slate-50/70 px-4 py-2 text-sm text-slate-900 shadow-sm transition focus:border-[#1C9BA0] focus:bg-white focus:ring-[#1C9BA0]";
+    const LABEL_CLASS = "text-sm font-semibold text-slate-700";
+
     function loadUserFields(userTypeId) {
         const fields = userFieldMap[userTypeId] || [];
         const container = document.getElementById('dynamic-user-fields');
@@ -254,30 +307,30 @@
         fields.forEach(field => {
             if (field === 'BusinessPrimaryIndustry') {
                 container.innerHTML += `
-                <div class="flex flex-col space-y-1">
-                    <label class="text-sm font-medium text-gray-700">${field}</label>
-                    <select name="ProfileData[${field}]" onchange="handleNotListed(this, '${field}'); loadSubIndustry(this.value)" class="w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
+                <div class="flex flex-col space-y-1.5">
+                    <label class="${LABEL_CLASS}">${field}</label>
+                    <select name="ProfileData[${field}]" onchange="handleNotListed(this, '${field}'); loadSubIndustry(this.value)" class="${FIELD_CLASS}">
                         ${businessOptions.BusinessPrimaryIndustry.map(opt => `<option value="${opt}">${opt}</option>`).join('')}
                     </select>
-                    <input type="text" name="ProfileData[${field}_Custom]" placeholder="Specify Industry" style="display:none;" class="w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:ring-indigo-500 focus:border-indigo-500" />
+                    <input type="text" name="ProfileData[${field}_Custom]" placeholder="Specify Industry" style="display:none;" class="${FIELD_CLASS}" />
                     </div>
                 `;
             } else if (field === 'BusinessSubIndustry') {
                 container.innerHTML += `
-                <div class="flex flex-col space-y-1">
-                    <label class="text-sm font-medium text-gray-700">${field}</label>
-                    <select name="ProfileData[${field}]" id="subindustry" onchange="handleNotListed(this, '${field}')" class="w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:ring-indigo-500 focus:border-indigo-500"></select>
-                    <input type="text" name="ProfileData[${field}_Custom]" placeholder="Specify SubIndustry" style="display:none;" class="w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:ring-indigo-500 focus:border-indigo-500" />
+                <div class="flex flex-col space-y-1.5">
+                    <label class="${LABEL_CLASS}">${field}</label>
+                    <select name="ProfileData[${field}]" id="subindustry" onchange="handleNotListed(this, '${field}')" class="${FIELD_CLASS}"></select>
+                    <input type="text" name="ProfileData[${field}_Custom]" placeholder="Specify SubIndustry" style="display:none;" class="${FIELD_CLASS}" />
                     </div>
                 `;
             } else if (field === 'BusinessType') {
                 container.innerHTML += `
-                <div class="flex flex-col space-y-1">
-                    <label class="text-sm font-medium text-gray-700">${field}</label>
-                    <select name="ProfileData[${field}]" onchange="handleNotListed(this, '${field}')" class="w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
+                <div class="flex flex-col space-y-1.5">
+                    <label class="${LABEL_CLASS}">${field}</label>
+                    <select name="ProfileData[${field}]" onchange="handleNotListed(this, '${field}')" class="${FIELD_CLASS}">
                         ${businessOptions.BusinessType.map(opt => `<option value="${opt}">${opt}</option>`).join('')}
                     </select>
-                    <input type="text" name="ProfileData[${field}_Custom]" placeholder="Specify Business Type" style="display:none;" class="w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:ring-indigo-500 focus:border-indigo-500"/>
+                    <input type="text" name="ProfileData[${field}_Custom]" placeholder="Specify Business Type" style="display:none;" class="${FIELD_CLASS}"/>
                     </div>
                 `;
             } else if (field === 'Country') {
@@ -286,9 +339,9 @@
                     : (userOptions.Country || []);
 
                 container.innerHTML += `
-                <div class="flex flex-col space-y-1">
-                    <label class="text-sm font-medium text-gray-700">${field}</label>
-                    <select name="ProfileData[${field}]" id="country-dropdown" onchange="loadStates(this.value)" class="w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:ring-indigo-500 focus:border-indigo-500" required>
+                <div class="flex flex-col space-y-1.5">
+                    <label class="${LABEL_CLASS}">${field}</label>
+                    <select name="ProfileData[${field}]" id="country-dropdown" onchange="loadStates(this.value)" class="${FIELD_CLASS}" required>
                         <option value="">Select Country</option>
                         ${countries.map(opt => `<option value="${opt}">${opt}</option>`).join('')}
                     </select>
@@ -298,56 +351,56 @@
             } else if (field === 'State') {
                 if (userTypeId === '10') {
                     container.innerHTML += `
-                    <div class="flex flex-col space-y-1">
-                    <label class="text-sm font-medium text-gray-700">${field}</label>
-                    <select name="ProfileData[${field}]" id="state-dropdown" onchange="loadCities(this.value)"  class="w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:ring-indigo-500 focus:border-indigo-500"></select>
+                    <div class="flex flex-col space-y-1.5">
+                    <label class="${LABEL_CLASS}">${field}</label>
+                    <select name="ProfileData[${field}]" id="state-dropdown" onchange="loadCities(this.value)"  class="${FIELD_CLASS}"></select>
                     </div>
                 `;
                 } else {
                     container.innerHTML += `
-                    <div class="flex flex-col space-y-1">
-                    <label class="text-sm font-medium text-gray-700">${field}</label>
-                    <input type="text" name="ProfileData[${field}]" class="w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:ring-indigo-500 focus:border-indigo-500" placeholder="Enter ${field}" />
+                    <div class="flex flex-col space-y-1.5">
+                    <label class="${LABEL_CLASS}">${field}</label>
+                    <input type="text" name="ProfileData[${field}]" class="${FIELD_CLASS}" placeholder="Enter ${field}" />
                     </div>
                 `;
                 }
             } else if (field === 'City') {
                 if (userTypeId === '10') {
                 container.innerHTML += `
-                <div class="flex flex-col space-y-1">
-                    <label class="text-sm font-medium text-gray-700">${field}</label>
-                    <select name="ProfileData[${field}]" id="city-dropdown" class="w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:ring-indigo-500 focus:border-indigo-500"></select>
+                <div class="flex flex-col space-y-1.5">
+                    <label class="${LABEL_CLASS}">${field}</label>
+                    <select name="ProfileData[${field}]" id="city-dropdown" class="${FIELD_CLASS}"></select>
                     </div>
                 `;
                 } else if (userTypeId === '1') {
                     container.innerHTML += `
-                    <div class="flex flex-col space-y-1">
-                    <label class="text-sm font-medium text-gray-700">${field}</label>
-                    <input type="text" name="ProfileData[${field}]" class="min-w-[210%] rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:ring-indigo-500 focus:border-indigo-500" placeholder="Enter ${field}" />
+                    <div class="flex flex-col space-y-1.5">
+                    <label class="${LABEL_CLASS}">${field}</label>
+                    <input type="text" name="ProfileData[${field}]" class="min-w-[210%] ${FIELD_CLASS}" placeholder="Enter ${field}" />
                     </div>
                 `;
                 } else {
                     container.innerHTML += `
-                    <div class="flex flex-col space-y-1">
-                    <label class="text-sm font-medium text-gray-700">${field}</label>
-                    <input type="text" name="ProfileData[${field}]" class="w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:ring-indigo-500 focus:border-indigo-500" placeholder="Enter ${field}" />
+                    <div class="flex flex-col space-y-1.5">
+                    <label class="${LABEL_CLASS}">${field}</label>
+                    <input type="text" name="ProfileData[${field}]" class="${FIELD_CLASS}" placeholder="Enter ${field}" />
                     </div>
                 `;
                 }
             } else if (userOptions[field]) {
                 container.innerHTML += `
-                <div class="flex flex-col space-y-1">
-                    <label class="text-sm font-medium text-gray-700">${field}</label>
-                    <select name="ProfileData[${field}]" class="w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
+                <div class="flex flex-col space-y-1.5">
+                    <label class="${LABEL_CLASS}">${field}</label>
+                    <select name="ProfileData[${field}]" class="${FIELD_CLASS}">
                         ${userOptions[field].map(opt => `<option value="${opt}">${opt}</option>`).join('')}
                     </select>
                     </div>
                 `;
             } else if (field === 'DOB' || field === 'DateOfBirth') {
                 container.innerHTML += `
-                <div class="flex flex-col space-y-1">
-                    <label class="text-sm font-medium text-gray-700">${field}</label>
-                    <input type="date" name="ProfileData[${field}]" class="w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:ring-indigo-500 focus:border-indigo-500" />
+                <div class="flex flex-col space-y-1.5">
+                    <label class="${LABEL_CLASS}">${field}</label>
+                    <input type="date" name="ProfileData[${field}]" class="${FIELD_CLASS}" />
                     </div>
                 `;
             } else if (field === 'YearBirth') {
@@ -357,9 +410,9 @@
                     yearOptions += `<option value="${y}">${y}</option>`;
                 }
                 container.innerHTML += `
-                <div class="flex flex-col space-y-1">
-                    <label class="text-sm font-medium text-gray-700">${field}</label>
-                    <select name="ProfileData[${field}]" class="w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
+                <div class="flex flex-col space-y-1.5">
+                    <label class="${LABEL_CLASS}">${field}</label>
+                    <select name="ProfileData[${field}]" class="${FIELD_CLASS}">
                         <option value="">Select Year</option>
                         ${yearOptions}
                     </select>
@@ -367,9 +420,9 @@
                 `;
             } else {
                 container.innerHTML += `
-                <div class="flex flex-col space-y-1">
-                    <label class="text-sm font-medium text-gray-700">${field}</label>
-                    <input type="text" name="ProfileData[${field}]" class="w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:ring-indigo-500 focus:border-indigo-500" />
+                <div class="flex flex-col space-y-1.5">
+                    <label class="${LABEL_CLASS}">${field}</label>
+                    <input type="text" name="ProfileData[${field}]" class="${FIELD_CLASS}" />
                     </div>
                 `;
             }

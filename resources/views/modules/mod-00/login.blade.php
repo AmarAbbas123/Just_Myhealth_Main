@@ -71,7 +71,7 @@
                     </div>
 
                     @if ($errors->any())
-                        <div class="rounded-2xl border border-red-200 bg-red-50 p-3 text-sm text-red-700 mt-3">
+                        <div class="rounded-[10px] border border-red-200 bg-red-50 p-3 text-sm text-red-700 mt-3">
                             <ul class="list-disc list-inside pl-5 space-y-1">
                                 @foreach ($errors->all() as $error)
                                     <li>{{ $error }}</li>
@@ -93,7 +93,7 @@
                                     </svg>
                                 </span>
                                 <input id="UserName" type="text" name="UserName" value="{{ old('UserName') }}"
-                                    class="block w-full rounded-2xl border border-slate-200 bg-slate-50/70 pl-11 pr-4 py-2 text-slate-900 shadow-sm transition focus:border-[#1C9BA0] focus:bg-white focus:ring-[#1C9BA0] sm:text-sm"
+                                    class="block w-full rounded-[10px] border border-slate-200 bg-slate-50/70 pl-11 pr-4 py-2 text-slate-900 shadow-sm transition focus:border-[#1C9BA0] focus:bg-white focus:ring-[#1C9BA0] sm:text-sm"
                                     x-model="username"
                                     @input="
                                         if (/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(username)) {
@@ -124,7 +124,7 @@
                                     </svg>
                                 </span>
                                 <input id="Password"
-                                    class="block w-full rounded-2xl border border-slate-200 bg-slate-50/70 pl-11 pr-12 py-2 text-slate-900 shadow-sm transition focus:border-[#1C9BA0] focus:bg-white focus:ring-[#1C9BA0] sm:text-sm"
+                                    class="block w-full rounded-[10px] border border-slate-200 bg-slate-50/70 pl-11 pr-12 py-2 text-slate-900 shadow-sm transition focus:border-[#1C9BA0] focus:bg-white focus:ring-[#1C9BA0] sm:text-sm"
                                     :type="showPassword ? 'text' : 'password'" name="Password" required autocomplete="current-password" />
                                 <button type="button"
                                     class="absolute inset-y-0 right-3 flex items-center text-slate-400 hover:text-slate-600"
@@ -153,7 +153,7 @@
                         </div>
 
                         <button type="submit"
-                            class="w-full flex justify-center rounded-2xl bg-[#1C9BA0] px-6 py-2.5 text-sm font-semibold text-white shadow-lg shadow-[#1C9BA0]/25 transition hover:bg-[#18848F] hover:shadow-xl hover:shadow-[#1C9BA0]/30"
+                            class="w-full flex justify-center rounded-[10px] bg-[#1C9BA0] px-6 py-2.5 text-sm font-semibold text-white shadow-lg shadow-[#1C9BA0]/25 transition hover:bg-[#18848F] hover:shadow-xl hover:shadow-[#1C9BA0]/30"
                             x-bind:disabled="error.length > 0"
                             x-bind:class="{ 'opacity-50 cursor-not-allowed': error.length > 0 }">
                             {{ __('Log in') }}
@@ -171,7 +171,7 @@
                         </div>
 
                         <button type="button" id="face-login-trigger"
-                            class="mt-3 flex w-full items-center justify-center gap-2 rounded-2xl border border-[#1C9BA0]/30 bg-[#EAFBFA] px-4 py-2.5 text-sm font-semibold text-[#18848F] shadow-sm transition hover:bg-[#1C9BA0]/10 hover:border-[#1C9BA0]/50">
+                            class="mt-3 flex w-full items-center justify-center gap-2 rounded-[10px] border border-[#1C9BA0]/30 bg-[#EAFBFA] px-4 py-2.5 text-sm font-semibold text-[#18848F] shadow-sm transition hover:bg-[#1C9BA0]/10 hover:border-[#1C9BA0]/50">
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M4 7V5a1 1 0 011-1h2M4 17v2a1 1 0 001 1h2m10-14h2a1 1 0 011 1v2m-4 12h2a1 1 0 001-1v-2M9 10h.01M15 10h.01M9.5 15c.7.6 1.6 1 2.5 1s1.8-.4 2.5-1" />
                             </svg>
