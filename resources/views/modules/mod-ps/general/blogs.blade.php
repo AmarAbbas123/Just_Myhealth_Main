@@ -46,7 +46,7 @@
     </section>
 
     <!-- Post grid -->
-    <section class="py-10 lg:py-16 bg-gray-50">
+    <section class="py-10 lg:py-12 bg-gray-50">
         <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
 
             @if ($posts->isEmpty())
@@ -76,7 +76,7 @@
                                     {{ $post->PublishedAt?->format('M j, Y') }}
                                 </time>
 
-                                <h2 class="mt-2 text-lg font-semibold text-gray-900 leading-snug">
+                                <h2 class="mt-2 text-lg  text-gray-900 leading-snug">
                                     <a href="{{ route('blogs.show', $post) }}" class="hover:text-teal-700 transition-colors">
                                         {{ $post->Title }}
                                     </a>
