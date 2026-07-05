@@ -31,7 +31,7 @@
 
     </div>
 </section>
-    <!-- Hero -->
+    <!-- main heading -->
     <section class="relative pt-12 pb-12 lg:pt-16 lg:pb-16 bg-gray-50">
         <div class="max-w-3xl mx-auto text-center px-4">
             <span class="inline-flex rounded-full bg-green-100 px-4 py-1.5 text-xs font-semibold uppercase tracking-widest text-green-700">

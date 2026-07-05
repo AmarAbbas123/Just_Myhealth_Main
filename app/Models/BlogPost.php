@@ -65,8 +65,21 @@ class BlogPost extends Model
 
     public function featuredImageUrl(): string
     {
-        return $this->FeaturedImagePath
-            ? asset('storage/' . $this->FeaturedImagePath)
-            : asset('images/blog-placeholder.jpg');
+        if ($this->FeaturedImagePath) {
+            return asset('storage/' . $this->FeaturedImagePath);
+        }
+
+        // Inline SVG fallback — no dependency on a physical placeholder file
+        // existing in public/images/, so this can never 404.
+        $label = htmlspecialchars(mb_substr($this->Title ?: 'Blog Post', 0, 30), ENT_QUOTES);
+        $svg = <<<SVG
+            <svg xmlns="http://www.w3.org/2000/svg" width="800" height="450" viewBox="0 0 800 450">
+                <rect width="800" height="450" fill="#e5e7eb"/>
+                <text x="400" y="235" font-family="Arial, sans-serif" font-size="28" fill="#9ca3af"
+                    text-anchor="middle" dominant-baseline="middle">{$label}</text>
+            </svg>
+            SVG;
+
+        return 'data:image/svg+xml;base64,' . base64_encode($svg);
     }
 }
