@@ -44,7 +44,7 @@
                     </span>
                 @endif
 
-                <h1 class="mt-3 text-3xl sm:text-4xl lg:text-[2.3rem] font-bold text-gray-900 leading-tight max-w-3xl">
+                <h1 class="mt-7 text-3xl sm:text-4xl lg:text-[2.3rem] font-bold text-gray-900 leading-tight max-w-3xl">
                     {{ $blogPost->Title }}
                 </h1>
 
