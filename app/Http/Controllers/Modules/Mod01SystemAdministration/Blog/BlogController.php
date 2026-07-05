@@ -33,7 +33,7 @@ class BlogController extends Controller
         $related = BlogPost::published()
             ->where('id', '!=', $blogPost->id)
             ->orderByDesc('PublishedAt')
-            ->take(3)
+            ->take(5)
             ->get();
 
         return view('modules.mod-ps.general.blog-show', compact('blogPost', 'related'));

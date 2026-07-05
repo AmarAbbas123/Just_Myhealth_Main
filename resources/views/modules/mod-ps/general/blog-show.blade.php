@@ -25,68 +25,110 @@
         </script>
     @endpush
 
-    <article class="pt-28 pb-16 lg:pt-32 lg:pb-20 bg-white">
-        <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="bg-gray-50">
 
-            <a href="{{ route('blogs') }}" class="text-sm text-green-600 hover:text-green-700 font-medium">
-                ← Back to Blog
-            </a>
+        <!-- Compact header bar -->
+        <div class="bg-white border-b border-gray-100">
+            <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+                <a href="{{ route('blogs') }}"
+                    class="inline-flex items-center gap-1.5 text-sm font-semibold text-teal-700 hover:text-teal-800">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18" />
+                    </svg>
+                    Back to Blog
+                </a>
 
-            @if ($blogPost->SourcePlatform)
-                <span class="inline-flex mt-4 rounded-full bg-green-100 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-green-700">
-                    Originally on {{ $blogPost->SourcePlatform }}
-                </span>
-            @endif
-
-            <h1 class="mt-4 text-3xl sm:text-4xl font-bold text-gray-900 leading-tight">
-                {{ $blogPost->Title }}
-            </h1>
-
-            <div class="mt-3 flex items-center gap-3 text-sm text-gray-500">
-                <time datetime="{{ $blogPost->PublishedAt?->toDateString() }}">
-                    {{ $blogPost->PublishedAt?->format('F j, Y') }}
-                </time>
-                @if ($blogPost->author)
-                    <span>&middot;</span>
-                    <span>{{ $blogPost->author->name ?? $blogPost->author->UserName }}</span>
+                @if ($blogPost->SourcePlatform)
+                    <span class="block mt-4 text-xs font-semibold uppercase tracking-widest text-teal-600">
+                        {{ $blogPost->SourcePlatform }}
+                    </span>
                 @endif
-            </div>
 
-            <img src="{{ $blogPost->featuredImageUrl() }}" alt="{{ $blogPost->Title }}"
-                class="mt-6 w-full rounded-2xl object-cover max-h-[480px]">
+                <h1 class="mt-2 text-3xl sm:text-4xl font-bold text-gray-900 leading-tight max-w-3xl">
+                    {{ $blogPost->Title }}
+                </h1>
 
-            <div class="prose prose-lg mt-8 max-w-none text-gray-700">
-                {!! $blogPost->Body !!}
-            </div>
-
-            @if ($blogPost->SourceUrl)
-                <p class="mt-8 text-sm text-gray-500">
-                    Original post:
-                    <a href="{{ $blogPost->SourceUrl }}" target="_blank" rel="noopener noreferrer"
-                        class="text-green-600 hover:underline">{{ $blogPost->SourceUrl }}</a>
-                </p>
-            @endif
-        </div>
-    </article>
-
-    @if ($related->isNotEmpty())
-        <section class="py-12 bg-gray-50 border-t border-gray-100">
-            <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-                <h2 class="text-xl font-semibold text-gray-900 mb-6">More from the blog</h2>
-                <div class="grid gap-6 sm:grid-cols-3">
-                    @foreach ($related as $post)
-                        <a href="{{ route('blogs.show', $post) }}"
-                            class="block rounded-xl overflow-hidden bg-white border border-gray-100 shadow-sm hover:shadow-md transition">
-                            <img src="{{ $post->featuredImageUrl() }}" alt="{{ $post->Title }}" class="w-full h-32 object-cover">
-                            <div class="p-4">
-                                <h3 class="text-sm font-semibold text-gray-900 line-clamp-2">{{ $post->Title }}</h3>
-                                <time class="text-xs text-gray-400">{{ $post->PublishedAt?->format('M j, Y') }}</time>
-                            </div>
-                        </a>
-                    @endforeach
+                <div class="mt-3 flex items-center gap-3 text-sm text-gray-500">
+                    <time datetime="{{ $blogPost->PublishedAt?->toDateString() }}">
+                        {{ $blogPost->PublishedAt?->format('F j, Y') }}
+                    </time>
+                    @if ($blogPost->author)
+                        <span class="text-gray-300">•</span>
+                        <span>{{ $blogPost->author->name ?? $blogPost->author->UserName }}</span>
+                    @endif
                 </div>
             </div>
-        </section>
-    @endif
+        </div>
+
+        <!-- Two-column layout: main content + sidebar -->
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-10 lg:py-14">
+            <div class="grid lg:grid-cols-3 gap-10">
+
+                <!-- Main content -->
+                <article class="lg:col-span-2 min-w-0">
+                    <div class="rounded-2xl overflow-hidden bg-gray-100" style="max-height:440px;">
+                        <img src="{{ $blogPost->featuredImageUrl() }}" alt="{{ $blogPost->Title }}"
+                            class="w-full object-cover" style="max-height:440px;">
+                    </div>
+
+                    <div class="prose prose-teal prose-lg mt-8 max-w-none text-gray-700">
+                        {!! $blogPost->Body !!}
+                    </div>
+
+                    @if ($blogPost->SourceUrl)
+                        <p class="mt-10 pt-6 border-t border-gray-200 text-sm text-gray-500">
+                            Original post:
+                            <a href="{{ $blogPost->SourceUrl }}" target="_blank" rel="noopener noreferrer"
+                                class="text-teal-700 hover:underline">{{ $blogPost->SourceUrl }}</a>
+                        </p>
+                    @endif
+                </article>
+
+                <!-- Sidebar: recent posts -->
+                <aside class="lg:col-span-1">
+                    <div class="lg:sticky lg:top-24">
+                        <div class="flex items-center gap-3 mb-5">
+                            <h2 class="text-sm font-bold uppercase tracking-widest text-gray-900">Recent Posts</h2>
+                            <div class="flex-1 h-px bg-gray-200"></div>
+                        </div>
+
+                        @if ($related->isEmpty())
+                            <p class="text-sm text-gray-400">No other posts yet.</p>
+                        @else
+                            <div class="space-y-4">
+                                @foreach ($related as $post)
+                                    <a href="{{ route('blogs.show', $post) }}"
+                                        class="group flex gap-3 items-start rounded-xl p-2 -mx-2 hover:bg-white transition">
+                                        <img src="{{ $post->featuredImageUrl() }}" alt="{{ $post->Title }}"
+                                            class="w-20 h-16 rounded-lg object-cover flex-shrink-0">
+                                        <div class="min-w-0">
+                                            @if ($post->SourcePlatform)
+                                                <span class="text-[10px] font-semibold uppercase tracking-wide text-teal-600">
+                                                    {{ $post->SourcePlatform }}
+                                                </span>
+                                            @endif
+                                            <h3 class="text-sm font-semibold text-gray-900 leading-snug line-clamp-2 group-hover:text-teal-700 transition-colors">
+                                                {{ $post->Title }}
+                                            </h3>
+                                            <time class="text-xs text-gray-400">{{ $post->PublishedAt?->format('M j, Y') }}</time>
+                                        </div>
+                                    </a>
+                                @endforeach
+                            </div>
+                        @endif
+
+                        <a href="{{ route('blogs') }}"
+                            class="mt-6 inline-flex items-center gap-1.5 text-sm font-semibold text-teal-700 hover:text-teal-800">
+                            View all posts
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
+                            </svg>
+                        </a>
+                    </div>
+                </aside>
+
+            </div>
+        </div>
+    </div>
 
 </x-app-layout>
