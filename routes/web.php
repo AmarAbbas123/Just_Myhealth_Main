@@ -92,6 +92,10 @@ use App\Http\Controllers\Modules\Mod11ChatBot\ChatbotController;
 use App\Http\Controllers\Auth\FaceLoginController;
 use App\Http\Controllers\Settings\FaceRegistrationController;
 
+
+//Mod01SystemAdministration/Blog/ Blogs controller
+use App\Http\Controllers\Modules\Mod01SystemAdministration\Blog\BlogController;
+use App\Http\Controllers\Modules\Mod01SystemAdministration\Blog\BlogPostsController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -177,7 +181,9 @@ Route::view('/mod-ps/general/privacy', 'modules.mod-ps.general.privacy')->name('
 
 Route::view('/mod-ps/general/partners', 'modules.mod-ps.general.partners')->name('partners');
 Route::view('/mod-ps/general/getting-started', 'modules.mod-ps.general.getting-started')->name('getting-started');
-Route::view('/mod-ps/general/blog', 'modules.mod-ps.general.blogs')->name('blogs');
+Route::get('/blogs', [BlogController::class, 'index'])->name('blogs');
+Route::get('/blogs/{blogPost}', [BlogController::class, 'show'])->name('blogs.show');
+
 
 // Carousel Pages
 Route::view('/health-care-providers', 'modules.mod-ps.home-page-top-carousel.message-1')->name('health-care-providers');
@@ -344,7 +350,10 @@ Route::middleware(['auth', 'usertype:admins'])->group(function () {
         ->name('therapists-onboarding-approve.status');
 });
 
-
+// blogs
+Route::middleware(['auth', 'usertype:admins'])->group(function () {
+    Route::resource('/mod-01/tm/blog-posts', BlogPostsController::class)->names('blog-posts');
+});
 
 /*
 |--------------------------------------------------------------------------

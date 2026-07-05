@@ -11,7 +11,9 @@
     <meta http-equiv="Expires" content="0" />
 
 
-    <title>{{ config('app.name', 'Just My Health') }}</title>
+    <title>{{ $title ?? config('app.name', 'Just My Health') }}</title>
+    <meta name="description" content="{{ $metaDescription ?? 'JustMy.Health — online counselling, therapy and physiotherapy support.' }}">
+    @stack('meta')
 
     <!-- Google tag (gtag.js) -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-GS5QSJH6M9"></script>

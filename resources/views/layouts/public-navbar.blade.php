@@ -22,6 +22,7 @@
                         <ul class="space-y-4 text-black text-lg font-semibold">                           
                             <li><a href="{{ route('faq') }}" @click="open = false">FAQ</a></li>
                             <li><a href="{{ route('about') }}" @click="open = false">About</a></li>
+                            <li><a href="{{ route('blogs') }}" @click="open = false">Blogs</a></li>
                             <li><a href="{{ route('regAccountType') }}" @click="open = false">Register</a></li>
                             <li><a href="{{ route('login') }}" @click="open = false">Login</a></li>
                         </ul>
@@ -33,6 +34,7 @@
             <div class="hidden lg:flex items-center space-x-6 text-black font-medium">               
                 <a href="{{ route('faq') }}" class="hover:text-green-500">FAQ</a>
                 <a href="{{ route('about') }}" class="hover:text-green-500">About</a>
+                <a href="{{ route('blogs') }}" class="hover:text-green-500">Blogs</a>
                 <a href="{{ route('regAccountType') }}" class="hover:text-green-500">Register</a>
                 <a href="{{ route('login') }}" class="hover:text-green-500">Login</a>
 
