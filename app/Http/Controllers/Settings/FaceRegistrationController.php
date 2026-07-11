@@ -14,7 +14,7 @@ class FaceRegistrationController extends Controller
      */
     public function edit(Request $request)
     {
-        $existing = FaceDescriptor::where('user_id', $request->user()->id)->first();
+        $existing = FaceDescriptor::where('user_id', $request->user()->getKey())->first();
 
         return view('settings.face-login', [
             'faceRegistered' => (bool) $existing,
@@ -50,7 +50,7 @@ class FaceRegistrationController extends Controller
         }
 
         FaceDescriptor::updateOrCreate(
-            ['user_id' => $request->user()->id],
+            ['user_id' => $request->user()->getKey()],
             [
                 'Descriptor' => $averaged,
                 'SampleCount' => $sampleCount,
@@ -68,7 +68,7 @@ class FaceRegistrationController extends Controller
      */
     public function destroy(Request $request)
     {
-        FaceDescriptor::where('user_id', $request->user()->id)->delete();
+        FaceDescriptor::where('user_id', $request->user()->getKey())->delete();
 
         return response()->json([
             'message' => 'Face login has been turned off for your account.',

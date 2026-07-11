@@ -10,6 +10,160 @@
         </div>
     @endif
 
+    <script>
+        window.faceLogin = () => {
+            let modelsLoaded = false;
+            let stream = null;
+            let scanning = false;
+            let scanTimer = null;
+
+            return {
+                modalOpen: false,
+                cameraStarted: false,
+                isLoading: false,
+                statusMessage: '',
+                statusIsError: false,
+                attemptsWithoutMatch: 0,
+
+                openModal() {
+                    this.modalOpen = true;
+                    this.statusMessage = '';
+                    this.statusIsError = false;
+                    this.attemptsWithoutMatch = 0;
+                    this.startCamera();
+                },
+
+                closeModal() {
+                    this.modalOpen = false;
+                    this.stopEverything();
+                },
+
+                async startCamera() {
+                    this.isLoading = true;
+                    try {
+                        if (!modelsLoaded) {
+                            this.statusMessage = 'Loading face model…';
+                            await faceapi.nets.tinyFaceDetector.loadFromUri('/models/face-api');
+                            await faceapi.nets.faceLandmark68Net.loadFromUri('/models/face-api');
+                            await faceapi.nets.faceRecognitionNet.loadFromUri('/models/face-api');
+                            modelsLoaded = true;
+                        }
+
+                        const video = this.$refs.loginVideo;
+                        stream = await navigator.mediaDevices.getUserMedia({
+                            video: { facingMode: 'user', width: { ideal: 640 }, height: { ideal: 480 } },
+                            audio: false,
+                        });
+                        video.srcObject = stream;
+                        await video.play();
+
+                        this.cameraStarted = true;
+                        this.statusMessage = 'Hold still and look at the camera…';
+                        this.scanLoop();
+                    } catch (error) {
+                        console.error('Face login camera/model failed:', error);
+                        this.statusMessage = this.friendlyError(error);
+                        this.statusIsError = true;
+                        this.stopEverything();
+                    } finally {
+                        this.isLoading = false;
+                    }
+                },
+
+                friendlyError(error) {
+                    if (error?.name === 'NotAllowedError') {
+                        return 'Camera permission was blocked. Allow camera access and try again.';
+                    }
+                    if (error?.name === 'NotFoundError') {
+                        return 'No webcam was found.';
+                    }
+                    return 'Could not start face login (' + (error?.message || 'unknown error') + '). Please use your password instead.';
+                },
+
+                scanLoop() {
+                    if (scanning) return;
+                    scanning = true;
+
+                    const tick = async () => {
+                        if (!this.modalOpen || !this.cameraStarted) {
+                            scanning = false;
+                            return;
+                        }
+
+                        const video = this.$refs.loginVideo;
+                        const detection = await faceapi
+                            .detectSingleFace(video, new faceapi.TinyFaceDetectorOptions())
+                            .withFaceLandmarks()
+                            .withFaceDescriptor();
+
+                        if (detection) {
+                            await this.tryLogin(Array.from(detection.descriptor));
+                        }
+
+                        if (this.modalOpen && this.cameraStarted) {
+                            scanTimer = setTimeout(tick, 900);
+                        } else {
+                            scanning = false;
+                        }
+                    };
+
+                    tick();
+                },
+
+                async tryLogin(descriptor) {
+                    this.statusIsError = false;
+                    this.statusMessage = 'Checking…';
+
+                    try {
+                        const res = await fetch('{{ route('login.face') }}', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                                'Accept': 'application/json',
+                            },
+                            body: JSON.stringify({ descriptor }),
+                        });
+                        const data = await res.json();
+
+                        if (res.ok) {
+                            this.statusMessage = data.message;
+                            this.stopEverything();
+                            window.location.href = data.redirect;
+                            return;
+                        }
+
+                        this.attemptsWithoutMatch++;
+                        this.statusMessage = data.message;
+                        this.statusIsError = true;
+
+                        if (res.status === 429 || this.attemptsWithoutMatch >= 6) {
+                            this.statusMessage += ' Please use your password to log in.';
+                            this.stopEverything();
+                            this.modalOpen = false;
+                        }
+                    } catch (error) {
+                        this.statusMessage = 'Connection error. Please use your password instead.';
+                        this.statusIsError = true;
+                    }
+                },
+
+                stopEverything() {
+                    this.cameraStarted = false;
+                    clearTimeout(scanTimer);
+                    scanning = false;
+                    if (stream) {
+                        stream.getTracks().forEach(t => t.stop());
+                        stream = null;
+                    }
+                    const video = this.$refs.loginVideo;
+                    if (video) video.srcObject = null;
+                },
+            };
+        };
+    </script>
+    <script src="/js/face-api.min.js"></script>
+
     <div class="min-h-screen flex items-center bg-slate-100 py-6">
         <div class="mx-auto w-full max-w-5xl px-4 sm:px-6 lg:px-8">
             <div class="grid overflow-hidden rounded-[2rem] border border-slate-200 bg-white shadow-xl shadow-slate-300/40 lg:grid-cols-2">
@@ -160,17 +314,15 @@
                         </button>
                     </form>
 
-                    {{-- Face login: alternative to typing a password. Registered via
-                         Settings → Face Login. Falls back to the form above if the
-                         patient hasn't registered a face or isn't recognized. --}}
-                    <div class="mt-4">
+                    <!-- Face login: real logic wired to window.faceLogin() above -->
+                    <div class="mt-4" x-data="faceLogin()">
                         <div class="flex items-center gap-3">
                             <span class="h-px flex-1 bg-slate-200"></span>
                             <span class="text-xs font-medium uppercase tracking-wide text-slate-400">Or use face login</span>
                             <span class="h-px flex-1 bg-slate-200"></span>
                         </div>
 
-                        <button type="button" id="face-login-trigger"
+                        <button type="button" @click="openModal()"
                             class="mt-3 flex w-full items-center justify-center gap-2 rounded-[10px] border border-[#1C9BA0]/30 bg-[#EAFBFA] px-4 py-2.5 text-sm font-semibold text-[#18848F] shadow-sm transition hover:bg-[#1C9BA0]/10 hover:border-[#1C9BA0]/50">
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M4 7V5a1 1 0 011-1h2M4 17v2a1 1 0 001 1h2m10-14h2a1 1 0 011 1v2m-4 12h2a1 1 0 001-1v-2M9 10h.01M15 10h.01M9.5 15c.7.6 1.6 1 2.5 1s1.8-.4 2.5-1" />
@@ -178,13 +330,28 @@
                             Sign in with Face ID
                         </button>
 
-                        {{--
-                            Replace this button (and the container below) with your
-                            actual face-login markup/logic from auth.face-login-widget —
-                            e.g. camera preview, capture button, and status text.
-                            Keep the same wrapper classes so it stays visually consistent.
-                        --}}
-                        <div id="face-login-status" class="mt-2 text-center text-xs text-slate-400"></div>
+                        <!-- Modal -->
+                        <template x-if="modalOpen">
+                            <div class="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/60 p-4">
+                                <div class="bg-white rounded-[1.5rem] shadow-xl w-full max-w-sm p-6 relative">
+                                    <button @click="closeModal()" class="absolute top-4 right-4 text-slate-400 hover:text-slate-600">✕</button>
+                                    <h3 class="font-semibold text-slate-800 mb-3">Face Login</h3>
+
+                                    <div class="relative bg-slate-900 rounded-2xl overflow-hidden" style="aspect-ratio:4/3;">
+                                        <video x-ref="loginVideo" class="w-full h-full object-cover" autoplay playsinline muted></video>
+                                    </div>
+
+                                    <p x-show="statusMessage" x-text="statusMessage"
+                                        :class="statusIsError ? 'text-red-600' : 'text-slate-500'"
+                                        class="mt-3 text-sm text-center"></p>
+
+                                    <button @click="closeModal()"
+                                        class="w-full mt-4 px-4 py-2.5 bg-slate-100 text-slate-700 text-sm font-semibold rounded-[10px] hover:bg-slate-200 transition">
+                                        Use password instead
+                                    </button>
+                                </div>
+                            </div>
+                        </template>
                     </div>
 
                     <p class="text-center text-sm mt-4 text-slate-500">

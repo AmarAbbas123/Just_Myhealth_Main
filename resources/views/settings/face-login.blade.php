@@ -199,27 +199,30 @@
             </button>
         </template>
 
-        <template x-if="cameraStarted">
-            <div class="mt-4 space-y-3">
-                <div class="relative bg-black rounded-lg overflow-hidden" style="max-width:480px; aspect-ratio:4/3;">
-                    <video x-ref="video" class="w-full h-full object-cover" autoplay playsinline muted></video>
-                </div>
-
-                <div class="flex items-center gap-3">
-                    <button @click="captureSample()" :disabled="samples.length >= required"
-                        class="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition disabled:opacity-50">
-                        Capture Sample (<span x-text="samples.length"></span>/<span x-text="required"></span>)
-                    </button>
-                    <button x-show="samples.length >= required" @click="saveFace()" :disabled="saving"
-                        class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition disabled:opacity-60">
-                        <span x-text="saving ? 'Saving…' : 'Save Face'"></span>
-                    </button>
-                    <button @click="stopCamera()" class="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition">
-                        Cancel
-                    </button>
-                </div>
+        {{-- The video element must always stay mounted (x-show, not x-if/template)
+             so that $refs.video already exists the moment startCamera() runs.
+             With x-if, the element (and the ref) doesn't exist until AFTER
+             cameraStarted flips true — but startCamera() needs the ref
+             BEFORE that point, causing "Cannot set properties of undefined". --}}
+        <div class="mt-4 space-y-3" x-show="cameraStarted" style="display:none;">
+            <div class="relative bg-black rounded-lg overflow-hidden" style="max-width:480px; aspect-ratio:4/3;">
+                <video x-ref="video" class="w-full h-full object-cover" autoplay playsinline muted></video>
             </div>
-        </template>
+
+            <div class="flex items-center gap-3">
+                <button @click="captureSample()" :disabled="samples.length >= required"
+                    class="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition disabled:opacity-50">
+                    Capture Sample (<span x-text="samples.length"></span>/<span x-text="required"></span>)
+                </button>
+                <button x-show="samples.length >= required" @click="saveFace()" :disabled="saving"
+                    class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition disabled:opacity-60">
+                    <span x-text="saving ? 'Saving…' : 'Save Face'"></span>
+                </button>
+                <button @click="stopCamera()" class="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition">
+                    Cancel
+                </button>
+            </div>
+        </div>
 
         <p x-show="statusMessage" x-text="statusMessage"
             :class="statusIsError ? 'text-red-600' : 'text-gray-600'"
