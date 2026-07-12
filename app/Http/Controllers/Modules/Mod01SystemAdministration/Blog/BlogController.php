@@ -12,7 +12,7 @@ class BlogController extends Controller
     {
         $posts = BlogPost::published()
             ->orderByDesc('PublishedAt')
-            ->paginate(9);
+            ->paginate(6);
 
         return view('modules.mod-ps.general.blogs', compact('posts'));
     }
