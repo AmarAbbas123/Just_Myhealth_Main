@@ -1,4 +1,7 @@
 {{-- Online Therapy --}}
+
+@section('title', 'PUB: Online Therapy')
+
 <x-app-layout>
 
 <!-- Hero Section -->
@@ -68,10 +71,10 @@
                 <div class="border-l-4 border-[#0f89a6] bg-white/75 py-2 pl-6 shadow-[0_24px_70px_-55px_rgba(16,106,124,0.65)] md:pl-8">
                     <div class="space-y-5 text-base leading-8 text-[#243b45] md:text-lg">
                         <p class="font-medium text-[#102f3a]">
-                            Online Therapy offers a more in‑depth approach to emotional wellbeing. Your therapist helps you explore underlying patterns, past experiences, and the root causes of what you’re feeling — not just the surface‑level symptoms. This is a space for meaningful insight, emotional processing, and long‑term change.
+                            Online Therapy offers a more in‑depth approach to emotional wellbeing. Your therapist helps you explore underlying patterns, past experiences, and the root causes of what you’re feeling, not just the surface‑level symptoms. This is a space for meaningful insight, emotional processing, and long‑term change.
                         </p>
                         <p>
-                            Your therapist draws on recognised therapeutic models — such as CBT, psychodynamic therapy, trauma‑informed approaches, or integrative methods — depending on what best supports your goals. Sessions are paced to suit you, helping you build resilience, emotional clarity, and healthier ways of relating to yourself and others.
+                            Your therapist draws on recognised therapeutic models such as CBT, psychodynamic therapy, trauma‑informed approaches, or integrative methods depending on what best supports your goals. Sessions are paced to suit you, helping you build resilience, emotional clarity, and healthier ways of relating to yourself and others.
                         </p>
                         <p>
                             Therapy provides a stable, confidential environment where you can explore difficult emotions, challenge unhelpful patterns, and develop new perspectives. Over time, this therapeutic relationship becomes a foundation for healing, self‑understanding, and lasting emotional wellbeing.
@@ -107,7 +110,7 @@
                             Your therapist brings a structured, evidence‑based approach to your sessions, drawing on recognised therapeutic models such as CBT, psychodynamic therapy, integrative therapy, or trauma‑informed methods. This ensures your work together is grounded in professional expertise and tailored to your personal goals.
                         </p>
                         <p>
-                            From the very first session, your therapist works with you to build a safe, consistent relationship — one that supports insight, emotional processing, and long‑term growth. You’re matched not just for compatibility, but for the depth and direction of the therapeutic journey you want to take.
+                            From the very first session, your therapist works with you to build a safe, consistent relationship. One that supports insight, emotional processing, and long‑term growth. You’re matched not just for compatibility, but for the depth and direction of the therapeutic journey you want to take.
                         </p>
                     </div>
                 </div>
@@ -137,7 +140,7 @@
                             Online Therapy provides a secure, private environment where you can explore deeper emotions, past experiences, and long‑standing patterns at your own pace. Your sessions are fully confidential, giving you the freedom to speak openly without judgement or pressure.
                         </p>
                         <p>
-                            Your therapist creates a stable, supportive space designed for meaningful therapeutic work — whether you’re processing trauma, navigating persistent anxiety or low mood, or working through complex emotional challenges. Every session is grounded in professional ethics, safeguarding, and respect for your personal boundaries.
+                            Your therapist creates a stable, supportive space designed for meaningful therapeutic work, whether you’re processing trauma, navigating persistent anxiety or low mood, or working through complex emotional challenges. Every session is grounded in professional ethics, safeguarding, and respect for your personal boundaries.
                         </p>
                         <p>
                             With encrypted communication, verified therapists, and a commitment to your emotional safety, you can feel confident that your therapy journey is protected, consistent, and centred on your wellbeing.
@@ -173,7 +176,7 @@
                             Therapy gives you the space to explore complex feelings, past experiences, and patterns that may take time to understand and process. Your sessions are structured around your goals, your capacity, and the pace that feels safe and sustainable for you.
                         </p>
                         <p>
-                            With flexible scheduling, secure online access, and a therapist who understands your journey, you can engage in meaningful therapeutic work from wherever you feel most comfortable — without compromising the depth or continuity of your care.
+                            With flexible scheduling, secure online access, and a therapist who understands your journey, you can engage in meaningful therapeutic work from wherever you feel most comfortable, without compromising the depth or continuity of your care.
                         </p>
                     </div>
                 </div>
@@ -185,7 +188,7 @@
     <div class="container-fluid mx-auto pt-10 px-4 md:px-6 lg:px-4 bg-white min-h-screen">
 
         <p class="text-justify mb-16 mx-auto pt-2 px-4 md:px-6 lg:px-20">
-            At JustMy.Health, we believe in the power of personalized therapy to help you achieve mental wellness and
+            At JustMy.Health, we believe in the power of personalised therapy to help you achieve mental wellness and
             emotional balance. Our secure platform offers one-to-one therapy sessions tailored to your unique needs,
             ensuring you receive the support and guidance you deserve.
         </p>
@@ -201,7 +204,7 @@
                     <h2 class="mt-3 mb-5 text-3xl font-semibold leading-tight text-[#102f3a] sm:text-4xl md:text-4xl">Therapy Process &amp; Cost</h2>
 
                     <p class="text-gray-600 leading-relaxed">Therapy is an iterative process which encompasses multiple sessions arranged at a defined frequency to allow time to absorb, adjust, and benefit.</p>
-                    <p class="text-gray-600 leading-relaxed">To minimize costs, we provide therapy sessions as monthly blocks containing <span class="font-semibold text-[#102f3a]">four sessions</span>.</p>
+                    <p class="text-gray-600 leading-relaxed">To minimise costs, we provide therapy sessions as monthly blocks containing <span class="font-semibold text-[#102f3a]">four sessions</span>.</p>
                     <p class="text-gray-600 leading-relaxed">The cost of therapy ranges from <span class="font-semibold text-[#1C9BA0]">&pound;50 to &pound;70 per week</span> (billed every 4 weeks). Variation depends on location, type of therapy, preferences, and therapist availability.</p>
                     <p class="text-gray-600 leading-relaxed">You can cancel your membership at any time, for any reason.</p>
                 </div>
