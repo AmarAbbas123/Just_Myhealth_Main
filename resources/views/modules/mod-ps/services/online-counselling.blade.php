@@ -1,4 +1,7 @@
 {{-- Online Counselling --}}
+
+@section('title', 'PUB: Online Counselling')
+
 <x-app-layout>
 
     <!-- Hero Section -->
@@ -34,26 +37,26 @@
             <div class="mx-auto grid max-w-6xl gap-10 lg:grid-cols-[0.85fr_1.15fr] lg:items-center">
                 <div>
                     <p class="mb-5 inline-flex rounded-full border border-[#9ed9d7] bg-white px-4 py-2 text-xs font-semibold uppercase tracking-[0.22em] text-[#0f89a6] shadow-sm">
-                        JustMy.Health - Counseling
+                        JustMy.Health - Counselling
                     </p>
                     <h2 class="max-w-xl text-2xl font-semibold leading-tight text-[#102f3a] sm:text-3xl md:text-4xl">
-                        Online Counseling to boost wellbeing
+                        Online Counselling to boost wellbeing
                     </h2>
                     <p class="mt-6 max-w-md text-base leading-7 text-[#4b626b]">
-                        Counseling focuses on helping you understand your thoughts and feelings, navigate difficult situations, and build practical tools for everyday wellbeing. Ideal for stress, relationships, grief, and emotional overwhelm.
+                        Counselling focuses on helping you understand your thoughts and feelings, navigate difficult situations, and build practical tools for everyday wellbeing. Ideal for stress, relationships, grief, and emotional overwhelm.
                     </p>
                 </div>
 
                 <div class="border-l-4 border-[#0f89a6] bg-white/75 py-2 pl-6 shadow-[0_24px_70px_-55px_rgba(16,106,124,0.65)] md:pl-8">
                     <div class="space-y-5 text-base leading-8 text-[#243b45] md:text-lg">
                         <p class="font-medium text-[#102f3a]">
-                            Online counseling gives you a safe, supportive space to talk through what’s on your mind and get practical guidance for everyday challenges.
+                            Online counselling gives you a safe, supportive space to talk through what’s on your mind and get practical guidance for everyday challenges.
                         </p>
                         <p>
                             Whether you’re dealing with stress, relationship difficulties, grief, low mood, or emotional overwhelm, counseling helps you understand your thoughts and feelings and move toward healthier patterns.
                         </p>
                         <p>
-                            Together, you explore what’s affecting your wellbeing and develop tools you can use in real life — from managing stress to improving communication and building emotional resilience.
+                            Together, you explore what’s affecting your wellbeing and develop tools you can use in real life, from managing stress to improving communication and building emotional resilience.
                         </p>
                     </div>
                 </div>
@@ -68,7 +71,7 @@
             <div class="mx-auto grid max-w-6xl gap-10 lg:grid-cols-[0.85fr_1.15fr] lg:items-center">
                 <div>
                     <p class="mb-5 inline-flex rounded-full border border-[#9ed9d7] bg-white px-4 py-2 text-xs font-semibold uppercase tracking-[0.22em] text-[#0f89a6] shadow-sm">
-                        JustMy.Health - Counseling
+                        JustMy.Health - Counselling
                     </p>
                     <h2 class="max-w-xl text-3xl font-semibold leading-tight text-[#102f3a] sm:text-4xl md:text-4xl">
                         What You Can Expect
@@ -81,10 +84,10 @@
                 <div class="border-l-4 border-[#0f89a6] bg-white/75 py-2 pl-6 shadow-[0_24px_70px_-55px_rgba(16,106,124,0.65)] md:pl-8">
                     <div class="space-y-5 text-base leading-8 text-[#243b45] md:text-lg">
                         <p class="font-medium text-[#102f3a]">
-                            Online counseling gives you a private, supportive space to explore what you’re feeling and understand what’s affecting your wellbeing.
+                            Online counselling gives you a private, supportive space to explore what you’re feeling and understand what’s affecting your wellbeing.
                         </p>
                         <p>
-                            Your Therapeutic Practitioner works with you to identify patterns, clarify your thoughts, and build practical tools you can use in everyday life — whether you’re navigating stress, relationship challenges, grief, or emotional overwhelm.
+                            Your Therapeutic Practitioner works with you to identify patterns, clarify your thoughts, and build practical tools you can use in everyday life, whether you’re navigating stress, relationship challenges, grief, or emotional overwhelm.
                         </p>
                     </div>
                 </div>
@@ -98,10 +101,10 @@
             <div class="mx-auto grid max-w-6xl gap-10 lg:grid-cols-[0.85fr_1.15fr] lg:items-center">
                 <div>
                     <p class="mb-5 inline-flex rounded-full border border-[#9ed9d7] bg-white px-4 py-2 text-xs font-semibold uppercase tracking-[0.22em] text-[#0f89a6] shadow-sm">
-                        JustMy.Health - Counseling
+                        JustMy.Health - Counselling
                     </p>
                     <h2 class="max-w-xl text-3xl font-semibold leading-tight text-[#102f3a] sm:text-4xl md:text-4xl">
-                        Your Counseler, Matched to Your Needs
+                        Your Counsellor, Matched to Your Needs
                     </h2>
                     <p class="mt-6 max-w-md text-base leading-7 text-[#4b626b]">
 
@@ -129,7 +132,7 @@
             <div class="mx-auto grid max-w-6xl gap-10 lg:grid-cols-[0.85fr_1.15fr] lg:items-center">
                 <div>
                     <p class="mb-5 inline-flex rounded-full border border-[#9ed9d7] bg-white px-4 py-2 text-xs font-semibold uppercase tracking-[0.22em] text-[#0f89a6] shadow-sm">
-                        JustMy.Health - Counseling
+                        JustMy.Health - Counselling
                     </p>
                     <h2 class="max-w-xl text-3xl font-semibold leading-tight text-[#102f3a] sm:text-4xl md:text-4xl">
                         A Safe, Confidential Space
@@ -142,7 +145,7 @@
                 <div class="border-l-4 border-[#0f89a6] bg-white/75 py-2 pl-6 shadow-[0_24px_70px_-55px_rgba(16,106,124,0.65)] md:pl-8">
                     <div class="space-y-5 text-base leading-8 text-[#243b45] md:text-lg">
                         <p class="font-medium text-[#102f3a]">
-                            Your privacy is central to the therapeutic process. Sessions take place in a secure environment with encrypted communication, verified practitioners, and strict confidentiality standards — helping you feel safe, supported, and in control.
+                            Your privacy is central to the therapeutic process. Sessions take place in a secure environment with encrypted communication, verified practitioners, and strict confidentiality standards, helping you feel safe, supported, and in control.
                         </p>
                         <p>
 
@@ -159,7 +162,7 @@
             <div class="mx-auto grid max-w-6xl gap-10 lg:grid-cols-[0.85fr_1.15fr] lg:items-center">
                 <div>
                     <p class="mb-5 inline-flex rounded-full border border-[#9ed9d7] bg-white px-4 py-2 text-xs font-semibold uppercase tracking-[0.22em] text-[#0f89a6] shadow-sm">
-                        JustMy.Health - Counseling
+                        JustMy.Health - Counselling
                     </p>
                     <h2 class="max-w-xl text-3xl font-semibold leading-tight text-[#102f3a] sm:text-4xl md:text-4xl">
                         Support That Fits Your Life
@@ -172,7 +175,7 @@
                 <div class="border-l-4 border-[#0f89a6] bg-white/75 py-2 pl-6 shadow-[0_24px_70px_-55px_rgba(16,106,124,0.65)] md:pl-8">
                     <div class="space-y-5 text-base leading-8 text-[#243b45] md:text-lg">
                         <p class="font-medium text-[#102f3a]">
-                            Counseling is flexible and designed around you. Whether you prefer structured weekly sessions or a gentler pace, your practitioner works with you to create a rhythm that supports your growth and emotional balance.
+                            Counselling is flexible and designed around you. Whether you prefer structured weekly sessions or a gentler pace, your practitioner works with you to create a rhythm that supports your growth and emotional balance.
                         </p>
                         <p>
 
@@ -191,8 +194,8 @@
     <div class="container-fluid mx-auto pt-10 px-4 md:px-6 lg:px-4 bg-white min-h-screen">
 
         <p class="text-justify mb-16 mx-auto pt-2 px-4 md:px-6 lg:px-20">
-            At JustMy.Health, we believe in the power of personalized counseling to help you achieve mental wellness and
-            emotional balance. Our secure platform offers one-to-one counseling sessions tailored to your unique needs,
+            At JustMy.Health, we believe in the power of personalised counselling to help you achieve mental wellness and
+            emotional balance. Our secure platform offers one-to-one counselling sessions tailored to your unique needs,
             ensuring you receive the support and guidance you deserve.
         </p>
 
@@ -204,11 +207,11 @@
                 {{-- Left Text --}}
                 <div class="lg:col-span-2 space-y-4">
                     <p class="text-xs font-semibold uppercase tracking-[0.2em] text-[#1C9BA0]">Investment in Your Wellbeing</p>
-                    <h2 class="mt-3 mb-5 text-3xl font-semibold leading-tight text-[#102f3a] sm:text-4xl md:text-4xl">Counseling Process &amp; Cost</h2>
+                    <h2 class="mt-3 mb-5 text-3xl font-semibold leading-tight text-[#102f3a] sm:text-4xl md:text-4xl">Counselling Process &amp; Cost</h2>
 
                     <p class="text-gray-600 leading-relaxed">Counseling is an iterative process which encompasses multiple sessions arranged at a defined frequency to allow time to absorb, adjust, and benefit.</p>
-                    <p class="text-gray-600 leading-relaxed">To minimize costs, we provide counseling sessions as monthly blocks containing <span class="font-semibold text-[#102f3a]">four sessions</span>.</p>
-                    <p class="text-gray-600 leading-relaxed">The cost of counseling ranges from <span class="font-semibold text-[#1C9BA0]">&pound;50 to &pound;70 per week</span> (billed every 4 weeks). Variation depends on location, type of therapy, preferences, and therapist availability.</p>
+                    <p class="text-gray-600 leading-relaxed">To minimise costs, we provide counselling sessions as monthly blocks containing <span class="font-semibold text-[#102f3a]">four sessions</span>.</p>
+                    <p class="text-gray-600 leading-relaxed">The cost of counselling ranges from <span class="font-semibold text-[#1C9BA0]">&pound;50 to &pound;70 per week</span> (billed every 4 weeks). Variation depends on location, type of therapy, preferences, and therapist availability.</p>
                     <p class="text-gray-600 leading-relaxed">You can cancel your membership at any time, for any reason.</p>
                 </div>
 
@@ -254,7 +257,7 @@
                         <h2 class="mt-3 mb-5 text-3xl font-semibold leading-tight text-[#102f3a] sm:text-4xl md:text-4xl">Engage and Benefit</h2>
 
                         <p class="text-gray-600 text-base leading-relaxed">
-                            Counseling helps you make sense of your thoughts and emotions, build resilience, and take steps toward a healthier, more balanced life — at your pace, in your way.
+                            Counselling helps you make sense of your thoughts and emotions, build resilience, and take steps toward a healthier, more balanced life, at your pace, in your way.
                         </p>
                     </div>
                 </div>
