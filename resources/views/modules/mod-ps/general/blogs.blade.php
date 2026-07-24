@@ -1,7 +1,13 @@
 <x-app-layout title="Blog | JustMy.Health" metaDescription="Wellness tips, therapy insights, and updates from JustMy.Health — including our latest social media posts.">
 <section class="relative h-72 lg:h-80 flex items-start lg:items-center pt-20 lg:pt-24">
     
-   
+    <!-- Background Image -->
+    <div class="absolute inset-0 -z-10">
+        <img src="{{ asset('images/welcome-page/hero-bg.png') }}"
+             alt="Hero Background"
+             class="w-full h-full object-cover object-center">
+        <div class="absolute inset-0 bg-black/50"></div>
+    </div>
 
     <!-- Content -->
     <div class="px-6 lg:px-20 max-w-4xl">
