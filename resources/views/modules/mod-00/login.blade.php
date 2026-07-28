@@ -38,16 +38,7 @@
                     this.stopEverything();
                 },
 
-                async startCamera() {
-                    this.isLoading = true;
-                    try {
-                        if (!modelsLoaded) {
-                            this.statusMessage = 'Loading face model…';
-                            await faceapi.nets.tinyFaceDetector.loadFromUri('/models/face-api');
-                            await faceapi.nets.faceLandmark68Net.loadFromUri('/models/face-api');
-                            await faceapi.nets.faceRecognitionNet.loadFromUri('/models/face-api');
-                            modelsLoaded = true;
-                        }
+               
 
                         const video = this.$refs.loginVideo;
                         stream = await navigator.mediaDevices.getUserMedia({
