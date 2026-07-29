@@ -16,6 +16,7 @@ class BlogPost extends Model
         'FeaturedImagePath',
         'SourcePlatform',
         'SourceUrl',
+        'VideoUrl',
         'IsPublished',
         'PublishedAt',
         'AuthorUserID',
@@ -81,5 +82,40 @@ class BlogPost extends Model
             SVG;
 
         return 'data:image/svg+xml;base64,' . base64_encode($svg);
+    }
+
+    /**
+     * Convert a normal YouTube/Vimeo watch URL into its embeddable iframe URL.
+     * Returns null if VideoUrl is empty or isn't a recognized embeddable host —
+     * in that case the blog page falls back to a "Watch the video" button
+     * that opens the original link in a new tab instead (e.g. for Facebook).
+     */
+    public function embeddableVideoUrl(): ?string
+    {
+        $url = $this->VideoUrl;
+        if (! $url) {
+            return null;
+        }
+
+        // youtube.com/watch?v=XXXX or youtu.be/XXXX
+        if (preg_match('~(?:youtube\.com/watch\?v=|youtu\.be/)([A-Za-z0-9_-]{6,})~', $url, $m)) {
+            return 'https://www.youtube.com/embed/' . $m[1];
+        }
+
+        // vimeo.com/XXXXXXX
+        if (preg_match('~vimeo\.com/(\d+)~', $url, $m)) {
+            return 'https://player.vimeo.com/video/' . $m[1];
+        }
+
+        return null;
+    }
+
+    /**
+     * True if VideoUrl exists but isn't embeddable (e.g. a Facebook video link) —
+     * used to decide whether to show an iframe or an external "Watch" button.
+     */
+    public function hasExternalOnlyVideo(): bool
+    {
+        return (bool) $this->VideoUrl && ! $this->embeddableVideoUrl();
     }
 }

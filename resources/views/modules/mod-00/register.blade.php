@@ -91,37 +91,7 @@
                                 @endforeach
                             </ul>
                         </div>
-                    @endif
-
-                    <form method="POST" action="{{ route('register') }}"
-                        @submit.prevent="
-                    validateUserName();
-                    validateEmail();
-                    validatePassword();
-                    validateConfirmPassword();
-                    if (Object.keys(errors).length === 0) {
-                        checkUsernameExists().then(() => {
-                            if (!errors.UserName) {
-                                 $el.submit();
-                            }
-                        });
-                    }"
-                        x-data="registrationForm()"
-                        class="mt-3 w-full space-y-3">
-                        @csrf
-
-                        @if ($roleId && $roleLabel)
-                            <div x-data x-init="loadUserFields('{{ $roleId }}')" class="flex items-center gap-2 rounded-[10px] border border-[#1C9BA0]/20 bg-[#EAFBFA] px-4 py-2.5">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 flex-shrink-0 text-[#1C9BA0]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                                </svg>
-                                <p class="text-sm text-slate-700">
-                                    Registering as <span class="font-semibold text-[#18848F]">{{ $roleLabel }}</span>
-                                </p>
-                                <input type="hidden" name="UserType" id="UserType" value="{{ $roleId }}">
-                            </div>
-                        @endif
-
+                   
                         <div>
                             <label for="UserName" class="text-sm font-semibold text-slate-700">{{ __('Username') }}</label>
                             <div class="relative mt-1.5">

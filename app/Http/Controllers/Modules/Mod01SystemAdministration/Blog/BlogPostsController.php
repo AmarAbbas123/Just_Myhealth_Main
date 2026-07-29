@@ -49,7 +49,7 @@ class BlogPostsController extends Controller
             ->with('status', 'Blog post created.');
     }
 
-    // GET /mod-01/tm/blog-posts/{blog_post}/edit
+    // GET /mod-01/tm/blog-posts/{blog_post:id}/edit
     public function edit(BlogPost $blogPost)
     {
         return view('modules.mod-01.blog-posts.form', [
@@ -57,7 +57,7 @@ class BlogPostsController extends Controller
         ]);
     }
 
-    // PUT/PATCH /mod-01/tm/blog-posts/{blog_post}
+    // PUT/PATCH /mod-01/tm/blog-posts/{blog_post:id}
     public function update(Request $request, BlogPost $blogPost)
     {
         $validated = $this->validatePost($request, $blogPost->id);
@@ -65,8 +65,6 @@ class BlogPostsController extends Controller
         $wasPublished = $blogPost->IsPublished;
         $blogPost->fill($validated);
 
-        // Re-slug only if the title actually changed, so existing shared
-        // links/SEO indexing for this post don't break on every edit.
         if ($blogPost->isDirty('Title')) {
             $blogPost->Slug = BlogPost::uniqueSlugFromTitle($validated['Title'], $blogPost->id);
         }
@@ -89,7 +87,7 @@ class BlogPostsController extends Controller
             ->with('status', 'Blog post updated.');
     }
 
-    // DELETE /mod-01/tm/blog-posts/{blog_post}
+    // DELETE /mod-01/tm/blog-posts/{blog_post:id}
     public function destroy(BlogPost $blogPost)
     {
         if ($blogPost->FeaturedImagePath) {
@@ -105,12 +103,13 @@ class BlogPostsController extends Controller
     private function validatePost(Request $request, ?int $ignoreId = null): array
     {
         return $request->validate([
-            'Title' => ['required', 'string', 'max:255'],
+            'Title' => ['required', 'string', 'max:50'],
             'Excerpt' => ['required', 'string', 'max:300'],
             'Body' => ['required', 'string'],
             'FeaturedImage' => ['nullable', 'image', 'max:4096'],
             'SourcePlatform' => ['nullable', 'string', 'max:100'],
             'SourceUrl' => ['nullable', 'url', 'max:2048'],
+            'VideoUrl' => ['nullable', 'url', 'max:2048'],
             'IsPublished' => ['sometimes', 'boolean'],
             'PublishedAt' => ['nullable', 'date'],
         ]);

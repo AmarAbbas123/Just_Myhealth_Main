@@ -10,7 +10,7 @@
         <meta property="og:image" content="{{ $blogPost->featuredImageUrl() }}">
         <meta property="og:url" content="{{ route('blogs.show', $blogPost) }}">
         <script type="application/ld+json">
-            {!! json_encode([
+            {!! json_encode(array_filter([
                 '@context' => 'https://schema.org',
                 '@type' => 'BlogPosting',
                 'headline' => $blogPost->Title,
@@ -21,7 +21,15 @@
                 'author' => ['@type' => 'Organization', 'name' => 'JustMy.Health'],
                 'publisher' => ['@type' => 'Organization', 'name' => 'JustMy.Health'],
                 'mainEntityOfPage' => route('blogs.show', $blogPost),
-            ], JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) !!}
+                'video' => $blogPost->VideoUrl ? [
+                    '@type' => 'VideoObject',
+                    'name' => $blogPost->Title,
+                    'description' => $blogPost->Excerpt,
+                    'thumbnailUrl' => $blogPost->featuredImageUrl(),
+                    'uploadDate' => optional($blogPost->PublishedAt)->toIso8601String(),
+                    'contentUrl' => $blogPost->VideoUrl,
+                ] : null,
+            ]), JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) !!}
         </script>
     @endpush
 
@@ -79,10 +87,36 @@
 
                 <!-- Main content -->
                 <article class="lg:col-span-3 min-w-0">
-                    <div class=" overflow-hidden bg-gray-100" style="max-height:440px;">
-                        <img src="{{ $blogPost->featuredImageUrl() }}" alt="{{ $blogPost->Title }}"
-                            class="w-full object-cover" style="max-height:440px;">
-                    </div>
+                    @if ($blogPost->embeddableVideoUrl())
+                        {{-- YouTube/Vimeo link: play the video directly in place of the static image --}}
+                        <div class="overflow-hidden bg-black" style="aspect-ratio:16/9;">
+                            <iframe
+                                src="{{ $blogPost->embeddableVideoUrl() }}"
+                                class="w-full h-full"
+                                title="{{ $blogPost->Title }}"
+                                loading="lazy"
+                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                allowfullscreen></iframe>
+                        </div>
+                    @else
+                        <div class="relative overflow-hidden bg-gray-100" style="max-height:440px;">
+                            <img src="{{ $blogPost->featuredImageUrl() }}" alt="{{ $blogPost->Title }}"
+                                class="w-full object-cover" style="max-height:440px;">
+
+                            @if ($blogPost->hasExternalOnlyVideo())
+                                {{-- Non-embeddable link (e.g. a Facebook video): open in a new tab --}}
+                                <a href="{{ $blogPost->VideoUrl }}" target="_blank" rel="noopener noreferrer"
+                                    class="absolute inset-0 flex items-center justify-center bg-black/30 hover:bg-black/40 transition group">
+                                    <span class="flex items-center gap-2 bg-white text-gray-900 font-semibold text-sm px-5 py-3 rounded-full shadow-lg group-hover:scale-105 transition">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-teal-600" fill="currentColor" viewBox="0 0 24 24">
+                                            <path d="M8 5v14l11-7z"/>
+                                        </svg>
+                                        Watch the video
+                                    </span>
+                                </a>
+                            @endif
+                        </div>
+                    @endif
 
                     <div class="bg-white shadow-sm ">
                         <div class="prose prose-teal prose-lg max-w-none text-gray-700 p-6 sm:p-8">
