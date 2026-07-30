@@ -305,46 +305,7 @@
                         </button>
                     </form>
 
-                    <!-- Face login: real logic wired to window.faceLogin() above -->
-                    <div class="mt-4" x-data="faceLogin()">
-                        <div class="flex items-center gap-3">
-                            <span class="h-px flex-1 bg-slate-200"></span>
-                            <span class="text-xs font-medium uppercase tracking-wide text-slate-400">Or use face login</span>
-                            <span class="h-px flex-1 bg-slate-200"></span>
-                        </div>
-
-                        <button type="button" @click="openModal()"
-                            class="mt-3 flex w-full items-center justify-center gap-2 rounded-[10px] border border-[#1C9BA0]/30 bg-[#EAFBFA] px-4 py-2.5 text-sm font-semibold text-[#18848F] shadow-sm transition hover:bg-[#1C9BA0]/10 hover:border-[#1C9BA0]/50">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M4 7V5a1 1 0 011-1h2M4 17v2a1 1 0 001 1h2m10-14h2a1 1 0 011 1v2m-4 12h2a1 1 0 001-1v-2M9 10h.01M15 10h.01M9.5 15c.7.6 1.6 1 2.5 1s1.8-.4 2.5-1" />
-                            </svg>
-                            Sign in with Face ID
-                        </button>
-
-                        <!-- Modal -->
-                        <template x-if="modalOpen">
-                            <div class="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/60 p-4">
-                                <div class="bg-white rounded-[1.5rem] shadow-xl w-full max-w-sm p-6 relative">
-                                    <button @click="closeModal()" class="absolute top-4 right-4 text-slate-400 hover:text-slate-600">✕</button>
-                                    <h3 class="font-semibold text-slate-800 mb-3">Face Login</h3>
-
-                                    <div class="relative bg-slate-900 rounded-2xl overflow-hidden" style="aspect-ratio:4/3;">
-                                        <video x-ref="loginVideo" class="w-full h-full object-cover" autoplay playsinline muted></video>
-                                    </div>
-
-                                    <p x-show="statusMessage" x-text="statusMessage"
-                                        :class="statusIsError ? 'text-red-600' : 'text-slate-500'"
-                                        class="mt-3 text-sm text-center"></p>
-
-                                    <button @click="closeModal()"
-                                        class="w-full mt-4 px-4 py-2.5 bg-slate-100 text-slate-700 text-sm font-semibold rounded-[10px] hover:bg-slate-200 transition">
-                                        Use password instead
-                                    </button>
-                                </div>
-                            </div>
-                        </template>
-                    </div>
-
+                    
                     <p class="text-center text-sm mt-4 text-slate-500">
                         {{ __('Not a member?') }}
                         <a href="{{ route('register') }}" class="font-semibold text-[#1C9BA0] hover:text-[#18848F] hover:underline">

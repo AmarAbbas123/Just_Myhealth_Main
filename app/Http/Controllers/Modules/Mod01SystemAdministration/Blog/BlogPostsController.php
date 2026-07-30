@@ -103,7 +103,7 @@ class BlogPostsController extends Controller
     private function validatePost(Request $request, ?int $ignoreId = null): array
     {
         return $request->validate([
-            'Title' => ['required', 'string', 'max:50'],
+            'Title' => ['required', 'string', 'max:255'],
             'Excerpt' => ['required', 'string', 'max:300'],
             'Body' => ['required', 'string'],
             'FeaturedImage' => ['nullable', 'image', 'max:4096'],
