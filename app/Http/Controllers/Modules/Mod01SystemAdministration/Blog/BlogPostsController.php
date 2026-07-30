@@ -65,7 +65,12 @@ class BlogPostsController extends Controller
         $wasPublished = $blogPost->IsPublished;
         $blogPost->fill($validated);
 
-        if ($blogPost->isDirty('Title')) {
+        // Regenerate the slug if the title changed, OR if the slug is
+        // currently empty for any reason (e.g. an older post saved before
+        // the slug-safeguard fix existed). Without the second condition,
+        // a post stuck with an empty Slug would never self-heal just by
+        // being re-saved unless its Title also happened to change.
+        if ($blogPost->isDirty('Title') || empty($blogPost->Slug)) {
             $blogPost->Slug = BlogPost::uniqueSlugFromTitle($validated['Title'], $blogPost->id);
         }
 
