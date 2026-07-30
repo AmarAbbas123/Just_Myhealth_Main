@@ -352,7 +352,12 @@ Route::middleware(['auth', 'usertype:admins'])->group(function () {
 
 // blogs
 Route::middleware(['auth', 'usertype:admins'])->group(function () {
-    Route::resource('/mod-01/tm/blog-posts', BlogPostsController::class)->names('blog-posts');
+    Route::get('/mod-01/tm/blog-posts', [BlogPostsController::class, 'index'])->name('blog-posts.index');
+    Route::get('/mod-01/tm/blog-posts/create', [BlogPostsController::class, 'create'])->name('blog-posts.create');
+    Route::post('/mod-01/tm/blog-posts', [BlogPostsController::class, 'store'])->name('blog-posts.store');
+    Route::get('/mod-01/tm/blog-posts/{blog_post:id}/edit', [BlogPostsController::class, 'edit'])->name('blog-posts.edit');
+    Route::put('/mod-01/tm/blog-posts/{blog_post:id}', [BlogPostsController::class, 'update'])->name('blog-posts.update');
+    Route::delete('/mod-01/tm/blog-posts/{blog_post:id}', [BlogPostsController::class, 'destroy'])->name('blog-posts.destroy');
 });
 
 /*
