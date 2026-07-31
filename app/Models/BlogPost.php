@@ -17,6 +17,8 @@ class BlogPost extends Model
         'SourcePlatform',
         'SourceUrl',
         'VideoUrl',
+        'VideoTitle',
+        'VideoDescription',
         'IsPublished',
         'PublishedAt',
         'AuthorUserID',
@@ -46,10 +48,21 @@ class BlogPost extends Model
 
     /**
      * Build a unique slug from a title, avoiding collisions with existing posts.
+     *
+     * Guaranteed to never return an empty string — even if the title is
+     * made up entirely of characters Str::slug() can't transliterate
+     * (e.g. certain emoji or symbols), which previously caused Slug to be
+     * saved as '' and broke every link to that post (URLs became
+     * "/blogs/" and silently redirected back to the blog list).
      */
     public static function uniqueSlugFromTitle(string $title, ?int $ignoreId = null): string
     {
         $base = Str::slug($title);
+
+        if ($base === '') {
+            $base = 'post-' . Str::random(8);
+        }
+
         $slug = $base;
         $i = 1;
 
@@ -67,7 +80,26 @@ class BlogPost extends Model
     public function featuredImageUrl(): string
     {
         if ($this->FeaturedImagePath) {
-            return asset('storage/' . $this->FeaturedImagePath);
+            $path = trim($this->FeaturedImagePath);
+
+            // Older posts may store a complete URL or a path that already
+            // includes the public storage prefix. Do not prefix it a second
+            // time, otherwise the browser requests an invalid image URL.
+            if (filter_var($path, FILTER_VALIDATE_URL)) {
+                return $path;
+            }
+
+            $path = ltrim(str_replace('\\', '/', $path), '/');
+
+            if (str_starts_with($path, 'public/')) {
+                return asset(substr($path, strlen('public/')));
+            }
+
+            if (str_starts_with($path, 'storage/')) {
+                return asset($path);
+            }
+
+            return asset('storage/' . $path);
         }
 
         // Inline SVG fallback — no dependency on a physical placeholder file
@@ -117,5 +149,13 @@ class BlogPost extends Model
     public function hasExternalOnlyVideo(): bool
     {
         return (bool) $this->VideoUrl && ! $this->embeddableVideoUrl();
+    }
+
+    /**
+     * Whether the optional YouTube sidebar card has content to display.
+     */
+    public function hasVideoCard(): bool
+    {
+        return (bool) ($this->VideoUrl || $this->VideoTitle || $this->VideoDescription);
     }
 }

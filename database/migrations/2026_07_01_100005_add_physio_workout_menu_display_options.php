@@ -1,7 +1,9 @@
 <?php
 
 use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
@@ -10,6 +12,31 @@ return new class extends Migration
      */
     public function up(): void
     {
+        // This application has long used this table as a shared menu registry,
+        // but older installations received it through a database import rather
+        // than a Laravel migration. Create the registry when starting from an
+        // empty database so the menu records below can be safely inserted.
+        if (! Schema::hasTable('sys_menu_display_options')) {
+            Schema::create('sys_menu_display_options', function (Blueprint $table) {
+                $table->id('ID');
+                $table->unsignedBigInteger('ParentID')->default(0)->index();
+                $table->string('DisplayName')->nullable();
+                $table->unsignedBigInteger('MainPaneID')->nullable();
+                $table->string('MainPaneLabel')->nullable();
+                $table->string('TileText')->nullable();
+                $table->string('Grouping')->nullable();
+                $table->boolean('1')->default(false);
+                $table->boolean('10')->default(false);
+                $table->boolean('30')->default(false);
+                $table->boolean('31')->default(false);
+                $table->boolean('32')->default(false);
+                $table->boolean('90')->default(false);
+                $table->boolean('91')->default(false);
+                $table->string('MenuURL')->nullable()->index();
+                $table->string('ImagePath')->nullable();
+            });
+        }
+
         $this->upsertMenuOption(
             displayName: 'Exercise Library',
             menuUrl: '/mod-10/02/exercise-library',
@@ -37,6 +64,10 @@ return new class extends Migration
      */
     public function down(): void
     {
+        if (! Schema::hasTable('sys_menu_display_options')) {
+            return;
+        }
+
         DB::table('sys_menu_display_options')
             ->whereIn('MenuURL', [
                 '/mod-10/02/exercise-library',

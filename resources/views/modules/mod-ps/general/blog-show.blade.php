@@ -87,36 +87,10 @@
 
                 <!-- Main content -->
                 <article class="lg:col-span-3 min-w-0">
-                    @if ($blogPost->embeddableVideoUrl())
-                        {{-- YouTube/Vimeo link: play the video directly in place of the static image --}}
-                        <div class="overflow-hidden bg-black" style="aspect-ratio:16/9;">
-                            <iframe
-                                src="{{ $blogPost->embeddableVideoUrl() }}"
-                                class="w-full h-full"
-                                title="{{ $blogPost->Title }}"
-                                loading="lazy"
-                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                                allowfullscreen></iframe>
-                        </div>
-                    @else
-                        <div class="relative overflow-hidden bg-gray-100" style="max-height:440px;">
-                            <img src="{{ $blogPost->featuredImageUrl() }}" alt="{{ $blogPost->Title }}"
-                                class="w-full object-cover" style="max-height:440px;">
-
-                            @if ($blogPost->hasExternalOnlyVideo())
-                                {{-- Non-embeddable link (e.g. a Facebook video): open in a new tab --}}
-                                <a href="{{ $blogPost->VideoUrl }}" target="_blank" rel="noopener noreferrer"
-                                    class="absolute inset-0 flex items-center justify-center bg-black/30 hover:bg-black/40 transition group">
-                                    <span class="flex items-center gap-2 bg-white text-gray-900 font-semibold text-sm px-5 py-3 rounded-full shadow-lg group-hover:scale-105 transition">
-                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-teal-600" fill="currentColor" viewBox="0 0 24 24">
-                                            <path d="M8 5v14l11-7z"/>
-                                        </svg>
-                                        Watch the video
-                                    </span>
-                                </a>
-                            @endif
-                        </div>
-                    @endif
+                    <div class="relative overflow-hidden bg-gray-100" style="max-height:440px;">
+                        <img src="{{ $blogPost->featuredImageUrl() }}" alt="{{ $blogPost->Title }}"
+                            class="w-full object-cover" style="max-height:440px;">
+                    </div>
 
                     <div class="bg-white shadow-sm ">
                         <div class="prose prose-teal prose-lg max-w-none text-gray-700 p-6 sm:p-8">
@@ -133,9 +107,35 @@
                     </div>
                 </article>
 
-                <!-- Sidebar: recent posts -->
+                <!-- Sidebar: YouTube card + recent posts -->
                 <aside class="lg:col-span-1">
-                    <div class=" lg:top-24">
+                    <div class="space-y-6 lg:top-24">
+                        @if ($blogPost->hasVideoCard())
+                            <section class="overflow-hidden rounded-2xl bg-white shadow-sm border border-gray-100">
+                                @if ($blogPost->VideoTitle)
+                                    <h2 class="px-5 pt-5 text-base font-bold leading-snug text-gray-900">{{ $blogPost->VideoTitle }}</h2>
+                                @endif
+
+                                <a href="{{ $blogPost->VideoUrl ?: '#' }}" @if ($blogPost->VideoUrl) target="_blank" rel="noopener noreferrer" @endif
+                                    class="group relative mt-4 block aspect-video overflow-hidden bg-gray-900 {{ $blogPost->VideoUrl ? '' : 'pointer-events-none' }}"
+                                    aria-label="{{ $blogPost->VideoTitle ?: 'Watch video' }}">
+                                    <img src="{{ $blogPost->featuredImageUrl() }}" alt="{{ $blogPost->VideoTitle ?: $blogPost->Title }}"
+                                        class="h-full w-full object-cover transition duration-300 group-hover:scale-105">
+                                    <span class="absolute inset-0 bg-black/25 transition group-hover:bg-black/40"></span>
+                                    <span class="absolute left-1/2 top-1/2 flex h-14 w-20 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-2xl bg-red-600 shadow-lg transition group-hover:scale-110">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="ml-1 h-7 w-7 text-white" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>
+                                    </span>
+                                </a>
+
+                                @if ($blogPost->VideoDescription)
+                                    <a href="{{ $blogPost->VideoUrl ?: '#' }}" @if ($blogPost->VideoUrl) target="_blank" rel="noopener noreferrer" @endif
+                                        class="block px-5 py-4 text-sm leading-relaxed text-blue-600 hover:text-blue-700 transition {{ $blogPost->VideoUrl ? '' : 'pointer-events-none' }}">
+                                        {{ $blogPost->VideoDescription }}
+                                    </a>
+                                @endif
+                            </section>
+                        @endif
+
                         <div class="rounded-2xl bg-white shadow-sm border border-gray-100 p-5">
                             <div class="flex items-center gap-3 mb-5">
                                 <h2 class="text-sm font-bold uppercase tracking-widest text-gray-900">Recent Posts</h2>

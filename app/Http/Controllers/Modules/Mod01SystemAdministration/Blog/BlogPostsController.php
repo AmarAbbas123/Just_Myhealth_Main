@@ -115,6 +115,8 @@ class BlogPostsController extends Controller
             'SourcePlatform' => ['nullable', 'string', 'max:100'],
             'SourceUrl' => ['nullable', 'url', 'max:2048'],
             'VideoUrl' => ['nullable', 'url', 'max:2048'],
+            'VideoTitle' => ['nullable', 'string', 'max:255'],
+            'VideoDescription' => ['nullable', 'string', 'max:1000'],
             'IsPublished' => ['sometimes', 'boolean'],
             'PublishedAt' => ['nullable', 'date'],
         ]);

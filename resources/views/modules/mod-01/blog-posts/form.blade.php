@@ -86,7 +86,7 @@
             <div class="rounded-2xl border border-slate-200 bg-white shadow-sm p-6 space-y-6">
                 <div class="flex items-center gap-2 text-sm font-semibold text-slate-700">
                     <span class="flex h-6 w-6 items-center justify-center rounded-full bg-indigo-100 text-xs font-bold text-indigo-600">2</span>
-                    Source &amp; Video
+                    Source
                 </div>
 
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
@@ -110,22 +110,42 @@
                     </div>
                 </div>
 
+            </div>
+
+            <!-- YouTube section -->
+            <div class="rounded-2xl border border-slate-200 bg-white shadow-sm p-6 space-y-5">
+                <div class="flex items-center gap-2 text-sm font-semibold text-slate-700">
+                    <span class="flex h-6 w-6 items-center justify-center rounded-full bg-indigo-100 text-xs font-bold text-indigo-600">3</span>
+                    YouTube Card
+                </div>
+                <p class="text-xs text-slate-400">This appears on the right side of the blog. The featured blog image is used as the YouTube-style player thumbnail; both the image and description open this link.</p>
+
                 <div>
-                    <label class="text-xs font-semibold uppercase tracking-wide text-slate-500">Video URL</label>
-                    <p class="text-xs text-slate-400 mt-0.5 mb-2">
-                        Paste a YouTube or Vimeo link to embed the video directly in the post. Any other link
-                        (e.g. a Facebook video) shows as a "Watch the video" button that opens in a new tab.
-                    </p>
+                    <label class="text-xs font-semibold uppercase tracking-wide text-slate-500">YouTube Video Link</label>
                     <input type="url" name="VideoUrl" value="{{ old('VideoUrl', $post->VideoUrl) }}"
                         placeholder="https://www.youtube.com/watch?v=..."
-                        class="w-full rounded-xl border-slate-200 bg-slate-50 focus:bg-white focus:border-indigo-400 focus:ring-indigo-400 transition">
+                        class="mt-2 w-full rounded-xl border-slate-200 bg-slate-50 focus:bg-white focus:border-indigo-400 focus:ring-indigo-400 transition">
+                </div>
+
+                <div>
+                    <label class="text-xs font-semibold uppercase tracking-wide text-slate-500">Video Title</label>
+                    <input type="text" name="VideoTitle" value="{{ old('VideoTitle', $post->VideoTitle) }}" maxlength="255"
+                        placeholder="e.g. Watch our health guide"
+                        class="mt-2 w-full rounded-xl border-slate-200 bg-slate-50 focus:bg-white focus:border-indigo-400 focus:ring-indigo-400 transition">
+                </div>
+
+                <div>
+                    <label class="text-xs font-semibold uppercase tracking-wide text-slate-500">Video Description</label>
+                    <textarea name="VideoDescription" rows="3" maxlength="1000"
+                        placeholder="Short content shown below the player thumbnail."
+                        class="mt-2 w-full rounded-xl border-slate-200 bg-slate-50 focus:bg-white focus:border-indigo-400 focus:ring-indigo-400 transition">{{ old('VideoDescription', $post->VideoDescription) }}</textarea>
                 </div>
             </div>
 
             <!-- Media section -->
             <div class="rounded-2xl border border-slate-200 bg-white shadow-sm p-6 space-y-4">
                 <div class="flex items-center gap-2 text-sm font-semibold text-slate-700">
-                    <span class="flex h-6 w-6 items-center justify-center rounded-full bg-indigo-100 text-xs font-bold text-indigo-600">3</span>
+                    <span class="flex h-6 w-6 items-center justify-center rounded-full bg-indigo-100 text-xs font-bold text-indigo-600">4</span>
                     Featured Image
                 </div>
 
