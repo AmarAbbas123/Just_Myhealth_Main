@@ -113,7 +113,7 @@
                         @if ($blogPost->hasVideoCard())
                             <section class="overflow-hidden rounded-2xl bg-white shadow-sm border border-gray-100">
                                 @if ($blogPost->VideoTitle)
-                                    <h2 class="px-5 pt-5 text-base font-bold leading-snug text-gray-900">{{ $blogPost->VideoTitle }}</h2>
+                                    <h2 class="px-5 pt-5 text-sm font-bold leading-snug text-gray-900">{{ $blogPost->VideoTitle }}</h2>
                                 @endif
 
                                 <a href="{{ $blogPost->VideoUrl ?: '#' }}" @if ($blogPost->VideoUrl) target="_blank" rel="noopener noreferrer" @endif
@@ -129,7 +129,7 @@
 
                                 @if ($blogPost->VideoDescription)
                                     <a href="{{ $blogPost->VideoUrl ?: '#' }}" @if ($blogPost->VideoUrl) target="_blank" rel="noopener noreferrer" @endif
-                                        class="block px-5 py-4 text-sm leading-relaxed text-blue-600 hover:text-blue-700 transition {{ $blogPost->VideoUrl ? '' : 'pointer-events-none' }}">
+                                        class="block px-5 py-4 text-sm font-semibold text-teal-700 hover:text-teal-800 transition {{ $blogPost->VideoUrl ? '' : 'pointer-events-none' }}">
                                         {{ $blogPost->VideoDescription }}
                                     </a>
                                 @endif

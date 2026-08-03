@@ -135,7 +135,8 @@
                 </div>
 
                 <div>
-                    <label class="text-xs font-semibold uppercase tracking-wide text-slate-500">Video Description</label>
+                    <label class="text-xs font-semibold uppercase tracking-wide
+                    0">Video link Description</label>
                     <textarea name="VideoDescription" rows="3" maxlength="1000"
                         placeholder="Short content shown below the player thumbnail."
                         class="mt-2 w-full rounded-xl border-slate-200 bg-slate-50 focus:bg-white focus:border-indigo-400 focus:ring-indigo-400 transition">{{ old('VideoDescription', $post->VideoDescription) }}</textarea>
