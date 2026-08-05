@@ -36,11 +36,6 @@ class BlogController extends Controller
             ->take(3)
             ->get();
 
-        $comments = $blogPost->comments()
-            ->with('user')
-            ->oldest()
-            ->get();
-
-        return view('modules.mod-ps.general.blog-show', compact('blogPost', 'related', 'comments'));
+        return view('modules.mod-ps.general.blog-show', compact('blogPost', 'related'));
     }
 }

@@ -15,13 +15,11 @@ class BlogCommentController extends Controller
         }
 
         $validated = $request->validate([
-            'GuestName' => ['nullable', 'string', 'max:100'],
             'Comment' => ['required', 'string', 'max:2000'],
         ]);
 
         $blogPost->comments()->create([
             'UserID' => $request->user()?->getKey(),
-            'GuestName' => $validated['GuestName'] ?? null,
             'Comment' => $validated['Comment'],
         ]);
 
