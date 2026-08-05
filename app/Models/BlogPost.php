@@ -40,6 +40,11 @@ class BlogPost extends Model
         return $this->belongsTo(User::class, 'AuthorUserID');
     }
 
+    public function comments()
+    {
+        return $this->hasMany(BlogComment::class, 'BlogPostID');
+    }
+
     public function scopePublished(Builder $query): Builder
     {
         return $query->where('IsPublished', true)

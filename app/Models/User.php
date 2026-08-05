@@ -60,6 +60,11 @@ class User extends Authenticatable implements MustVerifyEmail
         return 'ID'; // Your custom primary key
     }
 
+    public function blogComments()
+    {
+        return $this->hasMany(BlogComment::class, 'UserID', 'ID');
+    }
+
     public function hasVerifiedEmail()
     {
         return !is_null($this->EmailVerifiedAt);

@@ -105,6 +105,59 @@
                             </p>
                         @endif
                     </div>
+
+                    <section id="comments" class="mt-10 rounded-2xl bg-white p-6 shadow-sm sm:p-8">
+                        <div class="flex items-center justify-between gap-4 border-b border-gray-100 pb-5">
+                            <h2 class="text-xl font-bold text-gray-900">Comments</h2>
+                            <span class="rounded-full bg-teal-50 px-3 py-1 text-sm font-semibold text-teal-700">
+                                {{ $comments->count() }} {{ $comments->count() === 1 ? 'comment' : 'comments' }}
+                            </span>
+                        </div>
+
+                        @if (session('success'))
+                            <div class="mt-6 rounded-xl border border-green-200 bg-green-50 px-4 py-3 text-sm text-green-800">
+                                {{ session('success') }}
+                            </div>
+                        @endif
+
+                        <form action="{{ route('blogs.comments.store', $blogPost) }}" method="POST" class="mt-6">
+                            @csrf
+                            <label for="GuestName" class="block text-sm font-semibold text-gray-800">Name <span class="font-normal text-gray-500">(optional)</span></label>
+                            <input id="GuestName" name="GuestName" type="text" maxlength="100" value="{{ old('GuestName') }}"
+                                class="mt-2 block w-full rounded-xl border-gray-300 text-gray-800 shadow-sm focus:border-teal-500 focus:ring-teal-500"
+                                placeholder="Your name">
+                            @error('GuestName')
+                                <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
+                            @enderror
+                            <label for="Comment" class="mt-4 block text-sm font-semibold text-gray-800">Join the conversation</label>
+                            <textarea id="Comment" name="Comment" rows="4" maxlength="2000" required
+                                class="mt-2 block w-full rounded-xl border-gray-300 text-gray-800 shadow-sm focus:border-teal-500 focus:ring-teal-500"
+                                placeholder="Write your comment...">{{ old('Comment') }}</textarea>
+                            @error('Comment')
+                                <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
+                            @enderror
+                            <div class="mt-3 flex items-center justify-between gap-4">
+                                <p class="text-xs text-gray-500">Please keep comments respectful and relevant.</p>
+                                <button type="submit" class="rounded-xl bg-teal-700 px-4 py-2 text-sm font-semibold text-white hover:bg-teal-800">
+                                    Post comment
+                                </button>
+                            </div>
+                        </form>
+
+                        <div class="mt-8 space-y-6">
+                            @forelse ($comments as $comment)
+                                <article class="border-b border-gray-100 pb-6 last:border-0 last:pb-0">
+                                    <div class="flex items-center justify-between gap-4">
+                                        <h3 class="font-semibold text-gray-900">{{ $comment->user?->UserName ?? $comment->GuestName ?? 'Guest' }}</h3>
+                                        <time class="shrink-0 text-xs text-gray-500">{{ $comment->created_at->format('M j, Y') }}</time>
+                                    </div>
+                                    <p class="mt-2 whitespace-pre-line text-sm leading-6 text-gray-700">{{ $comment->Comment }}</p>
+                                </article>
+                            @empty
+                                <p class="text-sm text-gray-500">No comments yet. Be the first to share your thoughts.</p>
+                            @endforelse
+                        </div>
+                    </section>
                 </article>
 
                 <!-- Sidebar: YouTube card + recent posts -->

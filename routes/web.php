@@ -95,6 +95,7 @@ use App\Http\Controllers\Settings\FaceRegistrationController;
 
 //Mod01SystemAdministration/Blog/ Blogs controller
 use App\Http\Controllers\Modules\Mod01SystemAdministration\Blog\BlogController;
+use App\Http\Controllers\Modules\Mod01SystemAdministration\Blog\BlogCommentController;
 use App\Http\Controllers\Modules\Mod01SystemAdministration\Blog\BlogPostsController;
 /*
 |--------------------------------------------------------------------------
@@ -183,6 +184,8 @@ Route::view('/mod-ps/general/partners', 'modules.mod-ps.general.partners')->name
 Route::view('/mod-ps/general/getting-started', 'modules.mod-ps.general.getting-started')->name('getting-started');
 Route::get('/blogs', [BlogController::class, 'index'])->name('blogs');
 Route::get('/blogs/{blogPost}', [BlogController::class, 'show'])->name('blogs.show');
+Route::post('/blogs/{blogPost}/comments', [BlogCommentController::class, 'store'])
+    ->name('blogs.comments.store');
 
 
 // Carousel Pages
