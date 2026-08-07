@@ -165,7 +165,7 @@
 <div x-data="faceLogin()">
     <button type="button" @click="openModal()"
         class="w-full mt-3 px-4 py-2.5 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition flex items-center justify-center gap-2">
-        📷 Login with Face
+        Login with Face
     </button>
 
     <template x-if="modalOpen">
