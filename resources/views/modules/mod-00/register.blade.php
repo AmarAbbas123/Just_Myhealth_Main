@@ -6,10 +6,17 @@
     </style>
 
     @php
-        $registerType = request()->query('type');
-        $roleOptions = config("user_types.$registerType") ?? [];
-        $roleId = array_key_first($roleOptions);
-        $roleLabel = $roleOptions[$roleId] ?? null;
+        $registerType = $registerType ?? request()->route('type') ?? request()->query('type');
+        if (!is_numeric($registerType)) {
+            $candidate = config("user_types.$registerType", []);
+            if (is_array($candidate) && count($candidate)) {
+                $registerType = array_key_first($candidate);
+                $roleLabel = $roleLabel ?? ($candidate[$registerType] ?? null);
+            }
+        } else {
+            $registerType = (int) $registerType;
+        }
+        $roleLabel = $roleLabel ?? null;
     @endphp
 
     @if (session('error'))
@@ -83,7 +90,21 @@
                         </div>
                     </div>
 
-                    @if ($errors->any())
+                    {{--
+                        ⚠️ ASSUMPTION: your actual file almost certainly opens the <form> tag
+                        here (with x-data="registrationForm()" so x-model bindings below work).
+                        This exact line was NOT visible in what you pasted — please confirm it
+                        matches your real file before replacing it, since I'm reconstructing it
+                        based on the standard pattern and the closing </form> tag further down.
+                    --}}
+                    <form method="POST" action="{{ route('register') }}" x-data="registrationForm()" class="mt-3 w-full space-y-3">
+                        @csrf
+                        <input type="hidden" id="UserType" name="UserType" value="{{ $registerType }}">
+                        @if ($roleLabel)
+                            <p class="text-sm font-semibold text-slate-700">Register as {{ $roleLabel }}</p>
+                        @endif
+
+                        @if ($errors->any())
                         <div class="rounded-[10px] border border-red-200 bg-red-50 p-3 text-sm text-red-700 mt-3">
                             <ul class="list-disc list-inside pl-5 space-y-1">
                                 @foreach ($errors->all() as $error)
@@ -91,7 +112,8 @@
                                 @endforeach
                             </ul>
                         </div>
-                   
+                        @endif
+
                         <div>
                             <label for="UserName" class="text-sm font-semibold text-slate-700">{{ __('Username') }}</label>
                             <div class="relative mt-1.5">
@@ -207,7 +229,125 @@
                             Password must contain minimum 8 characters, with at least one uppercase, lowercase, number, and special character.
                         </p>
 
-                        <div id="dynamic-user-fields" class="grid grid-cols-1 gap-3 md:grid-cols-2"></div>
+                        <div id="dynamic-user-fields" class="grid grid-cols-1 gap-3 md:grid-cols-2">
+                            @php
+                                $dynamicFields = config("user_fields.$registerType", []);
+                                $businessOptions = config('business_options');
+                                $userOptions = config('user_options');
+                                $countries = $countryOptions ?? config('user_options.Country', []);
+                                $currentYear = date('Y');
+                            @endphp
+
+                            @foreach ($dynamicFields as $field)
+                                @if ($field === 'BusinessPrimaryIndustry')
+                                    <div class="flex flex-col space-y-1.5">
+                                        <label class="text-sm font-semibold text-slate-700">{{ $field }}</label>
+                                        <select name="ProfileData[{{ $field }}]" onchange="handleNotListed(this, '{{ $field }}'); loadSubIndustry(this.value)"
+                                            class="w-full rounded-[10px] border border-slate-200 bg-slate-50/70 px-4 py-2 text-sm text-slate-900 shadow-sm transition focus:border-[#1C9BA0] focus:bg-white focus:ring-[#1C9BA0]">
+                                            @foreach (($businessOptions['BusinessPrimaryIndustry'] ?? []) as $option)
+                                                <option value="{{ $option }}">{{ $option }}</option>
+                                            @endforeach
+                                        </select>
+                                        <input type="text" name="ProfileData[{{ $field }}_Custom]" placeholder="Specify Industry" style="display:none;"
+                                            class="w-full rounded-[10px] border border-slate-200 bg-slate-50/70 px-4 py-2 text-sm text-slate-900 shadow-sm transition focus:border-[#1C9BA0] focus:bg-white focus:ring-[#1C9BA0]" />
+                                    </div>
+                                @elseif ($field === 'BusinessSubIndustry')
+                                    <div class="flex flex-col space-y-1.5">
+                                        <label class="text-sm font-semibold text-slate-700">{{ $field }}</label>
+                                        <select name="ProfileData[{{ $field }}]" id="subindustry" onchange="handleNotListed(this, '{{ $field }}')"
+                                            class="w-full rounded-[10px] border border-slate-200 bg-slate-50/70 px-4 py-2 text-sm text-slate-900 shadow-sm transition focus:border-[#1C9BA0] focus:bg-white focus:ring-[#1C9BA0]"></select>
+                                        <input type="text" name="ProfileData[{{ $field }}_Custom]" placeholder="Specify SubIndustry" style="display:none;"
+                                            class="w-full rounded-[10px] border border-slate-200 bg-slate-50/70 px-4 py-2 text-sm text-slate-900 shadow-sm transition focus:border-[#1C9BA0] focus:bg-white focus:ring-[#1C9BA0]" />
+                                    </div>
+                                @elseif ($field === 'BusinessType')
+                                    <div class="flex flex-col space-y-1.5">
+                                        <label class="text-sm font-semibold text-slate-700">{{ $field }}</label>
+                                        <select name="ProfileData[{{ $field }}]" onchange="handleNotListed(this, '{{ $field }}')"
+                                            class="w-full rounded-[10px] border border-slate-200 bg-slate-50/70 px-4 py-2 text-sm text-slate-900 shadow-sm transition focus:border-[#1C9BA0] focus:bg-white focus:ring-[#1C9BA0]">
+                                            @foreach (($businessOptions['BusinessType'] ?? []) as $option)
+                                                <option value="{{ $option }}">{{ $option }}</option>
+                                            @endforeach
+                                        </select>
+                                        <input type="text" name="ProfileData[{{ $field }}_Custom]" placeholder="Specify Business Type" style="display:none;"
+                                            class="w-full rounded-[10px] border border-slate-200 bg-slate-50/70 px-4 py-2 text-sm text-slate-900 shadow-sm transition focus:border-[#1C9BA0] focus:bg-white focus:ring-[#1C9BA0]" />
+                                    </div>
+                                @elseif ($field === 'Country')
+                                    <div class="flex flex-col space-y-1.5">
+                                        <label class="text-sm font-semibold text-slate-700">{{ $field }}</label>
+                                        <select name="ProfileData[{{ $field }}]" id="country-dropdown" onchange="loadStates(this.value)"
+                                            class="w-full rounded-[10px] border border-slate-200 bg-slate-50/70 px-4 py-2 text-sm text-slate-900 shadow-sm transition focus:border-[#1C9BA0] focus:bg-white focus:ring-[#1C9BA0]" required>
+                                            <option value="">Select Country</option>
+                                            @foreach ($countries as $country)
+                                                <option value="{{ $country }}">{{ $country }}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                @elseif ($field === 'State')
+                                    @if ($registerType == 10)
+                                        <div class="flex flex-col space-y-1.5">
+                                            <label class="text-sm font-semibold text-slate-700">{{ $field }}</label>
+                                            <select name="ProfileData[{{ $field }}]" id="state-dropdown" onchange="loadCities(this.value)"
+                                                class="w-full rounded-[10px] border border-slate-200 bg-slate-50/70 px-4 py-2 text-sm text-slate-900 shadow-sm transition focus:border-[#1C9BA0] focus:bg-white focus:ring-[#1C9BA0]"></select>
+                                        </div>
+                                    @else
+                                        <div class="flex flex-col space-y-1.5">
+                                            <label class="text-sm font-semibold text-slate-700">{{ $field }}</label>
+                                            <input type="text" name="ProfileData[{{ $field }}]" class="w-full rounded-[10px] border border-slate-200 bg-slate-50/70 px-4 py-2 text-sm text-slate-900 shadow-sm transition focus:border-[#1C9BA0] focus:bg-white focus:ring-[#1C9BA0]" placeholder="Enter {{ $field }}" />
+                                        </div>
+                                    @endif
+                                @elseif ($field === 'City')
+                                    @if ($registerType == 10)
+                                        <div class="flex flex-col space-y-1.5">
+                                            <label class="text-sm font-semibold text-slate-700">{{ $field }}</label>
+                                            <select name="ProfileData[{{ $field }}]" id="city-dropdown"
+                                                class="w-full rounded-[10px] border border-slate-200 bg-slate-50/70 px-4 py-2 text-sm text-slate-900 shadow-sm transition focus:border-[#1C9BA0] focus:bg-white focus:ring-[#1C9BA0]"></select>
+                                        </div>
+                                    @elseif ($registerType == 1)
+                                        <div class="flex flex-col space-y-1.5">
+                                            <label class="text-sm font-semibold text-slate-700">{{ $field }}</label>
+                                            <input type="text" name="ProfileData[{{ $field }}]" class="min-w-[210%] w-full rounded-[10px] border border-slate-200 bg-slate-50/70 px-4 py-2 text-sm text-slate-900 shadow-sm transition focus:border-[#1C9BA0] focus:bg-white focus:ring-[#1C9BA0]" placeholder="Enter {{ $field }}" />
+                                        </div>
+                                    @else
+                                        <div class="flex flex-col space-y-1.5">
+                                            <label class="text-sm font-semibold text-slate-700">{{ $field }}</label>
+                                            <input type="text" name="ProfileData[{{ $field }}]" class="w-full rounded-[10px] border border-slate-200 bg-slate-50/70 px-4 py-2 text-sm text-slate-900 shadow-sm transition focus:border-[#1C9BA0] focus:bg-white focus:ring-[#1C9BA0]" placeholder="Enter {{ $field }}" />
+                                        </div>
+                                    @endif
+                                @elseif (isset($userOptions[$field]))
+                                    <div class="flex flex-col space-y-1.5">
+                                        <label class="text-sm font-semibold text-slate-700">{{ $field }}</label>
+                                        <select name="ProfileData[{{ $field }}]"
+                                            class="w-full rounded-[10px] border border-slate-200 bg-slate-50/70 px-4 py-2 text-sm text-slate-900 shadow-sm transition focus:border-[#1C9BA0] focus:bg-white focus:ring-[#1C9BA0]">
+                                            @foreach ($userOptions[$field] as $option)
+                                                <option value="{{ $option }}">{{ $option }}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                @elseif ($field === 'DOB' || $field === 'DateOfBirth')
+                                    <div class="flex flex-col space-y-1.5">
+                                        <label class="text-sm font-semibold text-slate-700">{{ $field }}</label>
+                                        <input type="date" name="ProfileData[{{ $field }}]" class="w-full rounded-[10px] border border-slate-200 bg-slate-50/70 px-4 py-2 text-sm text-slate-900 shadow-sm transition focus:border-[#1C9BA0] focus:bg-white focus:ring-[#1C9BA0]" />
+                                    </div>
+                                @elseif ($field === 'YearBirth')
+                                    <div class="flex flex-col space-y-1.5">
+                                        <label class="text-sm font-semibold text-slate-700">{{ $field }}</label>
+                                        <select name="ProfileData[{{ $field }}]"
+                                            class="w-full rounded-[10px] border border-slate-200 bg-slate-50/70 px-4 py-2 text-sm text-slate-900 shadow-sm transition focus:border-[#1C9BA0] focus:bg-white focus:ring-[#1C9BA0]">
+                                            <option value="">Select Year</option>
+                                            @for ($year = $currentYear; $year >= 1920; $year--)
+                                                <option value="{{ $year }}">{{ $year }}</option>
+                                            @endfor
+                                        </select>
+                                    </div>
+                                @else
+                                    <div class="flex flex-col space-y-1.5">
+                                        <label class="text-sm font-semibold text-slate-700">{{ $field }}</label>
+                                        <input type="text" name="ProfileData[{{ $field }}]"
+                                            class="w-full rounded-[10px] border border-slate-200 bg-slate-50/70 px-4 py-2 text-sm text-slate-900 shadow-sm transition focus:border-[#1C9BA0] focus:bg-white focus:ring-[#1C9BA0]" />
+                                    </div>
+                                @endif
+                            @endforeach
+                        </div>
 
                         <div x-show="showInfoModal" x-cloak class="fixed inset-0 z-50 flex items-center justify-center px-4">
                             <div class="absolute inset-0 bg-slate-900/30 backdrop-blur-sm" @click="closeInfo()"></div>
@@ -239,6 +379,9 @@
                                 <span>I accept GDPR</span>
                             </label>
                         </div>
+
+                        {{-- CAPTCHA + honeypot + timing anti-bot fields --}}
+                        @include('partials.anti-bot-fields')
 
                         <button type="submit"
                             class="w-full flex justify-center rounded-[10px] bg-[#1C9BA0] px-6 py-2.5 text-sm font-semibold text-white shadow-lg shadow-[#1C9BA0]/25 transition hover:bg-[#18848F] hover:shadow-xl hover:shadow-[#1C9BA0]/30">

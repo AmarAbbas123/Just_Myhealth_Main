@@ -7,6 +7,8 @@ use App\Models\User;
 use App\Models\SysUserAttribute;
 use App\Models\SysFinanceServiceFeeDetail;
 use App\Notifications\AdminNewUserRegisteredNotification;
+use App\Rules\Recaptcha;
+use App\Traits\ProtectsAgainstBots;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -20,6 +22,8 @@ use App\Services\UserTimeZoneService;
 
 class RegisteredUserController extends Controller
 {
+    use ProtectsAgainstBots;
+
     /**
      * Display the registration view.
      */
@@ -31,17 +35,41 @@ class RegisteredUserController extends Controller
         }
 
         // 2. Require type param
-        if (!$request->has('type')) {
+        $requestedType = $request->route('type') ?? $request->query('type');
+        if (!$requestedType) {
+            return redirect()->route('regAccountType');
+        }
+        $registerType = null;
+        $roleLabel = null;
+        $roleOptions = [];
+
+        if (is_numeric($requestedType)) {
+            $registerType = (int) $requestedType;
+            foreach (config('user_types') as $groupOptions) {
+                if (array_key_exists($registerType, $groupOptions)) {
+                    $roleOptions = $groupOptions;
+                    $roleLabel = $groupOptions[$registerType] ?? null;
+                    break;
+                }
+            }
+        } else {
+            $roleOptions = config("user_types.$requestedType", []);
+            if (!empty($roleOptions)) {
+                $registerType = array_key_first($roleOptions);
+                $roleLabel = $roleOptions[$registerType] ?? null;
+            }
+        }
+
+        if (!$registerType) {
             return redirect()->route('regAccountType');
         }
 
-        $type = $request->query('type');
         $countryOptions = $timeZoneService->getCountryOptions();
         if (empty($countryOptions)) {
             $countryOptions = config('user_options.Country', []);
         }
 
-        return view('modules.mod-00.register', compact('type', 'countryOptions'));
+        return view('modules.mod-00.register', compact('registerType', 'roleLabel', 'countryOptions'));
     }
 
     public function registerAccountType()
@@ -80,6 +108,10 @@ class RegisteredUserController extends Controller
      */
     public function store(Request $request, UserTimeZoneService $timeZoneService): RedirectResponse
     {
+        // Reject obvious bot submissions (honeypot filled in, or form
+        // submitted implausibly fast) before running any real validation.
+        $this->rejectIfBot($request);
+
         $userType = $request->UserType;
         $countryOptions = $timeZoneService->getCountryOptions();
         if (empty($countryOptions)) {
@@ -98,6 +130,7 @@ class RegisteredUserController extends Controller
             'Terms' => 'accepted',
             'Privacy' => 'accepted',
             'GDPR' => 'nullable|accepted',
+            'g-recaptcha-response' => ['required', new Recaptcha()],
         ];
 
         // Add dynamic ProfileData validation rules

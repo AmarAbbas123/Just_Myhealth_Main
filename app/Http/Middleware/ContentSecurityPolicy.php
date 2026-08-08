@@ -62,6 +62,8 @@ class ContentSecurityPolicy
             "https://zegocloud.com",
             "https://www.googletagmanager.com",
             "https://www.google-analytics.com",
+            "https://www.google.com",
+            "https://www.gstatic.com",
         ];
 
         $styleList = [
@@ -103,7 +105,7 @@ class ContentSecurityPolicy
             "img-src 'self' data: blob: https://cdn.jsdelivr.net https://storage.googleapis.com https://images.unsplash.com",
             "connect-src 'self' " . implode(' ', $connectList),
             "object-src 'none'",
-            "frame-src 'self' https://*.zegocloud.com",
+            "frame-src 'self' https://*.zegocloud.com https://www.google.com https://www.gstatic.com",
             "worker-src 'self' blob:",
         ];
 

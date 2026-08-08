@@ -15,7 +15,7 @@ use Illuminate\Auth\Events\Verified;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware('guest')->group(function () {
-    Route::get('register', [RegisteredUserController::class, 'create'])
+    Route::get('register/{type?}', [RegisteredUserController::class, 'create'])
         ->name('register');
 
     Route::get('/mod-00/register-account-type', [RegisteredUserController::class, 'registerAccountType'])
