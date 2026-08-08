@@ -115,7 +115,7 @@
                         @endif
 
                         <div>
-                            <label for="UserName" class="text-sm font-semibold text-slate-700">{{ __('Username') }}</label>
+                            <label for="UserName" class="text-sm font-medium text-slate-700">{{ __('Username') }}</label>
                             <div class="relative mt-1.5">
                                 <span class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-4 text-slate-400">
                                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
@@ -135,7 +135,7 @@
                         </div>
 
                         <div>
-                            <label for="Email" class="text-sm font-semibold text-slate-700">{{ __('Email') }}</label>
+                            <label for="Email" class="text-sm font-medium text-slate-700">{{ __('Email') }}</label>
                             <div class="relative mt-1.5">
                                 <span class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-4 text-slate-400">
                                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
@@ -156,7 +156,7 @@
 
                         <div class="flex flex-col gap-3 md:flex-row">
                             <div class="w-full">
-                                <label for="Password" class="text-sm font-semibold text-slate-700">{{ __('Password') }}</label>
+                                <label for="Password" class="text-sm font-medium text-slate-700">{{ __('Password') }}</label>
                                 <div class="relative mt-1.5">
                                     <span class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-4 text-slate-400">
                                         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
@@ -192,7 +192,7 @@
                             </div>
 
                             <div class="w-full">
-                                <label for="ConfirmPassword" class="text-sm font-semibold text-slate-700">{{ __('Confirm Password') }}</label>
+                                <label for="ConfirmPassword" class="text-sm font-medium text-slate-700">{{ __('Confirm Password') }}</label>
                                 <div class="relative mt-1.5">
                                     <span class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-4 text-slate-400">
                                         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
@@ -241,7 +241,7 @@
                             @foreach ($dynamicFields as $field)
                                 @if ($field === 'BusinessPrimaryIndustry')
                                     <div class="flex flex-col space-y-1.5">
-                                        <label class="text-sm font-semibold text-slate-700">{{ $field }}</label>
+                                        <label class="text-sm font-medium text-slate-700">{{ $field }}</label>
                                         <select name="ProfileData[{{ $field }}]" onchange="handleNotListed(this, '{{ $field }}'); loadSubIndustry(this.value)"
                                             class="w-full rounded-[10px] border border-slate-200 bg-slate-50/70 px-4 py-2 text-sm text-slate-900 shadow-sm transition focus:border-[#1C9BA0] focus:bg-white focus:ring-[#1C9BA0]">
                                             @foreach (($businessOptions['BusinessPrimaryIndustry'] ?? []) as $option)
@@ -253,7 +253,7 @@
                                     </div>
                                 @elseif ($field === 'BusinessSubIndustry')
                                     <div class="flex flex-col space-y-1.5">
-                                        <label class="text-sm font-semibold text-slate-700">{{ $field }}</label>
+                                        <label class="text-sm font-medium text-slate-700">{{ $field }}</label>
                                         <select name="ProfileData[{{ $field }}]" id="subindustry" onchange="handleNotListed(this, '{{ $field }}')"
                                             class="w-full rounded-[10px] border border-slate-200 bg-slate-50/70 px-4 py-2 text-sm text-slate-900 shadow-sm transition focus:border-[#1C9BA0] focus:bg-white focus:ring-[#1C9BA0]"></select>
                                         <input type="text" name="ProfileData[{{ $field }}_Custom]" placeholder="Specify SubIndustry" style="display:none;"
@@ -261,7 +261,7 @@
                                     </div>
                                 @elseif ($field === 'BusinessType')
                                     <div class="flex flex-col space-y-1.5">
-                                        <label class="text-sm font-semibold text-slate-700">{{ $field }}</label>
+                                        <label class="text-sm font-medium text-slate-700">{{ $field }}</label>
                                         <select name="ProfileData[{{ $field }}]" onchange="handleNotListed(this, '{{ $field }}')"
                                             class="w-full rounded-[10px] border border-slate-200 bg-slate-50/70 px-4 py-2 text-sm text-slate-900 shadow-sm transition focus:border-[#1C9BA0] focus:bg-white focus:ring-[#1C9BA0]">
                                             @foreach (($businessOptions['BusinessType'] ?? []) as $option)
@@ -273,7 +273,7 @@
                                     </div>
                                 @elseif ($field === 'Country')
                                     <div class="flex flex-col space-y-1.5">
-                                        <label class="text-sm font-semibold text-slate-700">{{ $field }}</label>
+                                        <label class="text-sm font-medium text-slate-700">{{ $field }}</label>
                                         <select name="ProfileData[{{ $field }}]" id="country-dropdown" onchange="loadStates(this.value)"
                                             class="w-full rounded-[10px] border border-slate-200 bg-slate-50/70 px-4 py-2 text-sm text-slate-900 shadow-sm transition focus:border-[#1C9BA0] focus:bg-white focus:ring-[#1C9BA0]" required>
                                             <option value="">Select Country</option>
@@ -285,37 +285,37 @@
                                 @elseif ($field === 'State')
                                     @if ($registerType == 10)
                                         <div class="flex flex-col space-y-1.5">
-                                            <label class="text-sm font-semibold text-slate-700">{{ $field }}</label>
+                                            <label class="text-sm font-medium text-slate-700">{{ $field }}</label>
                                             <select name="ProfileData[{{ $field }}]" id="state-dropdown" onchange="loadCities(this.value)"
                                                 class="w-full rounded-[10px] border border-slate-200 bg-slate-50/70 px-4 py-2 text-sm text-slate-900 shadow-sm transition focus:border-[#1C9BA0] focus:bg-white focus:ring-[#1C9BA0]"></select>
                                         </div>
                                     @else
                                         <div class="flex flex-col space-y-1.5">
-                                            <label class="text-sm font-semibold text-slate-700">{{ $field }}</label>
+                                            <label class="text-sm font-medium text-slate-700">{{ $field }}</label>
                                             <input type="text" name="ProfileData[{{ $field }}]" class="w-full rounded-[10px] border border-slate-200 bg-slate-50/70 px-4 py-2 text-sm text-slate-900 shadow-sm transition focus:border-[#1C9BA0] focus:bg-white focus:ring-[#1C9BA0]" placeholder="Enter {{ $field }}" />
                                         </div>
                                     @endif
                                 @elseif ($field === 'City')
                                     @if ($registerType == 10)
                                         <div class="flex flex-col space-y-1.5">
-                                            <label class="text-sm font-semibold text-slate-700">{{ $field }}</label>
+                                            <label class="text-sm font-medium text-slate-700">{{ $field }}</label>
                                             <select name="ProfileData[{{ $field }}]" id="city-dropdown"
                                                 class="w-full rounded-[10px] border border-slate-200 bg-slate-50/70 px-4 py-2 text-sm text-slate-900 shadow-sm transition focus:border-[#1C9BA0] focus:bg-white focus:ring-[#1C9BA0]"></select>
                                         </div>
                                     @elseif ($registerType == 1)
                                         <div class="flex flex-col space-y-1.5">
-                                            <label class="text-sm font-semibold text-slate-700">{{ $field }}</label>
+                                            <label class="text-sm font-medium text-slate-700">{{ $field }}</label>
                                             <input type="text" name="ProfileData[{{ $field }}]" class="min-w-[210%] w-full rounded-[10px] border border-slate-200 bg-slate-50/70 px-4 py-2 text-sm text-slate-900 shadow-sm transition focus:border-[#1C9BA0] focus:bg-white focus:ring-[#1C9BA0]" placeholder="Enter {{ $field }}" />
                                         </div>
                                     @else
                                         <div class="flex flex-col space-y-1.5">
-                                            <label class="text-sm font-semibold text-slate-700">{{ $field }}</label>
+                                            <label class="text-sm font-medium text-slate-700">{{ $field }}</label>
                                             <input type="text" name="ProfileData[{{ $field }}]" class="w-full rounded-[10px] border border-slate-200 bg-slate-50/70 px-4 py-2 text-sm text-slate-900 shadow-sm transition focus:border-[#1C9BA0] focus:bg-white focus:ring-[#1C9BA0]" placeholder="Enter {{ $field }}" />
                                         </div>
                                     @endif
                                 @elseif (isset($userOptions[$field]))
                                     <div class="flex flex-col space-y-1.5">
-                                        <label class="text-sm font-semibold text-slate-700">{{ $field }}</label>
+                                        <label class="text-sm font-medium text-slate-700">{{ $field }}</label>
                                         <select name="ProfileData[{{ $field }}]"
                                             class="w-full rounded-[10px] border border-slate-200 bg-slate-50/70 px-4 py-2 text-sm text-slate-900 shadow-sm transition focus:border-[#1C9BA0] focus:bg-white focus:ring-[#1C9BA0]">
                                             @foreach ($userOptions[$field] as $option)
@@ -325,12 +325,12 @@
                                     </div>
                                 @elseif ($field === 'DOB' || $field === 'DateOfBirth')
                                     <div class="flex flex-col space-y-1.5">
-                                        <label class="text-sm font-semibold text-slate-700">{{ $field }}</label>
+                                        <label class="text-sm font-medium text-slate-700">{{ $field }}</label>
                                         <input type="date" name="ProfileData[{{ $field }}]" class="w-full rounded-[10px] border border-slate-200 bg-slate-50/70 px-4 py-2 text-sm text-slate-900 shadow-sm transition focus:border-[#1C9BA0] focus:bg-white focus:ring-[#1C9BA0]" />
                                     </div>
                                 @elseif ($field === 'YearBirth')
                                     <div class="flex flex-col space-y-1.5">
-                                        <label class="text-sm font-semibold text-slate-700">{{ $field }}</label>
+                                        <label class="text-sm font-medium text-slate-700">{{ $field }}</label>
                                         <select name="ProfileData[{{ $field }}]"
                                             class="w-full rounded-[10px] border border-slate-200 bg-slate-50/70 px-4 py-2 text-sm text-slate-900 shadow-sm transition focus:border-[#1C9BA0] focus:bg-white focus:ring-[#1C9BA0]">
                                             <option value="">Select Year</option>
@@ -341,7 +341,7 @@
                                     </div>
                                 @else
                                     <div class="flex flex-col space-y-1.5">
-                                        <label class="text-sm font-semibold text-slate-700">{{ $field }}</label>
+                                        <label class="text-sm font-medium text-slate-700">{{ $field }}</label>
                                         <input type="text" name="ProfileData[{{ $field }}]"
                                             class="w-full rounded-[10px] border border-slate-200 bg-slate-50/70 px-4 py-2 text-sm text-slate-900 shadow-sm transition focus:border-[#1C9BA0] focus:bg-white focus:ring-[#1C9BA0]" />
                                     </div>
@@ -410,7 +410,7 @@
     const professionalOptions = @json(config('professional_options'));
 
     const FIELD_CLASS = "w-full rounded-[10px] border border-slate-200 bg-slate-50/70 px-4 py-2 text-sm text-slate-900 shadow-sm transition focus:border-[#1C9BA0] focus:bg-white focus:ring-[#1C9BA0]";
-    const LABEL_CLASS = "text-sm font-semibold text-slate-700";
+    const LABEL_CLASS = "text-sm font-medium text-slate-700";
 
     function loadUserFields(userTypeId) {
         const fields = userFieldMap[userTypeId] || [];
