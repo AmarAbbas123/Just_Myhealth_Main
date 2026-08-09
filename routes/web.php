@@ -6,6 +6,7 @@ use App\Http\Controllers\StripePayment\WebhookController;
 use App\Http\Controllers\StripePayment\SessionPurchaseController;
 use App\Http\Controllers\StripePayment\PaymentSuccessController;
 use App\Http\Controllers\SocialAuthController;
+use App\Http\Controllers\PublicContactController;
 use App\Http\Controllers\ZegoCloud\ZegoChatController;
 use App\Http\Controllers\ZegoCloud\VideoSessionController;
 use App\Http\Controllers\ZegoCloud\ZegoRecordingController;
@@ -87,11 +88,6 @@ use Stripe\Checkout\Session;
 
 //Mod11 chatbot controller
 use App\Http\Controllers\Modules\Mod11ChatBot\ChatbotController;
-
-//face routes
-use App\Http\Controllers\Auth\FaceLoginController;
-use App\Http\Controllers\Settings\FaceRegistrationController;
-
 
 //Mod01SystemAdministration/Blog/ Blogs controller
 use App\Http\Controllers\Modules\Mod01SystemAdministration\Blog\BlogController;
@@ -179,6 +175,8 @@ Route::view('/mod-ps/general/faq', 'modules.mod-ps.general.faq')->name('faq');
 Route::view('/mod-ps/general/about', 'modules.mod-ps.general.about')->name('about');
 Route::view('/mod-ps/general/terms', 'modules.mod-ps.general.terms')->name('terms');
 Route::view('/mod-ps/general/privacy', 'modules.mod-ps.general.privacy')->name('privacy');
+Route::get('/mod-ps/general/contact-us', [PublicContactController::class, 'show'])->name('contact-us');
+Route::post('/mod-ps/general/contact-us', [PublicContactController::class, 'submit'])->name('contact-us.submit');
 
 Route::view('/mod-ps/general/partners', 'modules.mod-ps.general.partners')->name('partners');
 Route::view('/mod-ps/general/getting-started', 'modules.mod-ps.general.getting-started')->name('getting-started');
@@ -262,27 +260,6 @@ Route::post('/verify-current-password', function (Request $request) {
 // Social login
 Route::get('/auth/{provider}', [SocialAuthController::class, 'redirect'])->name('social.redirect');
 Route::get('/auth/{provider}/callback', [SocialAuthController::class, 'callback'])->name('social.callback');
-
-/*
-|--------------------------------------------------------------------------
-| Face Login Routes (must be above the catch-all /{slug?} route below,
-| otherwise the catch-all intercepts these URLs first and 404s)
-|--------------------------------------------------------------------------
-*/
-// Guest: face-scan login attempt from the login page
-Route::post('/login/face', [FaceLoginController::class, 'attempt'])
-    ->middleware('guest')
-    ->name('login.face');
-
-// Authenticated: manage face profile from Settings
-Route::middleware('auth')->group(function () {
-    Route::get('/settings/face-login', [FaceRegistrationController::class, 'edit'])
-        ->name('settings.face-login.edit');
-    Route::post('/settings/face-login', [FaceRegistrationController::class, 'store'])
-        ->name('settings.face-login.store');
-    Route::delete('/settings/face-login', [FaceRegistrationController::class, 'destroy'])
-        ->name('settings.face-login.destroy');
-});
 
 /*
 |--------------------------------------------------------------------------

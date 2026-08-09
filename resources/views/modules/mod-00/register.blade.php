@@ -25,12 +25,12 @@
         </div>
     @endif
     @if (session('status'))
-        <div class="mb-4 p-3 text-green-700 bg-green-100 rounded-lg">
+        <div class="mb- p-3 text-green-700 bg-green-100 rounded-lg">
             {{ session('status') }}
         </div>
     @endif
 
-    <div class="min-h-screen flex items-center bg-slate-100 py-6">
+    <div class="min-h-screen flex items-center bg-slate-100  py-6">
         <div class="mx-auto w-full max-w-6xl px-4 sm:px-6 lg:px-8">
             <div class="grid overflow-hidden rounded-[2rem] border border-slate-200 bg-white shadow-xl shadow-slate-300/40 lg:grid-cols-2">
 

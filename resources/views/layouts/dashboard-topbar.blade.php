@@ -137,14 +137,6 @@
                         </svg>
                         Settings
                     </a>
-                    <a href="{{ route('settings.face-login.edit') }}"
-                        class="flex items-center w-full px-2 py-1 text-sm font-semibold rounded-md hover:bg-gray-100 dark:hover:bg-gray-800">
-                        <svg class="w-4 h-4 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round"
-                                d="M9 9V7a3 3 0 016 0v2m-8 0h10a1 1 0 011 1v9a1 1 0 01-1 1H7a1 1 0 01-1-1v-9a1 1 0 011-1zM12 13.5v2" />
-                        </svg>
-                        Face Login
-                    </a>
                     <form method="POST" action="{{ route('logout') }}" class="w-full">
                         @csrf
                         <button type="submit"
