@@ -1,5 +1,5 @@
 <x-app-layout title="Contact Us | JustMy.Health" metaDescription="Contact JustMy.Health for questions, feedback, or support.">
-    <section class="relative h-72 lg:h-80 flex items-start lg:items-center pt-20 lg:pt-24">
+    <section class="relative min-h-[22rem] sm:min-h-[18rem] lg:h-80 flex items-start lg:items-center pt-24 pb-10 lg:pt-24 lg:pb-0">
         <div class="absolute inset-0 -z-10">
             <img src="{{ asset('images/welcome-page/hero-bg.png') }}" alt="Contact Us Background" class="w-full h-full object-cover object-center" />
             <div class="absolute inset-0 bg-slate-950/50"></div>
@@ -15,13 +15,22 @@
                 <span class="text-white font-semibold">Contact Us</span>
             </div>
 
-            <h1 class="text-4xl lg:text-5xl font-bold text-white tracking-tight mb-4">Contact <span class="text-teal-400">JustMy.Health</span></h1>
-            <p class="text-white/80 max-w-2xl text-lg leading-relaxed">Have a question or need help? Send us a message and our team will respond as soon as possible.</p>
+            <h1 class="text-3xl sm:text-4xl lg:text-5xl font-bold text-white tracking-tight mb-4">Contact <span class="text-teal-400">JustMy.Health</span></h1>
+         
         </div>
     </section>
 
-    <section class="py-16 bg-gray-50">
-        <div class="max-w-6xl mx-auto px-6 grid lg:grid-cols-2 gap-12 items-start">
+    <section class="pt-14 pb-4 bg-gray-50">
+        <div class="max-w-2xl mx-auto px-4 text-center">
+            <h2 class="text-2xl sm:text-3xl font-bold text-slate-900">Contact Us</h2>
+            <p class="mt-3 text-sm sm:text-base text-slate-600 leading-relaxed">
+                Have a question or need help? Send us a message and our team will respond as soon as possible.
+            </p>
+        </div>
+    </section>
+
+    <section class="py-16 bg-gray-50 overflow-x-hidden">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-start">
 
             <!-- Left side: redesigned info panel -->
             <div class="space-y-6">
@@ -41,7 +50,7 @@
                         <div>
                             <h2 class="text-xl font-bold text-slate-900">Get in touch</h2>
                             <p class="mt-1.5 text-sm text-slate-600 leading-relaxed">
-                                Whether you're already using JustMy.Health or just finding out what we offer, we want to hear from you. Use the form to ask a question, share feedback, or start a conversation — we use reCAPTCHA to keep spam and automated messages away, so real questions always get through.
+                                Whether you're already using JustMy.Health or just finding out what we offer, we want to hear from you. Use the form to ask a question, share feedback, or start a conversation.
                             </p>
                         </div>
                     </div>

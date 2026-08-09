@@ -51,6 +51,7 @@
     @include('layouts.public-navbar')
     {{ $slot }}
     @include('layouts.footer')
+    <x-chatbot />
     @stack('scripts')
 </body>
 
