@@ -16,7 +16,7 @@
             </div>
 
             <h1 class="text-4xl lg:text-5xl font-bold text-white tracking-tight mb-4">Contact <span class="text-teal-400">JustMy.Health</span></h1>
-            
+            <p class="text-white/80 max-w-2xl text-lg leading-relaxed">Have a question or need help? Send us a message and our team will respond as soon as possible.</p>
         </div>
     </section>
 
@@ -41,7 +41,7 @@
                         <div>
                             <h2 class="text-xl font-bold text-slate-900">Get in touch</h2>
                             <p class="mt-1.5 text-sm text-slate-600 leading-relaxed">
-                                Use the form to send questions, feedback, or support requests. We use reCAPTCHA to keep spam and automated messages away, so real conversations always come through.
+                                Whether you're already using JustMy.Health or just finding out what we offer, we want to hear from you. Use the form to ask a question, share feedback, or start a conversation — we use reCAPTCHA to keep spam and automated messages away, so real questions always get through.
                             </p>
                         </div>
                     </div>
@@ -55,8 +55,8 @@
                             </svg>
                         </div>
                         <div>
-                            <h3 class="text-lg font-bold text-slate-900">Need something fast?</h3>
-                            <p class="mt-1 text-sm text-slate-600">Email us directly and we'll get back to you.</p>
+                            <h3 class="text-lg font-bold text-slate-900">Not sure where to start?</h3>
+                            <p class="mt-1 text-sm text-slate-600">New to JustMy.Health and have a question before signing up? Email us directly and a real person will reply.</p>
                         </div>
                     </div>
 
