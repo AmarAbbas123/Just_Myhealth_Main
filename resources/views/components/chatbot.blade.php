@@ -163,9 +163,9 @@
             draft: '',
             loading: false,
             suggestions: [
+                'What does JustMy.Health offer?',
+                'How do I get started?',
                 'How do I book a session?',
-                'How do I pay?',
-                'How do I cancel a booking?',
             ],
             messages: [
                 { role: 'assistant', content: "Hi there \ud83d\udc4b I'm your coaching assistant. I can help with bookings, payments, workouts, and account questions — what do you need help with?" },
