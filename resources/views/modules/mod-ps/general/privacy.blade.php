@@ -3,14 +3,14 @@
 
 
     <!-- Hero Section -->
-    <section class="relative h-72 lg:h-80 flex items-start pt-26 lg:pt-36">
+    <section class="relative h-80 lg:h-[28rem] flex items-start lg:items-center pt-24 lg:pt-32 overflow-hidden">
         <!-- Background Image -->
         <div class="absolute inset-0 -z-10">
             <img src="{{ asset('images/welcome-page/hero-bg.png') }}" alt="Hero Background" class="w-full h-full object-cover object-center">
             <div class="absolute inset-0 bg-black/40"></div>
         </div>
     
-        <div class="px-6 lg:px-20 max-w-4xl">
+        <div class="px-6 lg:px-20 max-w-4xl mx-auto text-center lg:text-left">
             <!-- Breadcrumb -->
             <div class="inline-flex items-center space-x-2 text-sm lg:text-base font-medium text-white/90 bg-white/10 backdrop-blur-md px-5 py-2 rounded-full shadow-lg mb-4">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 lg:h-5 lg:w-5 text-teal-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">

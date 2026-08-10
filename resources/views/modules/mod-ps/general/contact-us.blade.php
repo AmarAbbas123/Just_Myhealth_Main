@@ -1,5 +1,5 @@
 <x-app-layout title="Contact Us | JustMy.Health" metaDescription="Contact JustMy.Health for questions, feedback, or support.">
-    <section class="relative min-h-[22rem] sm:min-h-[18rem] lg:h-80 flex items-start lg:items-center pt-24 pb-10 lg:pt-24 lg:pb-0">
+    <section class="relative min-h-[22rem] sm:min-h-[18rem] lg:h-80 flex lg:items-center pt-24 pb-10 lg:pt-24 lg:pb-0">
         <div class="absolute inset-0 -z-10">
             <img src="{{ asset('images/welcome-page/hero-bg.png') }}" alt="Contact Us Background" class="w-full h-full object-cover object-center" />
             <div class="absolute inset-0 bg-slate-950/50"></div>
