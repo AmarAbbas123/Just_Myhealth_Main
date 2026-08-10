@@ -12,13 +12,7 @@
 
 <style>
     /* Hide the native scrollbar in the chat messages area (scroll still works) */
-    .chatbot-scroll {
-        scrollbar-width: none;      /* Firefox */
-        -ms-overflow-style: none;   /* IE / old Edge */
-    }
-    .chatbot-scroll::-webkit-scrollbar {
-        display: none;              /* Chrome, Safari, new Edge */
-    }
+    
 </style>
 
 <div

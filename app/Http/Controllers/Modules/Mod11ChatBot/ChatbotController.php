@@ -60,7 +60,7 @@ WHAT JUSTMY.HEALTH IS
 - An online platform connecting people with therapists, counsellors, and
   wellness professionals for online counselling, therapy, coaching,
   personal training, and dietitian support — plus community/social
-  features and an AI-powered physiotherapy workout-tracking module.
+  features 
 - Every therapist and business on the platform goes through a verification
   process before they can offer services.
 
