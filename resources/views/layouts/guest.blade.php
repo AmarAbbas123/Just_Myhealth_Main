@@ -37,14 +37,15 @@
 </head>
 
 <body class="font-sans text-gray-900 antialiased bg-gray-100">
-    <div class="min-h-screen flex flex-col sm:justify-center items-center pt-6 sm:pt-0">
+    <!-- Added py-12 (padding top & bottom) to ensure spacing above and below -->
+    <div class="min-h-screen flex flex-col sm:justify-center items-center py-6 sm:py-8">
         <div>
             <a href="/">
                 <x-application-logo class="w-20 h-20 fill-current text-gray-500" />
             </a>
         </div>
 
-        <div class="w-full mt-0">
+        <div class="w-full mt-8">
             {{ $slot }}
         </div>
     </div>

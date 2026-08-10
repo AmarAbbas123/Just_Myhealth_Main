@@ -11,7 +11,7 @@
     @endif
 
 
-    <div class="min-h-screen flex items-center bg-slate-100 py-6">
+    <div class="min-h-screen flex  bg-slate-100 py-6">
         <div class="mx-auto w-full max-w-5xl px-4 sm:px-6 lg:px-8">
             <div class="grid overflow-hidden rounded-[2rem] border border-slate-200 bg-white shadow-xl shadow-slate-300/40 lg:grid-cols-2">
 
