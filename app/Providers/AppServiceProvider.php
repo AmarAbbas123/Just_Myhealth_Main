@@ -125,7 +125,9 @@ class AppServiceProvider extends ServiceProvider
                 ->orWhere('DisplayName', $displayName);
         })->first();
 
-        $data = array_merge([
+        // User-type columns are numeric strings (for example, "1" and "30").
+        // array_merge reindexes numeric keys, which silently drops these flags.
+        $data = array_replace([
             'ParentID' => $parentId,
             'DisplayName' => $displayName,
             'MenuURL' => $normalizedUrl,
