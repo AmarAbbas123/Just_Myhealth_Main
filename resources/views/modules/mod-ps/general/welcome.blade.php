@@ -24,23 +24,23 @@
                         JustMy.Health
                     </p>
                     <h2 class="max-w-xl text-3xl font-semibold leading-tight text-[#102f3a] sm:text-4xl md:text-5xl">
-                        Where social media meets health and wellness
+                      Your safe space for trusted health and wellbeing support
                     </h2>
                     <p class="mt-6 max-w-md text-base leading-7 text-[#4b626b]">
-                        Education, empowerment, and personalized support in one connected health platform.
+                        Professional counselling, therapy, and wellbeing services delivered through a connected, client‑centred platform.
                     </p>
                  </div>
 
                 <div class="border-l-4 border-[#0f89a6] bg-white/75 py-2 pl-6 shadow-[0_24px_70px_-55px_rgba(16,106,124,0.65)] md:pl-8">
                     <div class="space-y-5 text-base leading-8 text-[#243b45] md:text-lg">
                         <p class="font-medium text-[#102f3a]">
-                            JustMy.Health is the dynamic online health platform where social media meets health and wellness through education, empowerment, and personalized support.
+                           JustMy.Health is a professional online health and wellbeing platform providing trusted mental health, therapeutic, and lifestyle support through evidence‑based guidance and personalised care.
                         </p>
                         <p>
-                            JustMy.Health provides clients with preventive and curative healthcare access, online counselling and therapy services, and tailored dietary programs - giving everyone the tools they need to improve their health, wellness, and longevity.
+                           We offer clients access to counselling, therapy, coaching, dietary and nutrition programs, preventive and curative health information, and structured wellbeing pathways—giving every individual the tools they need to improve their mental, emotional, and physical health.
                         </p>
                         <p>
-                            With global coverage and locally tailored support, JustMy.Health serves both individuals and organizations. Our platform empowers clients directly while also delivering scalable B2B solutions for employers, clinics, wellness providers, and community partners seeking to elevate health outcomes worldwide.
+                           With global coverage and locally tailored support, JustMy.Health serves both individuals and organisations. Our platform empowers clients directly while also delivering scalable B2B solutions for employers, clinics, wellness providers, and community partners seeking to elevate health outcomes worldwide.
                         </p>
                     </div>
                 </div>
