@@ -174,12 +174,7 @@
                         <p class="mt-6 text-base leading-8 text-[#4b626b]">
                             Coaching is future‑focused and action‑oriented. Your coach helps you set goals, stay accountable, and develop strategies for growth in areas like career, confidence, productivity, and lifestyle.
                         </p>
-                        <p class="mt-4 text-base leading-8">
-                            Therapeutic Practitioners on JustMy.Health provide safe, supportive, and professional guidance to help clients improve their mental, emotional, and overall wellbeing.
-                        </p>
-                        <p class="mt-4 text-base leading-8">
-                            Each Therapeutic practitioner is fully verified, qualified, and committed to delivering ethical, person-centred care.
-                        </p>
+                       
                     </div>
                     {{-- Topic pills --}}
                 <div class="flex flex-wrap gap-2 mb-7">
@@ -273,71 +268,7 @@
 {{-- End of Existing Service Tiles --}}
 
 
-    <section class="">
-    <div class="container mx-auto px-6 lg:px-12">
-        <div class="mx-auto max-w-full px-0 py-12 md:py-16">
-
-            {{-- Header --}}
-            <p class="mb-2 text-xs font-semibold uppercase tracking-[0.2em] text-[#0f89a6]">Our Approach</p>
-            <h2 class="text-3xl font-semibold leading-tight text-[#102f3a] sm:text-4xl md:text-5xl mb-4">
-                The Guided Path
-            </h2>
-            <p class=" text-base leading-relaxed text-[#4b626b] md:text-lg mb-10">
-              The Guided Path is a simple, people-centric journey designed to help you take control of your health through connection, collaboration, and shared knowledge. It begins by connecting you with peers, health providers, NGOs, and volunteers who understand your specific condition.
-            </p>
-
-            <hr class="border-t border-[#d7eceb] mb-10">
-
-            {{-- 4 Step Cards --}}
-            <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-5 mb-10">
-
-                @foreach([
-                    ['num' => '1', 'label' => 'Connect',  'img' => 'jmh-guided-path-connect-1.png',  'alt' => 'Connect',  'desc' => 'Build relationships with peers, providers, NGOs and volunteers who share your journey.'],
-                    ['num' => '2', 'label' => 'Engage',   'img' => 'jmh-guided-path-engage-1.png',   'alt' => 'Engage',   'desc' => 'Actively participate in trusted networks to receive real guidance and support.'],
-                    ['num' => '3', 'label' => 'Educate',  'img' => 'jmh-guided-path-educate-1.png',  'alt' => 'Educate',  'desc' => 'Learn from lived experience and reliable information shared across the community.'],
-                    ['num' => '4', 'label' => 'Empower',  'img' => 'jmh-guided-path-empower-1.png',  'alt' => 'Empower',  'desc' => 'Improve your wellbeing and give back by sharing knowledge with others.'],
-                ] as $step)
-                <div class="flex flex-col gap-3 rounded-2xl border border-[#c4e6e0] bg-[#f4fbfb] p-4 md:p-5">
-                    {{-- Step number + label --}}
-                    <div class="flex items-center gap-2">
-                        <span class="flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-full bg-[#0f89a6] text-xs font-bold text-white">
-                            {{ $step['num'] }}
-                        </span>
-                        <span class="text-sm font-bold text-[#102f3a]">{{ $step['label'] }}</span>
-                    </div>
-                    {{-- Image --}}
-                    <div class="w-full overflow-hidden rounded-xl bg-[#c8eee3]">
-                        <img src="{{ asset('images/welcome-page/' . $step['img']) }}"
-                             alt="{{ $step['alt'] }}"
-                             class="h-full w-full object-contain">
-                    </div>
-                    {{-- Description --}}
-                    <p class="text-xs leading-relaxed text-[#4b626b] md:text-sm">{{ $step['desc'] }}</p>
-                </div>
-                @endforeach
-
-            </div>
-
-            <hr class="border-t border-[#d7eceb] mb-8">
-
-            {{-- Body text --}}
-            <div class="space-y-4 text-base leading-relaxed text-[#4b626b] md:text-lg">
-                <p>Through active engagement with these trusted networks, you gain access to real guidance and support tailored to your specific condition and needs.</p>
-                <p>As you learn from others' experience, you educate yourself with reliable, lived information — empowering you to improve your wellbeing and give back by sharing what you've learned with the wider community.</p>
-                <p>Together, these four steps - Connect, Engage, Educate, Empower - form a <span class="font-semibold text-[#0f89a6]">continuous cycle of growth</span> that strengthens both individual health and collective resilience.</p>
-            </div>
-
-            {{-- Cycle badge --}}
-            <div class="mt-6">
-                <span class="inline-flex items-center gap-2 rounded-full border border-[#a8ddd0] bg-[#e0f5ef] px-4 py-1.5 text-xs font-semibold text-[#0a6e89]">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
-                    Connect → Engage → Educate → Empower → repeat
-                </span>
-            </div>
-
-        </div>
-    </div>
-</section>
+    
 
 
     <!-- Scripts specific to this page -->
