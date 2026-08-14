@@ -124,12 +124,7 @@
                         <p class="mt-6 text-base leading-8 text-[#4b626b]">
                             Therapy provides structured, professional support for issues such as anxiety, depression, trauma, and long‑standing patterns that affect your wellbeing. Your therapist guides you through proven therapeutic approaches tailored to your needs.
                         </p>
-                        <p class="mt-4 text-base leading-8">
-                            Therapeutic Practitioners on JustMy.Health provide safe, supportive, and professional guidance to help clients improve their mental, emotional, and overall wellbeing.
-                        </p>
-                        <p class="mt-4 text-base leading-8">
-                            Each Therapeutic practitioner is fully verified, qualified, and committed to delivering ethical, person-centred care.
-                        </p>
+                       
                     </div>
 {{-- Topic pills --}}
                 <div class="flex flex-wrap gap-2 mb-7">
