@@ -74,12 +74,7 @@
                         <p class="mt-6 text-base leading-8 text-[#4b626b]">
                             Counseling focuses on helping you understand your thoughts and feelings, navigate difficult situations, and build practical tools for everyday wellbeing. Ideal for stress, relationships, grief, and emotional overwhelm.
                         </p>
-                        <p class="mt-4 text-base leading-8">
-                            Therapeutic Practitioners on JustMy.Health provide safe, supportive, and professional guidance to help clients improve their mental, emotional, and overall wellbeing.
-                        </p>
-                        <p class="mt-4 text-base leading-8">
-                            Each Therapeutic practitioner is fully verified, qualified, and committed to delivering ethical, person-centred care.
-                        </p>
+                        
                     </div>
 
                    {{-- Topic pills --}}
