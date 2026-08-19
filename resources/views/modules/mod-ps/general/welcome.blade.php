@@ -1,21 +1,14 @@
 <!-- resources/views/home.blade.php -->
 <x-app-layout>
     <!-- HERO AREA -->
-<section class="relative w-full h-[80vh] md:h-[100vh] pt-20 overflow-hidden">
-    <picture class="block w-full h-full">
+<section class="relative w-full bg-[#0f89a6] py-8 overflow-hidden">
+    <picture class="block w-full">
         <source media="(max-width: 767px)" srcset="{{ asset('images/welcome-page/jmh-header-mobile.png') }}">
         <img src="{{ asset('images/welcome-page/hero-bg.png') }}"
              alt="Hero"
-             class="w-full h-full object-cover object-center">
+             class="w-full h-auto mx-auto">
     </picture>
-
-    <!-- Hero Content -->
-    <div class="absolute inset-0 flex items-center px-6 max-w-4xl text-white">
-        <!-- Your content goes here -->
-    </div>
 </section>
-
-
     <section class="bg-gradient-to-b from-[#f4fbfb] via-white to-[#eef8f7] py-16 md:py-24">
         <div class="container mx-auto px-6 lg:px-12">
             <div class="mx-auto grid max-w-6xl gap-10 lg:grid-cols-[0.85fr_1.15fr] lg:items-center">
@@ -24,7 +17,7 @@
                         JustMy.Health
                     </p>
                     <h2 class="max-w-xl text-3xl font-semibold leading-tight text-[#102f3a] sm:text-4xl md:text-5xl">
-                      Your safe space for trusted health and wellbeing support
+                        Your safe space for trusted health and wellbeing support
                     </h2>
                     <p class="mt-6 max-w-md text-base leading-7 text-[#4b626b]">
                         Professional counselling, therapy, and wellbeing services delivered through a connected, client‑centred platform.
@@ -32,15 +25,15 @@
                  </div>
 
                 <div class="border-l-4 border-[#0f89a6] bg-white/75 py-2 pl-6 shadow-[0_24px_70px_-55px_rgba(16,106,124,0.65)] md:pl-8">
-                    <div class="space-y-5 text-base leading-8 text-[#243b45] md:text-lg">
+                    <div class="space-y-5 text-base leading-8 text-[#243b45] md:text-xl">
                         <p class="font-medium text-[#102f3a]">
-                           JustMy.Health is a professional online health and wellbeing platform providing trusted mental health, therapeutic, and lifestyle support through evidence‑based guidance and personalised care.
+                            JustMy.Health is a professional online health and wellbeing platform providing trusted mental health, therapeutic, and lifestyle support through evidence‑based guidance and personalised care.
                         </p>
                         <p>
-                           We offer clients access to counselling, therapy, coaching, dietary and nutrition programs, preventive and curative health information, and structured wellbeing pathways—giving every individual the tools they need to improve their mental, emotional, and physical health.
+                            We offer clients access to counselling, therapy, coaching, dietary and nutrition programs, preventive and curative health information, and structured wellbeing pathways—giving every individual the tools they need to improve their mental, emotional, and physical health.
                         </p>
                         <p>
-                           With global coverage and locally tailored support, JustMy.Health serves both individuals and organisations. Our platform empowers clients directly while also delivering scalable B2B solutions for employers, clinics, wellness providers, and community partners seeking to elevate health outcomes worldwide.
+                            With global coverage and locally tailored support, JustMy.Health serves both individuals and organisations. Our platform empowers clients directly while also delivering scalable B2B solutions for employers, clinics, wellness providers, and community partners seeking to elevate health outcomes worldwide.
                         </p>
                     </div>
                 </div>
@@ -49,34 +42,32 @@
     </section>
     {{-- End of Services --}}
 
-    {{-- CTA Banner: helps undecided visitors choose a service. Most first-time
-         visitors don't know whether they need Counselling, Therapy, or
-         Coaching — this banner names that uncertainty directly and offers a
-         low-friction way forward before asking them to pick between the
-         three tiles below. --}}
-    <section class="py-10 bg-white">
+    {{-- Service-type assessment CTA --}}
+    <section class="py-10 md:py-14 bg-white">
         <div class="container mx-auto px-6 lg:px-12">
-            <div class="mx-auto max-w-4xl rounded-2xl border border-[#9ed9d7] bg-[#f4fbfb] px-6 py-8 text-center shadow-[0_20px_50px_-30px_rgba(15,137,166,0.4)] sm:px-10">
-                <h3 class="text-xl font-semibold text-[#102f3a] sm:text-2xl">
-                    Not sure which service is right for you?
+            <div class="mx-auto max-w-4xl rounded-2xl border border-[#9ed9d7] bg-gradient-to-b from-[#f4fbfb] to-white px-6 py-8 md:px-10 md:py-10 text-center shadow-[0_24px_70px_-55px_rgba(16,106,124,0.65)]">
+                <h3 class="text-2xl font-semibold text-[#102f3a] sm:text-3xl">
+                    Unsure of what help you need
                 </h3>
                 <p class="mx-auto mt-3 max-w-2xl text-base leading-7 text-[#4b626b]">
-                    That's completely normal — most people aren't sure where to start. Take a look at Counselling, Therapy, and Coaching below to see which fits what you're going through, or reach out and we'll help you find the right fit.
+                    Answer a few questions and we will guide you to the required service
                 </p>
                 <div class="mt-6">
-                    <a href="{{ route('contact-us') }}"
-                       class="inline-flex items-center gap-2 rounded-full bg-[#0f89a6] px-6 py-3 text-sm font-semibold text-white transition duration-200 hover:bg-[#0b7087]">
-                        Help me choose
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
-                    </a>
+                <a href="{{ route('therapy.service-type.start', ['restart' => 1]) }}"
+                   class="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-[#14b8a6] px-6 py-4 text-base font-semibold text-white shadow-md transition duration-200 hover:bg-[#0b7f70] hover:shadow-lg sm:w-auto sm:min-w-[280px]">
+                    Start assessment
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
+                    </svg>
+                </a>
+
                 </div>
             </div>
         </div>
     </section>
-    {{-- End of CTA Banner --}}
 
 
-    {{-- Core Services: Counselling / Therapy / Coaching — tile grid --}}
+    {{-- Professional Support Service Tiles --}}
     <section class="py-16 md:py-24 bg-white">
         <div class="container mx-auto px-6 lg:px-16 xl:px-24">
 
@@ -85,93 +76,96 @@
                     Professional Support
                 </p>
                 <h3 class="text-3xl font-semibold leading-tight text-[#102f3a] sm:text-4xl md:text-5xl">
-                    Find the Support That Fits You
+                    Counselling, Therapy & Coaching
                 </h3>
                 <p class="mx-auto mt-4 max-w-xl text-base leading-8 text-[#4b626b]">
-                    Whether you need someone to talk to, structured therapeutic support, or a coach to help you move forward — start here.
+                    Choose the support that fits your needs—from everyday wellbeing to structured therapy and goal-focused coaching.
                 </p>
             </div>
 
-            <div class="grid grid-cols-1 gap-6 md:grid-cols-3 xl:gap-8">
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 xl:gap-8">
 
-                {{-- Online Counselling --}}
+                {{-- Online Counseling Card --}}
                 <a href="{{ route('online-counselling') }}"
-                   class="group flex flex-col bg-white rounded-[18px] overflow-hidden border border-[#0f89a6]/10 transition duration-300 hover:-translate-y-1 hover:shadow-[0_28px_52px_-12px_rgba(16,106,124,0.2)]">
-                    <div class="w-full aspect-video overflow-hidden bg-[#e0f5ef]">
+                   class="group bg-white rounded-[18px] overflow-hidden border border-[#0f89a6]/10 transition duration-300 hover:-translate-y-1 hover:shadow-[0_28px_52px_-12px_rgba(16,106,124,0.2)] flex flex-col h-full">
+                    <div class="w-full aspect-[2/1] overflow-hidden bg-[#eef8f7]">
                         <img src="{{ asset('images/welcome-page/counseling-info-tile-1-1080x540.png') }}"
                              alt="Online Counselling"
-                             class="w-full h-full object-cover transition duration-500 group-hover:scale-105">
+                             class="w-full h-full object-cover object-center transition duration-500 group-hover:scale-105">
                     </div>
-                    <div class="flex flex-1 flex-col p-5 pb-6">
-                        <span class="inline-block w-fit text-[10.5px] font-semibold tracking-widest uppercase text-[#0a6e89] bg-[#dff4ef] rounded-full px-3 py-0.5 mb-2">
-                            Professional Support
-                        </span>
-                        <h4 class="text-lg font-semibold text-[#102f3a] mb-2 leading-snug">Online Counselling</h4>
-                        <p class="text-sm text-[#4b626b] leading-relaxed mb-4 flex-1">
-                            Understand your thoughts and feelings, navigate difficult situations, and build practical tools for everyday wellbeing.
+                    <div class="p-5 pb-6 flex flex-col flex-1">
+                        <span class="inline-block text-[10.5px] font-semibold tracking-widest uppercase text-[#0a6e89] bg-[#dff4ef] rounded-full px-3 py-0.5 mb-2 w-fit">Professional Support</span>
+                        <h4 class="text-[17px] font-semibold text-[#102f3a] mb-2 leading-snug">Online Counselling</h4>
+                        <p class="text-sm text-[#4b626b] leading-relaxed mb-4">
+                            Counselling focuses on helping you understand your thoughts and feelings, navigate difficult situations, and build practical tools for everyday wellbeing. Ideal for stress, relationships, grief, and emotional overwhelm.
                         </p>
-                        <div class="flex flex-wrap gap-1.5 mb-4">
-                            @foreach (['Stress & anxiety', 'Relationships', 'Grief & loss'] as $topic)
-                                <span class="rounded-full border border-[#a8ddd0] bg-[#f4fbfb] px-2.5 py-1 text-[11px] font-medium text-[#0a6e89]">{{ $topic }}</span>
+                        <div class="flex flex-wrap gap-2 mb-4">
+                            @foreach(['Stress & anxiety', 'Relationships', 'Grief & loss', 'Emotional wellbeing'] as $topic)
+                            <span class="inline-flex items-center gap-1.5 rounded-full border border-[#a8ddd0] bg-[#e0f5ef] px-3 py-1 text-xs font-medium text-[#0a6e89]">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+                                {{ $topic }}
+                            </span>
                             @endforeach
                         </div>
-                        <span class="inline-flex items-center gap-1.5 text-sm font-medium text-[#0f89a6] group-hover:gap-2.5 transition-all">
+                        <span class="inline-flex items-center gap-1.5 text-sm font-medium text-[#0f89a6] group-hover:gap-2.5 transition-all mt-auto">
                             Read more
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
                         </span>
                     </div>
                 </a>
 
-                {{-- Online Therapy --}}
+                {{-- Online Therapy Card --}}
                 <a href="{{ route('online-therapy') }}"
-                   class="group flex flex-col bg-white rounded-[18px] overflow-hidden border border-[#0f89a6]/10 transition duration-300 hover:-translate-y-1 hover:shadow-[0_28px_52px_-12px_rgba(16,106,124,0.2)]">
-                    <div class="w-full aspect-video overflow-hidden bg-[#e0f5ef]">
+                   class="group bg-white rounded-[18px] overflow-hidden border border-[#0f89a6]/10 transition duration-300 hover:-translate-y-1 hover:shadow-[0_28px_52px_-12px_rgba(16,106,124,0.2)] flex flex-col h-full">
+                    <div class="w-full aspect-[2/1] overflow-hidden bg-[#eef8f7]">
                         <img src="{{ asset('images/welcome-page/therapy-info-tile-1-1080x540.png') }}"
                              alt="Online Therapy"
-                             class="w-full h-full object-cover transition duration-500 group-hover:scale-105">
+                             class="w-full h-full object-cover object-center transition duration-500 group-hover:scale-105">
                     </div>
-                    <div class="flex flex-1 flex-col p-5 pb-6">
-                        <span class="inline-block w-fit text-[10.5px] font-semibold tracking-widest uppercase text-[#0a6e89] bg-[#dff4ef] rounded-full px-3 py-0.5 mb-2">
-                            Professional Support
-                        </span>
-                        <h4 class="text-lg font-semibold text-[#102f3a] mb-2 leading-snug">Online Therapy</h4>
-                        <p class="text-sm text-[#4b626b] leading-relaxed mb-4 flex-1">
-                            Structured, professional support for anxiety, depression, trauma, and long-standing patterns affecting your wellbeing.
+                    <div class="p-5 pb-6 flex flex-col flex-1">
+                        <span class="inline-block text-[10.5px] font-semibold tracking-widest uppercase text-[#0a6e89] bg-[#dff4ef] rounded-full px-3 py-0.5 mb-2 w-fit">Professional Support</span>
+                        <h4 class="text-[17px] font-semibold text-[#102f3a] mb-2 leading-snug">Online Therapy</h4>
+                        <p class="text-sm text-[#4b626b] leading-relaxed mb-4">
+                            Therapy provides structured, professional support for issues such as anxiety, depression, trauma, and long‑standing patterns that affect your wellbeing. Your therapist guides you through proven therapeutic approaches tailored to your needs.
                         </p>
-                        <div class="flex flex-wrap gap-1.5 mb-4">
-                            @foreach (['Anxiety', 'Depression', 'Trauma & PTSD'] as $topic)
-                                <span class="rounded-full border border-[#a8ddd0] bg-[#f4fbfb] px-2.5 py-1 text-[11px] font-medium text-[#0a6e89]">{{ $topic }}</span>
+                        <div class="flex flex-wrap gap-2 mb-4">
+                            @foreach(['Anxiety', 'Depression', 'Trauma & PTSD', 'Long-term patterns'] as $topic)
+                            <span class="inline-flex items-center gap-1.5 rounded-full border border-[#a8ddd0] bg-[#e0f5ef] px-3 py-1 text-xs font-medium text-[#0a6e89]">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+                                {{ $topic }}
+                            </span>
                             @endforeach
                         </div>
-                        <span class="inline-flex items-center gap-1.5 text-sm font-medium text-[#0f89a6] group-hover:gap-2.5 transition-all">
+                        <span class="inline-flex items-center gap-1.5 text-sm font-medium text-[#0f89a6] group-hover:gap-2.5 transition-all mt-auto">
                             Read more
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
                         </span>
                     </div>
                 </a>
 
-                {{-- Online Coaching --}}
+                {{-- Online Coaching Card --}}
                 <a href="{{ route('online-coaching') }}"
-                   class="group flex flex-col bg-white rounded-[18px] overflow-hidden border border-[#0f89a6]/10 transition duration-300 hover:-translate-y-1 hover:shadow-[0_28px_52px_-12px_rgba(16,106,124,0.2)]">
-                    <div class="w-full aspect-video overflow-hidden bg-[#e0f5ef]">
+                   class="group bg-white rounded-[18px] overflow-hidden border border-[#0f89a6]/10 transition duration-300 hover:-translate-y-1 hover:shadow-[0_28px_52px_-12px_rgba(16,106,124,0.2)] flex flex-col h-full">
+                    <div class="w-full aspect-[2/1] overflow-hidden bg-[#eef8f7]">
                         <img src="{{ asset('images/welcome-page/coaching-info-tile-1-1080x540.png') }}"
                              alt="Online Coaching"
-                             class="w-full h-full object-cover transition duration-500 group-hover:scale-105">
+                             class="w-full h-full object-cover object-center transition duration-500 group-hover:scale-105">
                     </div>
-                    <div class="flex flex-1 flex-col p-5 pb-6">
-                        <span class="inline-block w-fit text-[10.5px] font-semibold tracking-widest uppercase text-[#0a6e89] bg-[#dff4ef] rounded-full px-3 py-0.5 mb-2">
-                            Professional Support
-                        </span>
-                        <h4 class="text-lg font-semibold text-[#102f3a] mb-2 leading-snug">Online Coaching</h4>
-                        <p class="text-sm text-[#4b626b] leading-relaxed mb-4 flex-1">
-                            Future-focused, action-oriented support to set goals, stay accountable, and grow in career, confidence, and lifestyle.
+                    <div class="p-5 pb-6 flex flex-col flex-1">
+                        <span class="inline-block text-[10.5px] font-semibold tracking-widest uppercase text-[#0a6e89] bg-[#dff4ef] rounded-full px-3 py-0.5 mb-2 w-fit">Professional Support</span>
+                        <h4 class="text-[17px] font-semibold text-[#102f3a] mb-2 leading-snug">Online Coaching</h4>
+                        <p class="text-sm text-[#4b626b] leading-relaxed mb-4">
+                            Coaching is future‑focused and action‑oriented. Your coach helps you set goals, stay accountable, and develop strategies for growth in areas like career, confidence, productivity, and lifestyle.
                         </p>
-                        <div class="flex flex-wrap gap-1.5 mb-4">
-                            @foreach (['Career growth', 'Confidence', 'Productivity'] as $topic)
-                                <span class="rounded-full border border-[#a8ddd0] bg-[#f4fbfb] px-2.5 py-1 text-[11px] font-medium text-[#0a6e89]">{{ $topic }}</span>
+                        <div class="flex flex-wrap gap-2 mb-4">
+                            @foreach(['Career growth', 'Confidence', 'Productivity', 'Lifestyle goals'] as $topic)
+                            <span class="inline-flex items-center gap-1.5 rounded-full border border-[#a8ddd0] bg-[#e0f5ef] px-3 py-1 text-xs font-medium text-[#0a6e89]">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+                                {{ $topic }}
+                            </span>
                             @endforeach
                         </div>
-                        <span class="inline-flex items-center gap-1.5 text-sm font-medium text-[#0f89a6] group-hover:gap-2.5 transition-all">
+                        <span class="inline-flex items-center gap-1.5 text-sm font-medium text-[#0f89a6] group-hover:gap-2.5 transition-all mt-auto">
                             Read more
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
                         </span>
@@ -181,32 +175,31 @@
             </div>
         </div>
     </section>
-    {{-- End of Core Services tile grid --}}
+    {{-- End of Professional Support Service Tiles --}}
 
-    {{-- CTA Banner: bridges the mental/emotional services above with the
-         physical/nutritional services below, since visitors browsing
-         Counselling/Therapy/Coaching may not realise Personal Training and
-         Dietitian support are also part of the platform. --}}
-    <section class="py-10 bg-gradient-to-b from-[#f4fbfb] via-white to-[#eef8f7]">
+    {{-- Service-type assessment CTA --}}
+    <section class="py-10 md:py-14 bg-white">
         <div class="container mx-auto px-6 lg:px-12">
-            <div class="mx-auto max-w-4xl rounded-2xl border border-[#0f89a6]/20 bg-white px-6 py-8 text-center shadow-[0_20px_50px_-30px_rgba(15,137,166,0.4)] sm:px-10">
-                <h3 class="text-xl font-semibold text-[#102f3a] sm:text-2xl">
-                    Wellbeing isn't just mental — it's physical too
+            <div class="mx-auto max-w-4xl rounded-2xl border border-[#9ed9d7] bg-gradient-to-b from-[#f4fbfb] to-white px-6 py-8 md:px-10 md:py-10 text-center shadow-[0_24px_70px_-55px_rgba(16,106,124,0.65)]">
+                <h3 class="text-2xl font-semibold text-[#102f3a] sm:text-3xl">
+                    Unsure of what help you need
                 </h3>
                 <p class="mx-auto mt-3 max-w-2xl text-base leading-7 text-[#4b626b]">
-                    Your mind and body are connected. Explore our Personal Training and Dietitian services below to support the physical side of your health journey too.
+                    Answer a few questions and we will guide you to the required service
                 </p>
                 <div class="mt-6">
-                    <a href="{{ route('regAccountType') }}"
-                       class="inline-flex items-center gap-2 rounded-full bg-[#0f89a6] px-6 py-3 text-sm font-semibold text-white transition duration-200 hover:bg-[#0b7087]">
-                        Get started today
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
-                    </a>
+                <a href="{{ route('therapy.service-type.start', ['restart' => 1]) }}"
+                   class="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-[#14b8a6] px-6 py-4 text-base font-semibold text-white shadow-md transition duration-200 hover:bg-[#0b7f70] hover:shadow-lg sm:w-auto sm:min-w-[280px]">
+                    Start assessment
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
+                    </svg>
+                </a>
+
                 </div>
             </div>
         </div>
     </section>
-    {{-- End of CTA Banner --}}
 
 
    {{-- Existing Service Tiles --}}
@@ -273,10 +266,6 @@
     </div>
 </section>
 {{-- End of Existing Service Tiles --}}
-
-
-    
-
 
     <!-- Scripts specific to this page -->
     <script src="{{ asset('js/jquery.min.js') }}"></script>
