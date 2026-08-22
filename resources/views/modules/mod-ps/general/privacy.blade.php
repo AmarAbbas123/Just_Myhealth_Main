@@ -60,7 +60,7 @@
 
     <!-- Privacy Sections - Sidebar navigation + content card, with scroll-spy -->
     <section class="py-16 lg:py-20 bg-gray-50">
-        <div class="max-w-6xl mx-auto px-6">
+        <div class="max-w-7xl mx-auto px-6">
             <div class="grid lg:grid-cols-[280px_1fr] gap-8 items-start"
                  x-data="{
                     active: '{{ \Illuminate\Support\Str::slug($privacySections[0]['title']) }}',

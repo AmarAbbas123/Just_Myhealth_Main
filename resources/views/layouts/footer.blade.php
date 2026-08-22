@@ -33,6 +33,12 @@
                             <i class="fab fa-instagram fa-stack-1x"></i>
                         </a>
                     </span>
+                    <span class="fa-stack">
+                        <a href="https://www.instagram.com/justmy_health/" target="_blank" rel="noopener">
+                            <i class="fas fa-circle fa-stack-2x"></i>
+                            <i class="fab fa-youtube fa-stack-1x"></i>
+                        </a>
+                    </span>
                 </div>
 
                 <!-- Copyright + Links -->

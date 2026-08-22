@@ -1,9 +1,9 @@
     <nav class="absolute top-0 left-0 w-full z-20 bg-white">
-        <div class="container mx-auto px-4 py-4 flex items-center justify-between">
+        <div class="container  mx-auto px-4 py-4 flex items-center justify-between">
 
             <!-- Logo -->
             <a href="{{ route('home') }}" class="inline-block">
-                <img src="{{ asset('images/bg-6.png') }}" alt="Logo" class="h-12" />
+                <img src="{{ asset('images/bg-6.png') }}" alt="Logo" class="h-12 " />
             </a>
 
             <!-- Hamburger Button (Mobile) -->
