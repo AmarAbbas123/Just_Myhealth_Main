@@ -23,6 +23,7 @@ class PublicContactController extends Controller
             'Email' => ['required', 'email', 'max:255'],
             'Subject' => ['required', 'string', 'max:255'],
             'Message' => ['required', 'string', 'max:2000'],
+            'FormLocation' => ['nullable', 'string', 'in:Main Contact Page,FAQ Page'],
             'g-recaptcha-response' => ['required', new Recaptcha()],
         ]);
 
@@ -31,7 +32,7 @@ class PublicContactController extends Controller
             'Email' => $request->input('Email'),
             'Subject' => $request->input('Subject'),
             'Message' => $request->input('Message'),
-            'FormLocation' => 'Main Contact Page',
+            'FormLocation' => $request->input('FormLocation', 'Main Contact Page'),
             'Status' => 'New',
         ]);
 

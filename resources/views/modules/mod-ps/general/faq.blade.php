@@ -210,6 +210,7 @@
 
                 <form method="POST" action="{{ route('contact-us.submit') }}" class="space-y-3">
                     @csrf
+                    <input type="hidden" name="FormLocation" value="FAQ Page">
 
                     <div>
                         <label for="Name" class="text-sm font-semibold text-slate-700">Name</label>
