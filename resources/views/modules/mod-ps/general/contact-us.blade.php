@@ -69,10 +69,7 @@
                         </div>
                     </div>
 
-                    <a href="mailto:website@justmy.health"
-                        class="mt-5 flex items-center justify-center gap-2 rounded-[10px] border border-[#1C9BA0]/30 bg-[#EAFBFA] px-4 py-3 text-sm font-semibold text-[#18848F] shadow-sm transition hover:bg-[#1C9BA0]/10 hover:border-[#1C9BA0]/50">
-                        website@justmy.health
-                    </a>
+                   
 
                     <div class="mt-7">
                         <p class="text-xs font-semibold uppercase tracking-[0.3em] text-slate-400 mb-3">Available subjects</p>
