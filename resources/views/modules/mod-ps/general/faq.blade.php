@@ -169,47 +169,118 @@
     </section>
     
     <!-- Modern CTA Section -->
-    <section class="relative bg-gradient-to-r from-teal-50 to-blue-50 py-20 overflow-hidden">
-        <!-- Decorative Background Circles -->
-        <div class="absolute top-0 left-0 w-64 h-64 bg-teal-100 rounded-full mix-blend-multiply filter blur-3xl opacity-30 -translate-x-1/2 -translate-y-1/2"></div>
-        <div class="absolute bottom-0 right-0 w-72 h-72 bg-blue-200 rounded-full mix-blend-multiply filter blur-3xl opacity-30 translate-x-1/4 translate-y-1/4"></div>
-    
-        <div class="max-w-6xl mx-auto px-6 lg:flex lg:items-center lg:justify-between">
-            <!-- Text Section -->
-            <div class="lg:w-1/2">
-                <h2 class="text-4xl lg:text-5xl font-bold text-gray-900 mb-4">Still have questions?</h2>
-                <p class="text-gray-700 mb-8 text-lg lg:text-xl">
-                    Our support team is ready to help you with any questions about JustMy.Health, our services, or your health journey. Don’t wait—get personalized guidance today!
-                </p>
-               
-            </div>
-    
-            <!-- Modern Right Card -->
-            <div class="lg:w-1/2 mt-10 lg:mt-0 flex justify-center lg:justify-end">
-                <div class="relative w-full max-w-md">
-                    <!-- Glassmorphism Card -->
-                    <div class="bg-white/50 backdrop-blur-md border border-white/30 rounded-3xl shadow-2xl p-8 transform hover:-translate-y-2 hover:scale-105 transition duration-500">
-                        <div class="flex items-center justify-center mb-4">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 text-teal-500 animate-bounce" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M16 12H8m8 0l-4 4m4-4l-4-4" />
+    <section class="py-16 bg-gray-50 overflow-x-hidden">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-start">
+
+            <!-- Left side: redesigned info panel -->
+            <div class="space-y-6">
+
+                <div class="rounded-[2rem] border border-slate-200 bg-white p-8 shadow-lg shadow-slate-200/50">
+                    <span class="inline-flex items-center gap-1.5 rounded-full bg-[#EAFBFA] px-3 py-1 text-xs font-semibold uppercase tracking-[0.3em] text-[#1C9BA0]">
+                        <span class="h-1.5 w-1.5 rounded-full bg-[#1C9BA0]"></span>
+                        Let's talk
+                    </span>
+
+                    <div class="mt-5 flex items-start gap-4">
+                        <div class="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-[#EAFBFA] text-[#1C9BA0]">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.556-4.03 8.25-9 8.25a9.764 9.764 0 01-2.555-.337A5.972 5.972 0 015.41 20.97a5.969 5.969 0 01-.474-.065 4.48 4.48 0 00.978-2.025c.09-.457-.133-.901-.467-1.226C3.93 16.178 3 14.189 3 12c0-4.556 4.03-8.25 9-8.25s9 3.694 9 8.25z" />
                             </svg>
                         </div>
-                        <h3 class="text-xl font-bold text-gray-900 mb-2 text-center">Get Instant Support</h3>
-                        <p class="text-gray-600 text-center mb-4">
-                            Reach out to our experts for fast, secure, and personalized answers.
-                        </p>
-                        <div class="flex justify-center">
-                            <a href="mailto:support@justmy.health"
-                               class="inline-block px-6 py-2 bg-teal-500 text-white rounded-xl font-semibold hover:bg-teal-600 transition transform hover:scale-105">
-                               Contact Now
-                            </a>
+                        <div>
+                            <h2 class="text-xl font-bold text-slate-900">Get Instant Support</h2>
+                            <p class="mt-1.5 text-sm text-slate-600 leading-relaxed">
+                              Reach out to our experts for fast, secure, and personalized answers.
+                            </p>
                         </div>
                     </div>
-    
-                    <!-- Floating Shadow Circle -->
-                    <div class="absolute -top-8 -right-8 w-24 h-24 bg-teal-200 rounded-full filter blur-2xl opacity-30 animate-pulse"></div>
                 </div>
+
+               
+
             </div>
+
+            <!-- Right side: form -->
+            <div class="rounded-[2rem] bg-white p-8 shadow-xl border border-slate-200">
+                @if (session('status'))
+                    <div class="rounded-[10px] border border-emerald-200 bg-emerald-50 p-3 text-sm text-emerald-700 mb-6">
+                        {{ session('status') }}
+                    </div>
+                @endif
+
+                <form method="POST" action="{{ route('contact-us.submit') }}" class="space-y-3">
+                    @csrf
+
+                    <div>
+                        <label for="Name" class="text-sm font-semibold text-slate-700">Name</label>
+                        <div class="relative mt-1.5">
+                            <span class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-4 text-slate-400">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                                </svg>
+                            </span>
+                            <input id="Name" name="Name" value="{{ old('Name') }}" required
+                                placeholder="e.g. John Smith"
+                                class="block w-full rounded-[10px] border border-slate-200 bg-slate-50/70 pl-11 pr-4 py-2 text-slate-900 shadow-sm transition focus:border-[#1C9BA0] focus:bg-white focus:ring-[#1C9BA0] sm:text-sm" />
+                        </div>
+                        @error('Name')<p class="mt-1.5 text-xs font-medium text-red-600">{{ $message }}</p>@enderror
+                    </div>
+
+                    <div>
+                        <label for="Email" class="text-sm font-semibold text-slate-700">Email</label>
+                        <div class="relative mt-1.5">
+                            <span class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-4 text-slate-400">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                                </svg>
+                            </span>
+                            <input id="Email" name="Email" type="email" value="{{ old('Email') }}" required
+                                placeholder="you@example.com"
+                                class="block w-full rounded-[10px] border border-slate-200 bg-slate-50/70 pl-11 pr-4 py-2 text-slate-900 shadow-sm transition focus:border-[#1C9BA0] focus:bg-white focus:ring-[#1C9BA0] sm:text-sm" />
+                        </div>
+                        @error('Email')<p class="mt-1.5 text-xs font-medium text-red-600">{{ $message }}</p>@enderror
+                    </div>
+
+                    <div>
+                        <label for="Subject" class="text-sm font-semibold text-slate-700">Subject</label>
+                        <div class="relative mt-1.5">
+                            <span class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-4 text-slate-400">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M7.5 8.25h9m-9 3.75h9m-9 3.75h5.25M6.75 3.75h10.5A2.25 2.25 0 0119.5 6v14.25a.75.75 0 01-1.09.67L12 17.44l-6.41 3.48a.75.75 0 01-1.09-.67V6a2.25 2.25 0 012.25-2.25z" />
+                                </svg>
+                            </span>
+                            <select id="Subject" name="Subject" required
+                                class="block w-full appearance-none rounded-[10px] border border-slate-200 bg-slate-50/70 pl-11 pr-4 py-2 text-slate-900 shadow-sm transition focus:border-[#1C9BA0] focus:bg-white focus:ring-[#1C9BA0] sm:text-sm">
+                                <option value="">Select a subject</option>
+                                <option value="General enquiry" {{ old('Subject') === 'General enquiry' ? 'selected' : '' }}>General enquiry</option>
+                                <option value="Product support" {{ old('Subject') === 'Product support' ? 'selected' : '' }}>Product support</option>
+                                <option value="Partnership request" {{ old('Subject') === 'Partnership request' ? 'selected' : '' }}>Partnership request</option>
+                                <option value="Feedback / suggestions" {{ old('Subject') === 'Feedback / suggestions' ? 'selected' : '' }}>Feedback / suggestions</option>
+                                <option value="Other" {{ old('Subject') === 'Other' ? 'selected' : '' }}>Other</option>
+                            </select>
+                        </div>
+                        @error('Subject')<p class="mt-1.5 text-xs font-medium text-red-600">{{ $message }}</p>@enderror
+                    </div>
+
+                    <div>
+                        <label for="Message" class="text-sm font-semibold text-slate-700">Message</label>
+                        <div class="relative mt-1.5">
+                            <textarea id="Message" name="Message" rows="6" required
+                                placeholder="Tell us how we can help..."
+                                class="block w-full rounded-[10px] border border-slate-200 bg-slate-50/70 px-4 py-2.5 text-slate-900 shadow-sm transition focus:border-[#1C9BA0] focus:bg-white focus:ring-[#1C9BA0] sm:text-sm">{{ old('Message') }}</textarea>
+                        </div>
+                        @error('Message')<p class="mt-1.5 text-xs font-medium text-red-600">{{ $message }}</p>@enderror
+                    </div>
+
+                    @include('partials.anti-bot-fields')
+
+                    <button type="submit"
+                        class="w-full flex justify-center rounded-[10px] bg-[#1C9BA0] px-6 py-2.5 text-sm font-semibold text-white shadow-lg shadow-[#1C9BA0]/25 transition hover:bg-[#18848F] hover:shadow-xl hover:shadow-[#1C9BA0]/30">
+                        Send message
+                    </button>
+                </form>
+            </div>
+
         </div>
     </section>
     
