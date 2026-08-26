@@ -266,7 +266,7 @@
                     <div>
                         <label for="Message" class="text-sm font-semibold text-slate-700">Message</label>
                         <div class="relative mt-1.5">
-                            <textarea id="Message" name="Message" rows="6" required
+                            <textarea id="Message" name="MessageBody" rows="6" required
                                 placeholder="Tell us how we can help..."
                                 class="block w-full rounded-[10px] border border-slate-200 bg-slate-50/70 px-4 py-2.5 text-slate-900 shadow-sm transition focus:border-[#1C9BA0] focus:bg-white focus:ring-[#1C9BA0] sm:text-sm">{{ old('Message') }}</textarea>
                         </div>
