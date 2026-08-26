@@ -22,7 +22,7 @@ class PublicContactController extends Controller
             'Name' => ['required', 'string', 'max:255'],
             'Email' => ['required', 'email', 'max:255'],
             'Subject' => ['required', 'string', 'max:255'],
-            'Message' => ['required', 'string', 'max:2000'],
+            'MessageBody' => ['required', 'string', 'max:2000'],
             'FormLocation' => ['nullable', 'string', 'in:Main Contact Page,FAQ Page'],
             'g-recaptcha-response' => ['required', new Recaptcha()],
         ]);
@@ -31,7 +31,7 @@ class PublicContactController extends Controller
             'Name' => $request->input('Name'),
             'Email' => $request->input('Email'),
             'Subject' => $request->input('Subject'),
-            'Message' => $request->input('Message'),
+            'MessageBody' => $request->input('MessageBody'),
             'FormLocation' => $request->input('FormLocation', 'Main Contact Page'),
             'Status' => 'New',
         ]);
@@ -40,7 +40,7 @@ class PublicContactController extends Controller
             Mail::raw(
                 "New contact form submission:\n\nName: {$contact->Name}\nEmail: {$contact->Email}\nSubject: {$contact->Subject}\nMessage:\n{$contact->Message}\n\nLocation: {$contact->FormLocation}\nStatus: {$contact->Status}",
                 function ($message) use ($contact) {
-                    $message->to('amarabbas1414@gmail.com')
+                    $message->to('website@justmy.health')
                         ->subject('JustMy.Health Contact Form: ' . $contact->Subject);
                 }
             );
