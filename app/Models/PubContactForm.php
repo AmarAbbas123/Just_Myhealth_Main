@@ -15,7 +15,7 @@ class PubContactForm extends Model
         'Name',
         'Email',
         'Subject',
-        'Message',
+        'MessageBody',
         'FormLocation',
         'Status',
     ];
