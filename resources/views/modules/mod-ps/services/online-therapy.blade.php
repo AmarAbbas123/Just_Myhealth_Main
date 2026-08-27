@@ -31,20 +31,20 @@
                         Online Therapy to boost wellbeing
                     </h2>
                     <p class="mt-6 max-w-md text-base leading-7 text-[#4b626b]">
-                        Therapy provides structured, professional support for issues such as anxiety, depression, trauma, and long‑standing patterns that affect your wellbeing. Your therapist guides you through proven therapeutic approaches tailored to your needs.
+                        Therapy provides structured, professional support for issues such as anxiety, depression, trauma, and long‑standing patterns that affect your health and wellbeing. Your therapist guides you through proven therapeutic approaches tailored to your needs.
                     </p>
                 </div>
 
                 <div class="border-l-4 border-[#0f89a6] bg-white/75 py-2 pl-6 shadow-[0_24px_70px_-55px_rgba(16,106,124,0.65)] md:pl-8">
                     <div class="space-y-5 text-base leading-8 text-[#243b45] md:text-lg">
                         <p class="font-medium text-[#102f3a]">
-                            Your therapist works with you to understand what’s beneath the surface, helping you make sense of your thoughts, emotions, and behaviours in a safe, guided environment. This approach is ideal when you’re looking for more than coping strategies — when you want meaningful change and long‑term emotional balance.
+                            Your therapist works with you to understand what’s beneath the surface, helping you make sense of your thoughts, emotions, and behaviours in a safe, guided environment. This approach is ideal when you’re looking for more than coping strategies, when you want meaningful change and long‑term emotional balance.
                         </p>
                         <p>
                             Your therapist helps you explore what’s affecting your wellbeing and supports you in developing healthier patterns, stronger resilience, and clearer emotional insight. Whether you’re working through trauma, navigating persistent low mood, or addressing long‑standing relational or behavioural patterns, therapy provides a structured pathway toward growth.
                         </p>
                         <p>
-                            Our secure platform connects you with a qualified therapist who understands your presenting issues and works with you at a pace that feels right. With professional guidance, evidence‑based methods, and a supportive therapeutic relationship, you can move toward a healthier, more grounded version of yourself.
+                            Our secure platform connects you with a qualified therapist who understands your presenting issues and works with you at a balanced pace that feels right for you. With professional guidance, evidence‑based methods, and a supportive therapeutic relationship, you can move toward a healthier, more grounded version of yourself.
                         </p>
                     </div>
                 </div>
@@ -74,10 +74,10 @@
                             Online Therapy offers a more in‑depth approach to emotional wellbeing. Your therapist helps you explore underlying patterns, past experiences, and the root causes of what you’re feeling, not just the surface‑level symptoms. This is a space for meaningful insight, emotional processing, and long‑term change.
                         </p>
                         <p>
-                            Your therapist draws on recognised therapeutic models such as CBT, psychodynamic therapy, trauma‑informed approaches, or integrative methods depending on what best supports your goals. Sessions are paced to suit you, helping you build resilience, emotional clarity, and healthier ways of relating to yourself and others.
+                            Your therapist draws on recognised therapeutic models such as CBT, psychodynamic therapy, trauma‑informed approaches, or integrative methods depending on what best supports your presented issue and goals. Sessions are paced to suit you, helping you build resilience, emotional clarity, and healthier ways of relating to yourself and others.
                         </p>
                         <p>
-                            Therapy provides a stable, confidential environment where you can explore difficult emotions, challenge unhelpful patterns, and develop new perspectives. Over time, this therapeutic relationship becomes a foundation for healing, self‑understanding, and lasting emotional wellbeing.
+                            Therapy provides a stable, confidential environment where you can explore difficult emotions, challenge unhelpful patterns, and develop new perspectives. Over time, this therapeutic relationship becomes a foundation for for understanding more about your thoughts, feelings and emotions to improve overall health and wellbeing.
                         </p>
                     </div>
                 </div>
@@ -104,13 +104,13 @@
                 <div class="border-l-4 border-[#0f89a6] bg-white/75 py-2 pl-6 shadow-[0_24px_70px_-55px_rgba(16,106,124,0.65)] md:pl-8">
                     <div class="space-y-5 text-base leading-8 text-[#243b45] md:text-lg">
                         <p class="font-medium text-[#102f3a]">
-                            We match you with a qualified therapist whose training and experience align with the deeper challenges you want to explore. Whether you’re working through anxiety, depression, trauma, or long‑standing emotional patterns, your therapist is selected to ensure they have the right therapeutic background to support you.
+                            We match you with a qualified therapist whose training and experience align with the deeper challenges you want to explore. Whether you’re working through anxiety, depression, trauma, or long‑standing emotional patterns. At JustMy.Health we match your therapist based on their therapeutic background to support you.
                         </p>
                         <p>
-                            Your therapist brings a structured, evidence‑based approach to your sessions, drawing on recognised therapeutic models such as CBT, psychodynamic therapy, integrative therapy, or trauma‑informed methods. This ensures your work together is grounded in professional expertise and tailored to your personal goals.
+                            Your therapist brings a structured, evidence‑based approach to your sessions, drawing on recognised therapeutic models such as CBT, psychodynamic therapy, integrative therapy, or trauma‑informed methods. This ensures the journey together is grounded in professional expertise and tailored to your personal goals.
                         </p>
                         <p>
-                            From the very first session, your therapist works with you to build a safe, consistent relationship. One that supports insight, emotional processing, and long‑term growth. You’re matched not just for compatibility, but for the depth and direction of the therapeutic journey you want to take.
+                            From the first session, your therapist works with you to build a safe, consistent relationship. One that supports insight, emotional processing, and long‑term growth. You’re matched not just for compatibility, but for the depth and direction of the therapeutic journey you want to take.
                         </p>
                     </div>
                 </div>
@@ -137,7 +137,7 @@
                 <div class="border-l-4 border-[#0f89a6] bg-white/75 py-2 pl-6 shadow-[0_24px_70px_-55px_rgba(16,106,124,0.65)] md:pl-8">
                     <div class="space-y-5 text-base leading-8 text-[#243b45] md:text-lg">
                         <p class="font-medium text-[#102f3a]">
-                            Online Therapy provides a secure, private environment where you can explore deeper emotions, past experiences, and long‑standing patterns at your own pace. Your sessions are fully confidential, giving you the freedom to speak openly without judgement or pressure.
+                            Online Therapy provides a secure, private environment where you can explore deeper emotions, past experiences, and long‑standing patterns at your own pace. Your sessions are fully confidential, giving you the freedom to autonomy without judgement or pressure.
                         </p>
                         <p>
                             Your therapist creates a stable, supportive space designed for meaningful therapeutic work, whether you’re processing trauma, navigating persistent anxiety or low mood, or working through complex emotional challenges. Every session is grounded in professional ethics, safeguarding, and respect for your personal boundaries.
@@ -172,10 +172,7 @@
                         <p class="font-medium text-[#102f3a]">
                             Online Therapy is designed to fit naturally into your life while still offering the consistency needed for deeper emotional work. Whether you prefer weekly sessions or a steadier, more reflective pace, your therapist works with you to create a rhythm that supports long‑term growth and emotional stability.
                         </p>
-                        <p>
-                            Therapy gives you the space to explore complex feelings, past experiences, and patterns that may take time to understand and process. Your sessions are structured around your goals, your capacity, and the pace that feels safe and sustainable for you.
-                        </p>
-                        <p>
+                         <p>
                             With flexible scheduling, secure online access, and a therapist who understands your journey, you can engage in meaningful therapeutic work from wherever you feel most comfortable, without compromising the depth or continuity of your care.
                         </p>
                     </div>
@@ -251,7 +248,7 @@
                         <h2 class="mt-3 mb-5 text-3xl font-semibold leading-tight text-[#102f3a] sm:text-4xl md:text-4xl">Engage and Benefit</h2>
 
                         <p class="text-gray-600 text-base leading-relaxed">
-                            Therapy helps you make sense of your thoughts and emotions, build resilience, and take steps toward a healthier, more balanced life — at your pace, in your way.
+                            Therapy helps you make sense of your thoughts and emotions, build resilience, and take steps toward a healthier, more balanced life, at your pace, in your way.
                         </p>
                     </div>
                 </div>
