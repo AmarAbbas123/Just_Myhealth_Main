@@ -5,13 +5,13 @@
 <x-app-layout>
 
     <!-- Hero Section -->
-<section class="relative h-80 lg:h-[28rem] flex items-start lg:items-center pt-24 lg:pt-32 overflow-hidden">
+<section class="relative h-80 flex items-start lg:items-center pt-24 lg:pt-32">
     <div class="absolute inset-0 -z-10">
         <img src="{{ asset('images/hero-bg.png') }}" alt="Hero Background" class="w-full h-full object-cover object-center">
         <div class="absolute inset-0 bg-gradient-to-r from-black/60 to-black/30"></div>
     </div>
 
-    <div class="px-6 lg:px-20 max-w-4xl mx-auto text-center lg:text-left">
+    <div class="px-6 lg:px-20 max-w-4xl">
         <!-- Breadcrumb -->
         <div class="inline-flex items-center space-x-2 text-sm lg:text-base font-medium text-white/90 bg-white/10 backdrop-blur-md px-5 py-2 rounded-full shadow-lg mb-6">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 lg:h-5 lg:w-5 text-teal-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
@@ -53,7 +53,7 @@
                             Online counselling gives you a safe, supportive space to talk through what’s on your mind and get practical guidance for everyday challenges.
                         </p>
                         <p>
-                            Whether you’re dealing with stress, relationship difficulties, grief, low mood, or emotional overwhelm, counseling helps you understand your thoughts and feelings and move toward healthier patterns.
+                            Whether you’re dealing with stress, relationship difficulties, grief, low mood, or emotional overwhelm, counselling helps you understand your thoughts and feelings and move toward healthier patterns and emotional stability.
                         </p>
                         <p>
                             Together, you explore what’s affecting your wellbeing and develop tools you can use in real life, from managing stress to improving communication and building emotional resilience.
@@ -88,6 +88,9 @@
                         </p>
                         <p>
                             Your Therapeutic Practitioner works with you to identify patterns, clarify your thoughts, and build practical tools you can use in everyday life, whether you’re navigating stress, relationship challenges, grief, or emotional overwhelm.
+                        </p>
+                        <p>
+                            Providing lifelong tools that you can use when your encounter future life challenges.
                         </p>
                     </div>
                 </div>
@@ -145,7 +148,7 @@
                 <div class="border-l-4 border-[#0f89a6] bg-white/75 py-2 pl-6 shadow-[0_24px_70px_-55px_rgba(16,106,124,0.65)] md:pl-8">
                     <div class="space-y-5 text-base leading-8 text-[#243b45] md:text-lg">
                         <p class="font-medium text-[#102f3a]">
-                            Your privacy is central to the therapeutic process. Sessions take place in a secure environment with encrypted communication, verified practitioners, and strict confidentiality standards, helping you feel safe, supported, and in control.
+                            Your privacy is central to the therapeutic process. Sessions take place in a secure environment with encrypted communication, verified practitioners, and strict confidentiality standards, helping you feel safe, supported, and in control from the onset of the relationship.
                         </p>
                         <p>
 
@@ -195,7 +198,7 @@
 
         <p class="text-justify mb-16 mx-auto pt-2 px-4 md:px-6 lg:px-20">
             At JustMy.Health, we believe in the power of personalised counselling to help you achieve mental wellness and
-            emotional balance. Our secure platform offers one-to-one counselling sessions tailored to your unique needs,
+            emotional balance. Our secure platform offers one-to-one counselling sessions tailored to your needs,
             ensuring you receive the support and guidance you deserve.
         </p>
 
