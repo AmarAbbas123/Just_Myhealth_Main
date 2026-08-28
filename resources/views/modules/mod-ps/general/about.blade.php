@@ -5,7 +5,7 @@
     <section class="relative min-h-[22rem] sm:min-h-[18rem] lg:h-80 flex items-center lg:items-center  pb-8 lg:pt-24 lg:pb-0">
         <!-- Background Image -->
         <div class="absolute inset-0 -z-10">
-            <img src="{{ asset('images/welcome-page/hero-bg.jpeg') }}"
+            <img src="{{ asset('images/welcome-page/hero-bg.jpg') }}"
                  alt="Hero Background"
                  class="w-full h-full object-cover object-center">
             <div class="absolute inset-0 bg-black/50"></div>

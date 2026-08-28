@@ -64,7 +64,7 @@
     <!-- Hero Section -->
     <section class="relative h-80 flex items-start lg:items-center pt-24 lg:pt-32">
         <div class="absolute inset-0 -z-10">
-            <img src="{{ asset('images/welcome-page/hero-bg.png') }}" alt="Hero Background" class="w-full h-full object-cover object-center">
+            <img src="{{ asset('images/welcome-page/hero-bg.jpg') }}" alt="Hero Background" class="w-full h-full object-cover object-center">
             <div class="absolute inset-0 bg-gradient-to-r from-black/50 to-black/20"></div>
         </div>
     

@@ -3,7 +3,7 @@
     
     <!-- Background Image -->
     <div class="absolute inset-0 -z-10">
-        <img src="{{ asset('images/welcome-page/hero-bg.png') }}"
+        <img src="{{ asset('images/welcome-page/hero-bg.jpg') }}"
              alt="Hero Background"
              class="w-full h-full object-cover object-center">
         <div class="absolute inset-0 bg-black/50"></div>
