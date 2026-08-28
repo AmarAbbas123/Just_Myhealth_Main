@@ -40,7 +40,7 @@ class PublicContactController extends Controller
             Mail::raw(
                 "New contact form submission:\n\nName: {$contact->Name}\nEmail: {$contact->Email}\nSubject: {$contact->Subject}\nMessage:\n{$contact->Message}\n\nLocation: {$contact->FormLocation}\nStatus: {$contact->Status}",
                 function ($message) use ($contact) {
-                    $message->to('website@justmy.health')
+                    $message->to('amarabbas1414@gmail.com')
                         ->subject('JustMy.Health Contact Form: ' . $contact->Subject);
                 }
             );
