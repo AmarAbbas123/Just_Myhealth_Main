@@ -4,7 +4,7 @@
     <main class="pt-20 min-h-screen">
 
         <!-- Hero Section -->
-        <section class="relative flex h-56 items-end sm:h-64 sm:items-center lg:h-80">
+        <section class="relative flex h-46 items-end sm:h-64 sm:items-center lg:h-60">
 
             <!-- Background Image -->
             <div class="absolute inset-0 -z-10">
