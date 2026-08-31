@@ -15,6 +15,11 @@ return [
        // 32 => 'Dietician',
     ],
 
+    // Coaches use the existing professional account and onboarding flow.
+    'coach' => [
+        30 => 'COACH (Professional Person)',
+    ],
+
     'business' => [
         10 => 'BUSINESS (Local)',
        // 11 => 'BusinessRegional',
