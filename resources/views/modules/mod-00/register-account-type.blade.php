@@ -55,7 +55,7 @@
 
         {{-- MAIN CONTENT --}}
         <section class="px-5 py-10 sm:py-14">
-            <div class="mx-auto grid max-w-6xl grid-cols-1 gap-6 md:grid-cols-3 lg:gap-7">
+            <div class="mx-auto grid max-w-7xl grid-cols-1 gap-6 md:grid-cols-4 lg:gap-7">
 
                 {{-- CLIENT ACCOUNT --}}
                 <div class="group relative flex flex-col overflow-hidden rounded-3xl border border-[#1C9BA0]/15 bg-white shadow-sm transition duration-300 hover:-translate-y-1 hover:shadow-xl hover:shadow-[#1C9BA0]/10">
