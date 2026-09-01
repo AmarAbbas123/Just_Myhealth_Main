@@ -1,7 +1,7 @@
 ﻿<x-app-layout>
 
     {{-- PAGE WRAPPER (OFFSET FOR FIXED HEADER) --}}
-    <main class="pt-20 min-h-screen">
+    <main class="min-h-screen">
 
         <!-- Hero Section -->
         <section class="relative flex h-46 items-end sm:h-64 sm:items-center lg:h-60">
