@@ -42,9 +42,9 @@ class ContentSecurityPolicy
             "https://storage.googleapis.com",
             "https://cdnjs.cloudflare.com",
             "https://unpkg.com",
-            "https://www.google-analytics.com",
-            "https://region1.google-analytics.com",
-            "https://www.googletagmanager.com",
+         //   "https://www.google-analytics.com",
+          //  "https://region1.google-analytics.com",
+          //  "https://www.googletagmanager.com",
             "blob:",
             "data:",
         ]);
@@ -60,8 +60,8 @@ class ContentSecurityPolicy
             "https://unpkg.com",
             "https://*.zegocloud.com",
             "https://zegocloud.com",
-            "https://www.googletagmanager.com",
-            "https://www.google-analytics.com",
+        //    "https://www.googletagmanager.com",
+         //   "https://www.google-analytics.com",
             "https://www.google.com",
             "https://www.gstatic.com",
         ];
