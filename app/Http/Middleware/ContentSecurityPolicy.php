@@ -97,17 +97,7 @@ class ContentSecurityPolicy
             ]);
         }
 
-        $policies = [
-            "default-src 'self'",
-            "script-src " . implode(' ', $scriptList),
-            "style-src " . implode(' ', $styleList),
-            "font-src 'self' data: https://fonts.gstatic.com https://cdn.jsdelivr.net https://fonts.bunny.net",
-            "img-src 'self' data: blob: https://cdn.jsdelivr.net https://storage.googleapis.com https://images.unsplash.com",
-            "connect-src 'self' " . implode(' ', $connectList),
-            "object-src 'none'",
-            "frame-src 'self' https://*.zegocloud.com https://www.google.com https://www.gstatic.com",
-            "worker-src 'self' blob:",
-        ];
+       
 
         $policy = implode('; ', $policies);
 
