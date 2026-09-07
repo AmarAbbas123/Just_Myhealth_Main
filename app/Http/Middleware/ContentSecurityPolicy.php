@@ -99,12 +99,3 @@ class ContentSecurityPolicy
 
        
 
-        $policy = implode('; ', $policies);
-
-        // Use Laravel response headers instead of raw PHP header()
-        $response = $next($request);
-        $response->headers->set('Content-Security-Policy', $policy);
-
-        return $response;
-    }
-}
