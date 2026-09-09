@@ -1,14 +1,14 @@
-﻿<x-app-layout>
+﻿﻿﻿<x-app-layout title="Register | Account Type" metaDescription="JustMy.Health - Select account type to register.">
 
     {{-- PAGE WRAPPER (OFFSET FOR FIXED HEADER) --}}
     <main class="pt-20 min-h-screen">
 
         <!-- Hero Section -->
-        <section class="relative flex h-56 items-end sm:h-64 sm:items-center lg:h-70">
+        <section class="relative flex h-56 items-end sm:h-64 sm:items-center lg:h-60">
 
             <!-- Background Image -->
             <div class="absolute inset-0 -z-10">
-                <img src="{{ asset('images/welcome-page/hero-bg.jpg') }}"
+                <img src="{{ asset('images/welcome-page/hero-bg.jpeg') }}"
                      alt="Hero Background"
                      class="h-full w-full object-cover object-center">
                 <div class="absolute inset-0 bg-black/55"></div>
@@ -181,7 +181,7 @@
                         </div>
 
                         <div class="mt-5 items-baseline">
-                            <span class="mt-4 text-xl font-semibold text-slate-900">COACH</span>
+                            <span class="mt-4 text-xl font-semibold text-slate-900">COACHING</span>
                             <span class="text-sm font-medium text-slate-400">(Professional Services)</span>
                         </div>
 
