@@ -1,6 +1,4 @@
-<x-app-layout
-    :title="$blogPost->Title . ' | JustMy.Health Blog'"
-    :metaDescription="$blogPost->Excerpt">
+<x-app-layout :title="'Blog: '. $blogPost->Title . ' | JustMy.Health'" :metaDescription="$blogPost->Excerpt">
 
     @push('meta')
         <link rel="canonical" href="{{ route('blogs.show', $blogPost) }}">
@@ -40,7 +38,8 @@
             <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pt-28 pb-10 lg:pt-32 lg:pb-12">
                 <a href="{{ route('blogs') }}"
                     class="inline-flex items-center gap-1.5 text-sm font-semibold text-teal-700 hover:text-teal-800 bg-white px-3 py-1.5 rounded-full border border-teal-100 shadow-sm">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24"
+                        stroke="currentColor" stroke-width="2.5">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18" />
                     </svg>
                     Back to Blog
@@ -62,8 +61,10 @@
                         $readMinutes = max(1, (int) ceil($wordCount / 200));
                     @endphp
                     <span class="inline-flex items-center gap-1.5">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24"
+                            stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                         </svg>
                         {{ $readMinutes }} min read
                     </span>
@@ -105,35 +106,6 @@
                             </p>
                         @endif
                     </div>
-
-                    <section id="comments" class="mt-10 rounded-2xl bg-white p-6 shadow-sm sm:p-8">
-                        <div class="flex items-center justify-between gap-4 border-b border-gray-100 pb-5">
-                            <h2 class="text-xl font-bold text-gray-900">Leave a comment</h2>
-                        </div>
-
-                        @if (session('success'))
-                            <div class="mt-6 rounded-xl border border-green-200 bg-green-50 px-4 py-3 text-sm text-green-800">
-                                {{ session('success') }}
-                            </div>
-                        @endif
-
-                        <form action="{{ route('blogs.comments.store', $blogPost) }}" method="POST" class="mt-6">
-                            @csrf
-                            <label for="Comment" class="block text-sm font-semibold text-gray-800">Your comment</label>
-                            <textarea id="Comment" name="Comment" rows="4" maxlength="2000" required
-                                class="mt-2 block w-full rounded-xl border-gray-300 text-gray-800 shadow-sm focus:border-teal-500 focus:ring-teal-500"
-                                placeholder="Write your comment...">{{ old('Comment') }}</textarea>
-                            @error('Comment')
-                                <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
-                            @enderror
-                            <div class="mt-3 flex items-center justify-between gap-4">
-                                <p class="text-xs text-gray-500">Please keep comments respectful and relevant.</p>
-                                <button type="submit" class="rounded-xl bg-teal-700 px-4 py-2 text-sm font-semibold text-white hover:bg-teal-800">
-                                    Post comment
-                                </button>
-                            </div>
-                        </form>
-                    </section>
                 </article>
 
                 <!-- Sidebar: YouTube card + recent posts -->
@@ -142,22 +114,38 @@
                         @if ($blogPost->hasVideoCard())
                             <section class="overflow-hidden rounded-2xl bg-white shadow-sm border border-gray-100">
                                 @if ($blogPost->VideoTitle)
-                                    <h2 class="px-5 pt-5 text-sm font-bold leading-snug text-gray-900">{{ $blogPost->VideoTitle }}</h2>
+                                    <h2 class="px-5 pt-5 text-sm font-bold leading-snug text-gray-900">
+                                        {{ $blogPost->VideoTitle }}</h2>
                                 @endif
 
-                                <a href="{{ $blogPost->VideoUrl ?: '#' }}" @if ($blogPost->VideoUrl) target="_blank" rel="noopener noreferrer" @endif
+                                <a href="{{ $blogPost->VideoUrl ?: '#' }}"
+                                    @if ($blogPost->VideoUrl) target="_blank" rel="noopener noreferrer" @endif
                                     class="group relative mt-4 block aspect-video overflow-hidden bg-gray-900 {{ $blogPost->VideoUrl ? '' : 'pointer-events-none' }}"
                                     aria-label="{{ $blogPost->VideoTitle ?: 'Watch video' }}">
-                                    <img src="{{ $blogPost->featuredImageUrl() }}" alt="{{ $blogPost->VideoTitle ?: $blogPost->Title }}"
-                                        class="h-full w-full object-cover transition duration-300 group-hover:scale-105">
-                                    <span class="absolute inset-0 bg-black/25 transition group-hover:bg-black/40"></span>
-                                    <span class="absolute left-1/2 top-1/2 flex h-14 w-20 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-2xl bg-red-600 shadow-lg transition group-hover:scale-110">
-                                        <svg xmlns="http://www.w3.org/2000/svg" class="ml-1 h-7 w-7 text-white" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>
+
+                                    <img src="{{ $blogPost->featuredImageUrl() }}"
+                                        alt="{{ $blogPost->VideoTitle ?: $blogPost->Title }}"
+                                        class="absolute inset-0 h-full w-full object-cover transition duration-300 group-hover:scale-105">
+
+                                    <span
+                                        class="absolute inset-0 bg-black/25 transition group-hover:bg-black/40"></span>
+
+                                    <!-- Center Play Button -->
+                                    <span class="absolute inset-0 flex items-center justify-center pointer-events-none">
+                                        <span
+                                            class="flex h-14 w-20 items-center justify-center rounded-2xl bg-red-600 shadow-lg transition group-hover:scale-110">
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="ml-1 h-7 w-7 text-white"
+                                                fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                                                <path d="M8 5v14l11-7z" />
+                                            </svg>
+                                        </span>
                                     </span>
+
                                 </a>
 
                                 @if ($blogPost->VideoDescription)
-                                    <a href="{{ $blogPost->VideoUrl ?: '#' }}" @if ($blogPost->VideoUrl) target="_blank" rel="noopener noreferrer" @endif
+                                    <a href="{{ $blogPost->VideoUrl ?: '#' }}"
+                                        @if ($blogPost->VideoUrl) target="_blank" rel="noopener noreferrer" @endif
                                         class="block px-5 py-4 text-sm font-semibold text-teal-700 hover:text-teal-800 transition {{ $blogPost->VideoUrl ? '' : 'pointer-events-none' }}">
                                         {{ $blogPost->VideoDescription }}
                                     </a>
@@ -182,14 +170,17 @@
                                                 class="w-20 h-16 rounded-lg object-cover flex-shrink-0">
                                             <div class="min-w-0">
                                                 @if ($post->SourcePlatform)
-                                                    <span class="text-[10px] font-semibold uppercase tracking-wide text-teal-600">
+                                                    <span
+                                                        class="text-[10px] font-semibold uppercase tracking-wide text-teal-600">
                                                         {{ $post->SourcePlatform }}
                                                     </span>
                                                 @endif
-                                                <h3 class="text-sm font-semibold text-gray-900 leading-snug line-clamp-2 group-hover:text-teal-700 transition-colors">
+                                                <h3
+                                                    class="text-sm font-semibold text-gray-900 leading-snug line-clamp-2 group-hover:text-teal-700 transition-colors">
                                                     {{ $post->Title }}
                                                 </h3>
-                                                <time class="text-xs text-gray-400">{{ $post->PublishedAt?->format('M j, Y') }}</time>
+                                                <time
+                                                    class="text-xs text-gray-400">{{ $post->PublishedAt?->format('M j, Y') }}</time>
                                             </div>
                                         </a>
                                     @endforeach
@@ -199,8 +190,10 @@
                             <a href="{{ route('blogs') }}"
                                 class="mt-5 inline-flex items-center gap-1.5 text-sm font-semibold text-teal-700 hover:text-teal-800">
                                 View all posts
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none"
+                                    viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                        d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
                                 </svg>
                             </a>
                         </div>
