@@ -156,8 +156,9 @@ class RegisteredUserController extends Controller
             $profileData[$field] = $profileDataInput[$field] ?? null;
         }
 
-        // Create the user
-        $user = User::create([
+        // Standard accounts are real user accounts from the moment they are created.
+        // Other account types retain the database's existing SystemUser behaviour.
+        $userData = [
             'UserType' => $validated['UserType'],
             'UserName' => $validated['UserName'],
             'Email' => $validated['Email'],
@@ -167,7 +168,14 @@ class RegisteredUserController extends Controller
             'AccountSetupComplete' => 0, // INACTIVE until Approved by Admin
             'UserCreatedDateTime' => now(),
             'NeedsEmailPrompt' => true,
-        ]);
+        ];
+
+        if (in_array((int) $validated['UserType'], [1, 2], true)) {
+            $userData['SystemUser'] = 0;
+        }
+
+        // Create the user
+        $user = User::create($userData);
 
         // Save personal attributes using the sys_user_attributes column names.
         $attributesData = [];

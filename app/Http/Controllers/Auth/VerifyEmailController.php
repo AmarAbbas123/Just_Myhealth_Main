@@ -33,7 +33,9 @@ class VerifyEmailController extends Controller
         if (!$user->hasVerifiedEmail()) {
             $user->markEmailAsVerified();
             $user->NeedsEmailPrompt = false;
-            $user->SystemUser = 1;    // May be it should be 0 
+            // Standard accounts are real accounts. All other account types retain
+            // the existing verification behaviour, including UserType 30 at 1.
+            $user->SystemUser = in_array((int) $user->UserType, [1, 2], true) ? 0 : 1;
             //$user->AccountStatus=1;  // May be we just add this for Testing 
             $user->UserActivatedDateTime = now();            
             $user->save();
