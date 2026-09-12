@@ -1,10 +1,10 @@
-<x-app-layout>
+<x-app-layout title="Dietitian & Healthy Eating (PUB) | JustMy.Health" metaDescription="JustMy.Health Dietitian Overview Page.">
 
     <!-- Hero Section -->
     <section class="relative h-96 lg:h-[28rem] flex items-start lg:items-center pt-20 lg:pt-24 overflow-hidden">
         <!-- Background Image -->
         <div class="absolute inset-0 -z-10">
-            <img src="{{ asset('images/welcome-page/hero-bg.png') }}"
+            <img src="{{ asset('images/hero-bg.png') }}"
                  alt="Hero Background"
                  class="w-full h-full object-cover object-center">
             <div class="absolute inset-0 bg-black/50"></div>
@@ -37,21 +37,55 @@
     </section>
 
 
+
+    <section class="bg-gradient-to-b from-[#f4fbfb] via-white to-[#eef8f7] py-8 md:py-12">
+        <div class="container mx-auto px-6 lg:px-12">
+            <div class="mx-auto grid max-w-6xl gap-10 lg:grid-cols-[0.85fr_1.15fr] lg:items-center">
+                <div>
+                    <p class="mb-5 inline-flex rounded-full border border-[#9ed9d7] bg-white px-4 py-2 text-xs font-semibold uppercase tracking-[0.22em] text-[#0f89a6] shadow-sm">
+                        JustMy.Health - Dietitian
+                    </p>
+                    <h2 class="max-w-xl text-2xl font-semibold leading-tight text-[#102f3a] sm:text-3xl md:text-4xl">
+                        Healthy Eating Guidance Designed Around You
+                    </h2>
+                    <p class="mt-6 max-w-md text-base leading-7 text-[#4b626b]">
+                        Healthy eating isn’t about strict rules or complicated diets, it’s about understanding your body, your habits, and the choices that support long‑term wellbeing.
+                    </p>
+                    <p class="mt-6 max-w-md text-base leading-7 text-[#4b626b]">
+                        Our Dietitian service helps you build a healthier relationship with food through personalised guidance, practical strategies, and ongoing support tailored to your lifestyle.
+                    </p>
+                </div>
+
+                <div class="border-l-4 border-[#0f89a6] bg-white/75 py-2 pl-6 shadow-[0_24px_70px_-55px_rgba(16,106,124,0.65)] md:pl-8">
+                    <div class="space-y-5 text-base leading-8 text-[#243b45] md:text-lg">
+                        <p class="font-medium text-[#102f3a]">
+                            Dietitian and Healthy Eating will be launching shortly as part of our expanded wellbeing support.
+                        </p>
+                        <p>
+                            A healthier relationship with food starts with understanding what your body truly needs. Your Dietitian helps you cut through the noise of conflicting nutrition advice and focus on what works for you. Together, you’ll explore your current habits, identify simple improvements, and build confidence in making choices that support your energy, mood, and long‑term wellbeing.
+                        </p>
+                        <p>
+                            Every plan is personalised and practical. Instead of restrictive diets or one‑size‑fits‑all rules, your Dietitian creates guidance that fits your lifestyle, culture, and daily routine. Whether you’re managing a health condition, working toward a specific goal, or simply wanting to feel better day‑to‑day, you’ll receive clear steps you can start using immediately.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+
+
     <!-- Coming Soon Section -->
     <section class="relative py-24 bg-gray-50 flex flex-col items-center text-center px-6 overflow-hidden">
-        <!-- Illustration -->
-         <div class="mb-12">
-            <img src="{{ asset('images/welcome-page/coming-soon.png') }}" alt="Coming Soon Illustration" class="w-72 lg:w-96 mx-auto">
-        </div>
-
         <!-- Message -->
-        <h2 class="text-4xl lg:text-5xl font-bold text-gray-900 mb-6">We're Coming Soon!</h2>
-        <p class="text-lg lg:text-xl text-gray-700 mb-8 max-w-2xl">
+        <h2 class="text-2xl lg:text-2xl font-bold text-gray-900 mb-6">Pre-Register an account!</h2>
+        <p class="text-lg lg:text-lg text-gray-700 mb-8 max-w-2xl">
             Our Dietitian & Healthy Eating services are on the way. Stay tuned for updates and get ready to transform your health and wellness with JustMy.Health.
         </p>
 
         <!-- Optional Call to Action -->
-        <a href="{{ route('register') }}" 
+        <a href="{{ route('register') }}"
            class="inline-block bg-teal-500 text-white font-semibold px-8 py-3 rounded-full shadow-lg hover:bg-teal-600 transition transform hover:-translate-y-1">
             Register Now
         </a>
