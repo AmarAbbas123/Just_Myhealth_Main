@@ -1,7 +1,7 @@
 <x-app-layout title="Personal Training (PUB) | JustMy.Health" metaDescription="JustMy.Health Personal training Overview Page.">
 
     <!-- Premium Hero Section -->
-    <section class="relative min-h-[32rem] flex items-center pt-24 pb-12 overflow-hidden">
+    <section class="relative min-h-[26rem] flex items-center pt-24 pb-4 overflow-hidden">
 
         <!-- Background Image -->
         <div class="absolute inset-0 -z-10">
@@ -28,7 +28,7 @@
                 </div>
 
                 <!-- Page Title -->
-                <h1 class="text-5xl lg:text-6xl font-extrabold text-white tracking-tight mb-4" style="line-height:1.1;">
+                <h1 class="text-5xl lg:text-5xl font-extrabold text-white tracking-tight mb-4" style="line-height:1.1;">
                     Personal Training<br>
                     <span style="background:linear-gradient(90deg,#5ee7df,#38bdf8);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">JustMy.Health</span>
                 </h1>
@@ -240,7 +240,7 @@
         <div class="relative z-10 container mx-auto px-6 lg:px-12 text-center">
 
             {{-- Badge --}}
-            <div class="inline-flex items-center gap-2 mb-5 px-5 py-2 rounded-full text-xs font-bold uppercase tracking-[0.25em]"
+            <div class="inline-flex items-center gap-2 mb-8 px-5 py-2 rounded-full text-xs font-bold uppercase tracking-[0.25em]"
                  style="background:rgba(15,137,166,0.15);border:1px solid rgba(15,137,166,0.4);color:#5ee7df;">
                 <span style="width:6px;height:6px;border-radius:50%;background:#5ee7df;box-shadow:0 0 8px #5ee7df;display:inline-block;animation:ptPulse 1.5s ease-in-out infinite;"></span>
                 Official Launch Countdown

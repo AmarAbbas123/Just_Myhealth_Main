@@ -62,7 +62,7 @@
                         JustMy.Health
                     </p>
                     <h2 class="max-w-xl text-3xl font-semibold leading-tight text-[#102f3a] sm:text-4xl md:text-5xl">
-                        Your safe space for trusted health and wellbeing support
+                        Trusted professionals supporting your health and wellbeing. All in one place.
                     </h2>
                     <p class="mt-6 max-w-md text-base leading-7 text-[#4b626b]">
                         Professional counselling, therapy, and wellbeing services delivered through a connected, client‑centred platform.
@@ -87,33 +87,39 @@
     </section>
     {{-- End of Services --}}
 
-    {{-- Service-type assessment CTA --}}
-    <section class="py-10 md:py-14 bg-white">
-        <div class="container mx-auto px-6 lg:px-12">
-            <div class="mx-auto max-w-4xl rounded-2xl border border-[#9ed9d7] bg-gradient-to-b from-[#f4fbfb] to-white px-6 py-8 md:px-10 md:py-10 text-center shadow-[0_24px_70px_-55px_rgba(16,106,124,0.65)]">
-                <h3 class="text-2xl font-semibold text-[#102f3a] sm:text-3xl">
-                    Unsure of what help you need
-                </h3>
-                <p class="mx-auto mt-3 max-w-2xl text-base leading-7 text-[#4b626b]">
-                    Answer a few questions and we will guide you to the required service
-                </p>
-                <div class="mt-6">
-                <a 
-                   class="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-[#14b8a6] px-6 py-4 text-base font-semibold text-white shadow-md transition duration-200 hover:bg-[#0b7f70] hover:shadow-lg sm:w-auto sm:min-w-[280px]">
-                    Start assessment
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
-                    </svg>
-                </a>
 
-                </div>
-            </div>
+    {{-- Service-type assessment CTA --}}
+    <section class="py-14 md:py-20 ">
+        <div class="container mx-auto px-6 lg:px-12 text-center">
+
+            <p class="mb-4 inline-flex items-center gap-2 rounded-full border border-[#9ed9d7] bg-white px-4 py-1.5 text-xs font-bold uppercase tracking-[0.2em] text-[#0f89a6] shadow-sm">
+                Find Your Support
+            </p>
+
+            <h3 class="text-2xl font-bold text-[#102f3a] sm:text-3xl mb-3">
+                Unsure of what help you need
+            </h3>
+            <p class="mx-auto mb-8 max-w-xl text-base leading-7 text-[#4b626b]">
+                Answer a few questions and we will guide you to the required service
+            </p>
+
+            <a class="inline-flex items-center justify-center gap-2 rounded-full px-8 py-4 text-base font-semibold text-white transition-all duration-200 hover:-translate-y-0.5 sm:min-w-[280px]"
+               style="background:linear-gradient(90deg,#0f89a6,#14b8a6);box-shadow:0 8px 28px -6px rgba(15,137,166,0.4);"
+               onmouseover="this.style.boxShadow='0 14px 36px -6px rgba(15,137,166,0.55)';"
+               onmouseout="this.style.boxShadow='0 8px 28px -6px rgba(15,137,166,0.4)';">
+                Start assessment
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
+                </svg>
+            </a>
+
         </div>
     </section>
 
 
+
     {{-- Professional Support Service Tiles --}}
-    <section class="py-16 md:py-24 bg-white">
+    <section class="py-16 md:py-24 bg-gradient-to-b from-[#f4fbfb] via-white to-[#eef8f7]">
         <div class="container mx-auto px-6 lg:px-16 xl:px-24" id="services">
 
             <div class="mx-auto max-w-3xl text-center mb-12">
@@ -222,27 +228,31 @@
     </section>
     {{-- End of Professional Support Service Tiles --}}
 
-    {{-- Service-type assessment CTA --}}
-    <section class="py-10 md:py-14 bg-white">
-        <div class="container mx-auto px-6 lg:px-12">
-            <div class="mx-auto max-w-4xl rounded-2xl border border-[#9ed9d7] bg-gradient-to-b from-[#f4fbfb] to-white px-6 py-8 md:px-10 md:py-10 text-center shadow-[0_24px_70px_-55px_rgba(16,106,124,0.65)]">
-                <h3 class="text-2xl font-semibold text-[#102f3a] sm:text-3xl">
-                    Unsure of what help you need
-                </h3>
-                <p class="mx-auto mt-3 max-w-2xl text-base leading-7 text-[#4b626b]">
-                    Answer a few questions and we will guide you to the required service
-                </p>
-                <div class="mt-6">
-                <a 
-                   class="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-[#14b8a6] px-6 py-4 text-base font-semibold text-white shadow-md transition duration-200 hover:bg-[#0b7f70] hover:shadow-lg sm:w-auto sm:min-w-[280px]">
-                    Start assessment
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
-                    </svg>
-                </a>
+     {{-- Service-type assessment CTA --}}
+    <section class="py-14 md:py-20 ">
+        <div class="container mx-auto px-6 lg:px-12 text-center">
 
-                </div>
-            </div>
+            <p class="mb-4 inline-flex items-center gap-2 rounded-full border border-[#9ed9d7] bg-white px-4 py-1.5 text-xs font-bold uppercase tracking-[0.2em] text-[#0f89a6] shadow-sm">
+                Find Your Support
+            </p>
+
+            <h3 class="text-2xl font-bold text-[#102f3a] sm:text-3xl mb-3">
+                Unsure of what help you need
+            </h3>
+            <p class="mx-auto mb-8 max-w-xl text-base leading-7 text-[#4b626b]">
+                Answer a few questions and we will guide you to the required service
+            </p>
+
+            <a class="inline-flex items-center justify-center gap-2 rounded-full px-8 py-4 text-base font-semibold text-white transition-all duration-200 hover:-translate-y-0.5 sm:min-w-[280px]"
+               style="background:linear-gradient(90deg,#0f89a6,#14b8a6);box-shadow:0 8px 28px -6px rgba(15,137,166,0.4);"
+               onmouseover="this.style.boxShadow='0 14px 36px -6px rgba(15,137,166,0.55)';"
+               onmouseout="this.style.boxShadow='0 8px 28px -6px rgba(15,137,166,0.4)';">
+                Start assessment
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
+                </svg>
+            </a>
+
         </div>
     </section>
 
