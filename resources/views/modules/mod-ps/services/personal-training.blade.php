@@ -1,74 +1,42 @@
 <x-app-layout title="Personal Training (PUB) | JustMy.Health" metaDescription="JustMy.Health Personal training Overview Page.">
 
     <!-- Premium Hero Section -->
-    <section class="relative min-h-[32rem] flex items-center pt-24 pb-12 overflow-hidden"
-             style="background: radial-gradient(ellipse at 80% 20%, #0c3848 0%, #05141f 60%, #020a10 100%);">
-        
-        <!-- Abstract glowing geometric shapes (Right Side) -->
-        <div class="absolute inset-0 pointer-events-none overflow-hidden" aria-hidden="true">
-            <!-- Glow Base -->
-            <div style="position:absolute;width:600px;height:600px;border-radius:50%;
-                        background:radial-gradient(circle, rgba(20,184,166,0.15) 0%, transparent 60%);
-                        top:50%;right:-100px;transform:translateY(-50%);"></div>
-            
-            <!-- 3D-like Rings (SVG) -->
-            <svg style="position:absolute;top:50%;right:5%;transform:translateY(-50%);width:500px;height:500px;opacity:0.8;" viewBox="0 0 400 400">
-                <!-- Large tilted ring -->
-                <ellipse cx="200" cy="200" rx="160" ry="80" fill="none" stroke="url(#heroGrad1)" stroke-width="8" transform="rotate(-30 200 200)" style="filter:drop-shadow(0 0 15px rgba(94,231,223,0.6));"/>
-                <!-- Smaller tilted ring -->
-                <ellipse cx="200" cy="200" rx="100" ry="40" fill="none" stroke="url(#heroGrad2)" stroke-width="4" transform="rotate(20 200 200)" style="filter:drop-shadow(0 0 10px rgba(56,189,248,0.5));"/>
-                <!-- Central Orb -->
-                <circle cx="200" cy="200" r="45" fill="url(#heroGrad1)" style="filter:drop-shadow(0 0 25px rgba(94,231,223,0.8));"/>
-                <!-- Floating mini orbs -->
-                <circle cx="80" cy="120" r="15" fill="url(#heroGrad2)" style="filter:drop-shadow(0 0 15px rgba(56,189,248,0.6)); animation: ptFloat 6s infinite ease-in-out;"/>
-                <circle cx="320" cy="280" r="25" fill="url(#heroGrad1)" style="filter:drop-shadow(0 0 20px rgba(94,231,223,0.6)); animation: ptFloat 8s infinite ease-in-out reverse;"/>
-                
-                <defs>
-                    <linearGradient id="heroGrad1" x1="0%" y1="0%" x2="100%" y2="100%">
-                        <stop offset="0%" stop-color="#5ee7df" />
-                        <stop offset="100%" stop-color="#14b8a6" />
-                    </linearGradient>
-                    <linearGradient id="heroGrad2" x1="0%" y1="100%" x2="100%" y2="0%">
-                        <stop offset="0%" stop-color="#38bdf8" />
-                        <stop offset="100%" stop-color="#0ea5e9" />
-                    </linearGradient>
-                </defs>
-            </svg>
-            
-            <!-- Dust particles -->
-            <div class="pt-particles" style="opacity:0.5;">
-                <span style="width:3px;height:3px;left:60%;top:30%;"></span>
-                <span style="width:5px;height:5px;left:75%;top:60%;"></span>
-                <span style="width:4px;height:4px;left:85%;top:40%;"></span>
-                <span style="width:6px;height:6px;left:65%;top:70%;"></span>
-            </div>
+    <section class="relative min-h-[32rem] flex items-center pt-24 pb-12 overflow-hidden">
+
+        <!-- Background Image -->
+        <div class="absolute inset-0 -z-10">
+            <img src="{{ asset('images/welcome-page/hero-bg.jpg') }}"
+                 alt="Personal Training Hero Background"
+                 class="w-full h-full object-cover object-center">
+            <!-- Dark overlay with teal tint -->
+            <div class="absolute inset-0" style="background: linear-gradient(135deg, rgba(5,20,31,0.80) 0%, rgba(12,56,72,0.65) 50%, rgba(5,20,31,0.75) 100%);"></div>
         </div>
 
         <!-- Content (Left Side) -->
         <div class="relative z-10 container mx-auto px-6 lg:px-12 flex items-center h-full">
             <div class="max-w-2xl">
-                
+
                 <!-- Breadcrumb -->
                 <div class="inline-flex items-center space-x-2 text-sm font-medium mb-8 px-4 py-1.5 rounded-full"
-                     style="background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1); backdrop-filter:blur(10px);">
+                     style="background:rgba(255,255,255,0.08); border:1px solid rgba(255,255,255,0.15); backdrop-filter:blur(10px);">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-[#5ee7df]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M3 9.75L12 3l9 6.75v11.25A1.5 1.5 0 0119.5 21H4.5A1.5 1.5 0 013 21V9.75z" />
                     </svg>
                     <span style="color:rgba(255,255,255,0.7);">Home</span>
                     <span style="color:rgba(255,255,255,0.3);">›</span>
-                    <span class="text-white">Personal Training</span>
+                    <span class="text-white font-semibold">Personal Training</span>
                 </div>
 
                 <!-- Page Title -->
-                <h1 class="text-5xl lg:text-7xl font-extrabold text-white tracking-tight mb-4" style="line-height:1.1;">
+                <h1 class="text-5xl lg:text-6xl font-extrabold text-white tracking-tight mb-4" style="line-height:1.1;">
                     Personal Training<br>
                     <span style="background:linear-gradient(90deg,#5ee7df,#38bdf8);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">JustMy.Health</span>
                 </h1>
 
                 <!-- Coming Soon Badge -->
                 <div class="mt-8 inline-flex items-center gap-3 px-6 py-2.5 rounded-full font-bold uppercase tracking-widest text-sm"
-                     style="background:rgba(250,204,21,0.1); border:1px solid rgba(250,204,21,0.3); color:#facc15; box-shadow:0 0 20px rgba(250,204,21,0.15);">
-                    <span style="width:8px;height:8px;border-radius:50%;background:#facc15;box-shadow:0 0 10px #facc15;animation:ptPulse 2s infinite;"></span>
+                     style="background:rgba(250,204,21,0.1); border:1px solid rgba(250,204,21,0.35); color:#facc15; box-shadow:0 0 20px rgba(250,204,21,0.15); backdrop-filter:blur(8px);">
+                    <span style="width:8px;height:8px;border-radius:50%;background:#facc15;box-shadow:0 0 10px #facc15;animation:ptPulse 2s infinite;display:inline-block;"></span>
                     Coming Soon
                 </div>
 
