@@ -54,6 +54,187 @@
     </div>
 </section>
 
+    {{-- ═══════════════════════════════════════════════════════════
+         TRUST BAR — social proof directly below hero
+         ═══════════════════════════════════════════════════════════ --}}
+    <section role="region" aria-label="Trust credentials"
+             class="w-full"
+             style="background:#ffffff; border-top:1px solid rgba(15,137,166,0.1); border-bottom:1px solid rgba(15,137,166,0.1); box-shadow:0 2px 16px -6px rgba(15,137,166,0.08);">
+        <div class="mx-auto max-w-6xl px-4 py-5 sm:px-6 sm:py-6 lg:px-12">
+
+            {{-- Single-row grid, scrollable on tiny screens --}}
+            <div class="overflow-x-auto">
+                <ul class="grid grid-cols-4 gap-3 sm:gap-5 min-w-[560px]" role="list">
+
+                    {{-- Card 1 — Licensed & Accredited --}}
+                    <li role="listitem"
+                        class="flex flex-col items-center text-center gap-2.5 rounded-2xl py-5 px-3 cursor-default select-none"
+                        style="background:#f7fdfc; border:1.5px solid rgba(15,137,166,0.16); box-shadow:0 2px 10px -3px rgba(15,137,166,0.1); transition:transform 0.18s, box-shadow 0.18s;"
+                        onmouseover="this.style.transform='translateY(-3px)';this.style.boxShadow='0 10px 28px -6px rgba(15,137,166,0.22)';"
+                        onmouseout="this.style.transform='';this.style.boxShadow='0 2px 10px -3px rgba(15,137,166,0.1)';">
+                        <span class="flex items-center justify-center rounded-full"
+                              style="width:44px;height:44px;background:linear-gradient(135deg,#0b7087,#14b8a6);box-shadow:0 4px 14px -4px rgba(11,112,135,0.45);"
+                              aria-hidden="true">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.1">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>
+                            </svg>
+                        </span>
+                        <div>
+                            <p class="text-[12.5px] font-bold leading-tight" style="color:#0c2f3a;">Licensed &amp; Accredited</p>
+                            <p class="text-[11px] leading-snug mt-0.5" style="color:#5a7a87;">Verified practitioners only</p>
+                        </div>
+                    </li>
+
+                    {{-- Card 2 — BACP --}}
+                    <li role="listitem"
+                        class="flex flex-col items-center text-center gap-2.5 rounded-2xl py-5 px-3 cursor-default select-none"
+                        style="background:#f7fdfc; border:1.5px solid rgba(15,137,166,0.16); box-shadow:0 2px 10px -3px rgba(15,137,166,0.1); transition:transform 0.18s, box-shadow 0.18s;"
+                        onmouseover="this.style.transform='translateY(-3px)';this.style.boxShadow='0 10px 28px -6px rgba(15,137,166,0.22)';"
+                        onmouseout="this.style.transform='';this.style.boxShadow='0 2px 10px -3px rgba(15,137,166,0.1)';">
+                        <span class="flex items-center justify-center rounded-full"
+                              style="width:44px;height:44px;background:linear-gradient(135deg,#0b7087,#14b8a6);box-shadow:0 4px 14px -4px rgba(11,112,135,0.45);"
+                              aria-hidden="true">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.1">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
+                            </svg>
+                        </span>
+                        <div>
+                            <p class="text-[12.5px] font-bold leading-tight" style="color:#0c2f3a;">BACP Ethical Framework</p>
+                            <p class="text-[11px] leading-snug mt-0.5" style="color:#5a7a87;">Evidence-based standards</p>
+                        </div>
+                    </li>
+
+                    {{-- Card 3 — Confidential --}}
+                    <li role="listitem"
+                        class="flex flex-col items-center text-center gap-2.5 rounded-2xl py-5 px-3 cursor-default select-none"
+                        style="background:#f7fdfc; border:1.5px solid rgba(15,137,166,0.16); box-shadow:0 2px 10px -3px rgba(15,137,166,0.1); transition:transform 0.18s, box-shadow 0.18s;"
+                        onmouseover="this.style.transform='translateY(-3px)';this.style.boxShadow='0 10px 28px -6px rgba(15,137,166,0.22)';"
+                        onmouseout="this.style.transform='';this.style.boxShadow='0 2px 10px -3px rgba(15,137,166,0.1)';">
+                        <span class="flex items-center justify-center rounded-full"
+                              style="width:44px;height:44px;background:linear-gradient(135deg,#0b7087,#14b8a6);box-shadow:0 4px 14px -4px rgba(11,112,135,0.45);"
+                              aria-hidden="true">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.1">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
+                            </svg>
+                        </span>
+                        <div>
+                            <p class="text-[12.5px] font-bold leading-tight" style="color:#0c2f3a;">Confidential &amp; Secure</p>
+                            <p class="text-[11px] leading-snug mt-0.5" style="color:#5a7a87;">Your privacy protected</p>
+                        </div>
+                    </li>
+
+                    {{-- Card 4 — Global --}}
+                    <li role="listitem"
+                        class="flex flex-col items-center text-center gap-2.5 rounded-2xl py-5 px-3 cursor-default select-none"
+                        style="background:#f7fdfc; border:1.5px solid rgba(15,137,166,0.16); box-shadow:0 2px 10px -3px rgba(15,137,166,0.1); transition:transform 0.18s, box-shadow 0.18s;"
+                        onmouseover="this.style.transform='translateY(-3px)';this.style.boxShadow='0 10px 28px -6px rgba(15,137,166,0.22)';"
+                        onmouseout="this.style.transform='';this.style.boxShadow='0 2px 10px -3px rgba(15,137,166,0.1)';">
+                        <span class="flex items-center justify-center rounded-full"
+                              style="width:44px;height:44px;background:linear-gradient(135deg,#0b7087,#14b8a6);box-shadow:0 4px 14px -4px rgba(11,112,135,0.45);"
+                              aria-hidden="true">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.1">
+                                <circle cx="12" cy="12" r="10"/>
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M2 12h20M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z"/>
+                            </svg>
+                        </span>
+                        <div>
+                            <p class="text-[12.5px] font-bold leading-tight" style="color:#0c2f3a;">Global Coverage</p>
+                            <p class="text-[11px] leading-snug mt-0.5" style="color:#5a7a87;">Local support, worldwide</p>
+                        </div>
+                    </li>
+
+                </ul>
+            </div>
+        </div>
+    </section>
+    {{-- ═══════════════════════════════════════════════════════════
+         END TRUST BAR
+         ═══════════════════════════════════════════════════════════ --}}
+
+                {{-- Card 1 — Licensed & accredited --}}
+                <li role="listitem"
+                    class="flex items-center gap-3.5 bg-white rounded-2xl px-5 py-4 cursor-default"
+                    style="border:1.5px solid rgba(15,137,166,0.18); box-shadow:0 2px 12px -4px rgba(15,137,166,0.14); transition:box-shadow 0.2s, transform 0.2s;"
+                    onmouseover="this.style.transform='translateY(-2px)';this.style.boxShadow='0 8px 24px -6px rgba(15,137,166,0.24)';"
+                    onmouseout="this.style.transform='';this.style.boxShadow='0 2px 12px -4px rgba(15,137,166,0.14)';">
+                    <span class="flex-shrink-0 flex items-center justify-center rounded-xl"
+                          style="width:40px;height:40px;background:linear-gradient(135deg,#0b7087 0%,#14b8a6 100%);"
+                          aria-hidden="true">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>
+                        </svg>
+                    </span>
+                    <div>
+                        <p class="text-[13px] font-semibold leading-tight" style="color:#0d2f39;">Licensed &amp; Accredited</p>
+                        <p class="text-[11.5px] leading-tight mt-0.5" style="color:#5a7a87;">Verified practitioners only</p>
+                    </div>
+                </li>
+
+                {{-- Card 2 — BACP --}}
+                <li role="listitem"
+                    class="flex items-center gap-3.5 bg-white rounded-2xl px-5 py-4 cursor-default"
+                    style="border:1.5px solid rgba(15,137,166,0.18); box-shadow:0 2px 12px -4px rgba(15,137,166,0.14); transition:box-shadow 0.2s, transform 0.2s;"
+                    onmouseover="this.style.transform='translateY(-2px)';this.style.boxShadow='0 8px 24px -6px rgba(15,137,166,0.24)';"
+                    onmouseout="this.style.transform='';this.style.boxShadow='0 2px 12px -4px rgba(15,137,166,0.14)';">
+                    <span class="flex-shrink-0 flex items-center justify-center rounded-xl"
+                          style="width:40px;height:40px;background:linear-gradient(135deg,#0b7087 0%,#14b8a6 100%);"
+                          aria-hidden="true">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
+                        </svg>
+                    </span>
+                    <div>
+                        <p class="text-[13px] font-semibold leading-tight" style="color:#0d2f39;">BACP Ethical Framework</p>
+                        <p class="text-[11.5px] leading-tight mt-0.5" style="color:#5a7a87;">Evidence-based practice</p>
+                    </div>
+                </li>
+
+                {{-- Card 3 — Confidential --}}
+                <li role="listitem"
+                    class="flex items-center gap-3.5 bg-white rounded-2xl px-5 py-4 cursor-default"
+                    style="border:1.5px solid rgba(15,137,166,0.18); box-shadow:0 2px 12px -4px rgba(15,137,166,0.14); transition:box-shadow 0.2s, transform 0.2s;"
+                    onmouseover="this.style.transform='translateY(-2px)';this.style.boxShadow='0 8px 24px -6px rgba(15,137,166,0.24)';"
+                    onmouseout="this.style.transform='';this.style.boxShadow='0 2px 12px -4px rgba(15,137,166,0.14)';">
+                    <span class="flex-shrink-0 flex items-center justify-center rounded-xl"
+                          style="width:40px;height:40px;background:linear-gradient(135deg,#0b7087 0%,#14b8a6 100%);"
+                          aria-hidden="true">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
+                        </svg>
+                    </span>
+                    <div>
+                        <p class="text-[13px] font-semibold leading-tight" style="color:#0d2f39;">Confidential &amp; Secure</p>
+                        <p class="text-[11.5px] leading-tight mt-0.5" style="color:#5a7a87;">Your privacy protected</p>
+                    </div>
+                </li>
+
+                {{-- Card 4 — Global --}}
+                <li role="listitem"
+                    class="flex items-center gap-3.5 bg-white rounded-2xl px-5 py-4 cursor-default"
+                    style="border:1.5px solid rgba(15,137,166,0.18); box-shadow:0 2px 12px -4px rgba(15,137,166,0.14); transition:box-shadow 0.2s, transform 0.2s;"
+                    onmouseover="this.style.transform='translateY(-2px)';this.style.boxShadow='0 8px 24px -6px rgba(15,137,166,0.24)';"
+                    onmouseout="this.style.transform='';this.style.boxShadow='0 2px 12px -4px rgba(15,137,166,0.14)';">
+                    <span class="flex-shrink-0 flex items-center justify-center rounded-xl"
+                          style="width:40px;height:40px;background:linear-gradient(135deg,#0b7087 0%,#14b8a6 100%);"
+                          aria-hidden="true">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.2">
+                            <circle cx="12" cy="12" r="10"/>
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M2 12h20M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z"/>
+                        </svg>
+                    </span>
+                    <div>
+                        <p class="text-[13px] font-semibold leading-tight" style="color:#0d2f39;">Global Coverage</p>
+                        <p class="text-[11.5px] leading-tight mt-0.5" style="color:#5a7a87;">Local support, worldwide</p>
+                    </div>
+                </li>
+
+            </ul>
+        </div>
+    </section>
+    {{-- ═══════════════════════════════════════════════════════════
+         END TRUST BAR
+         ═══════════════════════════════════════════════════════════ --}}
+
     <section class="bg-gradient-to-b from-[#f4fbfb] via-white to-[#eef8f7] py-16 md:py-24">
         <div class="container mx-auto px-6 lg:px-12">
             <div class="mx-auto grid max-w-6xl gap-10 lg:grid-cols-[0.85fr_1.15fr] lg:items-center">
