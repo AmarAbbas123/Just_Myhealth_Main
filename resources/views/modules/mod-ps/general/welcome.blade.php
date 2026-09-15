@@ -85,7 +85,7 @@
     </style>
     <section class=" py-8 md:py-12" role="region" aria-label="Trust credentials"
              style="width:100%; background:#ffffff; border-top:1px solid rgba(15,137,166,0.1); border-bottom:1px solid rgba(15,137,166,0.1); box-shadow:0 2px 16px -6px rgba(15,137,166,0.08);">
-        <div style="max-width:1200px; margin:0 auto;">
+        <div style="max-width:1150px; margin:0 auto;">
 
             {{-- 4-column grid — responsive via .trust-bar-grid CSS class above --}}
             <ul role="list" class="trust-bar-grid">
@@ -200,43 +200,145 @@
         </div>
     </section>
     {{-- End of Services --}}
+    
+    
+ {{-- ============================================================ --}}
+    {{-- Service-type assessment CTA                      --}}
+    {{-- ============================================================ --}}
+    <section id="pt-pre-register"
+             class="relative overflow-hidden py-20 lg:py-28"
+             style="background: linear-gradient(135deg, #f0fdfa 0%, #ffffff 45%, #ecfeff 100%);">
 
+        {{-- Background decorative blobs --}}
+        <div class="absolute inset-0 pointer-events-none overflow-hidden" aria-hidden="true">
+            <div style="position:absolute;width:500px;height:500px;border-radius:50%;
+                        background:radial-gradient(circle,rgba(20,184,166,0.12) 0%,transparent 70%);
+                        top:-150px;left:-100px;"></div>
+            <div style="position:absolute;width:400px;height:400px;border-radius:50%;
+                        background:radial-gradient(circle,rgba(15,137,166,0.08) 0%,transparent 70%);
+                        bottom:-120px;right:-80px;"></div>
+            {{-- Grid dot pattern --}}
+            <svg style="position:absolute;inset:0;width:100%;height:100%;opacity:0.035;" xmlns="http://www.w3.org/2000/svg">
+                <defs>
+                    <pattern id="ptDots" x="0" y="0" width="28" height="28" patternUnits="userSpaceOnUse">
+                        <circle cx="2" cy="2" r="1.5" fill="#0f89a6"/>
+                    </pattern>
+                </defs>
+                <rect width="100%" height="100%" fill="url(#ptDots)"/>
+            </svg>
+        </div>
 
-    {{-- Service-type assessment CTA --}}
-    <section class="py-14 md:py-20 ">
-        <div class="container mx-auto px-6 lg:px-12 text-center">
+        <div class="relative z-10 container mx-auto px-6 lg:px-12">
 
-            <p class="mb-4 inline-flex items-center gap-2 rounded-full border border-[#9ed9d7] bg-white px-4 py-1.5 text-xs font-bold uppercase tracking-[0.2em] text-[#0f89a6] shadow-sm">
-                Find Your Support
-            </p>
+            
 
-            <h3 class="text-2xl font-bold text-[#102f3a] sm:text-3xl mb-3">
-                Unsure of what help you need
-            </h3>
-            <p class="mx-auto mb-8 max-w-xl text-base leading-7 text-[#4b626b]">
-                Answer a few questions and we will guide you to the required service
-            </p>
+            {{-- Two-column layout --}}
+            <div class="grid lg:grid-cols-2 gap-12 lg:gap-20 items-center max-w-6xl mx-auto">
 
-            <a class="inline-flex items-center justify-center gap-2 rounded-full px-8 py-4 text-base font-semibold text-white transition-all duration-200 hover:-translate-y-0.5 sm:min-w-[280px]"
-               style="background:linear-gradient(90deg,#0f89a6,#14b8a6);box-shadow:0 8px 28px -6px rgba(15,137,166,0.4);"
-               onmouseover="this.style.boxShadow='0 14px 36px -6px rgba(15,137,166,0.55)';"
-               onmouseout="this.style.boxShadow='0 8px 28px -6px rgba(15,137,166,0.4)';" >
-                Start assessment
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
-                </svg>
-            </a>
+                {{-- LEFT — Headline + social proof --}}
+                <div>
+                    <h2 style="font-size:clamp(2rem,4.5vw,3.2rem);font-weight:800;color:#0c2830;letter-spacing:-0.025em;line-height:1.12;" class="mb-4">
+                        Not sure which<br>
+                        <span style="background:linear-gradient(90deg,#0f89a6,#14b8a6);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">service is right</span>
+                        for you?
+                    </h2>
 
+                   
+
+                    <p style="color:#4b6a74;font-size:1.05rem;line-height:1.75;max-width:420px;" class="mb-8">
+                      Answer a few simple questions and we'll match you with the right practitioner and service — personalised to your needs, in under 2 minutes.
+
+                    </p>
+                {{-- Social proof --}}
+                <div style="display:flex; align-items:center; gap:12px;">
+                    <div style="display:flex;">
+                        @foreach(['JD','AM','SK','PR'] as $initials)
+                        <span style="width:36px; height:36px; border-radius:50%; background:linear-gradient(135deg,#0b7087,#14b8a6); border:2.5px solid #ffffff; display:inline-flex; align-items:center; justify-content:center; font-size:10px; font-weight:700; color:#fff; margin-left:{{ $loop->first ? '0' : '-10px' }}; position:relative; z-index:{{ 10 - $loop->index }};">{{ $initials }}</span>
+                        @endforeach
+                    </div>
+                    <div>
+                        <p style="font-size:13px; font-weight:700; color:#0c2f3a; margin:0;">Join 200+ members</p>
+                        <p style="font-size:11.5px; color:#5a7a87; margin:2px 0 0;">Already matched with their support</p>
+                    </div>
+                </div>
+                    
+                </div>
+
+                {{-- Vertical divider (desktop only) --}}
+                {{-- RIGHT — Floating benefits card --}}
+                <div class="relative">
+
+                    {{-- Glow shadow behind card --}}
+                    <div style="position:absolute;inset:-1px;border-radius:1.5rem;background:linear-gradient(135deg,rgba(15,137,166,0.2),rgba(20,184,166,0.15),transparent);filter:blur(20px);z-index:0;"></div>
+
+                    <div style="position:relative;z-index:1;background:#ffffff;border:1px solid rgba(15,137,166,0.15);
+                                border-radius:1.5rem;padding:2.5rem;
+                                box-shadow:0 25px 60px -15px rgba(15,137,166,0.2),0 10px 30px -10px rgba(0,0,0,0.06);">
+
+                        <p style="font-size:0.7rem;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:#0f89a6;margin-bottom:0.75rem;">
+                            How it works
+                        </p>
+                        <h3 style="font-size:1.55rem;font-weight:800;color:#0c2830;margin-bottom:1.75rem;line-height:1.2;">
+                            Start your free assessment
+                        </h3>
+
+                        {{-- Benefits list --}}
+                        <ul style="list-style:none;padding:0;margin:0 0 2rem;display:flex;flex-direction:column;gap:1rem;">
+                            @foreach([
+                                ['Tell us what you are experiencing',         'Answer a short set of simple questions'],
+                                ['We recommend the right service',  'Therapy, counselling, coaching or more'],
+                                ['Get matched with a practitioner',     'Book your first session at your convenience
+
+'],
+                            ] as [$title, $desc])
+                            <li style="display:flex;align-items:flex-start;gap:0.9rem;">
+                                <span style="flex-shrink:0;width:24px;height:24px;border-radius:50%;
+                                             background:linear-gradient(135deg,#0f89a6,#14b8a6);
+                                             display:flex;align-items:center;justify-content:center;margin-top:2px;">
+                                    <svg style="width:13px;height:13px;fill:none;stroke:#fff;stroke-width:2.5;" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+                                </span>
+                                <div>
+                                    <span style="font-size:0.9rem;font-weight:700;color:#0c2830;display:block;">{{ $title }}</span>
+                                    <span style="font-size:0.82rem;color:#6b8c96;line-height:1.5;">{{ $desc }}</span>
+                                </div>
+                            </li>
+                            @endforeach
+                        </ul>
+
+                        {{-- CTA button --}}
+                        <a href="{{ route('therapy.service-type.start') }}"
+                           style="display:flex;align-items:center;justify-content:center;gap:0.5rem;
+                                  background:linear-gradient(90deg,#0f89a6,#14b8a6);
+                                  color:#fff;font-size:1rem;font-weight:700;
+                                  padding:0.9rem 2rem;border-radius:999px;
+                                  box-shadow:0 8px 25px -5px rgba(15,137,166,0.5);
+                                  text-decoration:none;transition:transform 0.2s,box-shadow 0.2s;"
+                           onmouseover="this.style.transform='translateY(-2px)';this.style.boxShadow='0 14px 32px -5px rgba(15,137,166,0.6)';"
+                           onmouseout="this.style.transform='translateY(0)';this.style.boxShadow='0 8px 25px -5px rgba(15,137,166,0.5)';">
+                            Start assessment
+                            <svg style="width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:2.5;" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6"/></svg>
+                        </a>
+
+                        {{-- Subtle footnote --}}
+                        <p style="text-align:center;font-size:0.75rem;color:#9bb5bc;margin-top:1rem;">
+                            Free to use · No account required to browse
+                        </p>
+                    </div>
+                </div>
+
+            </div>
         </div>
     </section>
 
 
+   
+
 
     {{-- Professional Support Service Tiles --}}
     <section class="py-16 md:py-24 bg-gradient-to-b from-[#f4fbfb] via-white to-[#eef8f7]">
-        <div class="container mx-auto px-6 lg:px-16 xl:px-24" id="services">
+        <div class="container mx-auto px-6 lg:px-16 xl:px-20" id="services">
 
-            <div class="mx-auto max-w-3xl text-center mb-12">
+            <div class="mx-auto max-w-4xl text-center mb-12">
                 <p class="mb-3 text-xs font-semibold uppercase tracking-[0.22em] text-[#0f89a6]">
                     Professional Support
                 </p>
@@ -253,10 +355,11 @@
                 {{-- Online Counseling Card --}}
                 <a href="{{ route('online-counselling') }}"
                    class="group bg-white rounded-[18px] overflow-hidden border border-[#0f89a6]/10 transition duration-300 hover:-translate-y-1 hover:shadow-[0_28px_52px_-12px_rgba(16,106,124,0.2)] flex flex-col h-full">
-                    <div class="w-full aspect-[2/1] overflow-hidden bg-[#eef8f7]">
-                        <img src="{{ asset('images/welcome-page/counseling-info-tile-1-1080x540.png') }}"
+                    <div class="w-full overflow-hidden bg-[#eef8f7] flex items-center justify-center" style="height:220px;">
+                        <img src="{{ asset('images/welcome-page/counselling-info-tile-2-1024x1024.png') }}"
                              alt="Online Counselling"
-                             class="w-full h-full object-cover object-center transition duration-500 group-hover:scale-105">
+                             style="max-height:200px; width:auto; max-width:100%; object-fit:contain;"
+                             class="transition duration-500 group-hover:scale-105">
                     </div>
                     <div class="p-5 pb-6 flex flex-col flex-1">
                       
@@ -282,10 +385,11 @@
                 {{-- Online Therapy Card --}}
                 <a href="{{ route('online-therapy') }}"
                    class="group bg-white rounded-[18px] overflow-hidden border border-[#0f89a6]/10 transition duration-300 hover:-translate-y-1 hover:shadow-[0_28px_52px_-12px_rgba(16,106,124,0.2)] flex flex-col h-full">
-                    <div class="w-full aspect-[2/1] overflow-hidden bg-[#eef8f7]">
-                        <img src="{{ asset('images/welcome-page/therapy-info-tile-1-1080x540.png') }}"
+                    <div class="w-full overflow-hidden bg-[#eef8f7] flex items-center justify-center" style="height:220px;">
+                        <img src="{{ asset('images/welcome-page/therapy-info-tile-2-1024x1024.png') }}"
                              alt="Online Therapy"
-                             class="w-full h-full object-cover object-center transition duration-500 group-hover:scale-105">
+                             style="max-height:200px; width:auto; max-width:100%; object-fit:contain;"
+                             class="transition duration-500 group-hover:scale-105">
                     </div>
                     <div class="p-5 pb-6 flex flex-col flex-1">
                        
@@ -311,10 +415,11 @@
                 {{-- Online Coaching Card --}}
                 <a href="{{ route('online-coaching') }}"
                    class="group bg-white rounded-[18px] overflow-hidden border border-[#0f89a6]/10 transition duration-300 hover:-translate-y-1 hover:shadow-[0_28px_52px_-12px_rgba(16,106,124,0.2)] flex flex-col h-full">
-                    <div class="w-full aspect-[2/1] overflow-hidden bg-[#eef8f7]">
-                        <img src="{{ asset('images/welcome-page/coaching-info-tile-1-1080x540.png') }}"
+                    <div class="w-full overflow-hidden bg-[#eef8f7] flex items-center justify-center" style="height:220px;">
+                        <img src="{{ asset('images/welcome-page/coaching-info-tile-2-1024x1024.png') }}"
                              alt="Online Coaching"
-                             class="w-full h-full object-cover object-center transition duration-500 group-hover:scale-105">
+                             style="max-height:200px; width:auto; max-width:100%; object-fit:contain;"
+                             class="transition duration-500 group-hover:scale-105">
                     </div>
                     <div class="p-5 pb-6 flex flex-col flex-1">
                        
@@ -342,34 +447,133 @@
     </section>
     {{-- End of Professional Support Service Tiles --}}
 
-     {{-- Service-type assessment CTA --}}
-    <section class="py-14 md:py-20 ">
-        <div class="container mx-auto px-6 lg:px-12 text-center">
+    {{-- ============================================================ --}}
+    {{-- Service-type assessment CTA                      --}}
+    {{-- ============================================================ --}}
+    <section id="pt-pre-register"
+             class="relative overflow-hidden py-20 lg:py-28"
+             style="background: linear-gradient(135deg, #f0fdfa 0%, #ffffff 45%, #ecfeff 100%);">
 
-            <p class="mb-4 inline-flex items-center gap-2 rounded-full border border-[#9ed9d7] bg-white px-4 py-1.5 text-xs font-bold uppercase tracking-[0.2em] text-[#0f89a6] shadow-sm">
-                Find Your Support
-            </p>
+        {{-- Background decorative blobs --}}
+        <div class="absolute inset-0 pointer-events-none overflow-hidden" aria-hidden="true">
+            <div style="position:absolute;width:500px;height:500px;border-radius:50%;
+                        background:radial-gradient(circle,rgba(20,184,166,0.12) 0%,transparent 70%);
+                        top:-150px;left:-100px;"></div>
+            <div style="position:absolute;width:400px;height:400px;border-radius:50%;
+                        background:radial-gradient(circle,rgba(15,137,166,0.08) 0%,transparent 70%);
+                        bottom:-120px;right:-80px;"></div>
+            {{-- Grid dot pattern --}}
+            <svg style="position:absolute;inset:0;width:100%;height:100%;opacity:0.035;" xmlns="http://www.w3.org/2000/svg">
+                <defs>
+                    <pattern id="ptDots" x="0" y="0" width="28" height="28" patternUnits="userSpaceOnUse">
+                        <circle cx="2" cy="2" r="1.5" fill="#0f89a6"/>
+                    </pattern>
+                </defs>
+                <rect width="100%" height="100%" fill="url(#ptDots)"/>
+            </svg>
+        </div>
 
-            <h3 class="text-2xl font-bold text-[#102f3a] sm:text-3xl mb-3">
-                Unsure of what help you need
-            </h3>
-            <p class="mx-auto mb-8 max-w-xl text-base leading-7 text-[#4b626b]">
-                Answer a few questions and we will guide you to the required service
-            </p>
+        <div class="relative z-10 container mx-auto px-6 lg:px-12">
 
-            <a class="inline-flex items-center justify-center gap-2 rounded-full px-8 py-4 text-base font-semibold text-white transition-all duration-200 hover:-translate-y-0.5 sm:min-w-[280px]"
-               style="background:linear-gradient(90deg,#0f89a6,#14b8a6);box-shadow:0 8px 28px -6px rgba(15,137,166,0.4);"
-               onmouseover="this.style.boxShadow='0 14px 36px -6px rgba(15,137,166,0.55)';"
-               onmouseout="this.style.boxShadow='0 8px 28px -6px rgba(15,137,166,0.4)';">
-                Start assessment
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
-                </svg>
-            </a>
+            
 
+            {{-- Two-column layout --}}
+            <div class="grid lg:grid-cols-2 gap-12 lg:gap-20 items-center max-w-6xl mx-auto">
+
+                {{-- LEFT — Headline + social proof --}}
+                <div>
+                    <h2 style="font-size:clamp(2rem,4.5vw,3.2rem);font-weight:800;color:#0c2830;letter-spacing:-0.025em;line-height:1.12;" class="mb-4">
+                        Not sure which<br>
+                        <span style="background:linear-gradient(90deg,#0f89a6,#14b8a6);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">service is right</span>
+                        for you?
+                    </h2>
+
+                   
+
+                    <p style="color:#4b6a74;font-size:1.05rem;line-height:1.75;max-width:420px;" class="mb-8">
+                      Answer a few simple questions and we'll match you with the right practitioner and service — personalised to your needs, in under 2 minutes.
+
+                    </p>
+                {{-- Social proof --}}
+                <div style="display:flex; align-items:center; gap:12px;">
+                    <div style="display:flex;">
+                        @foreach(['JD','AM','SK','PR'] as $initials)
+                        <span style="width:36px; height:36px; border-radius:50%; background:linear-gradient(135deg,#0b7087,#14b8a6); border:2.5px solid #ffffff; display:inline-flex; align-items:center; justify-content:center; font-size:10px; font-weight:700; color:#fff; margin-left:{{ $loop->first ? '0' : '-10px' }}; position:relative; z-index:{{ 10 - $loop->index }};">{{ $initials }}</span>
+                        @endforeach
+                    </div>
+                    <div>
+                        <p style="font-size:13px; font-weight:700; color:#0c2f3a; margin:0;">Join 200+ members</p>
+                        <p style="font-size:11.5px; color:#5a7a87; margin:2px 0 0;">Already matched with their support</p>
+                    </div>
+                </div>
+                    
+                </div>
+
+                {{-- Vertical divider (desktop only) --}}
+                {{-- RIGHT — Floating benefits card --}}
+                <div class="relative">
+
+                    {{-- Glow shadow behind card --}}
+                    <div style="position:absolute;inset:-1px;border-radius:1.5rem;background:linear-gradient(135deg,rgba(15,137,166,0.2),rgba(20,184,166,0.15),transparent);filter:blur(20px);z-index:0;"></div>
+
+                    <div style="position:relative;z-index:1;background:#ffffff;border:1px solid rgba(15,137,166,0.15);
+                                border-radius:1.5rem;padding:2.5rem;
+                                box-shadow:0 25px 60px -15px rgba(15,137,166,0.2),0 10px 30px -10px rgba(0,0,0,0.06);">
+
+                        <p style="font-size:0.7rem;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:#0f89a6;margin-bottom:0.75rem;">
+                            How it works
+                        </p>
+                        <h3 style="font-size:1.55rem;font-weight:800;color:#0c2830;margin-bottom:1.75rem;line-height:1.2;">
+                            Start your free assessment
+                        </h3>
+
+                        {{-- Benefits list --}}
+                        <ul style="list-style:none;padding:0;margin:0 0 2rem;display:flex;flex-direction:column;gap:1rem;">
+                            @foreach([
+                                ['Tell us what you are experiencing',         'Answer a short set of simple questions'],
+                                ['We recommend the right service',  'Therapy, counselling, coaching or more'],
+                                ['Get matched with a practitioner',     'Book your first session at your convenience
+
+'],
+                            ] as [$title, $desc])
+                            <li style="display:flex;align-items:flex-start;gap:0.9rem;">
+                                <span style="flex-shrink:0;width:24px;height:24px;border-radius:50%;
+                                             background:linear-gradient(135deg,#0f89a6,#14b8a6);
+                                             display:flex;align-items:center;justify-content:center;margin-top:2px;">
+                                    <svg style="width:13px;height:13px;fill:none;stroke:#fff;stroke-width:2.5;" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+                                </span>
+                                <div>
+                                    <span style="font-size:0.9rem;font-weight:700;color:#0c2830;display:block;">{{ $title }}</span>
+                                    <span style="font-size:0.82rem;color:#6b8c96;line-height:1.5;">{{ $desc }}</span>
+                                </div>
+                            </li>
+                            @endforeach
+                        </ul>
+
+                        {{-- CTA button --}}
+                        <a href="{{ route('therapy.service-type.start') }}"
+                           style="display:flex;align-items:center;justify-content:center;gap:0.5rem;
+                                  background:linear-gradient(90deg,#0f89a6,#14b8a6);
+                                  color:#fff;font-size:1rem;font-weight:700;
+                                  padding:0.9rem 2rem;border-radius:999px;
+                                  box-shadow:0 8px 25px -5px rgba(15,137,166,0.5);
+                                  text-decoration:none;transition:transform 0.2s,box-shadow 0.2s;"
+                           onmouseover="this.style.transform='translateY(-2px)';this.style.boxShadow='0 14px 32px -5px rgba(15,137,166,0.6)';"
+                           onmouseout="this.style.transform='translateY(0)';this.style.boxShadow='0 8px 25px -5px rgba(15,137,166,0.5)';">
+                            Start assessment
+                            <svg style="width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:2.5;" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6"/></svg>
+                        </a>
+
+                        {{-- Subtle footnote --}}
+                        <p style="text-align:center;font-size:0.75rem;color:#9bb5bc;margin-top:1rem;">
+                            Free to use · No account required to browse
+                        </p>
+                    </div>
+                </div>
+
+            </div>
         </div>
     </section>
-
 
    {{-- Existing Service Tiles --}}
 <section class="py-16 mb-10 md:py-24 bg-gradient-to-b from-[#f4fbfb] via-white to-[#eef8f7]">
