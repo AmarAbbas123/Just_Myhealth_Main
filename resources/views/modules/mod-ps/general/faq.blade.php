@@ -60,147 +60,541 @@
         ],
     ];
     @endphp
-    
-    <!-- Hero Section -->
-    <section class="relative h-80 flex items-start lg:items-center pt-24 lg:pt-32">
+
+    {{-- ═══════════════ INLINE STYLES ═══════════════ --}}
+    <style>
+        /* ── Google Font ── */
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+
+        .faq-page * { font-family: 'Inter', sans-serif; }
+
+        /* ── Hero ── */
+        .faq-hero {
+            position: relative;
+            min-height: 320px;
+            display: flex;
+            align-items: flex-start;
+            padding-top: 6rem;
+            padding-bottom: 3rem;
+            overflow: hidden;
+        }
+        @media (min-width: 1024px) {
+            .faq-hero { align-items: center; padding-top: 8rem; padding-bottom: 3.5rem; }
+        }
+
+        /* Breadcrumb pill */
+        .faq-breadcrumb {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: rgba(255,255,255,0.10);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255,255,255,0.15);
+            padding: 0.35rem 1rem;
+            border-radius: 999px;
+            font-size: 0.8rem;
+            color: rgba(255,255,255,0.85);
+            margin-bottom: 1.5rem;
+        }
+
+        /* ── Intro Feature Cards ── */
+        .faq-intro {
+            position: relative;
+            overflow: hidden;
+            padding: 5rem 0;
+            background: linear-gradient(135deg, #f0fdfa 0%, #ffffff 45%, #ecfeff 100%);
+        }
+
+        /* white card */
+        .faq-feature-card {
+            background: #ffffff;
+            border-radius: 1.25rem;
+            padding: 1.75rem 1.5rem;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.06), 0 8px 24px rgba(0,0,0,0.04);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        .faq-feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 28px rgba(28,155,160,0.14), 0 2px 8px rgba(0,0,0,0.06);
+            border-color: #99e6e8;
+        }
+        .faq-feature-icon {
+            width: 2.5rem;
+            height: 2.5rem;
+            border-radius: 0.625rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #0b7087, #14b8a6);
+            color: #ffffff;
+            box-shadow: 0 4px 14px -4px rgba(11,112,135,0.45);
+            margin-bottom: 0;
+        }
+        .faq-feature-label {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.3rem;
+            font-size: 0.65rem;
+            font-weight: 700;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: #1C9BA0;
+            background: rgba(28,155,160,0.08);
+            border: 1px solid rgba(28,155,160,0.18);
+            border-radius: 999px;
+            padding: 0.2rem 0.65rem;
+        }
+
+        /* ── FAQ Accordion ── */
+        .faq-section { background: #fff; padding: 5rem 0; }
+
+        .faq-accordion-item {
+            border-radius: 1rem;
+            border: 1.5px solid #e2e8f0;
+            background: #ffffff;
+            overflow: hidden;
+            transition: border-color 0.25s, box-shadow 0.25s, transform 0.25s;
+        }
+        .faq-accordion-item:hover {
+            border-color: #99e6e8;
+            box-shadow: 0 4px 20px rgba(28,155,160,0.08);
+            transform: translateY(-2px);
+        }
+        .faq-accordion-item.is-open {
+            border-color: #1C9BA0;
+            box-shadow: 0 6px 24px rgba(28,155,160,0.13);
+        }
+
+        .faq-accordion-trigger {
+            width: 100%;
+            background: none;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1rem;
+            padding: 1.25rem 1.5rem;
+            text-align: left;
+        }
+        .faq-accordion-trigger:focus-visible { outline: 2px solid #1C9BA0; outline-offset: -2px; }
+
+        .faq-trigger-left { display: flex; align-items: center; gap: 1rem; }
+
+        .faq-num-badge {
+            flex-shrink: 0;
+            width: 2rem;
+            height: 2rem;
+            border-radius: 0.5rem;
+            background: linear-gradient(135deg, #e0fafa 0%, #ccfbf1 100%);
+            color: #0f766e;
+            font-size: 0.7rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.25s, color 0.25s;
+        }
+        .faq-accordion-item.is-open .faq-num-badge {
+            background: linear-gradient(135deg, #1C9BA0 0%, #0f766e 100%);
+            color: #fff;
+        }
+
+        .faq-trigger-question {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: #1e293b;
+            line-height: 1.45;
+        }
+
+        .faq-chevron {
+            flex-shrink: 0;
+            width: 1.6rem;
+            height: 1.6rem;
+            border-radius: 50%;
+            background: #f1f5f9;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #64748b;
+            transition: background 0.25s, color 0.25s, transform 0.35s cubic-bezier(0.4,0,0.2,1);
+        }
+        .faq-accordion-item.is-open .faq-chevron {
+            background: #1C9BA0;
+            color: #fff;
+            transform: rotate(180deg);
+        }
+
+        .faq-accordion-body {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.4s cubic-bezier(0.4,0,0.2,1), padding 0.3s ease;
+        }
+        .faq-accordion-body.is-open {
+            max-height: 600px;
+        }
+
+        .faq-accordion-body-inner {
+            padding: 0 1.5rem 1.5rem 1.5rem;
+            border-top: 1px solid #f1f5f9;
+            padding-top: 1rem;
+        }
+        .faq-accordion-body-inner p {
+            font-size: 0.9rem;
+            color: #475569;
+            line-height: 1.75;
+        }
+
+        /* Divider between num and question, subtle left bar when open */
+        .faq-accordion-item.is-open .faq-trigger-question { color: #0f766e; }
+
+        /* ── CTA Section ── */
+        .faq-cta { background: #f8fafc; padding: 5rem 0; }
+
+        /* Glow ring for form card */
+        .faq-form-card {
+            border-radius: 1.5rem;
+            background: #fff;
+            padding: 2rem 2rem;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.08), 0 0 0 1px rgba(28,155,160,0.07);
+            border: 1px solid #e2e8f0;
+        }
+        .faq-info-card {
+            border-radius: 1.5rem;
+            background: linear-gradient(135deg, #0f766e 0%, #1C9BA0 60%, #22d3ee 120%);
+            padding: 2.5rem 2rem;
+            color: #fff;
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+            position: relative;
+            overflow: hidden;
+        }
+        .faq-info-card::before {
+            content: '';
+            position: absolute;
+            top: -40%;
+            right: -20%;
+            width: 280px;
+            height: 280px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.07);
+            pointer-events: none;
+        }
+        .faq-info-card::after {
+            content: '';
+            position: absolute;
+            bottom: -30%;
+            left: -10%;
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.06);
+            pointer-events: none;
+        }
+
+        /* Input styles */
+        .faq-input {
+            display: block;
+            width: 100%;
+            border-radius: 0.625rem;
+            border: 1.5px solid #e2e8f0;
+            background: #f8fafc;
+            padding: 0.6rem 1rem 0.6rem 2.75rem;
+            font-size: 0.875rem;
+            color: #1e293b;
+            transition: border-color 0.2s, box-shadow 0.2s, background 0.2s;
+            outline: none;
+        }
+        .faq-input:focus {
+            border-color: #1C9BA0;
+            background: #fff;
+            box-shadow: 0 0 0 3px rgba(28,155,160,0.12);
+        }
+        select.faq-input { appearance: none; }
+
+        .faq-input-wrap { position: relative; margin-top: 0.375rem; }
+        .faq-input-icon {
+            position: absolute;
+            inset-y: 0;
+            left: 0;
+            display: flex;
+            align-items: center;
+            padding-left: 0.875rem;
+            pointer-events: none;
+            color: #94a3b8;
+        }
+        .faq-label {
+            display: block;
+            font-size: 0.8125rem;
+            font-weight: 600;
+            color: #374151;
+            margin-bottom: 0.125rem;
+        }
+
+        /* Submit button */
+        .faq-submit-btn {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            border-radius: 0.625rem;
+            background: linear-gradient(135deg, #1C9BA0 0%, #0f766e 100%);
+            padding: 0.7rem 1.5rem;
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+            box-shadow: 0 4px 14px rgba(28,155,160,0.30);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .faq-submit-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 8px 20px rgba(28,155,160,0.38);
+        }
+        .faq-submit-btn:active { transform: translateY(0); }
+
+        /* Section label pill */
+        .faq-section-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            background: rgba(28,155,160,0.08);
+            color: #0f766e;
+            border: 1px solid rgba(28,155,160,0.18);
+            border-radius: 999px;
+            padding: 0.25rem 0.85rem;
+            font-size: 0.72rem;
+            font-weight: 700;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            margin-bottom: 1rem;
+        }
+        .faq-section-pill span.dot {
+            width: 6px; height: 6px;
+            border-radius: 50%;
+            background: #1C9BA0;
+        }
+
+        /* Fade-in on scroll */
+        .faq-fade { opacity: 0; transform: translateY(20px); transition: opacity 0.55s ease, transform 0.55s ease; }
+        .faq-fade.visible { opacity: 1; transform: none; }
+    </style>
+
+    <div class="faq-page">
+
+    {{-- ════════════════ HERO ════════════════ --}}
+    <section class="faq-hero">
+        {{-- Background image (full visible) --}}
         <div class="absolute inset-0 -z-10">
             <img src="{{ asset('images/welcome-page/hero-bg.jpg') }}" alt="Hero Background" class="w-full h-full object-cover object-center">
-            <div class="absolute inset-0 bg-gradient-to-r from-black/50 to-black/20"></div>
+            <div class="absolute inset-0 bg-gradient-to-r from-black/60 to-black/25"></div>
         </div>
-    
-        <div class="px-6 lg:px-20 max-w-4xl">
-            <div class="inline-flex items-center space-x-2 text-sm lg:text-base font-medium text-white/90 bg-white/10 backdrop-blur-md px-5 py-2 rounded-full shadow-lg mb-6">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 lg:h-5 lg:w-5 text-teal-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+
+        <div class="px-6 lg:px-20 max-w-4xl" style="position:relative;z-index:1;">
+            {{-- Breadcrumb pill --}}
+            <div class="faq-breadcrumb">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5 text-teal-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M3 9.75L12 3l9 6.75v11.25A1.5 1.5 0 0119.5 21H4.5A1.5 1.5 0 013 21V9.75z" />
                 </svg>
                 <span>Home</span>
-                <span class="text-white/60">›</span>
-                <span class="text-white font-semibold">FAQ</span>
+                <span style="color:rgba(255,255,255,0.4)">›</span>
+                <span style="color:#fff;font-weight:600;">FAQ</span>
             </div>
-    
-            <h1 class="text-4xl lg:text-5xl font-bold text-white tracking-tight mb-4">
-                FAQ <span class="text-teal-400">JustMy.Health</span>
+
+            <h1 class="text-4xl lg:text-6xl font-extrabold text-white tracking-tight leading-tight mb-4" style="letter-spacing:-0.02em;">
+                Frequently Asked<br>
+                <span style="background:linear-gradient(90deg,#2dd4bf,#34d399);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">Questions</span>
             </h1>
-            
+            <p class="text-white/60 text-base lg:text-lg max-w-xl" style="font-weight:400;">
+                Everything you need to know about JustMy.Health — answered clearly and concisely.
+            </p>
         </div>
     </section>
-    
-    <!-- Intro Section with Icons -->
-    <section class="py-16 bg-gray-50">
-        <div class="max-w-6xl mx-auto px-6 text-center">
-            <h2 class="text-3xl lg:text-4xl font-bold text-gray-900 mb-6">Your Questions Answered</h2>
-            <p class="text-gray-600 mb-12 text-lg lg:text-xl">We’ve compiled the most common questions to help you understand JustMy.Health better.</p>
-    
-            <div class="grid grid-cols-1 sm:grid-cols-3 gap-8">
-                <div class="flex flex-col items-center">
-                    <div class="bg-teal-100 text-teal-600 w-16 h-16 rounded-full flex items-center justify-center mb-4">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8c-1.657 0-3 1.343-3 3v4h6v-4c0-1.657-1.343-3-3-3z"/><path stroke-linecap="round" stroke-linejoin="round" d="M12 4a8 8 0 100 16 8 8 0 000-16z"/></svg>
+
+    {{-- ════════════════ INTRO FEATURE CARDS ════════════════ --}}
+    <section class="faq-intro">
+
+        {{-- Decorative blobs --}}
+        <div class="absolute inset-0 pointer-events-none overflow-hidden" aria-hidden="true">
+            <div style="position:absolute;width:500px;height:500px;border-radius:50%;background:radial-gradient(circle,rgba(20,184,166,0.12) 0%,transparent 70%);top:-150px;left:-100px;"></div>
+            <div style="position:absolute;width:400px;height:400px;border-radius:50%;background:radial-gradient(circle,rgba(15,137,166,0.08) 0%,transparent 70%);bottom:-120px;right:-80px;"></div>
+            <svg style="position:absolute;inset:0;width:100%;height:100%;opacity:0.035;" xmlns="http://www.w3.org/2000/svg">
+                <defs>
+                    <pattern id="faqDots" x="0" y="0" width="28" height="28" patternUnits="userSpaceOnUse">
+                        <circle cx="2" cy="2" r="1.5" fill="#0f89a6"/>
+                    </pattern>
+                </defs>
+                <rect width="100%" height="100%" fill="url(#faqDots)"/>
+            </svg>
+        </div>
+
+        <div class="max-w-6xl mx-auto px-6 lg:px-8" style="position:relative;z-index:1;">
+            <div class="text-center mb-12 faq-fade">
+                <div class="faq-section-pill"><span class="dot"></span>Support Centre</div>
+                <h2 class="text-3xl lg:text-4xl font-bold text-gray-900 mb-3" style="letter-spacing:-0.01em;">Your Questions, Answered</h2>
+                <p class="text-gray-500 text-base lg:text-lg max-w-xl mx-auto">We've compiled the most common questions to help you understand JustMy.Health better.</p>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-6">
+
+                {{-- Card 1: Health Guidance --}}
+                <div class="faq-feature-card faq-fade" style="transition-delay:0.05s">
+                    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1.25rem;">
+                        <div class="faq-feature-icon" style="margin-bottom:0;">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/></svg>
+                        </div>
+                        <span class="faq-feature-label">Expert Care</span>
                     </div>
-                    <h4 class="text-lg font-semibold mb-1">Health Guidance</h4>
-                    <p class="text-gray-600 text-center">Reliable tips and expert advice for your wellbeing.</p>
+                    <h4 style="font-size:1.05rem;font-weight:700;color:#0f172a;margin-bottom:0.15rem;">Health Guidance</h4>
+                    <p style="font-size:0.8125rem;color:#64748b;line-height:1.65;">Reliable tips and expert advice for your wellbeing.</p>
                 </div>
-                <div class="flex flex-col items-center">
-                    <div class="bg-teal-100 text-teal-600 w-16 h-16 rounded-full flex items-center justify-center mb-4">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3"/><path stroke-linecap="round" stroke-linejoin="round" d="M12 2a10 10 0 100 20 10 10 0 000-20z"/></svg>
+
+                {{-- Card 2: Fast Answers --}}
+                <div class="faq-feature-card faq-fade" style="transition-delay:0.1s">
+                    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1.25rem;">
+                        <div class="faq-feature-icon" style="margin-bottom:0;">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+                        </div>
+                        <span class="faq-feature-label">Instant</span>
                     </div>
-                    <h4 class="text-lg font-semibold mb-1">Fast Answers</h4>
-                    <p class="text-gray-600 text-center">Get quick, clear explanations to your questions.</p>
+                    <h4 style="font-size:1.05rem;font-weight:700;color:#0f172a;margin-bottom:0.15rem;">Fast Answers</h4>
+                    <p style="font-size:0.8125rem;color:#64748b;line-height:1.65;">Get quick, clear explanations to your questions.</p>
                 </div>
-                <div class="flex flex-col items-center">
-                    <div class="bg-teal-100 text-teal-600 w-16 h-16 rounded-full flex items-center justify-center mb-4">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 14l9-5-9-5-9 5 9 5z"/><path stroke-linecap="round" stroke-linejoin="round" d="M12 14l6.16-3.422a12.083 12.083 0 01.84 6.344L12 14z"/></svg>
+
+                {{-- Card 3: Trusted Platform --}}
+                <div class="faq-feature-card faq-fade" style="transition-delay:0.15s">
+                    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1.25rem;">
+                        <div class="faq-feature-icon" style="margin-bottom:0;">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+                        </div>
+                        <span class="faq-feature-label">Verified</span>
                     </div>
-                    <h4 class="text-lg font-semibold mb-1">Trusted Platform</h4>
-                    <p class="text-gray-600 text-center">A safe, professional, and verified digital health environment.</p>
+                    <h4 style="font-size:1.05rem;font-weight:700;color:#0f172a;margin-bottom:0.15rem;">Trusted Platform</h4>
+                    <p style="font-size:0.8125rem;color:#64748b;line-height:1.65;">A safe, professional, and verified digital health environment.</p>
                 </div>
+
             </div>
         </div>
     </section>
-    
-    <!-- FAQ Accordion Section -->
-    <section class="py-20 bg-white">
-        <div class="max-w-6xl mx-auto px-6">
-            <div class="grid gap-8 lg:grid-cols-2">
-    
-                <!-- Left Column -->
-                <div class="space-y-6">
-                    @foreach ($faqsLeft as $faq)
-                        <details class="group rounded-2xl border border-gray-200 bg-gray-50 shadow hover:shadow-lg transition overflow-hidden">
-                            <summary class="flex justify-between items-center font-semibold text-gray-900 cursor-pointer px-6 py-5">
-                                <div class="flex items-center gap-3">
-                                    {!! $faq['icon'] !!}
-                                    <span>{{ $faq['q'] }}</span>
-                                </div>
-                                <svg class="w-5 h-5 text-gray-400 transition-transform duration-300 group-open:rotate-180"
-                                     fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+
+    {{-- ════════════════ FAQ ACCORDION ════════════════ --}}
+    <section class="faq-section">
+        <div class="max-w-6xl mx-auto px-6 lg:px-8">
+            <div class="text-center mb-12 faq-fade">
+                <div class="faq-section-pill"><span class="dot"></span>10 Questions</div>
+                <h2 class="text-2xl lg:text-3xl font-bold text-gray-900" style="letter-spacing:-0.01em;">Common Questions</h2>
+            </div>
+
+            <div class="grid gap-6 lg:grid-cols-2 items-start">
+
+                {{-- Left Column --}}
+                <div class="space-y-4">
+                    @foreach ($faqsLeft as $index => $faq)
+                    <div
+                        id="{{ $index === 0 ? 'faq-licensed' : ($index === 4 ? 'faq-medical' : 'faq-left-'.$index) }}"
+                        class="faq-accordion-item faq-fade"
+                        style="transition-delay:{{ $index * 0.07 }}s"
+                        data-faq
+                    >
+                        <button class="faq-accordion-trigger" aria-expanded="false" onclick="toggleFaq(this)">
+                            <span class="faq-trigger-left">
+                                <span class="faq-num-badge">{{ str_pad($index + 1, 2, '0', STR_PAD_LEFT) }}</span>
+                                <span class="faq-trigger-question">{{ $faq['q'] }}</span>
+                            </span>
+                            <span class="faq-chevron" aria-hidden="true">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
                                     <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/>
                                 </svg>
-                            </summary>
-                            <div class="faq-content px-6 pb-6 text-gray-600 text-base leading-relaxed">
-                                {!! nl2br(e($faq['a'])) !!}
+                            </span>
+                        </button>
+                        <div class="faq-accordion-body" aria-hidden="true">
+                            <div class="faq-accordion-body-inner">
+                                <p>{!! nl2br(e($faq['a'])) !!}</p>
                             </div>
-                        </details>
+                        </div>
+                    </div>
                     @endforeach
                 </div>
-    
-                <!-- Right Column -->
-                <div class="space-y-6">
-                    @foreach ($faqsRight as $faq)
-                        <details class="group rounded-2xl border border-gray-200 bg-gray-50 shadow hover:shadow-lg transition overflow-hidden">
-                            <summary class="flex justify-between items-center font-semibold text-gray-900 cursor-pointer px-6 py-5">
-                                <div class="flex items-center gap-3">
-                                    {!! $faq['icon'] !!}
-                                    <span>{{ $faq['q'] }}</span>
-                                </div>
-                                <svg class="w-5 h-5 text-gray-400 transition-transform duration-300 group-open:rotate-180"
-                                     fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+
+                {{-- Right Column --}}
+                <div class="space-y-4">
+                    @foreach ($faqsRight as $index => $faq)
+                    <div
+                        id="{{ $index === 0 ? 'faq-secure' : ($index === 3 ? 'faq-global' : 'faq-right-'.$index) }}"
+                        class="faq-accordion-item faq-fade"
+                        style="transition-delay:{{ $index * 0.07 }}s"
+                        data-faq
+                    >
+                        <button class="faq-accordion-trigger" aria-expanded="false" onclick="toggleFaq(this)">
+                            <span class="faq-trigger-left">
+                                <span class="faq-num-badge">{{ str_pad($index + 6, 2, '0', STR_PAD_LEFT) }}</span>
+                                <span class="faq-trigger-question">{{ $faq['q'] }}</span>
+                            </span>
+                            <span class="faq-chevron" aria-hidden="true">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
                                     <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/>
                                 </svg>
-                            </summary>
-                            <div class="faq-content px-6 pb-6 text-gray-600 text-base leading-relaxed">
-                                {!! nl2br(e($faq['a'])) !!}
+                            </span>
+                        </button>
+                        <div class="faq-accordion-body" aria-hidden="true">
+                            <div class="faq-accordion-body-inner">
+                                <p>{!! nl2br(e($faq['a'])) !!}</p>
                             </div>
-                        </details>
+                        </div>
+                    </div>
                     @endforeach
                 </div>
-    
+
             </div>
         </div>
     </section>
-    
-    <!-- Modern CTA Section -->
-    <section class="py-16 bg-gray-50 overflow-x-hidden">
+
+    {{-- ════════════════ CTA SECTION ════════════════ --}}
+    <section class="faq-cta">
         <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-start">
 
-            <!-- Left side: redesigned info panel -->
-            <div class="space-y-6">
-
-                <div class="rounded-[2rem] border border-slate-200 bg-white p-8 shadow-lg shadow-slate-200/50">
-                    <span class="inline-flex items-center gap-1.5 rounded-full bg-[#EAFBFA] px-3 py-1 text-xs font-semibold uppercase tracking-[0.3em] text-[#1C9BA0]">
-                        <span class="h-1.5 w-1.5 rounded-full bg-[#1C9BA0]"></span>
-                        Let's talk
+            {{-- Left: Info card --}}
+            <div class="faq-info-card faq-fade">
+                <div style="position:relative;z-index:1;">
+                    <span style="display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,0.15);border:1px solid rgba(255,255,255,0.25);border-radius:999px;padding:4px 12px;font-size:0.7rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:#fff;margin-bottom:1.25rem;">
+                        <span style="width:6px;height:6px;border-radius:50%;background:#a7f3d0;display:inline-block;"></span>
+                        Let's Talk
                     </span>
-
-                    <div class="mt-5 flex items-start gap-4">
-                        <div class="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-[#EAFBFA] text-[#1C9BA0]">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.556-4.03 8.25-9 8.25a9.764 9.764 0 01-2.555-.337A5.972 5.972 0 015.41 20.97a5.969 5.969 0 01-.474-.065 4.48 4.48 0 00.978-2.025c.09-.457-.133-.901-.467-1.226C3.93 16.178 3 14.189 3 12c0-4.556 4.03-8.25 9-8.25s9 3.694 9 8.25z" />
-                            </svg>
+                    <div style="display:flex;align-items:flex-start;gap:1rem;margin-bottom:1.5rem;">
+                        <div style="flex-shrink:0;width:3rem;height:3rem;border-radius:0.875rem;background:rgba(255,255,255,0.18);display:flex;align-items:center;justify-content:center;">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.556-4.03 8.25-9 8.25a9.764 9.764 0 01-2.555-.337A5.972 5.972 0 015.41 20.97a5.969 5.969 0 01-.474-.065 4.48 4.48 0 00.978-2.025c.09-.457-.133-.901-.467-1.226C3.93 16.178 3 14.189 3 12c0-4.556 4.03-8.25 9-8.25s9 3.694 9 8.25z" /></svg>
                         </div>
                         <div>
-                            <h2 class="text-xl font-bold text-slate-900">Get Instant Support</h2>
-                            <p class="mt-1.5 text-sm text-slate-600 leading-relaxed">
-                              Reach out to our experts for fast, secure, and personalized answers.
-                            </p>
+                            <h2 style="font-size:1.375rem;font-weight:800;color:#fff;line-height:1.25;margin-bottom:0.5rem;">Get Instant Support</h2>
+                            <p style="font-size:0.875rem;color:rgba(255,255,255,0.75);line-height:1.7;">Reach out to our experts for fast, secure, and personalized answers.</p>
                         </div>
                     </div>
+
+                    {{-- Trust badges --}}
+                    <div style="display:flex;flex-direction:column;gap:0.75rem;position:relative;z-index:1;">
+                        @foreach([
+                            ['icon'=>'M5 13l4 4L19 7','label'=>'Licensed healthcare professionals'],
+                            ['icon'=>'M12 11c0 1.657-1.343 3-3 3s-3-1.343-3-3 1.343-3 3-3 3 1.343 3 3zm0 0c0 1.657 1.343 3 3 3s3-1.343 3-3-1.343-3-3-3-3 1.343-3 3z','label'=>'Private & encrypted sessions'],
+                            ['icon'=>'M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6','label'=>'Available globally, 24/7'],
+                        ] as $badge)
+                        <div style="display:flex;align-items:center;gap:0.75rem;">
+                            <span style="width:1.75rem;height:1.75rem;flex-shrink:0;border-radius:0.5rem;background:rgba(255,255,255,0.15);display:flex;align-items:center;justify-content:center;">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="{{ $badge['icon'] }}"/></svg>
+                            </span>
+                            <span style="font-size:0.8125rem;color:rgba(255,255,255,0.88);font-weight:500;">{{ $badge['label'] }}</span>
+                        </div>
+                        @endforeach
+                    </div>
                 </div>
-
-               
-
             </div>
 
-            <!-- Right side: form -->
+            {{-- Right: Form --}}
             <div class="rounded-[2rem] bg-white p-8 shadow-xl border border-slate-200">
                 @if (session('status'))
                     <div class="rounded-[10px] border border-emerald-200 bg-emerald-50 p-3 text-sm text-emerald-700 mb-6">
@@ -284,6 +678,81 @@
 
         </div>
     </section>
-    
-    
-    </x-app-layout>
+
+    </div>{{-- .faq-page --}}
+
+    {{-- ════════════════ SCRIPTS ════════════════ --}}
+    <script>
+        /* ── Accordion toggle ── */
+        function toggleFaq(btn) {
+            var item  = btn.closest('[data-faq]');
+            var body  = item.querySelector('.faq-accordion-body');
+            var isOpen = item.classList.contains('is-open');
+
+            // Collapse all siblings in same column
+            var column = item.parentElement;
+            column.querySelectorAll('[data-faq].is-open').forEach(function(open) {
+                if (open !== item) {
+                    open.classList.remove('is-open');
+                    open.querySelector('.faq-accordion-body').classList.remove('is-open');
+                    open.querySelector('.faq-accordion-trigger').setAttribute('aria-expanded', 'false');
+                    open.querySelector('.faq-accordion-body').setAttribute('aria-hidden', 'true');
+                }
+            });
+
+            if (!isOpen) {
+                item.classList.add('is-open');
+                body.classList.add('is-open');
+                btn.setAttribute('aria-expanded', 'true');
+                body.setAttribute('aria-hidden', 'false');
+            } else {
+                item.classList.remove('is-open');
+                body.classList.remove('is-open');
+                btn.setAttribute('aria-expanded', 'false');
+                body.setAttribute('aria-hidden', 'true');
+            }
+        }
+
+        /* ── Hash auto-open (linked from Trust Bar) ── */
+        (function () {
+            function openFaqFromHash() {
+                var hash = window.location.hash;
+                if (!hash) return;
+                var el = document.querySelector(hash + '[data-faq]');
+                if (!el) return;
+                var btn = el.querySelector('.faq-accordion-trigger');
+                if (btn) {
+                    toggleFaq(btn);
+                    setTimeout(function () {
+                        el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    }, 150);
+                }
+            }
+            if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded', openFaqFromHash);
+            } else {
+                openFaqFromHash();
+            }
+            window.addEventListener('hashchange', openFaqFromHash);
+        })();
+
+        /* ── Scroll fade-in ── */
+        (function () {
+            var items = document.querySelectorAll('.faq-fade');
+            if (!('IntersectionObserver' in window)) {
+                items.forEach(function(el){ el.classList.add('visible'); });
+                return;
+            }
+            var io = new IntersectionObserver(function(entries) {
+                entries.forEach(function(entry) {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                        io.unobserve(entry.target);
+                    }
+                });
+            }, { threshold: 0.12 });
+            items.forEach(function(el){ io.observe(el); });
+        })();
+    </script>
+
+</x-app-layout>

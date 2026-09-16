@@ -55,108 +55,235 @@
 </section>
 
     {{-- ═══════════════════════════════════════════════════════════
-         TRUST BAR — social proof directly below hero
+         TRUST BAR — social proof, redesigned with FAQ-card style
          ═══════════════════════════════════════════════════════════ --}}
     <style>
-        .trust-bar-grid {
+        /* ── Trust-bar section ── */
+        .trust-var-section {
+            width: 100%;
+            position: relative;
+            overflow: hidden;
+            background: linear-gradient(135deg, #f0fdfa 0%, #ffffff 45%, #ecfeff 100%);
+            border-top: 1px solid rgba(15,137,166,0.08);
+            border-bottom: 1px solid rgba(15,137,166,0.08);
+        }
+        .trust-var-inner {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 84px 24px;
+            text-align: center;
+        }
+        /* section badge */
+        .trust-var-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            
+            border-radius: 999px;
+            padding: 5px 16px;
+            font-size: 10.5px;
+            font-weight: 700;
+            letter-spacing: 0.13em;
+            text-transform: uppercase;
+            color: #0b7087;
+            background: #ffffff;
+            margin-bottom: 18px;
+        }
+        .trust-var-badge-dot {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: #14b8a6;
+            flex-shrink: 0;
+        }
+        /* heading */
+        .trust-var-heading {
+            font-size: clamp(1.75rem, 3.5vw, 2.5rem);
+            font-weight: 800;
+            color: #0f172a;
+            line-height: 1.2;
+            margin: 0 0 12px;
+        }
+        /* subtitle */
+        .trust-var-sub {
+            font-size: 15px;
+            color: #64748b;
+            line-height: 1.65;
+            max-width: 500px;
+            margin: 0 auto 44px;
+        }
+        /* 4-column card grid */
+        .trust-var-grid {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
-            gap: 16px;
+            gap: 20px;
             list-style: none;
             margin: 0;
             padding: 0;
         }
         @media (max-width: 900px) {
-            .trust-bar-grid {
-                grid-template-columns: repeat(2, 1fr);
-                gap: 14px;
-            }
+            .trust-var-grid { grid-template-columns: repeat(2, 1fr); }
         }
         @media (max-width: 480px) {
-            .trust-bar-grid {
-                grid-template-columns: repeat(2, 1fr);
-                gap: 10px;
-                padding: 14px 12px !important;
-            }
-            .trust-bar-grid li {
-                padding: 14px 8px !important;
-            }
+            .trust-var-grid { grid-template-columns: 1fr; }
         }
+        /* individual card */
+        .trust-var-card {
+            background: #ffffff;
+            border: 1.5px solid #e5edf0;
+            border-radius: 18px;
+            padding: 26px 22px 28px;
+            text-align: left;
+            box-shadow: 0 2px 14px rgba(0,0,0,0.05);
+            transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+            cursor: default;
+        }
+        .trust-var-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 10px 32px rgba(11,112,135,0.12);
+            border-color: #a5d8d8;
+        }
+        /* top row: icon + pill */
+        .trust-var-card-top {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 18px;
+        }
+        .trust-var-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 46px;
+            height: 46px;
+            border-radius: 12px;
+            background: linear-gradient(135deg, #0b7087, #14b8a6);
+            box-shadow: 0 4px 14px -4px rgba(11,112,135,0.4);
+            flex-shrink: 0;
+        }
+        .trust-var-pill {
+            font-size: 9.5px;
+            font-weight: 700;
+            letter-spacing: 0.13em;
+            text-transform: uppercase;
+            color: #0b7087;
+            background: #e6f6f5;
+            border: 1px solid #b2e0de;
+            border-radius: 999px;
+            padding: 3px 10px;
+        }
+        /* card text */
+        .trust-var-card h4 {
+            font-size: 1rem;
+            font-weight: 700;
+            color: #0f172a;
+            margin: 0 0 6px;
+            line-height: 1.3;
+        }
+        .trust-var-card p {
+            font-size: 13px;
+            color: #64748b;
+            line-height: 1.6;
+            margin: 0;
+        }
+        .trust-var-card p a {
+            color: #0b7087;
+            text-decoration: none;
+        }
+        .trust-var-card p a:hover { text-decoration: underline; }
     </style>
-    <section class=" py-8 md:py-12" role="region" aria-label="Trust credentials"
-             style="width:100%; background:#ffffff; border-top:1px solid rgba(15,137,166,0.1); border-bottom:1px solid rgba(15,137,166,0.1); box-shadow:0 2px 16px -6px rgba(15,137,166,0.08);">
-        <div style="max-width:1150px; margin:0 auto;">
 
-            {{-- 4-column grid — responsive via .trust-bar-grid CSS class above --}}
-            <ul role="list" class="trust-bar-grid">
+    <section class="trust-var-section" role="region" aria-label="Trust credentials">
+
+        {{-- Background decorative blobs --}}
+        <div class="absolute inset-0 pointer-events-none overflow-hidden" aria-hidden="true">
+            <div style="position:absolute;width:500px;height:500px;border-radius:50%;background:radial-gradient(circle,rgba(20,184,166,0.12) 0%,transparent 70%);top:-150px;left:-100px;"></div>
+            <div style="position:absolute;width:400px;height:400px;border-radius:50%;background:radial-gradient(circle,rgba(15,137,166,0.08) 0%,transparent 70%);bottom:-120px;right:-80px;"></div>
+            {{-- Grid dot pattern --}}
+            <svg style="position:absolute;inset:0;width:100%;height:100%;opacity:0.035;" xmlns="http://www.w3.org/2000/svg">
+                <defs>
+                    <pattern id="trustDots" x="0" y="0" width="28" height="28" patternUnits="userSpaceOnUse">
+                        <circle cx="2" cy="2" r="1.5" fill="#0f89a6"/>
+                    </pattern>
+                </defs>
+                <rect width="100%" height="100%" fill="url(#trustDots)"/>
+            </svg>
+        </div>
+
+        <div class="trust-var-inner" style="position:relative;z-index:1;">
+
+            {{-- Badge --}}
+            <div class="trust-var-badge">
+                <span class="trust-var-badge-dot"></span>
+                Why Trust Us
+            </div>
+
+            {{-- Heading --}}
+            <h2 class="trust-var-heading">Built on Trust &amp; Integrity</h2>
+
+            {{-- Subtitle --}}
+            <p class="trust-var-sub">
+                Every practitioner on JustMy.Health is verified, accredited, and held to the highest professional standards.
+            </p>
+
+            {{-- 4-column card grid — original trust bar content --}}
+            <ul class="trust-var-grid" role="list">
 
                 {{-- Card 1 — Licensed & Accredited --}}
-                <li role="listitem"
-                    style="display:flex; flex-direction:column; align-items:center; text-align:center; gap:10px; background:#f7fdfc; border:1.5px solid rgba(15,137,166,0.18); border-radius:16px; padding:20px 12px; cursor:default; box-shadow:0 2px 10px -3px rgba(15,137,166,0.1); transition:transform 0.18s, box-shadow 0.18s;"
-                    onmouseover="this.style.transform='translateY(-3px)';this.style.boxShadow='0 10px 28px -6px rgba(15,137,166,0.24)';"
-                    onmouseout="this.style.transform='';this.style.boxShadow='0 2px 10px -3px rgba(15,137,166,0.1)';">
-                    <span aria-hidden="true"
-                          style="display:inline-flex; align-items:center; justify-content:center; width:44px; height:44px; border-radius:50%; background:linear-gradient(135deg,#0b7087,#14b8a6); box-shadow:0 4px 14px -4px rgba(11,112,135,0.45); flex-shrink:0;">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.1">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>
-                        </svg>
-                    </span>
-                    <div>
-                        <p style="font-size:13px; font-weight:700; color:#0c2f3a; line-height:1.3; margin:0;">Licensed &amp; Accredited</p>
-                        <p style="font-size:11px; color:#5a7a87; line-height:1.4; margin:3px 0 0;">Verified practitioners only</p>
+                <li class="trust-var-card" role="listitem">
+                    <div class="trust-var-card-top">
+                        <span class="trust-var-icon" aria-hidden="true">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.1">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>
+                            </svg>
+                        </span>
+                        <span class="trust-var-pill">Licensed</span>
                     </div>
+                    <h4>Licensed &amp; Accredited</h4>
+                    <p><a href="{{ route('faq') }}#faq-licensed">Verified practitioners</a> only — every professional is fully licensed.</p>
                 </li>
 
-                {{-- Card 2 — BACP --}}
-                <li role="listitem"
-                    style="display:flex; flex-direction:column; align-items:center; text-align:center; gap:10px; background:#f7fdfc; border:1.5px solid rgba(15,137,166,0.18); border-radius:16px; padding:20px 12px; cursor:default; box-shadow:0 2px 10px -3px rgba(15,137,166,0.1); transition:transform 0.18s, box-shadow 0.18s;"
-                    onmouseover="this.style.transform='translateY(-3px)';this.style.boxShadow='0 10px 28px -6px rgba(15,137,166,0.24)';"
-                    onmouseout="this.style.transform='';this.style.boxShadow='0 2px 10px -3px rgba(15,137,166,0.1)';">
-                    <span aria-hidden="true"
-                          style="display:inline-flex; align-items:center; justify-content:center; width:44px; height:44px; border-radius:50%; background:linear-gradient(135deg,#0b7087,#14b8a6); box-shadow:0 4px 14px -4px rgba(11,112,135,0.45); flex-shrink:0;">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.1">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
-                        </svg>
-                    </span>
-                    <div>
-                        <p style="font-size:13px; font-weight:700; color:#0c2f3a; line-height:1.3; margin:0;">BACP Ethical Framework</p>
-                        <p style="font-size:11px; color:#5a7a87; line-height:1.4; margin:3px 0 0;">Evidence-based standards</p>
+                {{-- Card 2 — BACP Ethical Framework --}}
+                <li class="trust-var-card" role="listitem">
+                    <div class="trust-var-card-top">
+                        <span class="trust-var-icon" aria-hidden="true">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.1">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
+                            </svg>
+                        </span>
+                        <span class="trust-var-pill">Ethical</span>
                     </div>
+                    <h4>BACP Ethical Framework</h4>
+                    <p><a href="{{ route('faq') }}#faq-medical">Evidence-based standards</a> guiding every care interaction.</p>
                 </li>
 
-                {{-- Card 3 — Confidential --}}
-                <li role="listitem"
-                    style="display:flex; flex-direction:column; align-items:center; text-align:center; gap:10px; background:#f7fdfc; border:1.5px solid rgba(15,137,166,0.18); border-radius:16px; padding:20px 12px; cursor:default; box-shadow:0 2px 10px -3px rgba(15,137,166,0.1); transition:transform 0.18s, box-shadow 0.18s;"
-                    onmouseover="this.style.transform='translateY(-3px)';this.style.boxShadow='0 10px 28px -6px rgba(15,137,166,0.24)';"
-                    onmouseout="this.style.transform='';this.style.boxShadow='0 2px 10px -3px rgba(15,137,166,0.1)';">
-                    <span aria-hidden="true"
-                          style="display:inline-flex; align-items:center; justify-content:center; width:44px; height:44px; border-radius:50%; background:linear-gradient(135deg,#0b7087,#14b8a6); box-shadow:0 4px 14px -4px rgba(11,112,135,0.45); flex-shrink:0;">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.1">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
-                        </svg>
-                    </span>
-                    <div>
-                        <p style="font-size:13px; font-weight:700; color:#0c2f3a; line-height:1.3; margin:0;">Confidential &amp; Secure</p>
-                        <p style="font-size:11px; color:#5a7a87; line-height:1.4; margin:3px 0 0;">Your privacy protected</p>
+                {{-- Card 3 — Confidential & Secure --}}
+                <li class="trust-var-card" role="listitem">
+                    <div class="trust-var-card-top">
+                        <span class="trust-var-icon" aria-hidden="true">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.1">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
+                            </svg>
+                        </span>
+                        <span class="trust-var-pill">Secure</span>
                     </div>
+                    <h4>Confidential &amp; Secure</h4>
+                    <p>Your <a href="{{ route('faq') }}#faq-secure">privacy is protected</a> at every step of your journey.</p>
                 </li>
 
-                {{-- Card 4 — Global --}}
-                <li role="listitem"
-                    style="display:flex; flex-direction:column; align-items:center; text-align:center; gap:10px; background:#f7fdfc; border:1.5px solid rgba(15,137,166,0.18); border-radius:16px; padding:20px 12px; cursor:default; box-shadow:0 2px 10px -3px rgba(15,137,166,0.1); transition:transform 0.18s, box-shadow 0.18s;"
-                    onmouseover="this.style.transform='translateY(-3px)';this.style.boxShadow='0 10px 28px -6px rgba(15,137,166,0.24)';"
-                    onmouseout="this.style.transform='';this.style.boxShadow='0 2px 10px -3px rgba(15,137,166,0.1)';">
-                    <span aria-hidden="true"
-                          style="display:inline-flex; align-items:center; justify-content:center; width:44px; height:44px; border-radius:50%; background:linear-gradient(135deg,#0b7087,#14b8a6); box-shadow:0 4px 14px -4px rgba(11,112,135,0.45); flex-shrink:0;">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.1">
-                            <circle cx="12" cy="12" r="10"/>
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M2 12h20M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z"/>
-                        </svg>
-                    </span>
-                    <div>
-                        <p style="font-size:13px; font-weight:700; color:#0c2f3a; line-height:1.3; margin:0;">Global Coverage</p>
-                        <p style="font-size:11px; color:#5a7a87; line-height:1.4; margin:3px 0 0;">Local support, worldwide</p>
+                {{-- Card 4 — Global Coverage --}}
+                <li class="trust-var-card" role="listitem">
+                    <div class="trust-var-card-top">
+                        <span class="trust-var-icon" aria-hidden="true">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.1">
+                                <circle cx="12" cy="12" r="10"/>
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M2 12h20M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z"/>
+                            </svg>
+                        </span>
+                        <span class="trust-var-pill">Global</span>
                     </div>
+                    <h4>Global Coverage</h4>
+                    <p><a href="{{ route('faq') }}#faq-global">Local support</a>, accessible worldwide from wherever you are.</p>
                 </li>
 
             </ul>
