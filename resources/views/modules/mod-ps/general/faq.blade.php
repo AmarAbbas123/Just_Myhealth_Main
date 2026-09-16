@@ -108,66 +108,136 @@
         /* white card */
         .faq-feature-card {
             background: #ffffff;
-            border-radius: 1.25rem;
-            padding: 1.75rem 1.5rem;
-            border: 1px solid #e2e8f0;
-            box-shadow: 0 2px 12px rgba(0,0,0,0.06), 0 8px 24px rgba(0,0,0,0.04);
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            border: 1.5px solid #e5edf0;
+            border-radius: 18px;
+            padding: 26px 24px 28px;
+            text-align: left;
+            box-shadow: 0 2px 14px rgba(0,0,0,0.05);
+            transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
             position: relative;
             overflow: hidden;
         }
         .faq-feature-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 8px 28px rgba(28,155,160,0.14), 0 2px 8px rgba(0,0,0,0.06);
-            border-color: #99e6e8;
+            transform: translateY(-4px);
+            box-shadow: 0 10px 32px rgba(11,112,135,0.12);
+            border-color: #a5d8d8;
         }
-        .faq-feature-icon {
-            width: 2.5rem;
-            height: 2.5rem;
-            border-radius: 0.625rem;
+        .faq-feature-card-top {
             display: flex;
             align-items: center;
+            justify-content: space-between;
+            margin-bottom: 18px;
+        }
+        .faq-feature-icon {
+            display: inline-flex;
+            align-items: center;
             justify-content: center;
+            width: 46px;
+            height: 46px;
+            border-radius: 12px;
             background: linear-gradient(135deg, #0b7087, #14b8a6);
             color: #ffffff;
-            box-shadow: 0 4px 14px -4px rgba(11,112,135,0.45);
+            box-shadow: 0 4px 14px -4px rgba(11,112,135,0.4);
+            flex-shrink: 0;
             margin-bottom: 0;
         }
         .faq-feature-label {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.3rem;
-            font-size: 0.65rem;
+            font-size: 9.5px;
             font-weight: 700;
-            letter-spacing: 0.12em;
+            letter-spacing: 0.13em;
             text-transform: uppercase;
-            color: #1C9BA0;
-            background: rgba(28,155,160,0.08);
-            border: 1px solid rgba(28,155,160,0.18);
+            color: #0b7087;
+            background: #e6f6f5;
+            border: 1px solid #b2e0de;
             border-radius: 999px;
-            padding: 0.2rem 0.65rem;
+            padding: 3px 10px;
+        }
+        .faq-feature-card h4 {
+            font-size: 1.05rem;
+            font-weight: 700;
+            color: #0f172a;
+            margin: 0 0 6px;
+            line-height: 1.3;
+        }
+        .faq-feature-card p {
+            font-size: 13.5px;
+            color: #64748b;
+            line-height: 1.6;
+            margin: 0;
         }
 
-        /* ── FAQ Accordion ── */
-        .faq-section { background: #fff; padding: 5rem 0; }
-
-        .faq-accordion-item {
-            border-radius: 1rem;
-            border: 1.5px solid #e2e8f0;
+        /* ── FAQ Accordion Section ── */
+        .faq-section {
             background: #ffffff;
+            padding: 6rem 0;
+            position: relative;
             overflow: hidden;
-            transition: border-color 0.25s, box-shadow 0.25s, transform 0.25s;
+        }
+
+        .faq-header-wrapper {
+            position: relative;
+            text-align: center;
+            margin-bottom: 4rem;
+        }
+        .faq-header-watermark {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: clamp(3rem, 10vw, 8rem);
+            font-weight: 800;
+            color: rgba(0,0,0,0.03);
+            white-space: nowrap;
+            z-index: 0;
+            pointer-events: none;
+        }
+        .faq-header-content {
+            position: relative;
+            z-index: 1;
+        }
+        .faq-header-content h2 {
+            font-size: clamp(1.75rem, 4vw, 2.5rem);
+            font-weight: 700;
+            color: #0f172a;
+            margin-bottom: 0.5rem;
+        }
+        .faq-header-content p {
+            font-size: 1rem;
+            color: #109b91;
+            font-weight: 500;
+            margin: 0;
+        }
+
+        /* ── Left Column: Accordion ── */
+        .faq-layout-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 3rem;
+            align-items: start;
+        }
+        @media (min-width: 1024px) {
+            .faq-layout-grid {
+                grid-template-columns: 1.3fr 1fr; /* Approx 55% and 45% */
+                gap: 4rem;
+            }
+        }
+
+        .faq-accordion-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+        .faq-accordion-item {
+            background: #ffffff;
+            border-radius: 6px;
+            box-shadow: 0 12px 35px rgba(15, 23, 42, 0.08);
+            overflow: hidden;
+            transition: all 0.3s ease;
         }
         .faq-accordion-item:hover {
-            border-color: #99e6e8;
-            box-shadow: 0 4px 20px rgba(28,155,160,0.08);
+            box-shadow: 0 15px 45px rgba(15, 23, 42, 0.12);
             transform: translateY(-2px);
         }
-        .faq-accordion-item.is-open {
-            border-color: #1C9BA0;
-            box-shadow: 0 6px 24px rgba(28,155,160,0.13);
-        }
-
         .faq-accordion-trigger {
             width: 100%;
             background: none;
@@ -176,83 +246,156 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
-            gap: 1rem;
             padding: 1.25rem 1.5rem;
             text-align: left;
+            gap: 1rem;
         }
-        .faq-accordion-trigger:focus-visible { outline: 2px solid #1C9BA0; outline-offset: -2px; }
-
-        .faq-trigger-left { display: flex; align-items: center; gap: 1rem; }
-
-        .faq-num-badge {
-            flex-shrink: 0;
-            width: 2rem;
-            height: 2rem;
-            border-radius: 0.5rem;
-            background: linear-gradient(135deg, #e0fafa 0%, #ccfbf1 100%);
-            color: #0f766e;
-            font-size: 0.7rem;
-            font-weight: 700;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: background 0.25s, color 0.25s;
-        }
-        .faq-accordion-item.is-open .faq-num-badge {
-            background: linear-gradient(135deg, #1C9BA0 0%, #0f766e 100%);
-            color: #fff;
-        }
-
         .faq-trigger-question {
-            font-size: 0.9rem;
-            font-weight: 600;
-            color: #1e293b;
-            line-height: 1.45;
+            font-size: 0.95rem;
+            font-weight: 500;
+            color: #475569;
+            line-height: 1.5;
         }
-
         .faq-chevron {
             flex-shrink: 0;
-            width: 1.6rem;
-            height: 1.6rem;
+            width: 1.75rem;
+            height: 1.75rem;
             border-radius: 50%;
-            background: #f1f5f9;
+            background: linear-gradient(135deg, #0b877d 0%, #15c3b2 100%);
             display: flex;
             align-items: center;
             justify-content: center;
-            color: #64748b;
-            transition: background 0.25s, color 0.25s, transform 0.35s cubic-bezier(0.4,0,0.2,1);
+            color: #ffffff;
+            transition: transform 0.3s ease;
         }
         .faq-accordion-item.is-open .faq-chevron {
-            background: #1C9BA0;
-            color: #fff;
-            transform: rotate(180deg);
+            transform: rotate(135deg);
         }
-
         .faq-accordion-body {
             max-height: 0;
             overflow: hidden;
-            transition: max-height 0.4s cubic-bezier(0.4,0,0.2,1), padding 0.3s ease;
+            transition: max-height 0.4s ease, opacity 0.3s ease;
+            opacity: 0;
         }
         .faq-accordion-body.is-open {
             max-height: 600px;
+            opacity: 1;
         }
-
         .faq-accordion-body-inner {
             padding: 0 1.5rem 1.5rem 1.5rem;
-            border-top: 1px solid #f1f5f9;
-            padding-top: 1rem;
         }
         .faq-accordion-body-inner p {
             font-size: 0.9rem;
-            color: #475569;
-            line-height: 1.75;
+            color: #64748b;
+            line-height: 1.7;
+            margin: 0;
         }
 
-        /* Divider between num and question, subtle left bar when open */
-        .faq-accordion-item.is-open .faq-trigger-question { color: #0f766e; }
+        /* Pagination dots/arrows */
+        .faq-pagination {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+        .faq-nav-btn {
+            width: 2.25rem;
+            height: 2.25rem;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #0b877d 0%, #15c3b2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            cursor: pointer;
+            border: none;
+            transition: opacity 0.3s ease, transform 0.2s ease;
+        }
+        .faq-nav-btn:hover:not(:disabled) { transform: scale(1.05); }
+        .faq-nav-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+        /* ── Right Column: Form Area ── */
+        .faq-contact-area {
+            text-align: center;
+            padding: 1rem 2rem;
+        }
+        .faq-contact-img {
+            max-width: 280px;
+            margin: 0 auto 2rem;
+        }
+        .faq-contact-area h3 {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: #0f172a;
+            margin-bottom: 0.5rem;
+        }
+        .faq-contact-area p {
+            font-size: 0.9rem;
+            color: #94a3b8;
+            margin-bottom: 2rem;
+        }
+        .faq-form-group {
+            text-align: left;
+            margin-bottom: 2rem;
+        }
+        .faq-form-label {
+            display: block;
+            font-size: 0.85rem;
+            color: #64748b;
+            margin-bottom: 0.5rem;
+        }
+        .faq-input-wrapper {
+            position: relative;
+        }
+        .faq-input {
+            width: 100%;
+            border: 1px solid #e2e8f0;
+            border-radius: 6px;
+            padding: 0.75rem 2.5rem 0.75rem 1rem;
+            font-size: 0.95rem;
+            color: #334155;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+        .faq-input:focus {
+            border-color: #15c3b2;
+        }
+        .faq-input-clear {
+            position: absolute;
+            right: 0.75rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #cbd5e1;
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 1rem;
+        }
+        .faq-gradient-btn {
+            background: linear-gradient(to right, #118b96 0%, #1bc4a6 100%);
+            color: white;
+            border: none;
+            border-radius: 999px;
+            padding: 0.85rem 3rem;
+            font-size: 1.05rem;
+            font-weight: 700;
+            cursor: pointer;
+            box-shadow: 0 12px 25px rgba(27, 196, 166, 0.35);
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            width: 100%;
+        }
+        .faq-gradient-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 16px 30px rgba(27, 196, 166, 0.45);
+        }
 
         /* ── CTA Section ── */
-        .faq-cta { background: #f8fafc; padding: 5rem 0; }
+        .faq-cta { background: #f8fafc; padding: 5rem 0; position: relative; overflow: hidden; }
 
         /* Glow ring for form card */
         .faq-form-card {
@@ -392,7 +535,7 @@
     <section class="faq-hero">
         {{-- Background image (full visible) --}}
         <div class="absolute inset-0 -z-10">
-            <img src="{{ asset('images/welcome-page/hero-bg.jpg') }}" alt="Hero Background" class="w-full h-full object-cover object-center">
+            <img src="{{ asset('images/welcome-page/hero-bg.jpeg') }}" alt="Hero Background" class="w-full h-full object-cover object-center">
             <div class="absolute inset-0 bg-gradient-to-r from-black/60 to-black/25"></div>
         </div>
 
@@ -445,110 +588,134 @@
 
                 {{-- Card 1: Health Guidance --}}
                 <div class="faq-feature-card faq-fade" style="transition-delay:0.05s">
-                    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1.25rem;">
-                        <div class="faq-feature-icon" style="margin-bottom:0;">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/></svg>
+                    <div class="faq-feature-card-top">
+                        <div class="faq-feature-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.1"><path stroke-linecap="round" stroke-linejoin="round" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/></svg>
                         </div>
                         <span class="faq-feature-label">Expert Care</span>
                     </div>
-                    <h4 style="font-size:1.05rem;font-weight:700;color:#0f172a;margin-bottom:0.15rem;">Health Guidance</h4>
-                    <p style="font-size:0.8125rem;color:#64748b;line-height:1.65;">Reliable tips and expert advice for your wellbeing.</p>
+                    <h4>Health Guidance</h4>
+                    <p>Reliable tips and expert advice for your wellbeing.</p>
                 </div>
 
                 {{-- Card 2: Fast Answers --}}
                 <div class="faq-feature-card faq-fade" style="transition-delay:0.1s">
-                    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1.25rem;">
-                        <div class="faq-feature-icon" style="margin-bottom:0;">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+                    <div class="faq-feature-card-top">
+                        <div class="faq-feature-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.1"><path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
                         </div>
                         <span class="faq-feature-label">Instant</span>
                     </div>
-                    <h4 style="font-size:1.05rem;font-weight:700;color:#0f172a;margin-bottom:0.15rem;">Fast Answers</h4>
-                    <p style="font-size:0.8125rem;color:#64748b;line-height:1.65;">Get quick, clear explanations to your questions.</p>
+                    <h4>Fast Answers</h4>
+                    <p>Get quick, clear explanations to your questions.</p>
                 </div>
 
                 {{-- Card 3: Trusted Platform --}}
                 <div class="faq-feature-card faq-fade" style="transition-delay:0.15s">
-                    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1.25rem;">
-                        <div class="faq-feature-icon" style="margin-bottom:0;">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+                    <div class="faq-feature-card-top">
+                        <div class="faq-feature-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.1"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
                         </div>
                         <span class="faq-feature-label">Verified</span>
                     </div>
-                    <h4 style="font-size:1.05rem;font-weight:700;color:#0f172a;margin-bottom:0.15rem;">Trusted Platform</h4>
-                    <p style="font-size:0.8125rem;color:#64748b;line-height:1.65;">A safe, professional, and verified digital health environment.</p>
+                    <h4>Trusted Platform</h4>
+                    <p>A safe, professional, and verified digital health environment.</p>
                 </div>
 
             </div>
         </div>
     </section>
 
-    {{-- ════════════════ FAQ ACCORDION ════════════════ --}}
+    {{-- ════════════════ FAQ ACCORDION AND FORM ════════════════ --}}
     <section class="faq-section">
-        <div class="max-w-6xl mx-auto px-6 lg:px-8">
-            <div class="text-center mb-12 faq-fade">
-                <div class="faq-section-pill"><span class="dot"></span>10 Questions</div>
-                <h2 class="text-2xl lg:text-3xl font-bold text-gray-900" style="letter-spacing:-0.01em;">Common Questions</h2>
+        <div class="faq-header-watermark">Frequently Ask Question</div>
+        <div class="max-w-7xl mx-auto px-6 lg:px-12">
+            
+            <div class="faq-header-wrapper faq-fade">
+                <div class="faq-header-content">
+                    <h2>Frequently Ask Question</h2>
+                    <p>Find answers to common questions about our platform and services.</p>
+                </div>
             </div>
 
-            <div class="grid gap-6 lg:grid-cols-2 items-start">
-
-                {{-- Left Column --}}
-                <div class="space-y-4">
-                    @foreach ($faqsLeft as $index => $faq)
-                    <div
-                        id="{{ $index === 0 ? 'faq-licensed' : ($index === 4 ? 'faq-medical' : 'faq-left-'.$index) }}"
-                        class="faq-accordion-item faq-fade"
-                        style="transition-delay:{{ $index * 0.07 }}s"
-                        data-faq
-                    >
-                        <button class="faq-accordion-trigger" aria-expanded="false" onclick="toggleFaq(this)">
-                            <span class="faq-trigger-left">
-                                <span class="faq-num-badge">{{ str_pad($index + 1, 2, '0', STR_PAD_LEFT) }}</span>
+            <div class="faq-layout-grid">
+                
+                {{-- Left Column: FAQ List --}}
+                <div>
+                    <div class="faq-accordion-list">
+                        @foreach (array_merge($faqsLeft, $faqsRight) as $index => $faq)
+                        <div
+                            id="faq-item-{{ $index }}"
+                            class="faq-accordion-item faq-fade"
+                            style="transition-delay:{{ min($index * 0.05, 0.5) }}s"
+                            data-faq
+                        >
+                            <button class="faq-accordion-trigger" aria-expanded="false" onclick="toggleFaq(this)">
                                 <span class="faq-trigger-question">{{ $faq['q'] }}</span>
-                            </span>
-                            <span class="faq-chevron" aria-hidden="true">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/>
-                                </svg>
-                            </span>
-                        </button>
-                        <div class="faq-accordion-body" aria-hidden="true">
-                            <div class="faq-accordion-body-inner">
-                                <p>{!! nl2br(e($faq['a'])) !!}</p>
+                                <span class="faq-chevron" aria-hidden="true">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/>
+                                    </svg>
+                                </span>
+                            </button>
+                            <div class="faq-accordion-body" aria-hidden="true">
+                                <div class="faq-accordion-body-inner">
+                                    <p>{!! nl2br(e($faq['a'])) !!}</p>
+                                </div>
                             </div>
                         </div>
+                        @endforeach
                     </div>
-                    @endforeach
+
+                    {{-- Pagination (Visual & Functional) --}}
+                    <div class="faq-pagination faq-fade" style="transition-delay: 0.3s">
+                        <button id="faq-prev-btn" class="faq-nav-btn" aria-label="Previous" disabled>
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/></svg>
+                        </button>
+                        <button id="faq-next-btn" class="faq-nav-btn" aria-label="Next">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
+                        </button>
+                    </div>
                 </div>
 
-                {{-- Right Column --}}
-                <div class="space-y-4">
-                    @foreach ($faqsRight as $index => $faq)
-                    <div
-                        id="{{ $index === 0 ? 'faq-secure' : ($index === 3 ? 'faq-global' : 'faq-right-'.$index) }}"
-                        class="faq-accordion-item faq-fade"
-                        style="transition-delay:{{ $index * 0.07 }}s"
-                        data-faq
-                    >
-                        <button class="faq-accordion-trigger" aria-expanded="false" onclick="toggleFaq(this)">
-                            <span class="faq-trigger-left">
-                                <span class="faq-num-badge">{{ str_pad($index + 6, 2, '0', STR_PAD_LEFT) }}</span>
-                                <span class="faq-trigger-question">{{ $faq['q'] }}</span>
-                            </span>
-                            <span class="faq-chevron" aria-hidden="true">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/>
-                                </svg>
-                            </span>
-                        </button>
-                        <div class="faq-accordion-body" aria-hidden="true">
-                            <div class="faq-accordion-body-inner">
-                                <p>{!! nl2br(e($faq['a'])) !!}</p>
+                {{-- Right Column: Form Area --}}
+                <div>
+                    <div class="faq-contact-area faq-fade" style="transition-delay: 0.2s">
+                        {{-- Illustration placeholder --}}
+                        <div class="faq-contact-img">
+                            <svg viewBox="0 0 400 300" xmlns="http://www.w3.org/2000/svg" class="w-full h-auto drop-shadow-xl">
+                                <!-- Base abstract shape -->
+                                <path d="M 30 140 C 40 60, 140 20, 230 40 C 320 60, 380 120, 360 200 C 340 280, 220 300, 130 270 C 40 240, 20 220, 30 140 Z" fill="#f1f5f9" opacity="0.8"/>
+                                <!-- Question mark -->
+                                <text x="185" y="145" font-family="Arial, sans-serif" font-weight="900" font-size="140" fill="#06b6d4">?</text>
+                                <!-- Person silhouette -->
+                                <path d="M 230 180 C 230 160, 245 150, 265 150 C 285 150, 300 160, 300 180 L 300 280 L 230 280 Z" fill="#334155"/>
+                                <circle cx="265" cy="120" r="22" fill="#334155"/>
+                                <!-- Small decorative elements -->
+                                <circle cx="80" cy="100" r="5" fill="#06b6d4" opacity="0.4"/>
+                                <circle cx="340" cy="160" r="7" fill="#06b6d4" opacity="0.4"/>
+                                <path d="M 120 220 L 130 230 L 110 230 Z" fill="#06b6d4" opacity="0.6"/>
+                            </svg>
+                        </div>
+                        
+                        <h3>Any Question?</h3>
+                        <p>You can ask anything you want to know about Feedback.</p>
+
+                        <div class="faq-form-group">
+                            <label class="faq-form-label">Let me know.</label>
+                            <div class="faq-input-wrapper">
+                                <input type="text" class="faq-input" placeholder="Enter Here">
+                                <button type="button" class="faq-input-clear" aria-label="Clear input">&times;</button>
                             </div>
                         </div>
+
+                        <button type="button" class="faq-gradient-btn">
+                            Sent 
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                            </svg>
+                        </button>
                     </div>
-                    @endforeach
                 </div>
 
             </div>
@@ -557,7 +724,21 @@
 
     {{-- ════════════════ CTA SECTION ════════════════ --}}
     <section class="faq-cta">
-        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-start">
+        {{-- Decorative blobs --}}
+        <div class="absolute inset-0 pointer-events-none overflow-hidden" aria-hidden="true">
+            <div style="position:absolute;width:500px;height:500px;border-radius:50%;background:radial-gradient(circle,rgba(20,184,166,0.12) 0%,transparent 70%);top:-150px;left:-100px;"></div>
+            <div style="position:absolute;width:400px;height:400px;border-radius:50%;background:radial-gradient(circle,rgba(15,137,166,0.08) 0%,transparent 70%);bottom:-120px;right:-80px;"></div>
+            <svg style="position:absolute;inset:0;width:100%;height:100%;opacity:0.035;" xmlns="http://www.w3.org/2000/svg">
+                <defs>
+                    <pattern id="faqDotsCTA" x="0" y="0" width="28" height="28" patternUnits="userSpaceOnUse">
+                        <circle cx="2" cy="2" r="1.5" fill="#0f89a6"/>
+                    </pattern>
+                </defs>
+                <rect width="100%" height="100%" fill="url(#faqDotsCTA)"/>
+            </svg>
+        </div>
+
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-start" style="position:relative;z-index:1;">
 
             {{-- Left: Info card --}}
             <div class="faq-info-card faq-fade">
@@ -669,9 +850,11 @@
 
                     @include('partials.anti-bot-fields')
 
-                    <button type="submit"
-                        class="w-full flex justify-center rounded-[10px] bg-[#1C9BA0] px-6 py-2.5 text-sm font-semibold text-white shadow-lg shadow-[#1C9BA0]/25 transition hover:bg-[#18848F] hover:shadow-xl hover:shadow-[#1C9BA0]/30">
+                    <button type="submit" class="faq-gradient-btn mt-8">
                         Send message
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                        </svg>
                     </button>
                 </form>
             </div>
@@ -752,6 +935,57 @@
                 });
             }, { threshold: 0.12 });
             items.forEach(function(el){ io.observe(el); });
+        })();
+        /* ── Pagination Logic ── */
+        (function () {
+            var itemsPerPage = 6;
+            var currentPage = 1;
+            var items = Array.from(document.querySelectorAll('.faq-accordion-item'));
+            var totalPages = Math.ceil(items.length / itemsPerPage);
+            
+            var prevBtn = document.getElementById('faq-prev-btn');
+            var nextBtn = document.getElementById('faq-next-btn');
+            
+            if (!prevBtn || !nextBtn || items.length === 0) return;
+
+            function renderPage() {
+                var startIndex = (currentPage - 1) * itemsPerPage;
+                var endIndex = startIndex + itemsPerPage;
+                
+                items.forEach(function(item, index) {
+                    if (index >= startIndex && index < endIndex) {
+                        item.style.display = '';
+                    } else {
+                        item.style.display = 'none';
+                        // also close it if it was open
+                        item.classList.remove('is-open');
+                        var body = item.querySelector('.faq-accordion-body');
+                        var btn = item.querySelector('.faq-accordion-trigger');
+                        if(body) { body.classList.remove('is-open'); body.setAttribute('aria-hidden', 'true'); }
+                        if(btn) { btn.setAttribute('aria-expanded', 'false'); }
+                    }
+                });
+                
+                prevBtn.disabled = currentPage === 1;
+                nextBtn.disabled = currentPage === totalPages || totalPages === 0;
+            }
+            
+            prevBtn.addEventListener('click', function() {
+                if (currentPage > 1) {
+                    currentPage--;
+                    renderPage();
+                }
+            });
+            
+            nextBtn.addEventListener('click', function() {
+                if (currentPage < totalPages) {
+                    currentPage++;
+                    renderPage();
+                }
+            });
+            
+            // Initial render
+            renderPage();
         })();
     </script>
 
