@@ -78,7 +78,7 @@
             display: inline-flex;
             align-items: center;
             gap: 6px;
-            
+            border: 1.5px solid #b2e0de;
             border-radius: 999px;
             padding: 5px 16px;
             font-size: 10.5px;
@@ -130,11 +130,12 @@
         /* individual card */
         .trust-var-card {
             background: #ffffff;
-            border: 1.5px solid #e5edf0;
+         
             border-radius: 18px;
             padding: 26px 22px 28px;
             text-align: left;
-            box-shadow: 0 2px 14px rgba(0,0,0,0.05);
+            box-shadow: 0 2px 14px rgba(0,0,0,0.06);
+          
             transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
             cursor: default;
         }
@@ -154,8 +155,8 @@
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            width: 46px;
-            height: 46px;
+            width: 43px;
+            height: 43px;
             border-radius: 12px;
             background: linear-gradient(135deg, #0b7087, #14b8a6);
             box-shadow: 0 4px 14px -4px rgba(11,112,135,0.4);
@@ -177,7 +178,8 @@
             font-size: 1rem;
             font-weight: 700;
             color: #0f172a;
-            margin: 0 0 6px;
+            margin-bottom: 1px;
+          margin-top:20px;
             line-height: 1.3;
         }
         .trust-var-card p {
@@ -240,7 +242,7 @@
                         <span class="trust-var-pill">Licensed</span>
                     </div>
                     <h4>Licensed &amp; Accredited</h4>
-                    <p><a href="{{ route('faq') }}#faq-licensed">Verified practitioners</a> only — every professional is fully licensed.</p>
+                    <p><a href="{{ route('faq') }}#faq-licensed">Verified practitioners only</a></p>
                 </li>
 
                 {{-- Card 2 — BACP Ethical Framework --}}
@@ -254,7 +256,7 @@
                         <span class="trust-var-pill">Ethical</span>
                     </div>
                     <h4>BACP Ethical Framework</h4>
-                    <p><a href="{{ route('faq') }}#faq-medical">Evidence-based standards</a> guiding every care interaction.</p>
+                    <p><a href="{{ route('faq') }}#faq-medical">Evidence-based standards</a></p>
                 </li>
 
                 {{-- Card 3 — Confidential & Secure --}}
@@ -268,7 +270,7 @@
                         <span class="trust-var-pill">Secure</span>
                     </div>
                     <h4>Confidential &amp; Secure</h4>
-                    <p>Your <a href="{{ route('faq') }}#faq-secure">privacy is protected</a> at every step of your journey.</p>
+                    <p>Your <a href="{{ route('faq') }}#faq-secure">Your privacy protected</a></p>
                 </li>
 
                 {{-- Card 4 — Global Coverage --}}
@@ -283,7 +285,7 @@
                         <span class="trust-var-pill">Global</span>
                     </div>
                     <h4>Global Coverage</h4>
-                    <p><a href="{{ route('faq') }}#faq-global">Local support</a>, accessible worldwide from wherever you are.</p>
+                    <p><a href="{{ route('faq') }}#faq-global">Local support, worldwide</a></p>
                 </li>
 
             </ul>
@@ -328,138 +330,6 @@
     </section>
     {{-- End of Services --}}
     
-    
- {{-- ============================================================ --}}
-    {{-- Service-type assessment CTA                      --}}
-    {{-- ============================================================ --}}
-    <section id="pt-pre-register"
-             class="relative overflow-hidden py-20 lg:py-28"
-             style="background: linear-gradient(135deg, #f0fdfa 0%, #ffffff 45%, #ecfeff 100%);">
-
-        {{-- Background decorative blobs --}}
-        <div class="absolute inset-0 pointer-events-none overflow-hidden" aria-hidden="true">
-            <div style="position:absolute;width:500px;height:500px;border-radius:50%;
-                        background:radial-gradient(circle,rgba(20,184,166,0.12) 0%,transparent 70%);
-                        top:-150px;left:-100px;"></div>
-            <div style="position:absolute;width:400px;height:400px;border-radius:50%;
-                        background:radial-gradient(circle,rgba(15,137,166,0.08) 0%,transparent 70%);
-                        bottom:-120px;right:-80px;"></div>
-            {{-- Grid dot pattern --}}
-            <svg style="position:absolute;inset:0;width:100%;height:100%;opacity:0.035;" xmlns="http://www.w3.org/2000/svg">
-                <defs>
-                    <pattern id="ptDots" x="0" y="0" width="28" height="28" patternUnits="userSpaceOnUse">
-                        <circle cx="2" cy="2" r="1.5" fill="#0f89a6"/>
-                    </pattern>
-                </defs>
-                <rect width="100%" height="100%" fill="url(#ptDots)"/>
-            </svg>
-        </div>
-
-        <div class="relative z-10 container mx-auto px-6 lg:px-12">
-
-            
-
-            {{-- Two-column layout --}}
-            <div class="grid lg:grid-cols-2 gap-12 lg:gap-20 items-center max-w-6xl mx-auto">
-
-                {{-- LEFT — Headline + social proof --}}
-                <div>
-                    <h2 style="font-size:clamp(2rem,4.5vw,3.2rem);font-weight:800;color:#0c2830;letter-spacing:-0.025em;line-height:1.12;" class="mb-4">
-                        Not sure which<br>
-                        <span style="background:linear-gradient(90deg,#0f89a6,#14b8a6);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">service is right</span>
-                        for you?
-                    </h2>
-
-                   
-
-                    <p style="color:#4b6a74;font-size:1.05rem;line-height:1.75;max-width:420px;" class="mb-8">
-                      Answer a few simple questions and we'll match you with the right practitioner and service — personalised to your needs, in under 2 minutes.
-
-                    </p>
-                {{-- Social proof --}}
-                <div style="display:flex; align-items:center; gap:12px;">
-                    <div style="display:flex;">
-                        @foreach(['JD','AM','SK','PR'] as $initials)
-                        <span style="width:36px; height:36px; border-radius:50%; background:linear-gradient(135deg,#0b7087,#14b8a6); border:2.5px solid #ffffff; display:inline-flex; align-items:center; justify-content:center; font-size:10px; font-weight:700; color:#fff; margin-left:{{ $loop->first ? '0' : '-10px' }}; position:relative; z-index:{{ 10 - $loop->index }};">{{ $initials }}</span>
-                        @endforeach
-                    </div>
-                    <div>
-                        <p style="font-size:13px; font-weight:700; color:#0c2f3a; margin:0;">Join 200+ members</p>
-                        <p style="font-size:11.5px; color:#5a7a87; margin:2px 0 0;">Already matched with their support</p>
-                    </div>
-                </div>
-                    
-                </div>
-
-                {{-- Vertical divider (desktop only) --}}
-                {{-- RIGHT — Floating benefits card --}}
-                <div class="relative">
-
-                    {{-- Glow shadow behind card --}}
-                    <div style="position:absolute;inset:-1px;border-radius:1.5rem;background:linear-gradient(135deg,rgba(15,137,166,0.2),rgba(20,184,166,0.15),transparent);filter:blur(20px);z-index:0;"></div>
-
-                    <div style="position:relative;z-index:1;background:#ffffff;border:1px solid rgba(15,137,166,0.15);
-                                border-radius:1.5rem;padding:2.5rem;
-                                box-shadow:0 25px 60px -15px rgba(15,137,166,0.2),0 10px 30px -10px rgba(0,0,0,0.06);">
-
-                        <p style="font-size:0.7rem;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:#0f89a6;margin-bottom:0.75rem;">
-                            How it works
-                        </p>
-                        <h3 style="font-size:1.55rem;font-weight:800;color:#0c2830;margin-bottom:1.75rem;line-height:1.2;">
-                            Start your free assessment
-                        </h3>
-
-                        {{-- Benefits list --}}
-                        <ul style="list-style:none;padding:0;margin:0 0 2rem;display:flex;flex-direction:column;gap:1rem;">
-                            @foreach([
-                                ['Tell us what you are experiencing',         'Answer a short set of simple questions'],
-                                ['We recommend the right service',  'Therapy, counselling, coaching or more'],
-                                ['Get matched with a practitioner',     'Book your first session at your convenience
-
-'],
-                            ] as [$title, $desc])
-                            <li style="display:flex;align-items:flex-start;gap:0.9rem;">
-                                <span style="flex-shrink:0;width:24px;height:24px;border-radius:50%;
-                                             background:linear-gradient(135deg,#0f89a6,#14b8a6);
-                                             display:flex;align-items:center;justify-content:center;margin-top:2px;">
-                                    <svg style="width:13px;height:13px;fill:none;stroke:#fff;stroke-width:2.5;" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
-                                </span>
-                                <div>
-                                    <span style="font-size:0.9rem;font-weight:700;color:#0c2830;display:block;">{{ $title }}</span>
-                                    <span style="font-size:0.82rem;color:#6b8c96;line-height:1.5;">{{ $desc }}</span>
-                                </div>
-                            </li>
-                            @endforeach
-                        </ul>
-
-                        {{-- CTA button --}}
-                        <a href="{{ route('therapy.service-type.start') }}"
-                           style="display:flex;align-items:center;justify-content:center;gap:0.5rem;
-                                  background:linear-gradient(90deg,#0f89a6,#14b8a6);
-                                  color:#fff;font-size:1rem;font-weight:700;
-                                  padding:0.9rem 2rem;border-radius:999px;
-                                  box-shadow:0 8px 25px -5px rgba(15,137,166,0.5);
-                                  text-decoration:none;transition:transform 0.2s,box-shadow 0.2s;"
-                           onmouseover="this.style.transform='translateY(-2px)';this.style.boxShadow='0 14px 32px -5px rgba(15,137,166,0.6)';"
-                           onmouseout="this.style.transform='translateY(0)';this.style.boxShadow='0 8px 25px -5px rgba(15,137,166,0.5)';">
-                            Start assessment
-                            <svg style="width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:2.5;" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6"/></svg>
-                        </a>
-
-                        {{-- Subtle footnote --}}
-                        <p style="text-align:center;font-size:0.75rem;color:#9bb5bc;margin-top:1rem;">
-                            Free to use · No account required to browse
-                        </p>
-                    </div>
-                </div>
-
-            </div>
-        </div>
-    </section>
-
-
-   
-
 
     {{-- Professional Support Service Tiles --}}
     <section class="py-16 md:py-24 bg-gradient-to-b from-[#f4fbfb] via-white to-[#eef8f7]">
@@ -603,7 +473,6 @@
         <div class="relative z-10 container mx-auto px-6 lg:px-12">
 
             
-
             {{-- Two-column layout --}}
             <div class="grid lg:grid-cols-2 gap-12 lg:gap-20 items-center max-w-6xl mx-auto">
 
@@ -613,12 +482,10 @@
                         Not sure which<br>
                         <span style="background:linear-gradient(90deg,#0f89a6,#14b8a6);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">service is right</span>
                         for you?
-                    </h2>
-
-                   
+                    </h2>                  
 
                     <p style="color:#4b6a74;font-size:1.05rem;line-height:1.75;max-width:420px;" class="mb-8">
-                      Answer a few simple questions and we'll match you with the right practitioner and service — personalised to your needs, in under 2 minutes.
+                      Answer a few simple questions and we'll match you with the right practitioner and service. Personalised to your needs, in under 2 minutes.
 
                     </p>
                 {{-- Social proof --}}
@@ -629,8 +496,8 @@
                         @endforeach
                     </div>
                     <div>
-                        <p style="font-size:13px; font-weight:700; color:#0c2f3a; margin:0;">Join 200+ members</p>
-                        <p style="font-size:11.5px; color:#5a7a87; margin:2px 0 0;">Already matched with their support</p>
+                        <p style="font-size:13px; font-weight:700; color:#0c2f3a; margin:0;">Become a service user....</p>
+                        <p style="font-size:11.5px; color:#5a7a87; margin:2px 0 0;">Get the support you need....</p>
                     </div>
                 </div>
                     
@@ -658,8 +525,8 @@
                         <ul style="list-style:none;padding:0;margin:0 0 2rem;display:flex;flex-direction:column;gap:1rem;">
                             @foreach([
                                 ['Tell us what you are experiencing',         'Answer a short set of simple questions'],
-                                ['We recommend the right service',  'Therapy, counselling, coaching or more'],
-                                ['Get matched with a practitioner',     'Book your first session at your convenience
+                                ['We recommend the right service',  'Therapy, Counselling or Coaching'],
+                                ['Register for a free account',     'Start your Health and Wellbeing Journey
 
 '],
                             ] as [$title, $desc])
@@ -693,7 +560,7 @@
 
                         {{-- Subtle footnote --}}
                         <p style="text-align:center;font-size:0.75rem;color:#9bb5bc;margin-top:1rem;">
-                            Free to use · No account required to browse
+                            Free to use service evaluation · No account required for evaluation
                         </p>
                     </div>
                 </div>
