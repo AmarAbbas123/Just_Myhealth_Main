@@ -2,62 +2,18 @@
 <x-app-layout>
 
     @php
-    // Left Column FAQs with dynamic icons
-    $faqsLeft = [
-        [
-            'q' => '1. What is JustMy.Health?',
-            'a' => 'JustMy.Health is a digital health and wellbeing platform designed to help individuals improve their health through connection, engagement, education, and empowerment. It brings together users, healthcare providers, government health departments, NGOs, and medical support companies in one unified ecosystem.',
-            'icon' => '<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-teal-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8c-1.657 0-3 1.343-3 3v4h6v-4c0-1.657-1.343-3-3-3z" /><path stroke-linecap="round" stroke-linejoin="round" d="M12 4a8 8 0 100 16 8 8 0 000-16z" /></svg>'
-        ],
-        [
-            'q' => '2. How does the platform work?',
-            'a' => 'The platform follows a structured four‑step model called the Guided Path: Connect with trusted health resources and professionals; Engage with tools, programs, and community support; Educate yourself through credible, accessible health information; Empower your journey with personalized insights and services.',
-            'icon' => '<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-teal-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3" /><path stroke-linecap="round" stroke-linejoin="round" d="M12 2a10 10 0 100 20 10 10 0 000-20z" /></svg>'
-        ],
-        [
-            'q' => '3. Who can use JustMy.Health?',
-            'a' => 'Anyone looking to improve their health, wellbeing, or lifestyle can use the platform. We support individuals, families, communities, and organizations through both B2C and B2B services.',
-            'icon' => '<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-teal-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M5.121 17.804A9 9 0 1112 21v-5" /></svg>'
-        ],
-        [
-            'q' => '4. What services are available on the platform?',
-            'a' => 'JustMy.Health offers online counselling and therapy, dietary and nutrition programs, preventive and curative health information, access to healthcare professionals, wellness tools and engagement programs, community and social support features.',
-            'icon' => '<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-teal-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 12v4m0 0v4m0-4h4m-4 0H8" /></svg>'
-        ],
-        [
-            'q' => '5. Is JustMy.Health a replacement for medical care?',
-            'a' => 'No. While the platform provides access to licensed professionals and health information, it does not replace medical diagnosis or treatment. Users should always consult their personal healthcare provider for medical decisions.',
-            'icon' => '<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-teal-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M18.364 5.636l-12.728 12.728" /><path stroke-linecap="round" stroke-linejoin="round" d="M5.636 5.636l12.728 12.728" /></svg>'
-        ],
-    ];
-    
-    // Right Column FAQs with dynamic icons
-    $faqsRight = [
-        [
-            'q' => '6. Is my personal information secure?',
-            'a' => 'Yes. We use industry‑standard security measures to protect your data. Your information is handled in accordance with our Privacy Policy, and we never sell your personal data.',
-            'icon' => '<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-teal-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 11c0 4.418-3.582 8-8 8s-8-3.582-8-8 3.582-8 8-8 8 3.582 8 8z" /></svg>'
-        ],
-        [
-            'q' => '7. Can organizations use JustMy.Health for their employees or members?',
-            'a' => 'Yes. We offer scalable B2B solutions for employers, clinics, NGOs, and government partners. These solutions support workforce wellness, community health initiatives, and integrated care programs.',
-            'icon' => '<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-teal-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M16 8v8M8 8v8M12 4v16" /></svg>'
-        ],
-        [
-            'q' => '8. How do I get started?',
-            'a' => 'Simply create an account, complete your profile, and begin exploring the Guided Path. You can connect with professionals, join programs, or browse health content immediately.',
-            'icon' => '<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-teal-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 20h9M12 4h9M3 12h18" /></svg>'
-        ],
-        [
-            'q' => '9. Is the platform available globally?',
-            'a' => 'Yes. JustMy.Health provides global coverage with locally tailored support. Services may vary by region depending on available partners and providers.',
-            'icon' => '<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-teal-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 2a10 10 0 100 20 10 10 0 000-20z" /></svg>'
-        ],
-        [
-            'q' => '10. Who do I contact for support?',
-            'a' => 'You can reach our support team at support@justmy.health for help with your account, services, or general questions.',
-            'icon' => '<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-teal-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M21 10c0 3.866-3.582 7-8 7s-8-3.134-8-7 3.582-7 8-7 8 3.134 8 7z" /></svg>'
-        ],
+    // Default icons for FAQs
+    $faqIcons = [
+        '<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-teal-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8c-1.657 0-3 1.343-3 3v4h6v-4c0-1.657-1.343-3-3-3z" /><path stroke-linecap="round" stroke-linejoin="round" d="M12 4a8 8 0 100 16 8 8 0 000-16z" /></svg>',
+        '<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-teal-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3" /><path stroke-linecap="round" stroke-linejoin="round" d="M12 2a10 10 0 100 20 10 10 0 000-20z" /></svg>',
+        '<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-teal-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M5.121 17.804A9 9 0 1112 21v-5" /></svg>',
+        '<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-teal-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 12v4m0 0v4m0-4h4m-4 0H8" /></svg>',
+        '<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-teal-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M18.364 5.636l-12.728 12.728" /><path stroke-linecap="round" stroke-linejoin="round" d="M5.636 5.636l12.728 12.728" /></svg>',
+        '<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-teal-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 11c0 4.418-3.582 8-8 8s-8-3.582-8-8 3.582-8 8-8 8 3.582 8 8z" /></svg>',
+        '<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-teal-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M16 8v8M8 8v8M12 4v16" /></svg>',
+        '<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-teal-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 20h9M12 4h9M3 12h18" /></svg>',
+        '<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-teal-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 2a10 10 0 100 20 10 10 0 000-20z" /></svg>',
+        '<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-teal-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M21 10c0 3.866-3.582 7-8 7s-8-3.134-8-7 3.582-7 8-7 8 3.134 8 7z" /></svg>',
     ];
     @endphp
 
@@ -71,15 +27,27 @@
         /* ── Hero ── */
         .faq-hero {
             position: relative;
-            min-height: 320px;
+            min-height: 280px;
             display: flex;
             align-items: flex-start;
-            padding-top: 6rem;
-            padding-bottom: 3rem;
+            padding-top: 4rem;
+            padding-bottom: 2rem;
             overflow: hidden;
         }
+        @media (min-width: 640px) {
+            .faq-hero {
+                min-height: 300px;
+                padding-top: 5rem;
+                padding-bottom: 2.5rem;
+            }
+        }
         @media (min-width: 1024px) {
-            .faq-hero { align-items: center; padding-top: 8rem; padding-bottom: 3.5rem; }
+            .faq-hero {
+                min-height: 320px;
+                align-items: center;
+                padding-top: 8rem;
+                padding-bottom: 3.5rem;
+            }
         }
 
         /* Breadcrumb pill */
@@ -92,9 +60,15 @@
             border: 1px solid rgba(255,255,255,0.15);
             padding: 0.35rem 1rem;
             border-radius: 999px;
-            font-size: 0.8rem;
+            font-size: 0.75rem;
             color: rgba(255,255,255,0.85);
-            margin-bottom: 1.5rem;
+            margin-bottom: 1rem;
+        }
+        @media (min-width: 640px) {
+            .faq-breadcrumb {
+                font-size: 0.8rem;
+                margin-bottom: 1.5rem;
+            }
         }
 
         /* ── Intro Feature Cards ── */
@@ -169,22 +143,32 @@
         /* ── FAQ Accordion Section ── */
         .faq-section {
             background: #ffffff;
-            padding: 6rem 0;
+            padding: 2rem 0;
             position: relative;
             overflow: hidden;
+        }
+        @media (min-width: 768px) {
+            .faq-section {
+                padding: 6rem 0;
+            }
         }
 
         .faq-header-wrapper {
             position: relative;
             text-align: center;
-            margin-bottom: 4rem;
+            margin-bottom: 3rem;
+        }
+        @media (min-width: 768px) {
+            .faq-header-wrapper {
+                margin-bottom: 4rem;
+            }
         }
         .faq-header-watermark {
             position: absolute;
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            font-size: clamp(3rem, 10vw, 8rem);
+            font-size: clamp(2rem, 8vw, 5rem);
             font-weight: 800;
             color: rgba(0,0,0,0.03);
             white-space: nowrap;
@@ -196,7 +180,7 @@
             z-index: 1;
         }
         .faq-header-content h2 {
-            font-size: clamp(1.75rem, 4vw, 2.5rem);
+            font-size: clamp(1.5rem, 4vw, 2.5rem);
             font-weight: 700;
             color: #0f172a;
             margin-bottom: 0.5rem;
@@ -212,8 +196,14 @@
         .faq-layout-grid {
             display: grid;
             grid-template-columns: 1fr;
-            gap: 3rem;
+            gap: 2rem;
             align-items: start;
+        }
+        @media (min-width: 768px) {
+            .faq-layout-grid {
+                grid-template-columns: 1fr;
+                gap: 3rem;
+            }
         }
         @media (min-width: 1024px) {
             .faq-layout-grid {
@@ -225,17 +215,17 @@
         .faq-accordion-list {
             display: flex;
             flex-direction: column;
-            gap: 1rem;
+            gap: 0.75rem;
         }
         .faq-accordion-item {
             background: #ffffff;
-            border-radius: 6px;
-            box-shadow: 0 12px 35px rgba(15, 23, 42, 0.08);
+            border-radius: 8px;
+            box-shadow: 0 8px 24px rgba(15, 23, 42, 0.06);
             overflow: hidden;
             transition: all 0.3s ease;
         }
         .faq-accordion-item:hover {
-            box-shadow: 0 15px 45px rgba(15, 23, 42, 0.12);
+            box-shadow: 0 12px 32px rgba(15, 23, 42, 0.1);
             transform: translateY(-2px);
         }
         .faq-accordion-trigger {
@@ -246,20 +236,30 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding: 1.25rem 1.5rem;
+            padding: 1rem 1.25rem;
             text-align: left;
             gap: 1rem;
         }
+        @media (min-width: 768px) {
+            .faq-accordion-trigger {
+                padding: 1.25rem 1.5rem;
+            }
+        }
         .faq-trigger-question {
-            font-size: 0.95rem;
+            font-size: 0.9rem;
             font-weight: 500;
             color: #475569;
             line-height: 1.5;
         }
+        @media (min-width: 768px) {
+            .faq-trigger-question {
+                font-size: 0.95rem;
+            }
+        }
         .faq-chevron {
             flex-shrink: 0;
-            width: 1.75rem;
-            height: 1.75rem;
+            width: 1.5rem;
+            height: 1.5rem;
             border-radius: 50%;
             background: linear-gradient(135deg, #0b877d 0%, #15c3b2 100%);
             display: flex;
@@ -267,6 +267,12 @@
             justify-content: center;
             color: #ffffff;
             transition: transform 0.3s ease;
+        }
+        @media (min-width: 768px) {
+            .faq-chevron {
+                width: 1.75rem;
+                height: 1.75rem;
+            }
         }
         .faq-accordion-item.is-open .faq-chevron {
             transform: rotate(135deg);
@@ -282,13 +288,23 @@
             opacity: 1;
         }
         .faq-accordion-body-inner {
-            padding: 0 1.5rem 1.5rem 1.5rem;
+            padding: 0 1.25rem 1.25rem 1.25rem;
+        }
+        @media (min-width: 768px) {
+            .faq-accordion-body-inner {
+                padding: 0 1.5rem 1.5rem 1.5rem;
+            }
         }
         .faq-accordion-body-inner p {
-            font-size: 0.9rem;
+            font-size: 0.85rem;
             color: #64748b;
-            line-height: 1.7;
+            line-height: 1.6;
             margin: 0;
+        }
+        @media (min-width: 768px) {
+            .faq-accordion-body-inner p {
+                font-size: 0.9rem;
+            }
         }
 
         /* Pagination dots/arrows */
@@ -300,8 +316,8 @@
             margin-top: 2rem;
         }
         .faq-nav-btn {
-            width: 2.25rem;
-            height: 2.25rem;
+            width: 2rem;
+            height: 2rem;
             border-radius: 50%;
             background: linear-gradient(135deg, #0b877d 0%, #15c3b2 100%);
             display: flex;
@@ -318,22 +334,44 @@
         /* ── Right Column: Form Area ── */
         .faq-contact-area {
             text-align: center;
-            padding: 1rem 2rem;
+            padding: 1.5rem 1rem;
+        }
+        @media (min-width: 768px) {
+            .faq-contact-area {
+                padding: 1rem 2rem;
+            }
         }
         .faq-contact-img {
-            max-width: 280px;
-            margin: 0 auto 2rem;
+            max-width: 240px;
+            margin: 0 auto 1.5rem;
+        }
+        @media (min-width: 768px) {
+            .faq-contact-img {
+                max-width: 280px;
+                margin: 0 auto 2rem;
+            }
         }
         .faq-contact-area h3 {
-            font-size: 1.75rem;
+            font-size: 1.5rem;
             font-weight: 700;
             color: #0f172a;
             margin-bottom: 0.5rem;
         }
+        @media (min-width: 768px) {
+            .faq-contact-area h3 {
+                font-size: 1.75rem;
+            }
+        }
         .faq-contact-area p {
-            font-size: 0.9rem;
+            font-size: 0.85rem;
             color: #94a3b8;
-            margin-bottom: 2rem;
+            margin-bottom: 1.5rem;
+        }
+        @media (min-width: 768px) {
+            .faq-contact-area p {
+                font-size: 0.9rem;
+                margin-bottom: 2rem;
+            }
         }
         .faq-form-group {
             text-align: left;
@@ -539,7 +577,7 @@
             <div class="absolute inset-0 bg-gradient-to-r from-black/60 to-black/25"></div>
         </div>
 
-        <div class="px-6 lg:px-20 max-w-4xl" style="position:relative;z-index:1;">
+        <div class="px-4 sm:px-6 lg:px-20 max-w-4xl" style="position:relative;z-index:1;">
             {{-- Breadcrumb pill --}}
             <div class="faq-breadcrumb">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5 text-teal-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
@@ -550,11 +588,11 @@
                 <span style="color:#fff;font-weight:600;">FAQ</span>
             </div>
 
-            <h1 class="text-4xl lg:text-6xl font-extrabold text-white tracking-tight leading-tight mb-4" style="letter-spacing:-0.02em;">
+            <h1 class="text-3xl sm:text-4xl lg:text-5xl xl:text-6xl font-extrabold text-white tracking-tight leading-tight mb-4" style="letter-spacing:-0.02em;">
                 Frequently Asked<br>
                 <span style="background:linear-gradient(90deg,#2dd4bf,#34d399);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">Questions</span>
             </h1>
-            <p class="text-white/60 text-base lg:text-lg max-w-xl" style="font-weight:400;">
+            <p class="text-white/60 text-sm sm:text-base lg:text-lg max-w-xl" style="font-weight:400;">
                 Everything you need to know about JustMy.Health — answered clearly and concisely.
             </p>
         </div>
@@ -629,7 +667,7 @@
     {{-- ════════════════ FAQ ACCORDION AND FORM ════════════════ --}}
     <section class="faq-section">
         <div class="faq-header-watermark">Frequently Ask Question</div>
-        <div class="max-w-7xl mx-auto px-6 lg:px-12">
+        <div class="max-w-7xl mx-auto px-3 lg:px-12">
             
             <div class="faq-header-wrapper faq-fade">
                 <div class="faq-header-content">
@@ -643,7 +681,7 @@
                 {{-- Left Column: FAQ List --}}
                 <div>
                     <div class="faq-accordion-list">
-                        @foreach (array_merge($faqsLeft, $faqsRight) as $index => $faq)
+                        @foreach ($faqs as $index => $faq)
                         <div
                             id="faq-item-{{ $index }}"
                             class="faq-accordion-item faq-fade"
@@ -651,7 +689,7 @@
                             data-faq
                         >
                             <button class="faq-accordion-trigger" aria-expanded="false" onclick="toggleFaq(this)">
-                                <span class="faq-trigger-question">{{ $faq['q'] }}</span>
+                                <span class="faq-trigger-question">{{ $faq->Question }}</span>
                                 <span class="faq-chevron" aria-hidden="true">
                                     <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
                                         <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/>
@@ -660,7 +698,7 @@
                             </button>
                             <div class="faq-accordion-body" aria-hidden="true">
                                 <div class="faq-accordion-body-inner">
-                                    <p>{!! nl2br(e($faq['a'])) !!}</p>
+                                    <p>{!! nl2br(e($faq->Answer)) !!}</p>
                                 </div>
                             </div>
                         </div>
@@ -701,20 +739,7 @@
                         <h3>Any Question?</h3>
                         <p>You can ask anything you want to know about Feedback.</p>
 
-                        <div class="faq-form-group">
-                            <label class="faq-form-label">Let me know.</label>
-                            <div class="faq-input-wrapper">
-                                <input type="text" class="faq-input" placeholder="Enter Here">
-                                <button type="button" class="faq-input-clear" aria-label="Clear input">&times;</button>
-                            </div>
-                        </div>
-
-                        <button type="button" class="faq-gradient-btn">
-                            Sent 
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3" />
-                            </svg>
-                        </button>
+                        
                     </div>
                 </div>
 
@@ -738,7 +763,7 @@
             </svg>
         </div>
 
-        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-start" style="position:relative;z-index:1;">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-start" style="position:relative;z-index:1;">
 
             {{-- Left: Info card --}}
             <div class="faq-info-card faq-fade">

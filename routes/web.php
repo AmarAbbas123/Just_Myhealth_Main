@@ -171,7 +171,7 @@ Route::view('/test', 'test');
 Route::view('/', 'modules.mod-ps.general.welcome')->name('home');
 
 // Nav pages
-Route::view('/mod-ps/general/faq', 'modules.mod-ps.general.faq')->name('faq');
+Route::get('/mod-ps/general/faq', [\App\Http\Controllers\Modules\Mod01SystemAdministration\FAQ\PublicFAQController::class, 'index'])->name('faq');
 Route::view('/mod-ps/general/about', 'modules.mod-ps.general.about')->name('about');
 Route::view('/mod-ps/general/terms', 'modules.mod-ps.general.terms')->name('terms');
 Route::view('/mod-ps/general/privacy', 'modules.mod-ps.general.privacy')->name('privacy');
@@ -338,6 +338,16 @@ Route::middleware(['auth', 'usertype:admins'])->group(function () {
     Route::get('/mod-01/tm/blog-posts/{blog_post:id}/edit', [BlogPostsController::class, 'edit'])->name('blog-posts.edit');
     Route::put('/mod-01/tm/blog-posts/{blog_post:id}', [BlogPostsController::class, 'update'])->name('blog-posts.update');
     Route::delete('/mod-01/tm/blog-posts/{blog_post:id}', [BlogPostsController::class, 'destroy'])->name('blog-posts.destroy');
+});
+
+// FAQs
+Route::middleware(['auth', 'usertype:admins'])->group(function () {
+    Route::get('/mod-01/tm/faqs', [\App\Http\Controllers\Modules\Mod01SystemAdministration\FAQ\FAQController::class, 'index'])->name('faqs.index');
+    Route::get('/mod-01/tm/faqs/create', [\App\Http\Controllers\Modules\Mod01SystemAdministration\FAQ\FAQController::class, 'create'])->name('faqs.create');
+    Route::post('/mod-01/tm/faqs', [\App\Http\Controllers\Modules\Mod01SystemAdministration\FAQ\FAQController::class, 'store'])->name('faqs.store');
+    Route::get('/mod-01/tm/faqs/{faq}/edit', [\App\Http\Controllers\Modules\Mod01SystemAdministration\FAQ\FAQController::class, 'edit'])->name('faqs.edit');
+    Route::put('/mod-01/tm/faqs/{faq}', [\App\Http\Controllers\Modules\Mod01SystemAdministration\FAQ\FAQController::class, 'update'])->name('faqs.update');
+    Route::delete('/mod-01/tm/faqs/{faq}', [\App\Http\Controllers\Modules\Mod01SystemAdministration\FAQ\FAQController::class, 'destroy'])->name('faqs.destroy');
 });
 
 /*

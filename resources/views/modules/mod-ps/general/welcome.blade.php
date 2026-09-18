@@ -2,7 +2,7 @@
 <x-app-layout>
     <!-- HERO AREA -->
     <section class="relative w-full min-h-[560px] sm:min-h-[620px] md:h-[80vh] flex items-center pt-24 pb-10 md:pt-20 md:pb-0 overflow-hidden">
-    <img src="{{ asset('images/welcome-page/hero-bg.jpeg') }}"
+    <img src="{{ asset('images/welcome-page/hero-bg.jpg') }}"
          alt="A therapist and client connecting during an online video session"
          class="absolute inset-0 w-full h-full object-cover object-center">
 
@@ -545,7 +545,7 @@
                         </ul>
 
                         {{-- CTA button --}}
-                        <a href="{{ route('therapy.service-type.start') }}"
+                        <a href="#"
                            style="display:flex;align-items:center;justify-content:center;gap:0.5rem;
                                   background:linear-gradient(90deg,#0f89a6,#14b8a6);
                                   color:#fff;font-size:1rem;font-weight:700;
