@@ -77,17 +77,91 @@
                     Settings
                 </div>
 
+                {{-- Section: uses a picker select + hidden real input to avoid double-name conflict --}}
+                <div>
+                    <label class="text-xs font-semibold uppercase tracking-wide text-slate-500">
+                        Section <span class="font-normal text-slate-400 normal-case">(optional)</span>
+                    </label>
+                    <p class="text-xs text-slate-400 mt-0.5 mb-2">Group this FAQ under a named section (e.g. Security, Privacy, GDPR).</p>
+
+                    @php
+                        $sections = [
+                            'General', 'Security', 'Privacy', 'GDPR',
+                            'Account', 'Billing', 'Technical',
+                        ];
+                        $currentSection = old('Section', $faq->Section);
+                        $isCustom = $currentSection && !in_array($currentSection, $sections);
+                    @endphp
+
+                    {{-- Hidden input that actually gets submitted --}}
+                    <input type="hidden" name="Section" id="SectionValue" value="{{ $currentSection }}">
+
+                    <select id="SectionPicker"
+                        onchange="syncSection(this.value)"
+                        class="mt-2 w-full rounded-xl border-slate-200 bg-slate-50 focus:bg-white focus:border-indigo-400 focus:ring-indigo-400 transition">
+                        <option value="">— None —</option>
+                        @foreach ($sections as $s)
+                            <option value="{{ $s }}" @selected(!$isCustom && $currentSection === $s)>{{ $s }}</option>
+                        @endforeach
+                        <option value="__custom" @selected($isCustom)>Other / Custom…</option>
+                    </select>
+
+                    <div id="SectionCustomWrap" class="{{ $isCustom ? '' : 'hidden' }} mt-3">
+                        <input type="text" id="SectionCustom"
+                            value="{{ $isCustom ? $currentSection : '' }}"
+                            placeholder="Enter custom section name…"
+                            maxlength="100"
+                            oninput="document.getElementById('SectionValue').value = this.value"
+                            class="w-full rounded-xl border-slate-200 bg-slate-50 focus:bg-white focus:border-indigo-400 focus:ring-indigo-400 transition">
+                    </div>
+
+                    @error('Section')
+                        <p class="mt-1 text-xs text-red-500">{{ $message }}</p>
+                    @enderror
+                </div>
+
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
                     <div>
                         <label class="text-xs font-semibold uppercase tracking-wide text-slate-500">Sort Order</label>
                         <input type="number" name="SortOrder" value="{{ old('SortOrder', $faq->SortOrder) }}" min="0"
                             class="mt-2 w-full rounded-xl border-slate-200 bg-slate-50 focus:bg-white focus:border-indigo-400 focus:ring-indigo-400 transition">
                     </div>
+
+                    <div>
+                        <label class="text-xs font-semibold uppercase tracking-wide text-slate-500">HashTag <span class="font-normal text-slate-400 normal-case">(optional)</span></label>
+                        <div class="relative">
+                            <span class="pointer-events-none absolute inset-y-0 left-3 flex items-center text-slate-400 font-semibold select-none">#</span>
+                            <input type="text" name="HashTag" id="HashTag"
+                                value="{{ old('HashTag', $faq->HashTag) }}"
+                                placeholder="e.g. how-to-register"
+                                maxlength="100"
+                                pattern="[a-zA-Z0-9_-]+"
+                                class="mt-2 w-full rounded-xl border-slate-200 bg-slate-50 focus:bg-white focus:border-indigo-400 focus:ring-indigo-400 transition pl-7"
+                                oninput="this.value = this.value.replace(/^#+/, '')">
+                        </div>
+                        @error('HashTag')
+                            <p class="mt-1 text-xs text-red-500">{{ $message }}</p>
+                        @enderror
+                    </div>
                 </div>
+
+                <script>
+                    function syncSection(val) {
+                        const wrap = document.getElementById('SectionCustomWrap');
+                        const hidden = document.getElementById('SectionValue');
+                        if (val === '__custom') {
+                            wrap.classList.remove('hidden');
+                            hidden.value = document.getElementById('SectionCustom').value;
+                        } else {
+                            wrap.classList.add('hidden');
+                            hidden.value = val;
+                        }
+                    }
+                </script>
             </div>
 
             <!-- Publish settings -->
-            <div class="rounded-2xl border border-slate-200 bg-white shadow-sm p-6">
+            <div class="rounded-2xl border border-slate-200 bg-white shadow-sm p-6 mt-5 mb-5">
                 <label for="IsActive" class="flex items-start justify-between gap-4 cursor-pointer sm:items-center">
                     <span class="min-w-0">
                         <span class="block text-sm font-semibold text-slate-800">Active</span>

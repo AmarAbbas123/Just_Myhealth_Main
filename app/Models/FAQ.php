@@ -13,7 +13,9 @@ class FAQ extends Model
         'Question',
         'Answer',
         'SortOrder',
+        'Section',
         'IsActive',
+        'HashTag',
     ];
 
     protected $casts = [

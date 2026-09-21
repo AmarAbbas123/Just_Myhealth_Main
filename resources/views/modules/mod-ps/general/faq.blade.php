@@ -683,7 +683,7 @@
                     <div class="faq-accordion-list">
                         @foreach ($faqs as $index => $faq)
                         <div
-                            id="faq-item-{{ $index }}"
+                            id="{{ $faq->HashTag ?: 'faq-item-' . $index }}"
                             class="faq-accordion-item faq-fade"
                             style="transition-delay:{{ min($index * 0.05, 0.5) }}s"
                             data-faq
