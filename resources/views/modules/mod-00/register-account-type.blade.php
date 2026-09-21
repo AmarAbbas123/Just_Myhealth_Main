@@ -1,10 +1,10 @@
-﻿﻿﻿<x-app-layout title="Register | Account Type" metaDescription="JustMy.Health - Select account type to register.">
+﻿﻿<x-app-layout title="Register | Account Type" metaDescription="JustMy.Health - Select account type to register.">
 
     {{-- PAGE WRAPPER (OFFSET FOR FIXED HEADER) --}}
     <main class="pt-20 min-h-screen">
 
         <!-- Hero Section -->
-        <section class="relative flex h-56 items-end sm:h-64 sm:items-center lg:h-60">
+        <section class="relative flex h-56 items-center sm:h-64 sm:items-center lg:h-60">
 
             <!-- Background Image -->
             <div class="absolute inset-0 -z-10">
@@ -55,7 +55,7 @@
 
         {{-- MAIN CONTENT --}}
         <section class="px-5 py-10 sm:py-14">
-            <div class="mx-auto grid max-w-7xl grid-cols-1 gap-6 md:grid-cols-4 lg:gap-7">
+            <div class="mx-auto grid max-w-6xl grid-cols-1 gap-6 md:grid-cols-3 lg:gap-7">
 
                 {{-- CLIENT ACCOUNT --}}
                 <div class="group relative flex flex-col overflow-hidden rounded-3xl border border-[#1C9BA0]/15 bg-white shadow-sm transition duration-300 hover:-translate-y-1 hover:shadow-xl hover:shadow-[#1C9BA0]/10">
@@ -219,7 +219,7 @@
                 </div>
 
                 {{-- BUSINESS ACCOUNT --}}
-                <div class="group relative flex flex-col overflow-hidden rounded-3xl border border-[#1C9BA0]/15 bg-white shadow-sm transition duration-300 hover:-translate-y-1 hover:shadow-xl hover:shadow-[#1C9BA0]/10">
+                {{-- <div class="group relative flex flex-col overflow-hidden rounded-3xl border border-[#1C9BA0]/15 bg-white shadow-sm transition duration-300 hover:-translate-y-1 hover:shadow-xl hover:shadow-[#1C9BA0]/10">
                     <div class="absolute -right-10 -top-10 h-28 w-28 rounded-full bg-[#1C9BA0]/5 transition-transform duration-500 group-hover:scale-150"></div>
 
                     <div class="relative flex flex-1 flex-col p-6">
@@ -267,7 +267,7 @@
                             </svg>
                         </a>
                     </div>
-                </div>
+                </div> --}}
 
             </div>
         </section>
