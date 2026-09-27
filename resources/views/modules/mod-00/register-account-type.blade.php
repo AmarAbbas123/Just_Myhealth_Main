@@ -1,4 +1,4 @@
-﻿﻿<x-app-layout title="Register | Account Type" metaDescription="JustMy.Health - Select account type to register.">
+﻿<x-app-layout title="Register | Account Type" metaDescription="JustMy.Health - Select account type to register.">
 
     {{-- PAGE WRAPPER (OFFSET FOR FIXED HEADER) --}}
     <main class="pt-20 min-h-screen">
@@ -257,7 +257,7 @@
                                     <span>{{ $feature }}</span>
                                 </div>
                             @endforeach
-                        </div>
+                        </div> 
 
                         <a href="{{ route('register', ['type' => 'business']) }}"
                             class="mt-6 inline-flex w-full items-center justify-center gap-2 rounded-xl bg-[#1C9BA0] px-5 py-3 text-sm font-semibold text-white shadow-md shadow-[#1C9BA0]/25 transition hover:bg-[#18848F]">
