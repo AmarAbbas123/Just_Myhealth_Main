@@ -448,92 +448,82 @@ $renderMenu = function ($items, $level = 0) use (&$renderMenu) {
 </ul>
 
 <style>
-    /* Prevent any horizontal scroll inside sidebar */
-    aside.z-20 {
-        overflow-x: clip !important;
-    }
+    /* ── Sidebar scroll clip ───────────────────────────────── */
+    aside.z-20 { overflow-x: clip !important; }
+    aside.z-20::-webkit-scrollbar:horizontal { display: none; height: 0; }
+    .sidebar-menu-wrap, .sidebar-menu { max-width: 100%; overflow-x: clip; }
 
-    aside.z-20::-webkit-scrollbar:horizontal {
-        display: none;
-        height: 0;
-    }
-
-    .sidebar-menu-wrap,
-    .sidebar-menu {
-        max-width: 100%;
-        overflow-x: clip;
-    }
-
-    /* Sidebar link styling */
+    /* ── Base link ─────────────────────────────────────────── */
     .sidebar-link {
-        @apply flex items-center gap-2 px-4 py-2.5 text-sm font-medium rounded-lg transition-all duration-150 w-full max-w-full whitespace-nowrap overflow-hidden hover:text-indigo-600 hover:bg-indigo-50 dark:hover:bg-gray-700 dark:hover:text-indigo-400;
         display: flex;
         align-items: center;
-        margin-bottom: 6px;
+        gap: 10px;
+        padding: 8px 12px;
+        margin-bottom: 2px;
+        border-radius: 10px;
+        font-size: 0.8375rem;
+        font-weight: 500;
+        color: #374151;
+        text-decoration: none;
+        transition: background 0.15s, color 0.15s;
+        width: 100%;
+        max-width: 100%;
+        white-space: nowrap;
+        overflow: hidden;
         box-sizing: border-box;
+        cursor: pointer;
+        list-style: none;
     }
 
-    /* Sidebar icons */
+    .sidebar-link:hover {
+        background: #f0fdf9;
+        color: #0d9488;
+    }
+
+    /* ── Icon ───────────────────────────────────────────────── */
     .sidebar-link svg {
-        @apply w-[18px] h-[18px] flex-shrink-0 inline-block align-middle;
-        margin-right: 6px;
+        width: 17px !important;
+        height: 17px !important;
+        flex-shrink: 0;
+        margin-right: 0;
+        display: inline-block;
+        vertical-align: middle;
     }
 
-    /* Sidebar text */
+    /* ── Label ──────────────────────────────────────────────── */
     .sidebar-link .sidebar-label {
-        @apply text-gray-700 dark:text-gray-200;
         display: block;
-        vertical-align: middle;
-        line-height: 1.2;
+        color: inherit;
         overflow: hidden;
         text-overflow: ellipsis;
         white-space: nowrap;
-        min-width: 0;
         flex: 1 1 auto;
+        min-width: 0;
+        line-height: 1.3;
+        vertical-align: middle;
     }
 
-    /* Active link */
+    /* ── Active ─────────────────────────────────────────────── */
     .sidebar-link.active {
-        @apply bg-indigo-100 text-indigo-700 dark:bg-gray-700 dark:text-indigo-400;
+        background: #ccfbf1;
+        color: #0d9488;
+        font-weight: 600;
     }
 
+    /* ── Locked ─────────────────────────────────────────────── */
     .sidebar-link--locked {
         cursor: not-allowed;
         pointer-events: none;
-        opacity: 0.45;
-        filter: grayscale(1) blur(0.35px);
-        color: #9ca3af !important;
-        background: transparent !important;
+        opacity: 0.4;
+        filter: grayscale(1);
     }
 
-    .sidebar-link--locked svg,
-    .sidebar-link--locked .sidebar-label {
-        color: #9ca3af !important;
-    }
-
-    /* Collapsed sidebar: icon-only mode */
-    aside.sidebar-collapsed {
-        overflow-x: clip !important;
-        overflow-y: auto;
-    }
-
-    aside.sidebar-collapsed::-webkit-scrollbar:horizontal {
-        display: none;
-        height: 0;
-    }
-
-    aside.sidebar-collapsed > div {
-        margin-left: 0 !important;
-        overflow-x: clip;
-    }
-
-    aside.sidebar-collapsed .sidebar-menu {
-        overflow-x: clip;
-    }
-
-    aside.sidebar-collapsed .sidebar-menu > li {
-        overflow: visible;
-    }
+    /* ── Collapsed sidebar ──────────────────────────────────── */
+    aside.sidebar-collapsed { overflow-x: clip !important; overflow-y: auto; }
+    aside.sidebar-collapsed::-webkit-scrollbar:horizontal { display: none; height: 0; }
+    aside.sidebar-collapsed > div { margin-left: 0 !important; overflow-x: clip; }
+    aside.sidebar-collapsed .sidebar-menu { overflow-x: clip; }
+    aside.sidebar-collapsed .sidebar-menu > li { overflow: visible; }
 
     aside.sidebar-collapsed .sidebar-menu > li > .sidebar-link,
     aside.sidebar-collapsed .sidebar-menu > li > details.group > summary.sidebar-link {
@@ -548,22 +538,14 @@ $renderMenu = function ($items, $level = 0) use (&$renderMenu) {
         gap: 0;
     }
 
-    /* Icon centered full-width — same as items without submenu */
     aside.sidebar-collapsed .sidebar-menu > li > details.group > summary.sidebar-link > div {
-        flex: none;
-        width: 100%;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        min-width: 0;
+        flex: none; width: 100%; display: flex;
+        justify-content: center; align-items: center; min-width: 0;
     }
 
     aside.sidebar-collapsed .sidebar-menu > li > .sidebar-link > svg,
     aside.sidebar-collapsed .sidebar-menu > li > details.group > summary.sidebar-link > div > svg {
-        width: 18px !important;
-        height: 18px !important;
-        margin: 0 !important;
-        flex-shrink: 0;
+        width: 18px !important; height: 18px !important; margin: 0 !important; flex-shrink: 0;
     }
 
     aside.sidebar-collapsed .sidebar-menu > li > .sidebar-link .sidebar-label,
@@ -571,163 +553,69 @@ $renderMenu = function ($items, $level = 0) use (&$renderMenu) {
         display: none !important;
     }
 
-    /* Submenu arrow — corner badge, does not squeeze the main icon */
     aside.sidebar-collapsed .sidebar-menu > li > details.group > summary.sidebar-link .arrow {
-        display: block !important;
-        position: absolute;
-        bottom: 0.5px;
-        right: 1px;
-        margin: 0;
-        font-size: 0.55rem;
-        line-height: 1;
-        opacity: 0.8;
-        flex-shrink: 0;
-        pointer-events: none;
+        display: block !important; position: absolute; bottom: 0.5px; right: 1px;
+        margin: 0; font-size: 0.55rem; line-height: 1; opacity: 0.7;
+        flex-shrink: 0; pointer-events: none;
     }
 
-    aside.sidebar-collapsed .sidebar-menu > li > details.group {
-        position: static;
-    }
+    aside.sidebar-collapsed .sidebar-menu > li > details.group { position: static; }
 
-    /* Flyout submenu panel (moved to body via JS when open) */
+    /* ── Flyout panel ───────────────────────────────────────── */
     ul.sidebar-submenu-panel.sidebar-flyout-active {
-        position: fixed;
-        top: 0;
-        left: 0;
-        min-width: 240px;
-        max-width: 300px;
+        position: fixed; top: 0; left: 0;
+        min-width: 220px; max-width: 280px;
         max-height: min(80vh, 520px);
-        overflow-y: auto;
-        overflow-x: hidden;
-        width: max-content;
-        margin: 0 !important;
-        padding: 0.5rem 0;
-        border-radius: 0.75rem;
-        background: white;
+        overflow-y: auto; overflow-x: hidden;
+        width: max-content; margin: 0 !important;
+        padding: 6px;
+        border-radius: 12px;
+        background: #ffffff;
         border: 1px solid #e5e7eb;
-        box-shadow: 0 12px 32px rgba(15, 23, 42, 0.18);
+        box-shadow: 0 12px 40px rgba(0,0,0,0.10), 0 2px 8px rgba(0,0,0,0.06);
         z-index: 9998;
-        white-space: normal;
         list-style: none;
     }
 
     .dark ul.sidebar-submenu-panel.sidebar-flyout-active {
-        background: #1f2937;
-        border-color: #374151;
-        color:white;
+        background: #1f2937; border-color: #374151; color: white;
     }
 
     ul.sidebar-submenu-panel.sidebar-flyout-active .sidebar-link {
-        justify-content: flex-start;
-        padding-left: 1rem;
-        padding-right: 1rem;
-        overflow: visible;
-        white-space: nowrap;
+        justify-content: flex-start; padding-left: 1rem; padding-right: 1rem;
+        overflow: visible; white-space: nowrap;
     }
-
-    ul.sidebar-submenu-panel.sidebar-flyout-active .sidebar-link .sidebar-label {
-        display: inline-block !important;
-    }
-
-    ul.sidebar-submenu-panel.sidebar-flyout-active .sidebar-link svg {
-        margin-right: 0.75rem;
-    }
-
+    ul.sidebar-submenu-panel.sidebar-flyout-active .sidebar-link .sidebar-label { display: inline-block !important; }
+    ul.sidebar-submenu-panel.sidebar-flyout-active .sidebar-link svg { margin-right: 0.75rem; }
     ul.sidebar-submenu-panel.sidebar-flyout-active .sidebar-submenu-panel {
-        margin-left: 0.75rem !important;
-        padding-left: 0.5rem !important;
+        margin-left: 0.75rem !important; padding-left: 0.5rem !important;
         border-left: 1px solid #e5e7eb !important;
     }
+    .dark ul.sidebar-submenu-panel.sidebar-flyout-active .sidebar-submenu-panel { border-left-color: #374151 !important; }
+    ul.sidebar-submenu-panel.sidebar-flyout-active details.group > summary.sidebar-link { justify-content: space-between; padding-right: 0.75rem; }
+    ul.sidebar-submenu-panel.sidebar-flyout-active details.group > summary.sidebar-link .arrow { display: block !important; font-size: 0.75rem; margin-left: auto; }
+    ul.sidebar-submenu-panel.sidebar-flyout-active details.group > ul { position: relative; display: none; box-shadow: none; border: none; padding: 0; margin: 0 0 0 0.75rem; min-width: 0; max-width: none; }
+    ul.sidebar-submenu-panel.sidebar-flyout-active details.group[open] > ul { display: block; }
+    aside.sidebar-collapsed .sidebar-menu > li > details.group:not([open]) > ul.sidebar-submenu-panel { display: none !important; }
 
-    .dark ul.sidebar-submenu-panel.sidebar-flyout-active .sidebar-submenu-panel {
-        border-left-color: #374151 !important;
-        color:white;
+    /* ── Summary (parent with children) ────────────────────── */
+    details.group > summary.sidebar-link {
+        justify-content: space-between; width: 100%; max-width: 100%;
+        padding-right: 0.5rem; overflow: hidden; box-sizing: border-box;
     }
+    details.group > summary.sidebar-link > div { min-width: 0; flex: 1 1 auto; overflow: hidden; }
+    details.group > summary.sidebar-link .arrow { margin-left: auto; font-size: 0.7rem; opacity: 0.5; flex-shrink: 0; color: #6b7280; }
+    details.group > summary.sidebar-link svg:not(.arrow) { width: 17px; height: 17px; flex-shrink: 0; }
+    details.group > summary.sidebar-link .sidebar-label { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
-    ul.sidebar-submenu-panel.sidebar-flyout-active details.group > summary.sidebar-link {
-        justify-content: space-between;
-        padding-right: 0.75rem;
-    }
+    /* ── Submenu indented panel ─────────────────────────────── */
+    details.group > ul { overflow-x: hidden; max-width: 100%; }
+    .sidebar-menu { max-width: 100%; overflow-x: hidden; }
+    .sidebar-menu > li { max-width: 100%; overflow: hidden; }
 
-    ul.sidebar-submenu-panel.sidebar-flyout-active details.group > summary.sidebar-link .arrow {
-        display: block !important;
-        font-size: 0.75rem;
-        margin-left: auto;
-    }
-
-    ul.sidebar-submenu-panel.sidebar-flyout-active details.group > ul {
-        position: relative;
-        display: none;
-        box-shadow: none;
-        border: none;
-        padding: 0;
-        margin: 0 0 0 0.75rem;
-        min-width: 0;
-        max-width: none;
-    }
-
-    ul.sidebar-submenu-panel.sidebar-flyout-active details.group[open] > ul {
-        display: block;
-    }
-
-    /* Hide flyout while closed (not portaled) */
-    aside.sidebar-collapsed .sidebar-menu > li > details.group:not([open]) > ul.sidebar-submenu-panel {
-        display: none !important;
-    }
-
-    /* Details summary for main items with submenus */
-    details.group>summary.sidebar-link {
-        justify-content: space-between;
-        width: 100%;
-        max-width: 100%;
-        padding-right: 0.4rem;
-        overflow: hidden;
-        box-sizing: border-box;
-    }
-
-    details.group>summary.sidebar-link > div {
-        min-width: 0;
-        flex: 1 1 auto;
-        overflow: hidden;
-    }
-
-    /* Arrow icon at the end of summary (expanded sidebar) */
-    details.group>summary.sidebar-link .arrow {
-        margin-left: auto;
-        font-size: 0.75rem;
-        opacity: 0.9;
-        flex-shrink: 0;
-    }
-
-    /* Icons inside summary (excluding arrow) */
-    details.group>summary.sidebar-link svg:not(.arrow) {
-        width: 18px;
-        height: 18px;
-        flex-shrink: 0;
-    }
-
-    /* Text inside summary */
-    details.group>summary.sidebar-link .sidebar-label {
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-    }
-
-    /* Submenu ul spacing */
-    details.group>ul {
-        overflow-x: hidden;
-        max-width: 100%;
-    }
-
-    /* Sidebar menu list */
-    .sidebar-menu {
-        max-width: 100%;
-        overflow-x: hidden;
-    }
-
-    .sidebar-menu > li {
-        max-width: 100%;
-        overflow: hidden;
+    /* ── Submenu border accent ──────────────────────────────── */
+    .sidebar-submenu-panel {
+        border-left: 2px solid #ccfbf1 !important;
     }
 </style>
 

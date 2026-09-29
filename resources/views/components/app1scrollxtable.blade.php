@@ -168,7 +168,7 @@
 
             @include('layouts.dashboard-topbar')
 
-            <main class="flex-1 overflow-y-auto p-2 md:p-2 transition-all duration-300">
+            <main class="flex-1 overflow-y-auto px-4 pb-4 md:px-6 md:pb-6 transition-all duration-300">
                 {{ $slot }}
             </main>
 

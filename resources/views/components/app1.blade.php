@@ -69,19 +69,19 @@
 
         {{-- Sidebar (both desktop + mobile handled) --}}
         <aside
-            class="z-20 w-64 overflow-y-auto overflow-x-clip bg-white dark:bg-gray-800 transition-all duration-300 ease-in-out transform
-                fixed inset-y-0 left-0 md:translate-x-0"
+            class="z-20 w-64 overflow-y-auto overflow-x-clip transition-all duration-300 ease-in-out transform fixed inset-y-0 left-0 md:translate-x-0"
+            style="background: #0f172a; border-right: 1px solid rgba(255,255,255,0.06);"
             :class="{
                 '-translate-x-full': !isSideMenuOpen && window.innerWidth < 768,
                 'translate-x-0': isSideMenuOpen || window.innerWidth >= 768,
                 'sidebar-collapsed w-16': !isSidebarOpen && window.innerWidth >= 768,
                 'w-64': isSidebarOpen && window.innerWidth >= 768
             }">
-            <div class="py-4 text-gray-500 dark:text-gray-400 min-w-0 max-w-full overflow-x-clip"
-                :class="isSidebarOpen || window.innerWidth < 768 ? 'ml-3' : 'px-0'">
-                <div class="flex items-center justify-between">
+            <div class="py-5 min-w-0 max-w-full overflow-x-clip"
+                :class="isSidebarOpen || window.innerWidth < 768 ? 'px-3' : 'px-1'">
+                <div class="flex items-center justify-between mb-2">
                     @php $userType = auth()->user()?->UserType; @endphp
-                    <a href="/dashboard" class="text-lg font-bold text-gray-800 dark:text-gray-200"
+                    <a href="/dashboard" class="flex items-center gap-2 px-2"
                         x-show="isSidebarOpen" x-transition>
                         JustMy.Health
                     </a>
@@ -168,7 +168,7 @@
 
             @include('layouts.dashboard-topbar')
 
-            <main class="flex-1 overflow-y-auto p-2 md:p-2 transition-all duration-300">
+            <main class="flex-1 overflow-y-auto px-4 pb-4 md:px-6 md:pb-6 transition-all duration-300">
                 {{ $slot }}
             </main>
 
