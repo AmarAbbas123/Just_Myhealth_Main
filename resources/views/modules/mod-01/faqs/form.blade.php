@@ -4,7 +4,7 @@
         <x-page-header />
     </div>
 
-    <div class="max-w-3xl space-y-6">
+    <div class="max-w-3xl mx-auto w-full space-y-6 px-2 sm:px-4">
 
         <!-- Header -->
         <div class="rounded-2xl border border-slate-200 bg-white shadow-sm overflow-hidden">

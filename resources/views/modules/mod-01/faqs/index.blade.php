@@ -1,9 +1,9 @@
 <x-app1>
 
-    <div class="flex justify-between items-center mb-4">
+    <div class="flex flex-wrap justify-between items-center gap-3 mb-4">
         <x-page-header />
         <a href="{{ route('faqs.create') }}"
-            class="px-4 py-2 bg-indigo-600 text-white rounded-lg shadow hover:bg-indigo-700 transition text-sm font-semibold">
+            class="shrink-0 px-4 py-2 bg-indigo-600 text-white rounded-lg shadow hover:bg-indigo-700 transition text-sm font-semibold">
             + New FAQ
         </a>
     </div>
