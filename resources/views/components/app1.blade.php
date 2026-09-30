@@ -69,8 +69,7 @@
 
         {{-- Sidebar (both desktop + mobile handled) --}}
         <aside
-            class="z-20 w-64 overflow-y-auto overflow-x-clip transition-all duration-300 ease-in-out transform fixed inset-y-0 left-0 md:translate-x-0"
-            style="background: #0f172a; border-right: 1px solid rgba(255,255,255,0.06);"
+            class="z-20 w-64 overflow-y-auto overflow-x-clip transition-all duration-300 ease-in-out transform fixed inset-y-0 left-0 md:translate-x-0 bg-white dark:bg-gray-900 border-r border-gray-200 dark:border-gray-700"
             :class="{
                 '-translate-x-full': !isSideMenuOpen && window.innerWidth < 768,
                 'translate-x-0': isSideMenuOpen || window.innerWidth >= 768,
