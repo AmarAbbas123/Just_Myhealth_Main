@@ -449,8 +449,8 @@ $renderMenu = function ($items, $level = 0) use (&$renderMenu) {
 
 <style>
     /* ── Sidebar scroll clip ───────────────────────────────── */
-    aside.z-20 { overflow-x: clip !important; }
-    aside.z-20::-webkit-scrollbar:horizontal { display: none; height: 0; }
+    aside.z-20 { overflow-x: clip !important; scrollbar-width: none; -ms-overflow-style: none; }
+    aside.z-20::-webkit-scrollbar { display: none; width: 0; height: 0; }
     .sidebar-menu-wrap, .sidebar-menu { max-width: 100%; overflow-x: clip; }
 
     /* ── Base link ─────────────────────────────────────────── */
@@ -519,8 +519,8 @@ $renderMenu = function ($items, $level = 0) use (&$renderMenu) {
     }
 
     /* ── Collapsed sidebar ──────────────────────────────────── */
-    aside.sidebar-collapsed { overflow-x: clip !important; overflow-y: auto; }
-    aside.sidebar-collapsed::-webkit-scrollbar:horizontal { display: none; height: 0; }
+    aside.sidebar-collapsed { overflow-x: clip !important; overflow-y: auto; scrollbar-width: none; -ms-overflow-style: none; }
+    aside.sidebar-collapsed::-webkit-scrollbar { display: none; width: 0; height: 0; }
     aside.sidebar-collapsed > div { margin-left: 0 !important; overflow-x: clip; }
     aside.sidebar-collapsed .sidebar-menu { overflow-x: clip; }
     aside.sidebar-collapsed .sidebar-menu > li { overflow: visible; }

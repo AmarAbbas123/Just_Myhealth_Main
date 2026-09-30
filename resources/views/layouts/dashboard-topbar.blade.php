@@ -1,5 +1,5 @@
-<header class="z-10 bg-white border-b border-gray-200 shadow-sm">
-    <div class="flex items-center justify-between h-14 px-4 sm:px-6">
+<header class="z-10 bg-white border-b border-gray-200 shadow-sm h-14 flex items-center">
+    <div class="flex items-center justify-between w-full px-4 sm:px-6">
 
         {{-- Mobile hamburger --}}
         <button
