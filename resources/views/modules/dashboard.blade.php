@@ -1,30 +1,55 @@
-﻿﻿{{-- resources/views/dashboard.blade.php --}}
+{{-- resources/views/dashboard.blade.php --}}
 
 <x-app1>
     <div class="space-y-6">
         @php
-            $isTherapist = Auth::user()->UserType === 30;
+            $userType = (int) Auth::user()->UserType;
+            $isTherapist = in_array($userType, [30, 31, 32]);
             $userAvatar = Auth::user()->ProfilePhotoPath ? asset('storage/' . Auth::user()->ProfilePhotoPath) : asset('images/avatar1.jfif');
             $therapistWaitingSessions = collect($therapistWaitingSessions ?? []);
             $therapistChats = collect($therapistChats ?? []);
             $patientUpcomingSessions = collect($patientUpcomingSessions ?? []);
             $patientChats = collect($patientChats ?? []);
             $showPatientOnboardingJourney = (bool) ($showPatientOnboardingJourney ?? false);
+
+            // Dynamic label based on user type
+            $userTypeLabel = match(true) {
+                in_array($userType, [90, 91, 99]) => 'Administrator',
+                in_array($userType, [30, 31, 32]) => 'Therapist',
+                $userType === 10               => 'Business',
+                in_array($userType, [1, 2, 3])  => 'User',
+                default                        => 'User',
+            };
         @endphp
 
-        <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-            <div>
-                <h2 class="text-2xl font-semibold text-gray-800 dark:text-gray-100">
-                    {{ $isTherapist ? 'Therapist Home Dashboard' : 'User Home Dashboard' }}
-                </h2>
-                <p class="mt-2 text-sm text-gray-500 dark:text-gray-400">
-                    {{ $isTherapist ? 'Sample content for therapist review and quick page access.' : 'Welcome back. Here is your dashboard overview.' }}
-                </p>
+        {{-- ── Dashboard Header ──────────────────────────────────────────── --}}
+        <div class="mt-4 bg-white rounded-2xl border border-gray-200 shadow-sm px-6 py-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between dark:bg-gray-800 dark:border-gray-700">
+
+            {{-- Left: Title & subtitle --}}
+            <div class="flex items-start gap-3">
+                <div class="mt-1 w-1 h-9 rounded-full shrink-0 bg-teal-500"></div>
+                <div>
+                    <h2 class="text-lg font-bold text-gray-800 dark:text-gray-100 tracking-tight">
+                        {{ $userTypeLabel }} Home Dashboard
+                    </h2>
+                    <p class="mt-0.5 text-sm text-gray-400 dark:text-gray-400">
+                        Welcome to the {{ $userTypeLabel }} Home Dashboard area.
+                    </p>
+                </div>
             </div>
-            <span class="inline-flex items-center px-3 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-full dark:bg-gray-700 dark:text-gray-200">
-                Welcome back, {{ Auth::user()->UserName ?? 'User' }}
-            </span>
+
+            {{-- Right: Welcome badge --}}
+            <div class="flex items-center gap-2.5 shrink-0 self-start sm:self-center bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-xl pl-1.5 pr-4 py-1.5 shadow-sm">
+                <div class="w-7 h-7 rounded-lg flex items-center justify-center text-white text-xs font-bold shrink-0"
+                     style="background: linear-gradient(135deg, #0d9488, #0e7490);">
+                    {{ strtoupper(substr(Auth::user()->UserName ?? 'U', 0, 1)) }}
+                </div>
+                <span class="text-sm font-medium text-gray-600 dark:text-gray-300">
+                    Welcome back, {{ Auth::user()->UserName ?? 'User' }}
+                </span>
+            </div>
         </div>
+
 
         @if($isTherapist)
             <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
