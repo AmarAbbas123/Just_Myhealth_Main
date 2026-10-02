@@ -89,23 +89,26 @@
             {{-- Profile --}}
             <li class="relative" x-data="{ isProfileMenuOpen: false }" @keydown.escape.window="isProfileMenuOpen = false">
                 <button @click="isProfileMenuOpen = !isProfileMenuOpen" aria-label="Account"
-                    class="flex items-center gap-2 px-2.5 py-1.5 rounded-xl border border-gray-200 hover:border-teal-300 hover:bg-teal-50 transition focus:outline-none group">
+                    class="flex items-center gap-2.5 pl-1 pr-3 py-1 rounded-2xl bg-gray-50 border border-gray-100 hover:border-teal-200 hover:bg-teal-50/60 shadow-sm transition-all duration-200 focus:outline-none group">
 
                     @if (!empty(Auth::user()->ProfilePhotoPath) && Storage::disk('public')->exists(Auth::user()->ProfilePhotoPath))
-                        <img class="object-cover w-7 h-7 rounded-full ring-2 ring-teal-100"
+                        <img class="object-cover w-8 h-8 rounded-xl ring-2 ring-white shadow"
                             src="{{ asset('storage/' . Auth::user()->ProfilePhotoPath) }}" alt="User" />
                     @else
-                        <div class="w-7 h-7 rounded-full flex items-center justify-center text-white text-xs font-bold shrink-0"
+                        <div class="w-8 h-8 rounded-xl flex items-center justify-center text-white text-sm font-bold shrink-0 shadow"
                             style="background: linear-gradient(135deg, #1F9CA1, #0e7490);">
                             {{ strtoupper(substr(Auth::user()->UserName ?? 'U', 0, 1)) }}
                         </div>
                     @endif
 
-                    <div class="hidden sm:block text-left leading-tight">
-                        <p class="text-xs font-semibold text-gray-800 max-w-[80px] truncate">{{ Auth::user()->UserName ?? 'Account' }}</p>
-                       
+                    <div class="hidden sm:flex flex-col text-left leading-none gap-0.5">
+                        <p class="text-xs font-semibold text-gray-800 max-w-[90px] truncate">{{ Auth::user()->UserName ?? 'Account' }}</p>
+                        <span class="flex items-center gap-1">
+                            <span class="w-1.5 h-1.5 rounded-full bg-teal-500 inline-block"></span>
+                            <span class="text-[10px] text-teal-600 font-medium">Online</span>
+                        </span>
                     </div>
-                    <svg class="hidden sm:block w-3.5 h-3.5 text-gray-400 group-hover:text-teal-600 transition shrink-0" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                    <svg class="hidden sm:block w-3 h-3 text-gray-400 group-hover:text-teal-600 transition shrink-0 ml-0.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
                     </svg>
                 </button>
