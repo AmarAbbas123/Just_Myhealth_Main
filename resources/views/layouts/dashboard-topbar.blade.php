@@ -103,7 +103,7 @@
 
                     <div class="hidden sm:block text-left leading-tight">
                         <p class="text-xs font-semibold text-gray-800 max-w-[80px] truncate">{{ Auth::user()->UserName ?? 'Account' }}</p>
-                        <span class="text-[9px] font-bold uppercase tracking-wide text-teal-600">Admin</span>
+                       
                     </div>
                     <svg class="hidden sm:block w-3.5 h-3.5 text-gray-400 group-hover:text-teal-600 transition shrink-0" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
