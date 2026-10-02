@@ -20,7 +20,10 @@
                 </div>
                 <input id="tableSearch" type="text" placeholder="Search…" aria-label="Search"
                     class="w-full h-9 pl-9 pr-4 text-sm bg-gray-50 border border-gray-200 rounded-xl text-gray-700 placeholder-gray-400
-                           focus:outline-none focus:bg-white focus:border-teal-400 focus:ring-2 focus:ring-teal-100 transition" />
+                           focus:outline-none focus:bg-white transition"
+                    style="--focus-color: #127F94;"
+                    onfocus="this.style.borderColor='#127F94'; this.style.boxShadow='0 0 0 3px #127F9426';"
+                    onblur="this.style.borderColor=''; this.style.boxShadow='';" />
             </div>
         </div>
 

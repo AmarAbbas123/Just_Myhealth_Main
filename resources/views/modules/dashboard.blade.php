@@ -26,8 +26,12 @@
         <div class="mt-4 bg-white rounded-2xl border border-gray-200 shadow-sm px-6 py-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between dark:bg-gray-800 dark:border-gray-700">
 
             {{-- Left: Title & subtitle --}}
-            <div class="flex items-start gap-3">
-                <div class="mt-1 w-1 h-9 rounded-full shrink-0 bg-teal-500"></div>
+            <div class="flex items-center gap-3">
+                <div class="p-2 rounded-xl shrink-0" style="background: linear-gradient(135deg, #1C9BA0, #127F94);">
+                    <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
+                    </svg>
+                </div>
                 <div>
                     <h2 class="text-lg font-bold text-gray-800 dark:text-gray-100 tracking-tight">
                         {{ $userTypeLabel }} Home Dashboard
@@ -39,11 +43,7 @@
             </div>
 
             {{-- Right: Welcome badge --}}
-            <div class="flex items-center gap-2.5 shrink-0 self-start sm:self-center bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-xl pl-1.5 pr-4 py-1.5 shadow-sm">
-                <div class="w-7 h-7 rounded-lg flex items-center justify-center text-white text-xs font-bold shrink-0"
-                     style="background: linear-gradient(135deg, #0d9488, #0e7490);">
-                    {{ strtoupper(substr(Auth::user()->UserName ?? 'U', 0, 1)) }}
-                </div>
+            <div class="flex items-center shrink-0 self-start sm:self-center bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-xl px-4 py-1.5 shadow-sm">
                 <span class="text-sm font-medium text-gray-600 dark:text-gray-300">
                     Welcome back, {{ Auth::user()->UserName ?? 'User' }}
                 </span>
@@ -52,62 +52,93 @@
 
 
         @if($isTherapist)
-            <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-                <div>
-                    <h3 class="text-xl font-semibold text-gray-800 dark:text-gray-100">Quick Access Links</h3>
-                </div>
+            {{-- Quick Access Links heading --}}
+            <div class="flex items-center gap-2">
+                <svg class="w-5 h-5 text-teal-600 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+                </svg>
+                <h3 class="text-base font-bold text-gray-800 dark:text-gray-100 tracking-tight">Quick Access Links</h3>
             </div>
 
-            <div class="grid gap-4 mt-5 sm:grid-cols-2 xl:grid-cols-3">
-                <div class="flex flex-col justify-between p-5 bg-white rounded-2xl shadow-sm border border-gray-200 dark:bg-gray-800 dark:border-gray-700">
-                    <div class="flex items-center gap-3">
-                        <div class="p-3 rounded-2xl bg-blue-50 text-blue-600 dark:bg-blue-900/20 dark:text-blue-200">
-                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a2 2 0 00-2-2h-3m-4 4H7v-2a2 2 0 00-2-2H2m15-3a3 3 0 11-6 0 3 3 0 016 0zm2 3a4 4 0 00-8 0v2h8v-2z"></path>
+            <div class="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
+
+                {{-- Card 1: Waiting Room --}}
+                <div class="group relative flex flex-col bg-white dark:bg-gray-800 rounded-2xl border border-gray-100 dark:border-gray-700 shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all duration-200 overflow-hidden">
+                    <div class="absolute top-0 left-0 w-full h-0.5 bg-gradient-to-r from-blue-400 to-blue-600 opacity-0 group-hover:opacity-100 transition-opacity duration-200"></div>
+                    <div class="flex items-center gap-3 p-5 pb-4">
+                        <div class="p-2.5 rounded-xl bg-blue-50 dark:bg-blue-900/20 shrink-0">
+                            <svg class="w-5 h-5 text-blue-600 dark:text-blue-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a2 2 0 00-2-2h-3m-4 4H7v-2a2 2 0 00-2-2H2m15-3a3 3 0 11-6 0 3 3 0 016 0zm2 3a4 4 0 00-8 0v2h8v-2z"/>
                             </svg>
                         </div>
-                        <div>
-                            <p class="text-sm font-medium text-gray-600 dark:text-gray-300">Waiting Room</p>
-                            <p class="text-xs text-gray-500 dark:text-gray-400">See live patients waiting.</p>
+                        <div class="min-w-0">
+                            <p class="text-sm font-semibold text-gray-800 dark:text-gray-100">Waiting Room</p>
+                            <p class="text-xs text-gray-400 dark:text-gray-400 mt-0.5 truncate">See live patients waiting.</p>
                         </div>
                     </div>
-                    <a href="/mod-10/my-waiting-room" class="inline-flex items-center justify-center px-4 py-2 mt-6 text-sm font-semibold text-gray-900 bg-yellow-400 rounded-full hover:bg-yellow-500 focus:outline-none focus:ring-2 focus:ring-yellow-500 dark:bg-yellow-500 dark:hover:bg-yellow-400 dark:text-gray-900">
-                        Go Now
-                    </a>
+                    <div class="mt-auto px-5 pb-5">
+                        <a href="/mod-10/my-waiting-room"
+                           class="flex items-center justify-center gap-1.5 w-full py-2 rounded-xl text-sm font-semibold text-white transition-all duration-150"
+                           style="background: linear-gradient(135deg, #1C9BA0, #127F94);"
+                           onmouseover="this.style.opacity='0.9'" onmouseout="this.style.opacity='1'">
+                            Go Now
+                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
+                        </a>
+                    </div>
                 </div>
-                <div class="flex flex-col justify-between p-5 bg-white rounded-2xl shadow-sm border border-gray-200 dark:bg-gray-800 dark:border-gray-700">
-                    <div class="flex items-center gap-3">
-                        <div class="p-3 rounded-2xl bg-green-50 text-green-600 dark:bg-green-900/20 dark:text-green-200">
-                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+
+                {{-- Card 2: Calendar --}}
+                <div class="group relative flex flex-col bg-white dark:bg-gray-800 rounded-2xl border border-gray-100 dark:border-gray-700 shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all duration-200 overflow-hidden">
+                    <div class="absolute top-0 left-0 w-full h-0.5 bg-gradient-to-r from-emerald-400 to-emerald-600 opacity-0 group-hover:opacity-100 transition-opacity duration-200"></div>
+                    <div class="flex items-center gap-3 p-5 pb-4">
+                        <div class="p-2.5 rounded-xl bg-emerald-50 dark:bg-emerald-900/20 shrink-0">
+                            <svg class="w-5 h-5 text-emerald-600 dark:text-emerald-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
                             </svg>
                         </div>
-                        <div>
-                            <p class="text-sm font-medium text-gray-600 dark:text-gray-300">Calendar</p>
-                            <p class="text-xs text-gray-500 dark:text-gray-400">Manage your appointments.</p>
+                        <div class="min-w-0">
+                            <p class="text-sm font-semibold text-gray-800 dark:text-gray-100">Calendar</p>
+                            <p class="text-xs text-gray-400 dark:text-gray-400 mt-0.5 truncate">Manage your appointments.</p>
                         </div>
                     </div>
-                    <a href="{{ route('therapist.calendar.index') }}" class="inline-flex items-center justify-center px-4 py-2 mt-6 text-sm font-semibold text-gray-900 bg-yellow-400 rounded-full hover:bg-yellow-500 focus:outline-none focus:ring-2 focus:ring-yellow-500 dark:bg-yellow-500 dark:hover:bg-yellow-400 dark:text-gray-900">
-                        Go Now
-                    </a>
+                    <div class="mt-auto px-5 pb-5">
+                        <a href="{{ route('therapist.calendar.index') }}"
+                           class="flex items-center justify-center gap-1.5 w-full py-2 rounded-xl text-sm font-semibold text-white transition-all duration-150"
+                           style="background: linear-gradient(135deg, #1C9BA0, #127F94);"
+                           onmouseover="this.style.opacity='0.9'" onmouseout="this.style.opacity='1'">
+                            Go Now
+                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
+                        </a>
+                    </div>
                 </div>
-                <div class="flex flex-col justify-between p-5 bg-white rounded-2xl shadow-sm border border-gray-200 dark:bg-gray-800 dark:border-gray-700">
-                    <div class="flex items-center gap-3">
-                        <div class="p-3 rounded-2xl bg-indigo-50 text-indigo-600 dark:bg-indigo-900/20 dark:text-indigo-200">
-                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+
+                {{-- Card 3: Session History --}}
+                <div class="group relative flex flex-col bg-white dark:bg-gray-800 rounded-2xl border border-gray-100 dark:border-gray-700 shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all duration-200 overflow-hidden">
+                    <div class="absolute top-0 left-0 w-full h-0.5 bg-gradient-to-r from-indigo-400 to-indigo-600 opacity-0 group-hover:opacity-100 transition-opacity duration-200"></div>
+                    <div class="flex items-center gap-3 p-5 pb-4">
+                        <div class="p-2.5 rounded-xl bg-indigo-50 dark:bg-indigo-900/20 shrink-0">
+                            <svg class="w-5 h-5 text-indigo-600 dark:text-indigo-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
                             </svg>
                         </div>
-                        <div>
-                            <p class="text-sm font-medium text-gray-600 dark:text-gray-300">Session History</p>
-                            <p class="text-xs text-gray-500 dark:text-gray-400">Review completed sessions.</p>
+                        <div class="min-w-0">
+                            <p class="text-sm font-semibold text-gray-800 dark:text-gray-100">Session History</p>
+                            <p class="text-xs text-gray-400 dark:text-gray-400 mt-0.5 truncate">Review completed sessions.</p>
                         </div>
                     </div>
-                    <a href="{{ route('therap.session.history') }}" class="inline-flex items-center justify-center px-4 py-2 mt-6 text-sm font-semibold text-gray-900 bg-yellow-400 rounded-full hover:bg-yellow-500 focus:outline-none focus:ring-2 focus:ring-yellow-500 dark:bg-yellow-500 dark:hover:bg-yellow-400 dark:text-gray-900">
-                        Go Now
-                    </a>
+                    <div class="mt-auto px-5 pb-5">
+                        <a href="{{ route('therap.session.history') }}"
+                           class="flex items-center justify-center gap-1.5 w-full py-2 rounded-xl text-sm font-semibold text-white transition-all duration-150"
+                           style="background: linear-gradient(135deg, #1C9BA0, #127F94);"
+                           onmouseover="this.style.opacity='0.9'" onmouseout="this.style.opacity='1'">
+                            Go Now
+                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
+                        </a>
+                    </div>
                 </div>
+
             </div>
+
 
             <div class="grid gap-6 lg:grid-cols-[40%_60%]" x-data='therapistDashboardMessages(@json($therapistChats->values()))' x-init="init()" x-on:beforeunload.window="destroy()">
                 <section class="bg-white dark:bg-gray-800 rounded-3xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
@@ -259,60 +290,89 @@
                 @endif
 
                 <div>
-                    <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-                        <div>
-                            <h3 class="text-xl font-semibold text-gray-800 dark:text-gray-100">Quick Access Links</h3>
-                        </div>
+                    <div class="flex items-center gap-2 mb-2">
+                        <svg class="w-5 h-5 text-teal-600 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+                        </svg>
+                        <h3 class="text-base font-bold text-gray-800 dark:text-gray-100 tracking-tight">Quick Access Links</h3>
                     </div>
-                    <div class="grid gap-4 mt-5 sm:grid-cols-2 xl:grid-cols-3">
-                        <div class="flex flex-col justify-between p-5 bg-white rounded-2xl shadow-sm border border-gray-200 dark:bg-gray-800 dark:border-gray-700">
-                            <div class="flex items-center gap-3">
-                                <div class="p-3 rounded-2xl bg-blue-50 text-blue-600 dark:bg-blue-900/20 dark:text-blue-200">
-                                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <div class="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
+
+                        {{-- Card 1: Session Calendar --}}
+                        <div class="group relative flex flex-col bg-white dark:bg-gray-800 rounded-2xl border border-gray-100 dark:border-gray-700 shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all duration-200 overflow-hidden">
+                            <div class="absolute top-0 left-0 w-full h-0.5 bg-gradient-to-r from-blue-400 to-blue-600 opacity-0 group-hover:opacity-100 transition-opacity duration-200"></div>
+                            <div class="flex items-center gap-3 p-5 pb-4">
+                                <div class="p-2.5 rounded-xl bg-blue-50 dark:bg-blue-900/20 shrink-0">
+                                    <svg class="w-5 h-5 text-blue-600 dark:text-blue-300" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
                                     </svg>
                                 </div>
-                                <div>
-                                    <p class="text-sm font-medium text-gray-600 dark:text-gray-300">Session Calendar</p>
-                                    <p class="text-xs text-gray-500 dark:text-gray-400">View your upcoming sessions.</p>
+                                <div class="min-w-0">
+                                    <p class="text-sm font-semibold text-gray-800 dark:text-gray-100">Session Calendar</p>
+                                    <p class="text-xs text-gray-400 dark:text-gray-400 mt-0.5 truncate">View your upcoming sessions.</p>
                                 </div>
                             </div>
-                            <a href="/mod-10/01/usr-therapy-calendar" class="inline-flex items-center justify-center px-4 py-2 mt-6 text-sm font-semibold text-gray-900 bg-yellow-400 rounded-full hover:bg-yellow-500 focus:outline-none focus:ring-2 focus:ring-yellow-500 dark:bg-yellow-500 dark:hover:bg-yellow-400 dark:text-gray-900">
-                                Go Now
-                            </a>
+                            <div class="mt-auto px-5 pb-5">
+                                <a href="/mod-10/01/usr-therapy-calendar"
+                                   class="flex items-center justify-center gap-1.5 w-full py-2 rounded-xl text-sm font-semibold text-white transition-all duration-150"
+                                   style="background: linear-gradient(135deg, #1C9BA0, #127F94);"
+                                   onmouseover="this.style.opacity='0.9'" onmouseout="this.style.opacity='1'">
+                                    Go Now
+                                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
+                                </a>
+                            </div>
                         </div>
-                        <div class="flex flex-col justify-between p-5 bg-white rounded-2xl shadow-sm border border-gray-200 dark:bg-gray-800 dark:border-gray-700">
-                            <div class="flex items-center gap-3">
-                                <div class="p-3 rounded-2xl bg-green-50 text-green-600 dark:bg-green-900/20 dark:text-green-200">
-                                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+
+                        {{-- Card 2: Purchase Sessions --}}
+                        <div class="group relative flex flex-col bg-white dark:bg-gray-800 rounded-2xl border border-gray-100 dark:border-gray-700 shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all duration-200 overflow-hidden">
+                            <div class="absolute top-0 left-0 w-full h-0.5 bg-gradient-to-r from-emerald-400 to-emerald-600 opacity-0 group-hover:opacity-100 transition-opacity duration-200"></div>
+                            <div class="flex items-center gap-3 p-5 pb-4">
+                                <div class="p-2.5 rounded-xl bg-emerald-50 dark:bg-emerald-900/20 shrink-0">
+                                    <svg class="w-5 h-5 text-emerald-600 dark:text-emerald-300" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2v2H6v6h12v-6h-3v-2c0-1.105-1.343-2-3-2z"></path>
                                     </svg>
                                 </div>
-                                <div>
-                                    <p class="text-sm font-medium text-gray-600 dark:text-gray-300">Purchase Sessions</p>
-                                    <p class="text-xs text-gray-500 dark:text-gray-400">Top up your available session credits.</p>
+                                <div class="min-w-0">
+                                    <p class="text-sm font-semibold text-gray-800 dark:text-gray-100">Purchase Sessions</p>
+                                    <p class="text-xs text-gray-400 dark:text-gray-400 mt-0.5 truncate">Top up your available session credits.</p>
                                 </div>
                             </div>
-                            <a href="/mod-10/01/usr-finances" class="inline-flex items-center justify-center px-4 py-2 mt-6 text-sm font-semibold text-gray-900 bg-yellow-400 rounded-full hover:bg-yellow-500 focus:outline-none focus:ring-2 focus:ring-yellow-500 dark:bg-yellow-500 dark:hover:bg-yellow-400 dark:text-gray-900">
-                                Go Now
-                            </a>
+                            <div class="mt-auto px-5 pb-5">
+                                <a href="/mod-10/01/usr-finances"
+                                   class="flex items-center justify-center gap-1.5 w-full py-2 rounded-xl text-sm font-semibold text-white transition-all duration-150"
+                                   style="background: linear-gradient(135deg, #1C9BA0, #127F94);"
+                                   onmouseover="this.style.opacity='0.9'" onmouseout="this.style.opacity='1'">
+                                    Go Now
+                                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
+                                </a>
+                            </div>
                         </div>
-                        <div class="flex flex-col justify-between p-5 bg-white rounded-2xl shadow-sm border border-gray-200 dark:bg-gray-800 dark:border-gray-700">
-                            <div class="flex items-center gap-3">
-                                <div class="p-3 rounded-2xl bg-pink-50 text-pink-600 dark:bg-pink-900/20 dark:text-pink-200">
-                                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+
+                        {{-- Card 3: Session History --}}
+                        <div class="group relative flex flex-col bg-white dark:bg-gray-800 rounded-2xl border border-gray-100 dark:border-gray-700 shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all duration-200 overflow-hidden">
+                            <div class="absolute top-0 left-0 w-full h-0.5 bg-gradient-to-r from-pink-400 to-pink-600 opacity-0 group-hover:opacity-100 transition-opacity duration-200"></div>
+                            <div class="flex items-center gap-3 p-5 pb-4">
+                                <div class="p-2.5 rounded-xl bg-pink-50 dark:bg-pink-900/20 shrink-0">
+                                    <svg class="w-5 h-5 text-pink-600 dark:text-pink-300" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                                     </svg>
                                 </div>
-                                <div>
-                                    <p class="text-sm font-medium text-gray-600 dark:text-gray-300">Session History</p>
-                                    <p class="text-xs text-gray-500 dark:text-gray-400">Review past therapy sessions.</p>
+                                <div class="min-w-0">
+                                    <p class="text-sm font-semibold text-gray-800 dark:text-gray-100">Session History</p>
+                                    <p class="text-xs text-gray-400 dark:text-gray-400 mt-0.5 truncate">Review past therapy sessions.</p>
                                 </div>
                             </div>
-                            <a href="/mod-10/01/usr-therapy-history" class="inline-flex items-center justify-center px-4 py-2 mt-6 text-sm font-semibold text-gray-900 bg-yellow-400 rounded-full hover:bg-yellow-500 focus:outline-none focus:ring-2 focus:ring-yellow-500 dark:bg-yellow-500 dark:hover:bg-yellow-400 dark:text-gray-900">
-                                Go Now
-                            </a>
+                            <div class="mt-auto px-5 pb-5">
+                                <a href="/mod-10/01/usr-therapy-history"
+                                   class="flex items-center justify-center gap-1.5 w-full py-2 rounded-xl text-sm font-semibold text-white transition-all duration-150"
+                                   style="background: linear-gradient(135deg, #1C9BA0, #127F94);"
+                                   onmouseover="this.style.opacity='0.9'" onmouseout="this.style.opacity='1'">
+                                    Go Now
+                                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
+                                </a>
+                            </div>
                         </div>
+
                     </div>
                 </div>
 
