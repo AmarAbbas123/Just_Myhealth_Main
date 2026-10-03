@@ -162,14 +162,14 @@
                                 @if ($photo)
                                     <img src="{{ $photo }}" 
                                          alt="{{ $fullName }}" 
-                                         class="w-16 h-16 sm:w-20 sm:h-20 rounded-full object-cover ring-2 ring-gray-100 dark:ring-gray-700 shadow-sm"
+                                         class="w-12 h-12 sm:w-14 sm:h-14 rounded-full object-cover ring-2 ring-gray-100 dark:ring-gray-700 shadow-sm"
                                          onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" />
-                                    <div class="w-16 h-16 sm:w-20 sm:h-20 rounded-full items-center justify-center text-white text-xl font-bold shadow-sm"
+                                    <div class="w-12 h-12 sm:w-14 sm:h-14 rounded-full items-center justify-center text-white text-base sm:text-lg font-bold shadow-sm"
                                          style="display:none; background: linear-gradient(135deg, #1C9BA0, #127F94);">
                                         {{ $initials }}
                                     </div>
                                 @else
-                                    <div class="w-16 h-16 sm:w-20 sm:h-20 rounded-full flex items-center justify-center text-white text-xl font-bold shadow-sm"
+                                    <div class="w-12 h-12 sm:w-14 sm:h-14 rounded-full flex items-center justify-center text-white text-base sm:text-lg font-bold shadow-sm"
                                          style="background: linear-gradient(135deg, #1C9BA0, #127F94);">
                                         {{ $initials }}
                                     </div>
@@ -181,7 +181,7 @@
                                     {{ $fullName }}
                                 </h4>
 
-                                <p class="text-sm text-gray-500 dark:text-gray-400 mt-1 font-normal">
+                                <p class="text-sm text-gray-600 dark:text-gray-300 mt-1 font-normal">
                                     {{ $location ?: 'Location available upon request' }}
                                 </p>
                             </div>
@@ -336,8 +336,8 @@
                         <div class="md:col-span-5 space-y-4">
                             
                             <!-- Information Card -->
-                            <div class="p-4 sm:p-5 rounded-2xl bg-slate-50/90 dark:bg-gray-750/70 border border-gray-100 dark:border-gray-700/80 space-y-3">
-                                <h4 class="text-xs font-bold uppercase tracking-wider text-gray-400 dark:text-gray-400 flex items-center gap-1.5">
+                            <div class="p-4 sm:p-5 rounded-2xl bg-slate-50/90 dark:bg-gray-700/30 border border-gray-100 dark:border-gray-700/70 space-y-3">
+                                <h4 class="text-xs font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400 flex items-center gap-1.5">
                                     <svg class="w-4 h-4 text-[#1C9BA0]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
                                     Overview
                                 </h4>
@@ -345,31 +345,31 @@
                                 <div class="space-y-2 text-xs sm:text-sm">
                                     <div class="flex items-start justify-between gap-2 pb-2 border-b border-gray-200/60 dark:border-gray-700/60">
                                         <span class="text-gray-500 dark:text-gray-400">Location</span>
-                                        <span class="font-medium text-gray-800 dark:text-gray-200 text-right" 
+                                        <span class="font-medium text-gray-900 dark:text-gray-100 text-right" 
                                               x-text="(therapist.BaseCity || '') + (therapist.BaseCity && therapist.BaseCountry ? ', ' : '') + (therapist.BaseCountry || '-')"></span>
                                     </div>
 
                                     <div x-show="therapist.PreferredSalutation" class="flex items-center justify-between gap-2 pb-2 border-b border-gray-200/60 dark:border-gray-700/60">
                                         <span class="text-gray-500 dark:text-gray-400">Salutation</span>
-                                        <span class="font-medium text-gray-800 dark:text-gray-200" x-text="therapist.PreferredSalutation"></span>
+                                        <span class="font-medium text-gray-900 dark:text-gray-100" x-text="therapist.PreferredSalutation"></span>
                                     </div>
 
                                     <div x-show="therapist.LanguagePrimary" class="flex items-center justify-between gap-2 pb-2 border-b border-gray-200/60 dark:border-gray-700/60">
                                         <span class="text-gray-500 dark:text-gray-400">Primary</span>
-                                        <span class="font-medium text-gray-800 dark:text-gray-200" x-text="therapist.LanguagePrimary"></span>
+                                        <span class="font-medium text-gray-900 dark:text-gray-100" x-text="therapist.LanguagePrimary"></span>
                                     </div>
 
                                     <div x-show="therapist.LanguageSecondary" class="flex items-center justify-between gap-2">
                                         <span class="text-gray-500 dark:text-gray-400">Secondary</span>
-                                        <span class="font-medium text-gray-800 dark:text-gray-200" x-text="therapist.LanguageSecondary"></span>
+                                        <span class="font-medium text-gray-900 dark:text-gray-100" x-text="therapist.LanguageSecondary"></span>
                                     </div>
                                 </div>
                             </div>
 
                             <!-- Therapy Services Card -->
                             <div x-show="[1,2,3,4,5].some(i => therapist['TherapyType'+i])"
-                                 class="p-4 sm:p-5 rounded-2xl bg-slate-50/90 dark:bg-gray-750/70 border border-gray-100 dark:border-gray-700/80 space-y-3">
-                                <h4 class="text-xs font-bold uppercase tracking-wider text-gray-400 dark:text-gray-400 flex items-center gap-1.5">
+                                 class="p-4 sm:p-5 rounded-2xl bg-slate-50/90 dark:bg-gray-700/30 border border-gray-100 dark:border-gray-700/70 space-y-3">
+                                <h4 class="text-xs font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400 flex items-center gap-1.5">
                                     <svg class="w-4 h-4 text-[#1C9BA0]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
                                     Therapy Services
                                 </h4>
@@ -378,8 +378,8 @@
                                     <template x-for="i in [1,2,3,4,5]">
                                         <div x-show="therapist['TherapyType'+i]" 
                                              class="p-2.5 rounded-xl bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700/70 flex items-center justify-between gap-2 shadow-2xs">
-                                            <span class="font-semibold text-xs sm:text-sm text-gray-800 dark:text-gray-200" x-text="therapist['TherapyType'+i]"></span>
-                                            <span class="text-xs font-semibold px-2 py-0.5 rounded-md whitespace-nowrap" style="background: rgba(28, 155, 160, 0.12); color: #1C9BA0;">
+                                            <span class="font-semibold text-xs sm:text-sm text-gray-800 dark:text-gray-100" x-text="therapist['TherapyType'+i]"></span>
+                                            <span class="text-xs font-semibold px-2 py-0.5 rounded-md whitespace-nowrap" style="background: rgba(28, 155, 160, 0.15); color: #1C9BA0;">
                                                 <span x-text="therapist['TherapyYearsExperience'+i]"></span> Yrs
                                             </span>
                                         </div>
@@ -389,8 +389,8 @@
 
                             <!-- Qualifications (if present) -->
                             <div x-show="[1,2,3,4].some(i => therapist['QualificationTitle'+i])"
-                                 class="p-4 sm:p-5 rounded-2xl bg-slate-50/90 dark:bg-gray-750/70 border border-gray-100 dark:border-gray-700/80 space-y-3">
-                                <h4 class="text-xs font-bold uppercase tracking-wider text-gray-400 dark:text-gray-400 flex items-center gap-1.5">
+                                 class="p-4 sm:p-5 rounded-2xl bg-slate-50/90 dark:bg-gray-700/30 border border-gray-100 dark:border-gray-700/70 space-y-3">
+                                <h4 class="text-xs font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400 flex items-center gap-1.5">
                                     <svg class="w-4 h-4 text-[#1C9BA0]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg>
                                     Credentials
                                 </h4>
