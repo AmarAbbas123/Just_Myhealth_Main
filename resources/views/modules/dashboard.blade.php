@@ -140,121 +140,213 @@
             </div>
 
 
-            <div class="grid gap-6 lg:grid-cols-[40%_60%]" x-data='therapistDashboardMessages(@json($therapistChats->values()))' x-init="init()" x-on:beforeunload.window="destroy()">
-                <section class="bg-white dark:bg-gray-800 rounded-3xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
-                    <div class="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+            <div class="grid gap-6 lg:grid-cols-12 items-start" x-data='therapistDashboardMessages(@json($therapistChats->values()))' x-init="init()" x-on:beforeunload.window="destroy()">
+                
+                <!-- Waiting Room Card -->
+                <section class="lg:col-span-5 relative bg-white dark:bg-gray-800 rounded-2xl sm:rounded-3xl shadow-[0_4px_25px_-5px_rgba(0,0,0,0.06)] dark:shadow-none border border-gray-100 dark:border-gray-700/80 p-5 sm:p-6 overflow-hidden flex flex-col justify-between">
+                    <!-- Card Header -->
+                    <div class="flex items-center gap-3 mb-5">
+                        <div class="w-10 h-10 rounded-xl flex items-center justify-center text-white shrink-0 shadow-xs"
+                             style="background: linear-gradient(135deg, #1C9BA0, #127F94);">
+                            <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                            </svg>
+                        </div>
                         <div>
-                            <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-100">Waiting Room</h3>
-                            <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">Active patients currently waiting to begin their sessions.</p>
+                            <h3 class="text-base sm:text-lg font-bold text-gray-900 dark:text-gray-100 tracking-tight">Waiting Room</h3>
+                            <p class="text-xs text-gray-500 dark:text-gray-400">Active patients currently waiting to begin their sessions.</p>
                         </div>
                     </div>
-                    <div class="mt-6 rounded-3xl border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900 overflow-hidden">
-                        <div class="hidden gap-4 border-b border-gray-200 bg-white px-4 py-3 text-xs font-semibold uppercase tracking-wide text-gray-500 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 sm:grid sm:grid-cols-[minmax(0,1.6fr)_minmax(0,1fr)_minmax(140px,auto)]">
+
+                    <!-- Waiting Room Content Box -->
+                    <div class="rounded-xl sm:rounded-2xl border border-gray-100 dark:border-gray-700/80 bg-gray-50/50 dark:bg-gray-900/40 overflow-hidden">
+                        <!-- Table Headers -->
+                        <div class="hidden gap-4 border-b border-gray-100 dark:border-gray-700/80 bg-gray-50/90 dark:bg-gray-800/90 px-4 py-3 text-[11px] font-bold uppercase tracking-wider text-gray-400 dark:text-gray-400 sm:grid sm:grid-cols-[minmax(0,1.6fr)_minmax(0,1fr)_minmax(140px,auto)]">
                             <span>Session</span>
                             <span>Patient</span>
                             <span class="text-right">Date/Time</span>
                         </div>
-                        <div class="divide-y divide-gray-200 dark:divide-gray-700">
+
+                        <!-- Waiting Sessions List -->
+                        <div class="divide-y divide-gray-100 dark:divide-gray-700/60">
                             @forelse ($therapistWaitingSessions as $session)
-                                <div class="grid grid-cols-1 gap-4 px-4 py-4 text-sm text-gray-700 dark:text-gray-200 sm:grid-cols-[minmax(0,1.6fr)_minmax(0,1fr)_minmax(140px,auto)] sm:items-center">
+                                <div class="grid grid-cols-1 gap-3 sm:gap-4 px-4 py-3.5 text-sm text-gray-700 dark:text-gray-200 sm:grid-cols-[minmax(0,1.6fr)_minmax(0,1fr)_minmax(140px,auto)] sm:items-center hover:bg-white dark:hover:bg-gray-800/60 transition-colors">
                                     <div class="flex items-center gap-3">
-                                        <img src="{{ $session['avatar'] }}" alt="{{ $session['person_name'] }}" class="h-10 w-10 flex-shrink-0 rounded-full object-cover">
+                                        <img src="{{ $session['avatar'] }}" alt="{{ $session['person_name'] }}" class="h-9 w-9 flex-shrink-0 rounded-full object-cover ring-2 ring-gray-100 dark:ring-gray-700">
                                         <div class="min-w-0">
-                                            <p class="font-semibold truncate">{{ $session['title'] }}</p>
-                                            <p class="text-xs text-gray-500 dark:text-gray-400">{{ $session['subtitle'] }}</p>
+                                            <p class="font-semibold text-xs sm:text-sm text-gray-900 dark:text-gray-100 truncate">{{ $session['title'] }}</p>
+                                            <p class="text-[11px] text-gray-500 dark:text-gray-400">{{ $session['subtitle'] }}</p>
                                         </div>
                                     </div>
-                                    <div class="space-y-1">
-                                        <p class="text-[11px] font-semibold uppercase tracking-wide text-gray-400 dark:text-gray-500 sm:hidden">Patient</p>
-                                        <p class="text-sm text-gray-600 dark:text-gray-400">{{ $session['person_name'] }}</p>
+                                    <div class="space-y-0.5">
+                                        <p class="text-[10px] font-semibold uppercase tracking-wider text-gray-400 dark:text-gray-500 sm:hidden">Patient</p>
+                                        <p class="text-xs sm:text-sm text-gray-700 dark:text-gray-300 font-medium">{{ $session['person_name'] }}</p>
                                     </div>
-                                    <div class="space-y-1 sm:text-right">
-                                        <p class="text-[11px] font-semibold uppercase tracking-wide text-gray-400 dark:text-gray-500 sm:hidden">Date/Time</p>
-                                        <p class="text-xs text-gray-500 dark:text-gray-400">{{ $session['date_time'] }}</p>
+                                    <div class="space-y-0.5 sm:text-right">
+                                        <p class="text-[10px] font-semibold uppercase tracking-wider text-gray-400 dark:text-gray-500 sm:hidden">Date/Time</p>
+                                        <p class="text-xs text-gray-500 dark:text-gray-400 font-medium">{{ $session['date_time'] }}</p>
                                     </div>
                                 </div>
                             @empty
-                                <div class="px-4 py-6 text-sm text-gray-500 dark:text-gray-400">
-                                    No active waiting-room sessions right now.
+                                <div class="py-12 px-4 text-center flex flex-col items-center justify-center">
+                                    <div class="w-12 h-12 rounded-2xl bg-gray-100 dark:bg-gray-800 text-gray-400 dark:text-gray-500 flex items-center justify-center mb-3 shadow-2xs">
+                                        <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                                        </svg>
+                                    </div>
+                                    <p class="text-xs sm:text-sm font-semibold text-gray-800 dark:text-gray-200">No active waiting-room sessions</p>
+                                    <p class="text-xs text-gray-400 dark:text-gray-500 mt-0.5">Patients waiting for a session will appear here in real time.</p>
                                 </div>
                             @endforelse
                         </div>
                     </div>
                 </section>
 
-                <section class="bg-white dark:bg-gray-800 rounded-3xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
-                    <div class="flex items-start justify-between gap-4">
+                <!-- Recent Messages Card -->
+                <section class="lg:col-span-7 relative bg-white dark:bg-gray-800 rounded-2xl sm:rounded-3xl shadow-[0_4px_25px_-5px_rgba(0,0,0,0.06)] dark:shadow-none border border-gray-100 dark:border-gray-700/80 p-5 sm:p-6 overflow-hidden">
+                    <!-- Card Header -->
+                    <div class="flex items-center gap-3 mb-5">
+                        <div class="w-10 h-10 rounded-xl flex items-center justify-center text-white shrink-0 shadow-xs"
+                             style="background: linear-gradient(135deg, #1C9BA0, #127F94);">
+                            <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/>
+                            </svg>
+                        </div>
                         <div>
-                            <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-100">Recent Messages</h3>
-                            <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">Recent client conversations from your dashboard.</p>
+                            <h3 class="text-base sm:text-lg font-bold text-gray-900 dark:text-gray-100 tracking-tight">Recent Messages</h3>
+                            <p class="text-xs text-gray-500 dark:text-gray-400">Recent client conversations from your dashboard.</p>
                         </div>
                     </div>
-                    <div class="mt-6 grid gap-4 lg:grid-cols-[35%_65%]">
-                        <div class="rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 shadow-sm overflow-y-auto max-h-[70vh] sm:max-h-[60vh] p-4">
-                            <div class="mb-4">
-                                <input x-model="searchQuery" type="text" placeholder="Search patient name..."
-                                    class="w-full rounded-lg border border-gray-300 dark:border-gray-700 bg-gray-50 dark:bg-gray-900 px-3 py-2 text-sm text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-purple-500" />
-                            </div>
-                            <template x-for="patient in filteredItems" :key="patient.id">
-                                <button @click="setActiveChat(patient)" type="button"
-                                    class="flex w-full items-start gap-3 rounded-3xl p-3 text-left transition hover:bg-gray-50 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-purple-400 dark:focus:ring-purple-700"
-                                    :class="activeChat?.id === patient.id ? 'bg-purple-50 dark:bg-purple-800/20' : ''">
-                                    <img :src="patient.avatar" alt="" class="h-10 w-10 rounded-full object-cover">
-                                    <div class="flex-1 min-w-0">
-                                        <div class="flex items-center justify-between gap-2">
-                                            <p class="font-semibold text-sm text-gray-900 dark:text-gray-100 truncate" x-text="patient.name"></p>
-                                            <p class="text-[10px] sm:text-xs text-gray-400" x-text="formatDateTimeLabel(patient)"></p>
-                                        </div>
-                                        <p class="mt-1 text-[11px] sm:text-xs text-gray-500 dark:text-gray-400 truncate" x-text="truncateText(patient.lastMessage)"></p>
-                                        <p class="mt-1 text-[10px] text-gray-400 truncate" x-text="patient.dateTime"></p>
+
+                    <!-- Two-Pane Messages Layout -->
+                    <div class="grid gap-4 sm:gap-5 lg:grid-cols-[38%_62%]">
+                        
+                        <!-- Patient List Sub-Pane -->
+                        <div class="rounded-xl sm:rounded-2xl border border-gray-100 dark:border-gray-700/80 bg-gray-50/40 dark:bg-gray-900/30 shadow-2xs overflow-hidden flex flex-col h-[65vh] sm:h-[55vh]">
+                            <div class="p-3 border-b border-gray-100 dark:border-gray-700/80 bg-white/70 dark:bg-gray-800/70">
+                                <div class="relative">
+                                    <div class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400 dark:text-gray-500">
+                                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                                        </svg>
                                     </div>
-                                </button>
-                            </template>
-                            <template x-if="filteredItems.length === 0">
-                                <p class="text-center text-gray-500 text-sm mt-3">No messages found.</p>
-                            </template>
+                                    <input
+                                        x-model="searchQuery"
+                                        type="text"
+                                        placeholder="Search patient name..."
+                                        class="w-full pl-9 pr-3 py-2 rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 text-xs sm:text-sm text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:border-[#1C9BA0] focus:ring-2 focus:ring-[#1C9BA0]/20 transition-all shadow-2xs" />
+                                </div>
+                            </div>
+
+                            <!-- List Body -->
+                            <div class="flex-1 overflow-y-auto divide-y divide-gray-100 dark:divide-gray-700/50 p-1.5 space-y-1">
+                                <template x-for="patient in filteredItems" :key="patient.id">
+                                    <button
+                                        @click="setActiveChat(patient)"
+                                        type="button"
+                                        class="w-full flex items-start gap-3 rounded-xl sm:rounded-2xl p-2.5 text-left transition-all cursor-pointer relative select-none border-l-4"
+                                        :class="activeChat?.id === patient.id
+                                            ? 'border-l-[#1C9BA0] bg-[#1C9BA0]/10 dark:bg-[#1C9BA0]/20 text-gray-900 dark:text-gray-100'
+                                            : 'border-l-transparent hover:bg-white dark:hover:bg-gray-800/80 text-gray-700 dark:text-gray-300'">
+
+                                        <div class="relative shrink-0 mt-0.5">
+                                            <img :src="patient.avatar" alt="" class="h-9 w-9 rounded-full object-cover ring-2 ring-gray-100 dark:ring-gray-700 shadow-2xs">
+                                            <span class="absolute bottom-0 right-0 w-2 h-2 rounded-full bg-emerald-500 ring-1 ring-white dark:ring-gray-800"></span>
+                                        </div>
+
+                                        <div class="flex-1 min-w-0">
+                                            <div class="flex items-center justify-between gap-1 mb-0.5">
+                                                <p class="font-bold text-xs sm:text-sm truncate" x-text="patient.name"></p>
+                                                <span class="text-[10px] text-gray-400 dark:text-gray-500 whitespace-nowrap shrink-0" x-text="formatDateTimeLabel(patient)"></span>
+                                            </div>
+                                            <p class="text-[11px] text-gray-500 dark:text-gray-400 truncate" x-text="truncateText(patient.lastMessage)"></p>
+                                            <p class="text-[10px] text-gray-400 dark:text-gray-500 mt-0.5" x-text="patient.dateTime"></p>
+                                        </div>
+                                    </button>
+                                </template>
+                                <template x-if="filteredItems.length === 0">
+                                    <p class="text-center text-gray-400 dark:text-gray-500 text-xs py-8">No messages found.</p>
+                                </template>
+                            </div>
                         </div>
-                        <div class="rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 shadow-sm flex flex-col h-[70vh] sm:h-[60vh]">
+
+                        <!-- Chat Conversation Window Sub-Pane -->
+                        <div class="rounded-xl sm:rounded-2xl border border-gray-100 dark:border-gray-700/80 bg-white dark:bg-gray-800 shadow-2xs flex flex-col h-[65vh] sm:h-[55vh] overflow-hidden">
                             <template x-if="activeChat">
                                 <div class="flex flex-col h-full">
-                                    <div class="border-b border-gray-200 dark:border-gray-700 p-3 flex items-center gap-3">
-                                        <img :src="activeChat.avatar" alt="" class="w-10 h-10 rounded-full object-cover">
-                                        <div>
-                                            <p class="font-semibold text-gray-900 dark:text-gray-100" x-text="activeChat.name"></p>
-                                            <p class="text-xs text-gray-500 dark:text-gray-400" x-text="formatDateTimeLabel(activeChat)"></p>
+
+                                    <!-- Chat Header -->
+                                    <div class="border-b border-gray-100 dark:border-gray-700/80 px-4 py-3 flex items-center justify-between bg-gray-50/50 dark:bg-gray-800/80">
+                                        <div class="flex items-center gap-2.5">
+                                            <div class="relative">
+                                                <img :src="activeChat.avatar" alt="" class="w-8 h-8 rounded-full object-cover ring-2 ring-gray-100 dark:ring-gray-700 shadow-2xs">
+                                                <span class="absolute bottom-0 right-0 w-2 h-2 rounded-full bg-emerald-500 ring-1 ring-white dark:ring-gray-800"></span>
+                                            </div>
+                                            <div>
+                                                <p class="font-bold text-xs sm:text-sm text-gray-900 dark:text-gray-100 leading-tight" x-text="activeChat.name"></p>
+                                                <p class="text-[10px] text-gray-400 dark:text-gray-500" x-text="formatDateTimeLabel(activeChat)"></p>
+                                            </div>
                                         </div>
                                     </div>
-                                    <div class="flex-1 overflow-y-auto p-4 space-y-4" x-ref="chatWindow" @scroll="trackScroll()">
+
+                                    <!-- Messages Stream Body -->
+                                    <div class="flex-1 overflow-y-auto p-3.5 sm:p-4 space-y-3 bg-gray-50/30 dark:bg-gray-900/20" x-ref="chatWindow" @scroll="trackScroll()">
                                         <template x-for="msg in activeChat.messages" :key="msg.id">
                                             <div>
-                                                <div x-show="msg.sender === 'patient'" class="flex items-start gap-3">
-                                                    <img :src="activeChat.avatar" alt="" class="w-8 h-8 rounded-full object-cover">
-                                                    <div class="bg-gray-100 dark:bg-gray-700 rounded-lg p-3 max-w-xs">
-                                                        <p class="text-sm text-gray-800 dark:text-gray-100" x-html="formatMessage(msg.text)"></p>
-                                                        <p class="text-xs text-gray-400 mt-1" x-text="formatDateTimeLabel(msg)"></p>
+                                                <!-- Patient Message (Incoming) -->
+                                                <div x-show="msg.sender === 'patient'" class="flex items-end gap-2 max-w-[85%] sm:max-w-[75%]">
+                                                    <img :src="activeChat.avatar" alt="" class="w-6 h-6 rounded-full object-cover shrink-0 mb-1 ring-1 ring-gray-200 dark:ring-gray-700">
+                                                    <div class="bg-white dark:bg-gray-700/80 text-gray-800 dark:text-gray-100 rounded-2xl rounded-bl-xs p-3 shadow-2xs border border-gray-100 dark:border-gray-600/50 text-xs sm:text-sm leading-relaxed">
+                                                        <p x-html="formatMessage(msg.text)"></p>
+                                                        <p class="text-[10px] text-gray-400 dark:text-gray-400 mt-1 text-right font-medium" x-text="formatDateTimeLabel(msg)"></p>
                                                     </div>
                                                 </div>
+
+                                                <!-- Therapist Message (Outgoing - Brand Gradient) -->
                                                 <div x-show="msg.sender === 'therapist'" class="flex justify-end">
-                                                    <div class="bg-green-600 text-white rounded-lg shadow p-3 max-w-xs">
-                                                        <p class="text-sm" x-html="formatMessage(msg.text)"></p>
-                                                        <p class="text-xs text-green-100 mt-1 text-right" x-text="formatDateTimeLabel(msg)"></p>
+                                                    <div class="text-white rounded-2xl rounded-br-xs p-3 max-w-[85%] sm:max-w-[75%] shadow-2xs text-xs sm:text-sm leading-relaxed"
+                                                         style="background: linear-gradient(135deg, #1C9BA0, #127F94);">
+                                                        <p class="text-white" x-html="formatMessage(msg.text)"></p>
+                                                        <p class="text-[10px] text-teal-100/80 mt-1 text-right font-medium" x-text="formatDateTimeLabel(msg)"></p>
                                                     </div>
                                                 </div>
                                             </div>
                                         </template>
                                     </div>
-                                    <form @submit.prevent="sendMessage()" class="flex flex-wrap items-center gap-2 p-3 border-t border-gray-100 dark:border-gray-700">
-                                        <input x-model="newMessage" placeholder="Type a message..." class="flex-1 rounded-md border border-gray-300 dark:border-gray-700 px-3 py-2 text-sm focus:ring-2 focus:ring-purple-500" />
-                                        <button class="px-3 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 transition">📩 Send</button>
+
+                                    <!-- Message Input Form -->
+                                    <form @submit.prevent="sendMessage()" class="p-2.5 sm:p-3 border-t border-gray-100 dark:border-gray-700/80 bg-white dark:bg-gray-800 flex items-center gap-2">
+                                        <input
+                                            x-model="newMessage"
+                                            placeholder="Type a message..."
+                                            class="flex-1 rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-50/70 dark:bg-gray-900/60 px-3.5 py-2 text-xs sm:text-sm text-gray-800 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:border-[#1C9BA0] focus:ring-2 focus:ring-[#1C9BA0]/20 transition-all shadow-2xs" />
+                                        <button
+                                            type="submit"
+                                            class="inline-flex items-center justify-center gap-1.5 px-4 py-2 rounded-xl text-white font-semibold text-xs sm:text-sm tracking-wide shadow-xs hover:shadow-md transition-all active:scale-[0.98] cursor-pointer hover:opacity-95 shrink-0"
+                                            style="background: linear-gradient(135deg, #1C9BA0, #127F94);">
+                                            <span>Send</span>
+                                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"/>
+                                            </svg>
+                                        </button>
                                     </form>
+
                                 </div>
                             </template>
                             <template x-if="!activeChat">
-                                <div class="flex items-center justify-center flex-1 text-gray-500 text-sm">
-                                    Select a conversation to preview.
+                                <div class="flex flex-col items-center justify-center flex-1 p-6 text-center text-gray-400 dark:text-gray-500">
+                                    <div class="w-12 h-12 rounded-2xl flex items-center justify-center text-white mb-2 shadow-xs"
+                                         style="background: linear-gradient(135deg, #1C9BA0, #127F94);">
+                                        <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/>
+                                        </svg>
+                                    </div>
+                                    <p class="text-xs sm:text-sm font-semibold text-gray-700 dark:text-gray-300">Select a conversation</p>
+                                    <p class="text-[11px] text-gray-400 dark:text-gray-500 mt-0.5">Click a patient to preview messages and reply.</p>
                                 </div>
                             </template>
                         </div>
+
                     </div>
                 </section>
             </div>
@@ -376,122 +468,213 @@
                     </div>
                 </div>
 
-                <div class="grid gap-6 lg:grid-cols-[40%_60%]" x-data='userDashboardMessages(@json($patientChats->values()))' x-init="init()" x-on:beforeunload.window="destroy()">
-                    <section class="bg-white dark:bg-gray-800 rounded-3xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
-                <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+                <div class="grid gap-6 lg:grid-cols-12 items-start" x-data='userDashboardMessages(@json($patientChats->values()))' x-init="init()" x-on:beforeunload.window="destroy()">
+                    
+                    <!-- Session Calendar Card -->
+                    <section class="lg:col-span-5 relative bg-white dark:bg-gray-800 rounded-2xl sm:rounded-3xl shadow-[0_4px_25px_-5px_rgba(0,0,0,0.06)] dark:shadow-none border border-gray-100 dark:border-gray-700/80 p-5 sm:p-6 overflow-hidden flex flex-col justify-between">
+                        <!-- Card Header -->
+                        <div class="flex items-center gap-3 mb-5">
+                            <div class="w-10 h-10 rounded-xl flex items-center justify-center text-white shrink-0 shadow-xs"
+                                 style="background: linear-gradient(135deg, #1C9BA0, #127F94);">
+                                <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                                </svg>
+                            </div>
                             <div>
-                                <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-100">Session Calendar</h3>
-                                <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">A quick look at your next sessions.</p>
+                                <h3 class="text-base sm:text-lg font-bold text-gray-900 dark:text-gray-100 tracking-tight">Session Calendar</h3>
+                                <p class="text-xs text-gray-500 dark:text-gray-400">A quick look at your next upcoming sessions.</p>
                             </div>
                         </div>
-                        <div class="mt-6 overflow-hidden rounded-3xl border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900">
-                            <div class="hidden gap-4 border-b border-gray-200 bg-white px-4 py-3 text-xs font-semibold uppercase tracking-wide text-gray-500 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 sm:grid sm:grid-cols-[minmax(0,1.6fr)_minmax(0,1fr)_minmax(140px,auto)]">
+
+                        <!-- Session Calendar Content Box -->
+                        <div class="rounded-xl sm:rounded-2xl border border-gray-100 dark:border-gray-700/80 bg-gray-50/50 dark:bg-gray-900/40 overflow-hidden">
+                            <!-- Table Headers -->
+                            <div class="hidden gap-4 border-b border-gray-100 dark:border-gray-700/80 bg-gray-50/90 dark:bg-gray-800/90 px-4 py-3 text-[11px] font-bold uppercase tracking-wider text-gray-400 dark:text-gray-400 sm:grid sm:grid-cols-[minmax(0,1.6fr)_minmax(0,1fr)_minmax(140px,auto)]">
                                 <span>Session</span>
                                 <span>Therapist</span>
                                 <span class="text-right">Date/Time</span>
                             </div>
-                            <div class="divide-y divide-gray-200 dark:divide-gray-700">
+
+                            <!-- Sessions List -->
+                            <div class="divide-y divide-gray-100 dark:divide-gray-700/60">
                                 @forelse ($patientUpcomingSessions as $session)
-                                    <div class="grid grid-cols-1 gap-4 px-4 py-4 text-sm text-gray-700 dark:text-gray-200 sm:grid-cols-[minmax(0,1.6fr)_minmax(0,1fr)_minmax(140px,auto)] sm:items-center">
+                                    <div class="grid grid-cols-1 gap-3 sm:gap-4 px-4 py-3.5 text-sm text-gray-700 dark:text-gray-200 sm:grid-cols-[minmax(0,1.6fr)_minmax(0,1fr)_minmax(140px,auto)] sm:items-center hover:bg-white dark:hover:bg-gray-800/60 transition-colors">
                                         <div class="flex items-center gap-3">
-                                            <img src="{{ $session['avatar'] }}" alt="{{ $session['person_name'] }}" class="h-10 w-10 flex-shrink-0 rounded-full object-cover">
+                                            <img src="{{ $session['avatar'] }}" alt="{{ $session['person_name'] }}" class="h-9 w-9 flex-shrink-0 rounded-full object-cover ring-2 ring-gray-100 dark:ring-gray-700">
                                             <div class="min-w-0">
-                                                <p class="font-semibold truncate">{{ $session['title'] }}</p>
-                                                <p class="text-xs text-gray-500 dark:text-gray-400">{{ $session['subtitle'] }}</p>
+                                                <p class="font-semibold text-xs sm:text-sm text-gray-900 dark:text-gray-100 truncate">{{ $session['title'] }}</p>
+                                                <p class="text-[11px] text-gray-500 dark:text-gray-400">{{ $session['subtitle'] }}</p>
                                             </div>
                                         </div>
-                                        <div class="space-y-1">
-                                            <p class="text-[11px] font-semibold uppercase tracking-wide text-gray-400 dark:text-gray-500 sm:hidden">Therapist</p>
-                                            <p class="text-sm text-gray-600 dark:text-gray-400">{{ $session['person_name'] }}</p>
+                                        <div class="space-y-0.5">
+                                            <p class="text-[10px] font-semibold uppercase tracking-wider text-gray-400 dark:text-gray-500 sm:hidden">Therapist</p>
+                                            <p class="text-xs sm:text-sm text-gray-700 dark:text-gray-300 font-medium">{{ $session['person_name'] }}</p>
                                         </div>
-                                        <div class="space-y-1 sm:text-right">
-                                            <p class="text-[11px] font-semibold uppercase tracking-wide text-gray-400 dark:text-gray-500 sm:hidden">Date/Time</p>
-                                            <p class="text-xs text-gray-500 dark:text-gray-400">{{ $session['date_time'] }}</p>
+                                        <div class="space-y-0.5 sm:text-right">
+                                            <p class="text-[10px] font-semibold uppercase tracking-wider text-gray-400 dark:text-gray-500 sm:hidden">Date/Time</p>
+                                            <p class="text-xs text-gray-500 dark:text-gray-400 font-medium">{{ $session['date_time'] }}</p>
                                         </div>
                                     </div>
                                 @empty
-                                    <div class="px-4 py-6 text-sm text-gray-500 dark:text-gray-400">
-                                        No upcoming sessions booked yet.
+                                    <div class="py-12 px-4 text-center flex flex-col items-center justify-center">
+                                        <div class="w-12 h-12 rounded-2xl bg-gray-100 dark:bg-gray-800 text-gray-400 dark:text-gray-500 flex items-center justify-center mb-3 shadow-2xs">
+                                            <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                                            </svg>
+                                        </div>
+                                        <p class="text-xs sm:text-sm font-semibold text-gray-800 dark:text-gray-200">No upcoming sessions booked yet</p>
+                                        <p class="text-xs text-gray-400 dark:text-gray-500 mt-0.5">Your scheduled appointments will appear here.</p>
                                     </div>
                                 @endforelse
                             </div>
                         </div>
                     </section>
 
-                    <section class="bg-white dark:bg-gray-800 rounded-3xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
-                        <div class="flex items-start justify-between gap-4">
+                    <!-- Recent Messages Card -->
+                    <section class="lg:col-span-7 relative bg-white dark:bg-gray-800 rounded-2xl sm:rounded-3xl shadow-[0_4px_25px_-5px_rgba(0,0,0,0.06)] dark:shadow-none border border-gray-100 dark:border-gray-700/80 p-5 sm:p-6 overflow-hidden">
+                        <!-- Card Header -->
+                        <div class="flex items-center gap-3 mb-5">
+                            <div class="w-10 h-10 rounded-xl flex items-center justify-center text-white shrink-0 shadow-xs"
+                                 style="background: linear-gradient(135deg, #1C9BA0, #127F94);">
+                                <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/>
+                                </svg>
+                            </div>
                             <div>
-                                <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-100">Recent Messages </h3>
-                                <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">Recent conversations from your care team.</p>
+                                <h3 class="text-base sm:text-lg font-bold text-gray-900 dark:text-gray-100 tracking-tight">Recent Messages</h3>
+                                <p class="text-xs text-gray-500 dark:text-gray-400">Recent conversations from your care team.</p>
                             </div>
-                           
                         </div>
-                        <div class="mt-6 grid gap-4 lg:grid-cols-[35%_65%]">
-                            <div class="rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 shadow-sm overflow-y-auto max-h-[70vh] sm:max-h-[60vh] p-4">
-                                <div class="mb-4">
-                                    <input x-model="searchQuery" type="text" placeholder="Search therapist name..."
-                                        class="w-full rounded-lg border border-gray-300 dark:border-gray-700 bg-gray-50 dark:bg-gray-900 px-3 py-2 text-sm text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-purple-500" />
-                                </div>
-                                <template x-for="chat in filteredItems" :key="chat.id">
-                                    <button @click="setActiveChat(chat)" type="button"
-                                        class="flex w-full items-start gap-3 rounded-3xl p-3 text-left transition hover:bg-gray-50 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-purple-400 dark:focus:ring-purple-700"
-                                        :class="activeChat?.id === chat.id ? 'bg-purple-50 dark:bg-purple-800/20' : ''">
-                                        <img :src="chat.avatar" alt="" class="h-10 w-10 rounded-full object-cover">
-                                        <div class="flex-1 min-w-0">
-                                            <div class="flex items-center justify-between gap-2">
-                                                <p class="font-semibold text-sm text-gray-900 dark:text-gray-100 truncate" x-text="chat.name"></p>
-                                                <p class="text-[10px] sm:text-xs text-gray-400" x-text="formatDateTimeLabel(chat)"></p>
-                                            </div>
-                                            <p class="mt-1 text-[11px] sm:text-xs text-gray-500 dark:text-gray-400 truncate" x-text="truncateText(chat.lastMessage)"></p>
-                                            <p class="mt-1 text-[10px] text-gray-400 truncate" x-text="chat.dateTime"></p>
+
+                        <!-- Two-Pane Messages Layout -->
+                        <div class="grid gap-4 sm:gap-5 lg:grid-cols-[38%_62%]">
+                            
+                            <!-- Therapist / Care Team List Sub-Pane -->
+                            <div class="rounded-xl sm:rounded-2xl border border-gray-100 dark:border-gray-700/80 bg-gray-50/40 dark:bg-gray-900/30 shadow-2xs overflow-hidden flex flex-col h-[65vh] sm:h-[55vh]">
+                                <div class="p-3 border-b border-gray-100 dark:border-gray-700/80 bg-white/70 dark:bg-gray-800/70">
+                                    <div class="relative">
+                                        <div class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400 dark:text-gray-500">
+                                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                                            </svg>
                                         </div>
-                                    </button>
-                                </template>
-                                <template x-if="filteredItems.length === 0">
-                                    <p class="text-center text-gray-500 text-sm mt-3">No messages found.</p>
-                                </template>
+                                        <input
+                                            x-model="searchQuery"
+                                            type="text"
+                                            placeholder="Search therapist name..."
+                                            class="w-full pl-9 pr-3 py-2 rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 text-xs sm:text-sm text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:border-[#1C9BA0] focus:ring-2 focus:ring-[#1C9BA0]/20 transition-all shadow-2xs" />
+                                    </div>
+                                </div>
+
+                                <!-- List Body -->
+                                <div class="flex-1 overflow-y-auto divide-y divide-gray-100 dark:divide-gray-700/50 p-1.5 space-y-1">
+                                    <template x-for="chat in filteredItems" :key="chat.id">
+                                        <button
+                                            @click="setActiveChat(chat)"
+                                            type="button"
+                                            class="w-full flex items-start gap-3 rounded-xl sm:rounded-2xl p-2.5 text-left transition-all cursor-pointer relative select-none border-l-4"
+                                            :class="activeChat?.id === chat.id
+                                                ? 'border-l-[#1C9BA0] bg-[#1C9BA0]/10 dark:bg-[#1C9BA0]/20 text-gray-900 dark:text-gray-100'
+                                                : 'border-l-transparent hover:bg-white dark:hover:bg-gray-800/80 text-gray-700 dark:text-gray-300'">
+
+                                            <div class="relative shrink-0 mt-0.5">
+                                                <img :src="chat.avatar" alt="" class="h-9 w-9 rounded-full object-cover ring-2 ring-gray-100 dark:ring-gray-700 shadow-2xs">
+                                                <span class="absolute bottom-0 right-0 w-2 h-2 rounded-full bg-emerald-500 ring-1 ring-white dark:ring-gray-800"></span>
+                                            </div>
+
+                                            <div class="flex-1 min-w-0">
+                                                <div class="flex items-center justify-between gap-1 mb-0.5">
+                                                    <p class="font-bold text-xs sm:text-sm truncate" x-text="chat.name"></p>
+                                                    <span class="text-[10px] text-gray-400 dark:text-gray-500 whitespace-nowrap shrink-0" x-text="formatDateTimeLabel(chat)"></span>
+                                                </div>
+                                                <p class="text-[11px] text-gray-500 dark:text-gray-400 truncate" x-text="truncateText(chat.lastMessage)"></p>
+                                                <p class="text-[10px] text-gray-400 dark:text-gray-500 mt-0.5" x-text="chat.dateTime"></p>
+                                            </div>
+                                        </button>
+                                    </template>
+                                    <template x-if="filteredItems.length === 0">
+                                        <p class="text-center text-gray-400 dark:text-gray-500 text-xs py-8">No messages found.</p>
+                                    </template>
+                                </div>
                             </div>
-                            <div class="rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 shadow-sm flex flex-col h-[70vh] sm:h-[60vh]">
+
+                            <!-- Chat Conversation Window Sub-Pane -->
+                            <div class="rounded-xl sm:rounded-2xl border border-gray-100 dark:border-gray-700/80 bg-white dark:bg-gray-800 shadow-2xs flex flex-col h-[65vh] sm:h-[55vh] overflow-hidden">
                                 <template x-if="activeChat">
                                     <div class="flex flex-col h-full">
-                                        <div class="border-b border-gray-200 dark:border-gray-700 p-3 flex items-center gap-3">
-                                            <img :src="activeChat.avatar" alt="" class="w-10 h-10 rounded-full object-cover">
-                                            <div>
-                                                <p class="font-semibold text-gray-900 dark:text-gray-100" x-text="activeChat.name"></p>
-                                                <p class="text-xs text-gray-500 dark:text-gray-400" x-text="formatDateTimeLabel(activeChat)"></p>
+
+                                        <!-- Chat Header -->
+                                        <div class="border-b border-gray-100 dark:border-gray-700/80 px-4 py-3 flex items-center justify-between bg-gray-50/50 dark:bg-gray-800/80">
+                                            <div class="flex items-center gap-2.5">
+                                                <div class="relative">
+                                                    <img :src="activeChat.avatar" alt="" class="w-8 h-8 rounded-full object-cover ring-2 ring-gray-100 dark:ring-gray-700 shadow-2xs">
+                                                    <span class="absolute bottom-0 right-0 w-2 h-2 rounded-full bg-emerald-500 ring-1 ring-white dark:ring-gray-800"></span>
+                                                </div>
+                                                <div>
+                                                    <p class="font-bold text-xs sm:text-sm text-gray-900 dark:text-gray-100 leading-tight" x-text="activeChat.name"></p>
+                                                    <p class="text-[10px] text-gray-400 dark:text-gray-500" x-text="formatDateTimeLabel(activeChat)"></p>
+                                                </div>
                                             </div>
                                         </div>
-                                        <div class="flex-1 overflow-y-auto p-4 space-y-4" x-ref="chatWindow" @scroll="trackScroll()">
+
+                                        <!-- Messages Stream Body -->
+                                        <div class="flex-1 overflow-y-auto p-3.5 sm:p-4 space-y-3 bg-gray-50/30 dark:bg-gray-900/20" x-ref="chatWindow" @scroll="trackScroll()">
                                             <template x-for="msg in activeChat.messages" :key="msg.id">
                                                 <div>
-                                                    <div x-show="msg.sender === 'therapist'" class="flex items-start gap-3">
-                                                        <img :src="activeChat.avatar" alt="" class="w-8 h-8 rounded-full object-cover">
-                                                        <div class="bg-gray-100 dark:bg-gray-700 rounded-lg p-3 max-w-xs">
-                                                            <p class="text-sm text-gray-800 dark:text-gray-100" x-html="formatMessage(msg.text)"></p>
-                                                            <p class="text-xs text-gray-400 mt-1" x-text="formatDateTimeLabel(msg)"></p>
+                                                    <!-- Therapist Message (Incoming) -->
+                                                    <div x-show="msg.sender === 'therapist'" class="flex items-end gap-2 max-w-[85%] sm:max-w-[75%]">
+                                                        <img :src="activeChat.avatar" alt="" class="w-6 h-6 rounded-full object-cover shrink-0 mb-1 ring-1 ring-gray-200 dark:ring-gray-700">
+                                                        <div class="bg-white dark:bg-gray-700/80 text-gray-800 dark:text-gray-100 rounded-2xl rounded-bl-xs p-3 shadow-2xs border border-gray-100 dark:border-gray-600/50 text-xs sm:text-sm leading-relaxed">
+                                                            <p x-html="formatMessage(msg.text)"></p>
+                                                            <p class="text-[10px] text-gray-400 dark:text-gray-400 mt-1 text-right font-medium" x-text="formatDateTimeLabel(msg)"></p>
                                                         </div>
                                                     </div>
+
+                                                    <!-- Patient Message (Outgoing - Brand Gradient) -->
                                                     <div x-show="msg.sender === 'patient'" class="flex justify-end">
-                                                        <div class="bg-green-600 text-white rounded-lg shadow p-3 max-w-xs">
-                                                            <p class="text-sm" x-html="formatMessage(msg.text)"></p>
-                                                            <p class="text-xs text-green-100 mt-1 text-right" x-text="formatDateTimeLabel(msg)"></p>
+                                                        <div class="text-white rounded-2xl rounded-br-xs p-3 max-w-[85%] sm:max-w-[75%] shadow-2xs text-xs sm:text-sm leading-relaxed"
+                                                             style="background: linear-gradient(135deg, #1C9BA0, #127F94);">
+                                                            <p class="text-white" x-html="formatMessage(msg.text)"></p>
+                                                            <p class="text-[10px] text-teal-100/80 mt-1 text-right font-medium" x-text="formatDateTimeLabel(msg)"></p>
                                                         </div>
                                                     </div>
                                                 </div>
                                             </template>
                                         </div>
-                                        <form @submit.prevent="sendMessage()" class="flex flex-wrap items-center gap-2 p-3 border-t border-gray-100 dark:border-gray-700">
-                                            <input x-model="newMessage" placeholder="Type a message..." class="flex-1 rounded-md border border-gray-300 dark:border-gray-700 px-3 py-2 text-sm focus:ring-2 focus:ring-purple-500" />
-                                            <button class="px-3 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 transition">📩 Send</button>
+
+                                        <!-- Message Input Form -->
+                                        <form @submit.prevent="sendMessage()" class="p-2.5 sm:p-3 border-t border-gray-100 dark:border-gray-700/80 bg-white dark:bg-gray-800 flex items-center gap-2">
+                                            <input
+                                                x-model="newMessage"
+                                                placeholder="Type a message..."
+                                                class="flex-1 rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-50/70 dark:bg-gray-900/60 px-3.5 py-2 text-xs sm:text-sm text-gray-800 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:border-[#1C9BA0] focus:ring-2 focus:ring-[#1C9BA0]/20 transition-all shadow-2xs" />
+                                            <button
+                                                type="submit"
+                                                class="inline-flex items-center justify-center gap-1.5 px-4 py-2 rounded-xl text-white font-semibold text-xs sm:text-sm tracking-wide shadow-xs hover:shadow-md transition-all active:scale-[0.98] cursor-pointer hover:opacity-95 shrink-0"
+                                                style="background: linear-gradient(135deg, #1C9BA0, #127F94);">
+                                                <span>Send</span>
+                                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"/>
+                                                </svg>
+                                            </button>
                                         </form>
+
                                     </div>
                                 </template>
                                 <template x-if="!activeChat">
-                                    <div class="flex items-center justify-center flex-1 text-gray-500 text-sm">
-                                        Select a conversation to preview.
+                                    <div class="flex flex-col items-center justify-center flex-1 p-6 text-center text-gray-400 dark:text-gray-500">
+                                        <div class="w-12 h-12 rounded-2xl flex items-center justify-center text-white mb-2 shadow-xs"
+                                             style="background: linear-gradient(135deg, #1C9BA0, #127F94);">
+                                            <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/>
+                                            </svg>
+                                        </div>
+                                        <p class="text-xs sm:text-sm font-semibold text-gray-700 dark:text-gray-300">Select a conversation</p>
+                                        <p class="text-[11px] text-gray-400 dark:text-gray-500 mt-0.5">Click a therapist to preview messages and reply.</p>
                                     </div>
                                 </template>
                             </div>
+
                         </div>
                     </section>
                 </div>

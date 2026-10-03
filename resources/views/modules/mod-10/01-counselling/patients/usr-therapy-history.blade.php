@@ -1,8 +1,122 @@
 <x-app1>
+    @php
+        $totalSessions = $sessions->count();
+        $videoSessions = $sessions->where('SessionMediaType', 'Video')->count();
+        $audioSessions = $sessions->where('SessionMediaType', 'Audio')->count();
+
+        $sessionsList = $sessions->map(function($s) {
+            $therapist = $s->therapist;
+            $attr = $therapist?->userAttributes;
+            $name = trim(($attr?->FirstName ?? '') . ' ' . ($attr?->LastName ?? ''));
+            $dateFormatted = $s->SessionStartedDate ? \Carbon\Carbon::parse($s->SessionStartedDate)->format('d M Y') : '';
+            return [
+                'id' => $s->ID,
+                'search' => strtolower(trim(($therapist?->UserName ?? '') . ' ' . $name . ' ' . $dateFormatted)),
+                'media' => strtolower($s->SessionMediaType ?? ''),
+            ];
+        })->values();
+    @endphp
+
     <div x-data="sessionHistory()" class="space-y-6">
 
         <!-- Header -->
         <x-page-header />
+
+        <!-- Quick Summary Stats Grid -->
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <!-- Stat 1: Total Sessions -->
+            <div class="bg-white dark:bg-gray-800 rounded-2xl p-5 border border-gray-100 dark:border-gray-700/80 shadow-[0_4px_20px_-4px_rgba(0,0,0,0.05)] flex items-center gap-4">
+                <div class="w-12 h-12 rounded-xl flex items-center justify-center text-white shrink-0 shadow-xs"
+                     style="background: linear-gradient(135deg, #1C9BA0, #127F94);">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/>
+                    </svg>
+                </div>
+                <div>
+                    <p class="text-xs font-semibold uppercase tracking-wider text-gray-400 dark:text-gray-400">Total Completed</p>
+                    <p class="text-2xl font-extrabold text-gray-900 dark:text-gray-100 mt-0.5">{{ $totalSessions }}</p>
+                    <p class="text-[11px] text-gray-400 dark:text-gray-400">Past therapy consultations</p>
+                </div>
+            </div>
+
+            <!-- Stat 2: Video Sessions -->
+            <div class="bg-white dark:bg-gray-800 rounded-2xl p-5 border border-gray-100 dark:border-gray-700/80 shadow-[0_4px_20px_-4px_rgba(0,0,0,0.05)] flex items-center gap-4">
+                <div class="w-12 h-12 rounded-xl flex items-center justify-center text-teal-600 dark:text-teal-300 bg-teal-50 dark:bg-teal-900/30 shrink-0">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"/>
+                    </svg>
+                </div>
+                <div>
+                    <p class="text-xs font-semibold uppercase tracking-wider text-gray-400 dark:text-gray-400">Video Consultations</p>
+                    <p class="text-2xl font-extrabold text-gray-900 dark:text-gray-100 mt-0.5">{{ $videoSessions }}</p>
+                    <p class="text-[11px] text-gray-400 dark:text-gray-400">Live video sessions</p>
+                </div>
+            </div>
+
+            <!-- Stat 3: Audio Sessions -->
+            <div class="bg-white dark:bg-gray-800 rounded-2xl p-5 border border-gray-100 dark:border-gray-700/80 shadow-[0_4px_20px_-4px_rgba(0,0,0,0.05)] flex items-center gap-4">
+                <div class="w-12 h-12 rounded-xl flex items-center justify-center text-indigo-600 dark:text-indigo-300 bg-indigo-50 dark:bg-indigo-900/30 shrink-0">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 100-6 3 3 0 000 6z"/>
+                    </svg>
+                </div>
+                <div>
+                    <p class="text-xs font-semibold uppercase tracking-wider text-gray-400 dark:text-gray-400">Audio Consultations</p>
+                    <p class="text-2xl font-extrabold text-gray-900 dark:text-gray-100 mt-0.5">{{ $audioSessions }}</p>
+                    <p class="text-[11px] text-gray-400 dark:text-gray-400">Voice-only sessions</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Filter & Search Bar -->
+        <div class="bg-white dark:bg-gray-800 rounded-2xl p-4 border border-gray-100 dark:border-gray-700/80 shadow-[0_4px_20px_-4px_rgba(0,0,0,0.05)] flex flex-col md:flex-row md:items-center justify-between gap-4">
+            <!-- Search Input -->
+            <div class="relative flex-1 max-w-md">
+                <div class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3.5 text-gray-400 dark:text-gray-500">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                    </svg>
+                </div>
+                <input
+                    x-model="searchQuery"
+                    type="text"
+                    placeholder="Search by therapist name, username, or date..."
+                    class="w-full pl-10 pr-4 py-2.5 rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-50/70 dark:bg-gray-900/60 text-xs sm:text-sm text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:border-[#1C9BA0] focus:ring-2 focus:ring-[#1C9BA0]/20 transition-all shadow-2xs" />
+            </div>
+
+            <!-- Media Filter Pills -->
+            <div class="flex items-center gap-1.5 p-1 rounded-xl bg-gray-100/80 dark:bg-gray-900/80 border border-gray-200/50 dark:border-gray-700/50 self-start md:self-auto">
+                <button
+                    type="button"
+                    @click="mediaFilter = 'all'"
+                    class="px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer"
+                    :class="mediaFilter === 'all'
+                        ? 'bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 shadow-2xs'
+                        : 'text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200'">
+                    All Sessions ({{ $totalSessions }})
+                </button>
+                <button
+                    type="button"
+                    @click="mediaFilter = 'video'"
+                    class="px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer flex items-center gap-1.5"
+                    :class="mediaFilter === 'video'
+                        ? 'bg-white dark:bg-gray-800 text-[#1C9BA0] dark:text-teal-400 shadow-2xs'
+                        : 'text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200'">
+                    <span>Video</span>
+                    <span class="text-[10px] px-1.5 py-0.2 rounded-full bg-teal-50 dark:bg-teal-900/40 text-teal-600 dark:text-teal-300 font-bold">{{ $videoSessions }}</span>
+                </button>
+                <button
+                    type="button"
+                    @click="mediaFilter = 'audio'"
+                    class="px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer flex items-center gap-1.5"
+                    :class="mediaFilter === 'audio'
+                        ? 'bg-white dark:bg-gray-800 text-indigo-600 dark:text-indigo-400 shadow-2xs'
+                        : 'text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200'">
+                    <span>Audio</span>
+                    <span class="text-[10px] px-1.5 py-0.2 rounded-full bg-indigo-50 dark:bg-indigo-900/40 text-indigo-600 dark:text-indigo-300 font-bold">{{ $audioSessions }}</span>
+                </button>
+            </div>
+        </div>
 
         <!-- Table / Card Container -->
         <div class="bg-white dark:bg-gray-800 rounded-2xl sm:rounded-3xl shadow-[0_4px_25px_-5px_rgba(0,0,0,0.06)] dark:shadow-none border border-gray-100 dark:border-gray-700/80 overflow-hidden">
@@ -39,7 +153,7 @@
                                 $mediaType = strtolower(trim($session->SessionMediaType ?? ''));
                             @endphp
 
-                            <tr class="hover:bg-gray-50/80 dark:hover:bg-gray-700/40 transition-colors group">
+                            <tr x-show="isRowVisible({{ $session->ID }})" class="hover:bg-gray-50/80 dark:hover:bg-gray-700/40 transition-colors group">
 
                                 <!-- Date / Time -->
                                 <td class="px-5 sm:px-6 py-4 whitespace-nowrap">
@@ -146,6 +260,13 @@
                                 </td>
                             </tr>
                         @endforelse
+
+                        <!-- Empty Search/Filter State -->
+                        <tr x-show="!hasVisibleRows && sessionsList.length > 0" x-cloak>
+                            <td colspan="5" class="px-6 py-12 text-center text-gray-500 dark:text-gray-400">
+                                No sessions match your search or filter criteria.
+                            </td>
+                        </tr>
                     </tbody>
 
                 </table>
@@ -168,7 +289,7 @@
                         $mediaType = strtolower(trim($session->SessionMediaType ?? ''));
                     @endphp
 
-                    <div class="p-4 space-y-3 hover:bg-gray-50/50 dark:hover:bg-gray-700/30 transition-colors">
+                    <div x-show="isRowVisible({{ $session->ID }})" class="p-4 space-y-3 hover:bg-gray-50/50 dark:hover:bg-gray-700/30 transition-colors">
                         <!-- Top Row: Therapist Avatar & Info + Media Badge -->
                         <div class="flex items-start justify-between gap-3">
                             <div class="flex items-center gap-3 min-w-0">
@@ -248,6 +369,11 @@
                         <p class="text-sm text-gray-500 dark:text-gray-400">No therapy sessions found.</p>
                     </div>
                 @endforelse
+
+                <!-- Mobile Empty Filter State -->
+                <div x-show="!hasVisibleRows && sessionsList.length > 0" x-cloak class="px-6 py-12 text-center text-gray-500 dark:text-gray-400">
+                    No sessions match your search or filter criteria.
+                </div>
             </div>
 
         </div>
@@ -412,6 +538,29 @@
     <script>
         function sessionHistory() {
             return {
+                // Live search and filter
+                searchQuery: '',
+                mediaFilter: 'all',
+                sessionsList: @json($sessionsList),
+
+                isRowVisible(id) {
+                    const s = this.sessionsList.find(x => x.id === id);
+                    if (!s) return true;
+                    const q = this.searchQuery.toLowerCase().trim();
+                    const matchesSearch = !q || s.search.includes(q);
+                    const matchesMedia = this.mediaFilter === 'all' || s.media === this.mediaFilter.toLowerCase();
+                    return matchesSearch && matchesMedia;
+                },
+
+                get hasVisibleRows() {
+                    return this.sessionsList.some(s => {
+                        const q = this.searchQuery.toLowerCase().trim();
+                        const matchesSearch = !q || s.search.includes(q);
+                        const matchesMedia = this.mediaFilter === 'all' || s.media === this.mediaFilter.toLowerCase();
+                        return matchesSearch && matchesMedia;
+                    });
+                },
+
                 isModalOpen: false,
                 loading: false,
 
