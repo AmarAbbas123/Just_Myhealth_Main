@@ -53,7 +53,7 @@
                 @endphp
 
                 <!-- SINGLE THERAPIST CARD -->
-                <div class="relative overflow-hidden bg-white dark:bg-gray-800 shadow-[0_4px_20px_-4px_rgba(0,0,0,0.06)] hover:shadow-[0_16px_32px_-6px_rgba(0,0,0,0.12)] dark:shadow-none dark:hover:shadow-[0_16px_32px_-6px_rgba(0,0,0,0.4)] rounded-2xl p-6 sm:p-7 border border-gray-100 dark:border-gray-700/80 flex flex-col justify-between transition-all duration-300 hover:-translate-y-1 group">
+                <div class="relative overflow-hidden bg-white dark:bg-gray-800 shadow-[0_4px_20px_-4px_rgba(0,0,0,0.06)] hover:shadow-[0_16px_32px_-6px_rgba(0,0,0,0.12)] dark:shadow-none dark:hover:shadow-[0_16px_32px_-6px_rgba(0,0,0,0.4)] rounded-2xl p-4 sm:p-6 border border-gray-100 dark:border-gray-700/80 flex flex-col justify-between transition-all duration-300 hover:-translate-y-1 group">
 
                     <!-- Left Accent Line (appears smoothly when card is hovered) -->
                     <div class="absolute left-0 top-0 bottom-0 w-1.5 rounded-l-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"
@@ -61,7 +61,7 @@
 
                     <div>
                         <!-- Therapist Header: Image on Left Side -->
-                        <div class="flex items-start gap-4">
+                        <div class="flex items-start gap-3 sm:gap-4">
                             <div class="relative shrink-0">
                                 @if ($photo)
                                     <img src="{{ $photo }}" 
@@ -114,17 +114,17 @@
                     </div>
 
                     <!-- Action Buttons: Side-by-side with divider -->
-                    <div class="mt-6 pt-4 border-t border-gray-100 dark:border-gray-700/60 grid grid-cols-2 gap-2.5">
+                    <div class="mt-5 sm:mt-6 pt-3.5 sm:pt-4 border-t border-gray-100 dark:border-gray-700/60 grid grid-cols-2 gap-2 sm:gap-2.5">
                         <button
                             type="button"
-                            class="w-full text-center py-2 px-3 rounded-full border text-xs sm:text-sm font-semibold tracking-wide transition-all duration-200 active:scale-[0.99] cursor-pointer hover:bg-[#1C9BA0]/10"
+                            class="w-full text-center py-2 px-2 sm:px-3 rounded-full border text-xs sm:text-sm font-semibold tracking-wide transition-all duration-200 active:scale-[0.99] cursor-pointer hover:bg-[#1C9BA0]/10 whitespace-nowrap truncate"
                             style="border-color: #1C9BA0; color: #1C9BA0;"
                             @click='openBioModal(@json($attr), @json($type), "{{ $photo }}", "{{ $initials }}", "{{ $bookUrl }}")'>
                             View BIO
                         </button>
 
                         <a href="{{ $bookUrl }}"
-                            class="w-full block text-center py-2 px-3 rounded-full text-white text-xs sm:text-sm font-semibold tracking-wide shadow-xs hover:shadow-md transition-all duration-200 active:scale-[0.99] cursor-pointer hover:opacity-95"
+                            class="w-full block text-center py-2 px-2 sm:px-3 rounded-full text-white text-xs sm:text-sm font-semibold tracking-wide shadow-xs hover:shadow-md transition-all duration-200 active:scale-[0.99] cursor-pointer hover:opacity-95 whitespace-nowrap truncate"
                             style="background: linear-gradient(135deg, #1C9BA0, #127F94);">
                             Book Session
                         </a>
@@ -158,27 +158,27 @@
         <!-- BIO MODAL -->
         <div x-show="isModalOpen" 
              x-cloak 
-             class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-3 sm:p-6 z-50 overflow-y-auto"
+             class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-2.5 sm:p-6 z-50 overflow-y-auto"
              @click.self="closeModal" 
              @keydown.escape.window="closeModal">
 
-            <div class="relative w-full max-w-4xl bg-white dark:bg-gray-800 rounded-2xl sm:rounded-3xl shadow-2xl border border-gray-100 dark:border-gray-700/80 overflow-hidden flex flex-col max-h-[90vh] my-auto"
+            <div class="relative w-full max-w-4xl bg-white dark:bg-gray-800 rounded-2xl sm:rounded-3xl shadow-2xl border border-gray-100 dark:border-gray-700/80 overflow-hidden flex flex-col max-h-[92vh] sm:max-h-[90vh] my-auto"
                  @click.stop>
 
                 <!-- Top Brand Color Strip -->
                 <div class="h-1.5 w-full shrink-0" style="background: linear-gradient(90deg, #1C9BA0, #127F94);"></div>
 
                 <!-- Modal Header: Banner Style -->
-                <div class="p-5 sm:p-6 bg-slate-50/80 dark:bg-gray-800/90 border-b border-gray-100 dark:border-gray-700/80 flex items-start justify-between gap-4 shrink-0">
-                    <div class="flex items-center gap-4 sm:gap-5 min-w-0">
+                <div class="p-4 sm:p-6 bg-slate-50/80 dark:bg-gray-800/90 border-b border-gray-100 dark:border-gray-700/80 flex items-start justify-between gap-3 sm:gap-4 shrink-0">
+                    <div class="flex items-center gap-3 sm:gap-5 min-w-0">
                         <!-- Avatar -->
                         <div class="relative shrink-0">
                             <template x-if="therapist.photo">
                                 <img :src="therapist.photo" :alt="(therapist.user?.FirstName || '') + ' ' + (therapist.user?.LastName || '')" 
-                                     class="w-16 h-16 sm:w-18 sm:h-18 rounded-full object-cover ring-3 ring-white dark:ring-gray-700 shadow-md" />
+                                     class="w-13 h-13 sm:w-18 sm:h-18 rounded-full object-cover ring-2 sm:ring-3 ring-white dark:ring-gray-700 shadow-md" />
                             </template>
                             <template x-if="!therapist.photo">
-                                <div class="w-16 h-16 sm:w-18 sm:h-18 rounded-full flex items-center justify-center text-white text-xl font-bold shadow-md"
+                                <div class="w-13 h-13 sm:w-18 sm:h-18 rounded-full flex items-center justify-center text-white text-base sm:text-xl font-bold shadow-md"
                                      style="background: linear-gradient(135deg, #1C9BA0, #127F94);"
                                      x-text="therapist.initials || 'TH'">
                                 </div>
@@ -191,30 +191,30 @@
 
                         <!-- Name and Quick Badges -->
                         <div class="min-w-0">
-                            <div class="flex items-center gap-2 flex-wrap">
-                                <h2 class="text-xl sm:text-2xl font-bold text-gray-900 dark:text-gray-100 tracking-tight">
+                            <div class="flex items-center gap-1.5 sm:gap-2 flex-wrap">
+                                <h2 class="text-base sm:text-2xl font-bold text-gray-900 dark:text-gray-100 tracking-tight leading-snug">
                                     <span x-text="therapist.user?.FirstName || ''"></span>
                                     <span x-text="therapist.user?.LastName || ''"></span>
                                 </h2>
                                 <span x-show="therapist.type30?.PreferredSalutation" 
-                                      class="text-xs font-semibold px-2 py-0.5 rounded-full" 
+                                      class="text-[11px] sm:text-xs font-semibold px-2 py-0.5 rounded-full" 
                                       style="background: rgba(28, 155, 160, 0.12); color: #1C9BA0;" 
                                       x-text="therapist.type30?.PreferredSalutation"></span>
                             </div>
 
-                            <p class="flex items-center gap-1.5 text-xs sm:text-sm text-gray-500 dark:text-gray-400 mt-1">
+                            <p class="flex items-center gap-1 text-xs sm:text-sm text-gray-500 dark:text-gray-400 mt-0.5 sm:mt-1 truncate">
                                 <svg class="w-3.5 h-3.5 shrink-0" style="color: #1C9BA0;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
                                 </svg>
-                                <span x-text="(therapist.user?.BaseCity ? therapist.user.BaseCity + (therapist.user?.BaseCountry ? ', ' : '') : '') + (therapist.user?.BaseCountry || 'Location on request')"></span>
+                                <span class="truncate" x-text="(therapist.user?.BaseCity ? therapist.user.BaseCity + (therapist.user?.BaseCountry ? ', ' : '') : '') + (therapist.user?.BaseCountry || 'Location on request')"></span>
                             </p>
                         </div>
                     </div>
 
                     <!-- Close Button -->
                     <button @click="closeModal"
-                        class="w-9 h-9 rounded-full bg-white dark:bg-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 text-gray-400 hover:text-gray-700 dark:hover:text-white flex items-center justify-center transition shadow-xs cursor-pointer shrink-0"
+                        class="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-white dark:bg-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 text-gray-400 hover:text-gray-700 dark:hover:text-white flex items-center justify-center transition shadow-xs cursor-pointer shrink-0"
                         title="Close">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
@@ -223,7 +223,7 @@
                 </div>
 
                 <!-- Modal Body: Two-Column Responsive Layout -->
-                <div class="overflow-y-auto p-5 sm:p-7" style="scrollbar-width: thin; scrollbar-color: #cbd5e1 transparent;">
+                <div class="overflow-y-auto p-4 sm:p-7" style="scrollbar-width: thin; scrollbar-color: #cbd5e1 transparent;">
                     <div class="grid grid-cols-1 md:grid-cols-12 gap-6 sm:gap-7">
 
                         <!-- LEFT COLUMN: Overview & Services (md:col-span-5) -->
@@ -323,15 +323,15 @@
                 </div>
 
                 <!-- Sticky Footer -->
-                <div class="px-6 py-4 bg-slate-50 dark:bg-gray-800/90 border-t border-gray-100 dark:border-gray-700/80 flex items-center justify-between gap-3 shrink-0">
+                <div class="p-3.5 sm:px-6 sm:py-4 bg-slate-50 dark:bg-gray-800/90 border-t border-gray-100 dark:border-gray-700/80 flex items-center justify-between gap-2.5 sm:gap-3 shrink-0">
                     <button @click="closeModal"
-                        class="px-5 py-2.5 bg-white hover:bg-gray-100 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-200 border border-gray-200 dark:border-gray-600 rounded-full text-sm font-semibold transition cursor-pointer">
+                        class="flex-1 sm:flex-initial text-center px-4 sm:px-5 py-2.5 bg-white hover:bg-gray-100 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-200 border border-gray-200 dark:border-gray-600 rounded-full text-xs sm:text-sm font-semibold transition cursor-pointer">
                         Close
                     </button>
 
                     <a :href="therapist.bookUrl"
                         x-show="therapist.bookUrl"
-                        class="px-7 py-2.5 text-white rounded-full text-sm font-semibold shadow-sm hover:shadow-md transition cursor-pointer hover:opacity-95"
+                        class="flex-1 sm:flex-initial text-center px-5 sm:px-7 py-2.5 text-white rounded-full text-xs sm:text-sm font-semibold shadow-sm hover:shadow-md transition cursor-pointer hover:opacity-95"
                         style="background: linear-gradient(135deg, #1C9BA0, #127F94);">
                         Book Session
                     </a>

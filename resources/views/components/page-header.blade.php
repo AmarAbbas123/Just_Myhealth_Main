@@ -14,7 +14,7 @@
 
 @if($displayTitle)
     <div {{ $attributes->merge(['class' => 'pb-5 mb-6 border-b border-gray-200/70 dark:border-gray-700/70']) }}>
-        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between pt-2 gap-4">
             
             {{-- Left: Icon + Title & Subtitle --}}
             <div class="flex items-center gap-3.5 min-w-0">
