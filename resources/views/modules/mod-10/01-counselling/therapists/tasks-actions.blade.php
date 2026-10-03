@@ -11,7 +11,7 @@
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" />
                     </svg>
-                    <span>Create New Task</span>
+                    <span>Add Task</span>
                 </button>
             </div>
         </div>
