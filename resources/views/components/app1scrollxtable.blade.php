@@ -64,12 +64,12 @@
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 
-<body class="antialiased text-gray-900 " x-data="{ isSidebarOpen: true, isSideMenuOpen: false }">
+<body class="antialiased text-gray-900 dark:text-gray-100 bg-gray-50 dark:bg-gray-900" x-data="{ isSidebarOpen: true, isSideMenuOpen: false }">
     <div class="flex h-screen bg-gray-50 dark:bg-gray-900">
 
         {{-- Sidebar (both desktop + mobile handled) --}}
         <aside
-            class="z-20 w-64 overflow-y-auto overflow-x-clip bg-white dark:bg-gray-800 transition-all duration-300 ease-in-out transform
+            class="z-20 w-64 overflow-y-auto overflow-x-clip bg-white dark:bg-gray-900 border-r border-gray-200 dark:border-gray-800 transition-all duration-300 ease-in-out transform
                 fixed inset-y-0 left-0 md:translate-x-0"
             :class="{
                 '-translate-x-full': !isSideMenuOpen && window.innerWidth < 768,
@@ -81,19 +81,20 @@
                 :class="isSidebarOpen || window.innerWidth < 768 ? 'ml-3' : 'px-0'">
                 <div class="flex items-center justify-between">
                     @php $userType = auth()->user()?->UserType; @endphp
-                    <a href="/dashboard" class="text-lg font-bold text-gray-800 dark:text-gray-200"
+                    <a href="/dashboard" class="text-lg font-bold text-gray-800 dark:text-gray-100"
                         x-show="isSidebarOpen" x-transition>
                         JustMy.Health
                     </a>
 
                     <button
                         @click="window.innerWidth < 768 ? (isSideMenuOpen = !isSideMenuOpen) : (isSidebarOpen = !isSidebarOpen)"
-                        class="hidden md:flex items-center justify-center rounded-md focus:outline-none">
-                        <svg class="w-7 h-7" aria-hidden="true" fill="none" stroke-linecap="round"
+                        class="hidden md:flex items-center justify-center p-1 rounded-lg text-gray-500 hover:text-gray-700 hover:bg-gray-100 dark:text-gray-400 dark:hover:text-gray-200 dark:hover:bg-gray-800 transition focus:outline-none"
+                        aria-label="Toggle sidebar">
+                        <svg class="w-6 h-6" aria-hidden="true" fill="none" stroke-linecap="round"
                             stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" stroke="currentColor">
                             <path
                                 d="M16.65 3.85938H7.35C3.25 3.85938 2 5.10938 2 9.20938V14.7894C2 18.8894 3.25 20.1394 7.35 20.1394H16.65C20.75 20.1394 22 18.8894 22 14.7894V9.20938C22 5.10938 20.75 3.85938 16.65 3.85938ZM18.74 13.1194C18.74 15.3694 17.69 16.4194 15.44 16.4194H13.21C10.96 16.4194 9.91 15.3694 9.91 13.1194V10.8894C9.91 8.63938 10.96 7.58938 13.21 7.58938H15.44C17.69 7.58938 18.74 8.63938 18.74 10.8894V13.1194Z"
-                                fill="#292D32" />
+                                fill="currentColor" />
                         </svg>
                     </button>
                 </div>

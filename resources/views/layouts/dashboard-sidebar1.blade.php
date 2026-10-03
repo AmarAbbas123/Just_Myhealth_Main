@@ -475,9 +475,18 @@ $renderMenu = function ($items, $level = 0) use (&$renderMenu) {
         list-style: none;
     }
 
+    .dark .sidebar-link {
+        color: #cbd5e1;
+    }
+
     .sidebar-link:hover {
         background: #f0fdf9;
         color: #0d9488;
+    }
+
+    .dark .sidebar-link:hover {
+        background: rgba(255, 255, 255, 0.08);
+        color: #ffffff;
     }
 
     /* ── Icon ───────────────────────────────────────────────── */
@@ -510,12 +519,29 @@ $renderMenu = function ($items, $level = 0) use (&$renderMenu) {
         font-weight: 600;
     }
 
+    .dark .sidebar-link.active {
+        background: rgba(20, 184, 166, 0.22);
+        color: #2dd4bf;
+        font-weight: 600;
+    }
+
+    /* ── Details open parent state ──────────────────────────── */
+    .dark details.group[open] > summary.sidebar-link {
+        color: #f1f5f9;
+        background: rgba(255, 255, 255, 0.04);
+    }
+
     /* ── Locked ─────────────────────────────────────────────── */
     .sidebar-link--locked {
         cursor: not-allowed;
         pointer-events: none;
         opacity: 0.4;
         filter: grayscale(1);
+    }
+
+    .dark .sidebar-link--locked {
+        opacity: 0.3;
+        color: #64748b;
     }
 
     /* ── Collapsed sidebar ──────────────────────────────────── */
@@ -569,16 +595,14 @@ $renderMenu = function ($items, $level = 0) use (&$renderMenu) {
         overflow-y: auto; overflow-x: hidden;
         width: max-content; margin: 0 !important;
         padding: 6px;
-        border-radius: 12px;
-        background: #ffffff;
-        border: 1px solid #e5e7eb;
+       
         box-shadow: 0 12px 40px rgba(0,0,0,0.10), 0 2px 8px rgba(0,0,0,0.06);
         z-index: 9998;
         list-style: none;
     }
 
     .dark ul.sidebar-submenu-panel.sidebar-flyout-active {
-        background: #1f2937; border-color: #374151; color: white;
+        background: #1f2937; border: 1px solid #374151; color: white;
     }
 
     ul.sidebar-submenu-panel.sidebar-flyout-active .sidebar-link {
@@ -605,6 +629,7 @@ $renderMenu = function ($items, $level = 0) use (&$renderMenu) {
     }
     details.group > summary.sidebar-link > div { min-width: 0; flex: 1 1 auto; overflow: hidden; }
     details.group > summary.sidebar-link .arrow { margin-left: auto; font-size: 0.7rem; opacity: 0.5; flex-shrink: 0; color: #6b7280; }
+    .dark details.group > summary.sidebar-link .arrow { color: #94a3b8; }
     details.group > summary.sidebar-link svg:not(.arrow) { width: 17px; height: 17px; flex-shrink: 0; }
     details.group > summary.sidebar-link .sidebar-label { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
@@ -616,6 +641,9 @@ $renderMenu = function ($items, $level = 0) use (&$renderMenu) {
     /* ── Submenu border accent ──────────────────────────────── */
     .sidebar-submenu-panel {
         border-left: 2px solid #ccfbf1 !important;
+    }
+    .dark .sidebar-submenu-panel {
+        border-left: 2px solid #334155 !important;
     }
 </style>
 
@@ -667,16 +695,18 @@ $renderMenu = function ($items, $level = 0) use (&$renderMenu) {
     }
 
     .dark .sidebar-flyout-tooltip {
-        background: white;
-        box-shadow: 0 8px 24px rgba(31, 156, 161, 0.45), 0 2px 8px rgba(0, 0, 0, 0.3);
+        background: #1e293b;
+        color: #f8fafc;
+        border: 1px solid #334155;
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5), 0 2px 8px rgba(0, 0, 0, 0.3);
     }
 
     .dark .sidebar-flyout-tooltip::before {
-        border-color: transparent #1F9CA1 transparent transparent;
+        border-color: transparent #334155 transparent transparent;
     }
 
     .dark .sidebar-flyout-tooltip.is-left::before {
-        border-color: transparent transparent transparent #1F9CA1;
+        border-color: transparent transparent transparent #334155;
     }
 </style>
 
