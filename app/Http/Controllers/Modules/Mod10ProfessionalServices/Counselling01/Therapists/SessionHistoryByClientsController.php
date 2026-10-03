@@ -24,7 +24,7 @@ class SessionHistoryByClientsController extends Controller
 
         return view(
             'modules.mod-10.01-counselling.therapists.history.session_history_clients',
-            compact('clients')
+            compact('clients', 'sessions')
         );
     }
 
