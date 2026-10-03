@@ -22,7 +22,7 @@
             @endif
 
             <!-- Form -->
-            <form method="POST" action="{{ route('usr-raise-issue') }}" class="space-y-6 sm:space-y-7">
+            <form method="POST" action="{{ route('usr-raise-issue') }}" class="space-y-2 sm:space-y-2">
                 @csrf
 
                 <!-- Concern Categories (2-column on desktop, stacked on mobile) -->
