@@ -159,7 +159,7 @@
             x-transition.opacity.duration.200ms class="fixed inset-0 z-10 bg-black bg-opacity-50 md:hidden"></div>
 
         {{-- Main Content --}}
-        <div class="flex flex-col flex-1 min-h-screen transition-all duration-300 ease-in-out"
+        <div class="flex flex-col flex-1 min-h-screen min-w-0 max-w-full overflow-x-hidden transition-all duration-300 ease-in-out"
             :class="{
                 'md:ml-64': isSidebarOpen && window.innerWidth >= 768,
                 'md:ml-20': !isSidebarOpen && window.innerWidth >= 768,
@@ -168,7 +168,7 @@
 
             @include('layouts.dashboard-topbar')
 
-            <main class="flex-1 overflow-y-auto px-4 pb-4 md:px-6 md:pb-6 transition-all duration-300">
+            <main class="flex-1 overflow-y-auto overflow-x-hidden min-w-0 max-w-full px-3 sm:px-4 pb-4 md:px-6 md:pb-6 transition-all duration-300">
                 {{ $slot }}
             </main>
 
