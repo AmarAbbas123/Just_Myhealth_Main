@@ -204,8 +204,9 @@
                     <!-- Actions Row -->
                     <div class="mt-5 pt-4 border-t border-gray-100 dark:border-gray-700/60 flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5">
                         <a href="{{ route('therap.session.history.clients.dates', ['client_id' => $session->PatientUserID]) }}"
-                            class="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl text-xs sm:text-sm font-semibold border border-[#1C9BA0] text-[#1C9BA0] hover:bg-[#1C9BA0] hover:text-white dark:border-[#1C9BA0] dark:text-[#38b2ac] dark:hover:bg-[#1C9BA0] dark:hover:text-white transition-all duration-200 shadow-2xs hover:shadow-xs cursor-pointer active:scale-98 flex-1">
-                            <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                            class="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl text-xs sm:text-sm font-semibold text-white shadow-2xs hover:shadow-md transition-all duration-200 cursor-pointer active:scale-98 flex-1"
+                            style="background: linear-gradient(135deg, #1C9BA0, #127F94);">
+                            <svg class="w-4 h-4 text-white shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
                             </svg>
                             <span>View Session Dates</span>
