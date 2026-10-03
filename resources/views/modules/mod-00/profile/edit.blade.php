@@ -114,7 +114,7 @@
                             @endphp
 
                             <div class="flex flex-wrap items-center justify-center sm:justify-start gap-2">
-                                <h1 class="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900 dark:text-gray-100 tracking-tight break-words">
+                                <h1 class="text-xl sm:text-2xl lg:text-2xl font-bold text-gray-900 dark:text-gray-100 tracking-tight break-words">
                                     {{ Auth::user()->UserName }}
                                 </h1>
                                 <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-teal-50 dark:bg-teal-900/30 text-teal-700 dark:text-teal-300 border border-teal-200/80 dark:border-teal-700/50 shadow-xs shrink-0">
