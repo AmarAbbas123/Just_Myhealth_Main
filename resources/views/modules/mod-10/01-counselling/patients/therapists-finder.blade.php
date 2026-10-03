@@ -27,9 +27,7 @@
         class="w-full px-1 py-4 sm:py-6">
 
         <!-- Header -->
-        <div class="flex justify-between mb-4">
-            <x-page-header />
-        </div>
+        <x-page-header />
 
         <!-- THERAPY SEARCH CRITERIA (ON TOP) -->
         <div class="bg-white dark:bg-gray-800 shadow-sm rounded-2xl p-5 border border-gray-200/80 dark:border-gray-700 mb-6 transition-colors duration-200">
