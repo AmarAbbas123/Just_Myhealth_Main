@@ -240,14 +240,24 @@
 
             {{-- ===================== 2. TABLE VIEW ===================== --}}
             <div x-show="viewMode === 'table'" class="bg-white dark:bg-gray-800 rounded-2xl border border-gray-100 dark:border-gray-700/80 shadow-[0_4px_20px_-4px_rgba(0,0,0,0.05)] overflow-hidden">
+                <!-- Mobile Horizontal Scroll Helper -->
+                <div class="sm:hidden px-4 py-2 bg-gray-50 dark:bg-gray-900/40 border-b border-gray-100 dark:border-gray-700/60 flex items-center justify-between text-[11px] text-gray-400">
+                    <span class="flex items-center gap-1.5 font-medium text-gray-500 dark:text-gray-400">
+                        <svg class="w-3.5 h-3.5 text-[#1C9BA0]" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"/>
+                        </svg>
+                        <span>Swipe horizontally to view all columns</span>
+                    </span>
+                    <span class="font-semibold text-[#1C9BA0]" x-text="documents.length + ' documents'"></span>
+                </div>
                 <div class="overflow-x-auto">
-                    <table class="w-full text-left border-collapse">
+                    <table class="w-full min-w-[600px] text-left border-collapse">
                         <thead>
                             <tr class="border-b border-gray-100 dark:border-gray-700/80 bg-gray-50/60 dark:bg-gray-900/40 text-[11px] font-bold uppercase tracking-wider text-gray-400 dark:text-gray-400">
-                                <th class="py-3.5 px-5">Document Type</th>
-                                <th class="py-3.5 px-4">Verification Status</th>
-                                <th class="py-3.5 px-4 text-center">Proof / File</th>
-                                <th class="py-3.5 px-5 text-right">Actions</th>
+                                <th class="py-3.5 px-5 whitespace-nowrap">Document Type</th>
+                                <th class="py-3.5 px-4 whitespace-nowrap">Verification Status</th>
+                                <th class="py-3.5 px-4 text-center whitespace-nowrap">Proof / File</th>
+                                <th class="py-3.5 px-5 text-right whitespace-nowrap">Actions</th>
                             </tr>
                         </thead>
                         <tbody class="divide-y divide-gray-100 dark:divide-gray-700/60 text-xs sm:text-sm">

@@ -59,7 +59,7 @@
 
                 @if ($hasQualData)
                     <!-- View Mode Toggle (Cards vs Table) -->
-                    <div class="hidden sm:inline-flex items-center bg-gray-100 dark:bg-gray-700/60 p-1 rounded-xl border border-gray-200/80 dark:border-gray-600/60 text-xs font-semibold">
+                    <div class="inline-flex items-center bg-gray-100 dark:bg-gray-700/60 p-1 rounded-xl border border-gray-200/80 dark:border-gray-600/60 text-xs font-semibold">
                         <button type="button" @click="viewMode = 'cards'"
                                 :class="viewMode === 'cards' ? 'bg-white dark:bg-gray-800 text-[#1C9BA0] shadow-xs' : 'text-gray-500 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200'"
                                 class="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg transition-all">
@@ -220,17 +220,27 @@
 
             {{-- ===================== 2. TABLE VIEW ===================== --}}
             <div x-show="viewMode === 'table'" class="bg-white dark:bg-gray-800 rounded-2xl border border-gray-100 dark:border-gray-700/80 shadow-[0_4px_20px_-4px_rgba(0,0,0,0.05)] overflow-hidden">
+                <!-- Mobile Horizontal Scroll Helper -->
+                <div class="sm:hidden px-4 py-2 bg-gray-50 dark:bg-gray-900/40 border-b border-gray-100 dark:border-gray-700/60 flex items-center justify-between text-[11px] text-gray-400">
+                    <span class="flex items-center gap-1.5 font-medium text-gray-500 dark:text-gray-400">
+                        <svg class="w-3.5 h-3.5 text-[#1C9BA0]" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"/>
+                        </svg>
+                        <span>Swipe horizontally to view all columns</span>
+                    </span>
+                    <span class="font-semibold text-[#1C9BA0]">{{ $qualCount }} / 4</span>
+                </div>
                 <div class="overflow-x-auto">
-                    <table class="w-full text-left border-collapse">
+                    <table class="w-full min-w-[720px] text-left border-collapse">
                         <thead>
                             <tr class="border-b border-gray-100 dark:border-gray-700/80 bg-gray-50/60 dark:bg-gray-900/40 text-[11px] font-bold uppercase tracking-wider text-gray-400 dark:text-gray-400">
-                                <th class="py-3.5 px-5">Title</th>
-                                <th class="py-3.5 px-4">Level</th>
-                                <th class="py-3.5 px-4">Institution</th>
-                                <th class="py-3.5 px-4">Grade</th>
-                                <th class="py-3.5 px-4">Date Completed</th>
-                                <th class="py-3.5 px-4 text-center">Certificate</th>
-                                <th class="py-3.5 px-5 text-right">Actions</th>
+                                <th class="py-3.5 px-5 whitespace-nowrap">Title</th>
+                                <th class="py-3.5 px-4 whitespace-nowrap">Level</th>
+                                <th class="py-3.5 px-4 whitespace-nowrap">Institution</th>
+                                <th class="py-3.5 px-4 whitespace-nowrap">Grade</th>
+                                <th class="py-3.5 px-4 whitespace-nowrap">Date Completed</th>
+                                <th class="py-3.5 px-4 text-center whitespace-nowrap">Certificate</th>
+                                <th class="py-3.5 px-5 text-right whitespace-nowrap">Actions</th>
                             </tr>
                         </thead>
                         <tbody class="divide-y divide-gray-100 dark:divide-gray-700/60 text-xs sm:text-sm">
