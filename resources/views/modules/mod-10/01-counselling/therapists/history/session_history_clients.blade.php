@@ -201,19 +201,19 @@
                         </div>
                     </div>
 
-                    <!-- Actions Row -->
+                    <!-- Actions Row: Outline pill on first button, filled pill on second button -->
                     <div class="mt-5 pt-4 border-t border-gray-100 dark:border-gray-700/60 flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5">
                         <a href="{{ route('therap.session.history.clients.dates', ['client_id' => $session->PatientUserID]) }}"
-                            class="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl text-xs sm:text-sm font-semibold text-white shadow-2xs hover:shadow-md transition-all duration-200 cursor-pointer active:scale-98 flex-1"
-                            style="background: linear-gradient(135deg, #1C9BA0, #127F94);">
-                            <svg class="w-4 h-4 text-white shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                            class="inline-flex items-center justify-center gap-2 px-4 py-2 rounded-full border text-xs sm:text-sm font-semibold tracking-wide transition-all duration-200 active:scale-[0.99] cursor-pointer hover:bg-[#1C9BA0]/10 whitespace-nowrap flex-1"
+                            style="border-color: #1C9BA0; color: #1C9BA0;">
+                            <svg class="w-4 h-4 shrink-0" style="color: #1C9BA0;" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
                             </svg>
                             <span>View Session Dates</span>
                         </a>
 
                         <a href="{{ route('therap.session.history.clients.notes', ['client_id' => $session->PatientUserID]) }}"
-                            class="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl text-xs sm:text-sm font-semibold text-white shadow-2xs hover:shadow-md transition-all duration-200 cursor-pointer active:scale-98 flex-1"
+                            class="inline-flex items-center justify-center gap-2 px-4 py-2 rounded-full text-white text-xs sm:text-sm font-semibold tracking-wide shadow-xs hover:shadow-md transition-all duration-200 active:scale-[0.99] cursor-pointer hover:opacity-95 whitespace-nowrap flex-1"
                             style="background: linear-gradient(135deg, #1C9BA0, #127F94);">
                             <svg class="w-4 h-4 shrink-0 text-white" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
