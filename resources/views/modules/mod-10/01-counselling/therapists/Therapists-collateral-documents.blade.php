@@ -279,6 +279,17 @@
                 </div>
             </div>
 
+            <!-- Horizontal Scroll Guidance Helper -->
+            <div class="px-5 py-2.5 bg-gray-50/80 dark:bg-gray-900/40 border-b border-gray-100 dark:border-gray-700/60 flex items-center justify-between text-xs text-gray-500 dark:text-gray-400">
+                <div class="flex items-center gap-2">
+                    <svg class="w-4 h-4 text-[#1C9BA0] shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"/>
+                    </svg>
+                    <span>Swipe horizontally to view all columns and actions.</span>
+                </div>
+                <span class="text-[11px] text-gray-400 font-mono hidden sm:inline" x-text="filteredFiles.length + ' item(s)'"></span>
+            </div>
+
             <!-- Desktop Table View -->
             <div class="hidden md:block overflow-x-auto">
                 <table class="w-full text-left border-collapse">
