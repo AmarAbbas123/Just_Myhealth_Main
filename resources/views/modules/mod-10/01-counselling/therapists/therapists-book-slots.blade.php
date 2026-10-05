@@ -106,13 +106,13 @@
             </div>
 
             <!-- Calendar Grid Container -->
-            <div id="calendar-grid-container" class="overflow-x-auto rounded-2xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 scroll-smooth">
+            <div id="calendar-grid-container" class="overflow-x-auto rounded-2xl border border-gray-400 dark:border-gray-500 bg-white dark:bg-gray-800 scroll-smooth">
                 <div class="flex min-w-[780px] sm:min-w-[840px]">
 
                     <!-- Sticky Left Time Column -->
-                    <div class="sticky left-0 z-30 shrink-0 w-16 sm:w-20 bg-gray-50 dark:bg-gray-900 border-r border-gray-300 dark:border-gray-600 shadow-[2px_0_6px_-1px_rgba(0,0,0,0.06)]">
+                    <div class="sticky left-0 z-30 shrink-0 w-16 sm:w-20 bg-gray-50 dark:bg-gray-900 border-r border-gray-400 dark:border-gray-500 shadow-[2px_0_6px_-1px_rgba(0,0,0,0.06)]">
                         <!-- Top-Left Corner Header -->
-                        <div class="h-12 bg-gray-100 dark:bg-gray-900 border-b border-gray-300 dark:border-gray-600 flex items-center justify-center text-xs font-bold uppercase tracking-wider text-gray-700 dark:text-gray-300">
+                        <div class="h-12 bg-gray-100 dark:bg-gray-900 border-b border-gray-400 dark:border-gray-500 flex items-center justify-center text-xs font-bold uppercase tracking-wider text-gray-700 dark:text-gray-300">
                             <svg class="w-3.5 h-3.5 mr-1 text-[#1C9BA0]" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                             </svg>
@@ -120,7 +120,7 @@
                         </div>
                         <!-- Time Cells -->
                         <template x-for="time in timeRows" :key="time">
-                            <div class="h-12 text-[11px] font-mono font-semibold text-gray-600 dark:text-gray-300 pr-2 border-b border-gray-300 dark:border-gray-600 flex items-center justify-end"
+                            <div class="h-12 text-[11px] font-mono font-semibold text-gray-600 dark:text-gray-300 pr-2 border-b border-gray-400 dark:border-gray-500 flex items-center justify-end"
                                  x-text="time"></div>
                         </template>
                     </div>
@@ -129,11 +129,11 @@
                     <div class="flex-1 grid grid-cols-7 min-w-[700px]">
                         <template x-for="date in weekDates" :key="date">
                             <div :id="'day-col-' + date"
-                                 class="flex flex-col border-r border-gray-300 dark:border-gray-600 last:border-r-0 min-w-[100px] sm:min-w-0"
+                                 class="flex flex-col border-r border-gray-400 dark:border-gray-500 last:border-r-0 min-w-[100px] sm:min-w-0"
                                  :class="isSameDay(date, nowInUserTimeZone().date) ? 'bg-[#1C9BA0]/[0.03]' : ''">
 
                                 <!-- Day Header Cell -->
-                                <div class="h-12 bg-gray-100 dark:bg-gray-900 border-b border-gray-300 dark:border-gray-600 flex flex-col items-center justify-center relative"
+                                <div class="h-12 bg-gray-100 dark:bg-gray-900 border-b border-gray-400 dark:border-gray-500 flex flex-col items-center justify-center relative"
                                      :class="isSameDay(date, nowInUserTimeZone().date) ? 'bg-[#1C9BA0]/10 dark:bg-[#1C9BA0]/20' : ''">
                                     <div class="text-xs font-bold uppercase tracking-wider text-gray-900 dark:text-gray-100"
                                          x-text="new Date(date + 'T12:00:00').toLocaleDateString('en-US', { weekday: 'short' })"></div>
@@ -148,9 +148,16 @@
                                 <div class="relative">
                                     <!-- Grid 30-min Cells -->
                                     <template x-for="time in timeRows" :key="time">
-                                        <div class="h-12 border-b border-gray-300 dark:border-gray-600 transition-colors"
+                                        <div class="h-12 border-b border-gray-400 dark:border-gray-500 transition-colors flex items-center justify-center group relative select-none"
                                              :class="isPastDateTime(date, time) ? 'bg-gray-100/70 dark:bg-gray-900/50 cursor-not-allowed opacity-70' : 'cursor-pointer hover:bg-[#1C9BA0]/10 dark:hover:bg-[#1C9BA0]/20'"
-                                             @click="openCreateModal(date, time)"></div>
+                                             @click="openCreateModal(date, time)"
+                                             :title="!isPastDateTime(date, time) ? 'Click to add availability at ' + time : ''">
+                                            <template x-if="!isPastDateTime(date, time)">
+                                                <span class="text-gray-500 dark:text-gray-400 group-hover:text-[#1C9BA0] group-hover:scale-125 transition-all text-base font-extrabold flex items-center justify-center pointer-events-none">
+                                                    +
+                                                </span>
+                                            </template>
+                                        </div>
                                     </template>
 
                                     <!-- Carry-over slots from previous day -->
