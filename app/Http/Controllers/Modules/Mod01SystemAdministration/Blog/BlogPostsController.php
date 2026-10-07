@@ -10,9 +10,11 @@ use Illuminate\Support\Facades\Storage;
 class BlogPostsController extends Controller
 {
     // GET /mod-01/tm/blog-posts
-    public function index()
+    public function index(Request $request)
     {
-        $posts = BlogPost::orderByDesc('created_at')->paginate(20);
+        $posts = BlogPost::orderByDesc('created_at')
+            ->paginate(10)
+            ->withQueryString();
 
         return view('modules.mod-01.blog-posts.index', compact('posts'));
     }
