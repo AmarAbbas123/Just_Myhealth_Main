@@ -156,12 +156,19 @@
                         </svg>
                     </div>
 
-                    <select x-model="statusFilter"
-                            class="py-2 px-3 text-xs rounded-xl border border-gray-200 dark:border-gray-700 dark:bg-gray-900/60 text-gray-700 dark:text-gray-200 focus:outline-hidden focus:border-[#1C9BA0] focus:ring-2 focus:ring-[#1C9BA0]/20 transition">
-                        <option value="all">All Status</option>
-                        <option value="published">Published</option>
-                        <option value="draft">Drafts</option>
-                    </select>
+                    <div class="relative shrink-0">
+                        <select x-model="statusFilter"
+                                class="w-full appearance-none pl-3.5 pr-8 py-2 text-xs font-medium rounded-xl border border-gray-200 dark:border-gray-700 dark:bg-gray-900/60 text-gray-700 dark:text-gray-200 focus:outline-hidden focus:border-[#1C9BA0] focus:ring-2 focus:ring-[#1C9BA0]/20 transition cursor-pointer">
+                            <option value="all">All Status</option>
+                            <option value="published">Published</option>
+                            <option value="draft">Drafts</option>
+                        </select>
+                        <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2.5 text-gray-400">
+                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
+                            </svg>
+                        </div>
+                    </div>
                 </div>
             </div>
 
