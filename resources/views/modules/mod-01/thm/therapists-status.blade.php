@@ -108,10 +108,10 @@
                 </span>
                 <div class="flex items-center gap-3 font-mono text-[11px]">
                     <span class="inline-flex items-center gap-1.5 text-emerald-600 dark:text-emerald-400 font-bold">
-                        <span class="w-2 h-2 rounded-full bg-emerald-500"></span> Active
+                        <span class="w-2 h-2 rounded-full bg-emerald-500"></span> 1
                     </span>
                     <span class="inline-flex items-center gap-1.5 text-gray-400 dark:text-gray-500 font-bold">
-                        <span class="w-2 h-2 rounded-full bg-gray-400"></span> Inactive
+                        <span class="w-2 h-2 rounded-full bg-gray-400"></span> 0
                     </span>
                 </div>
             </div>
@@ -245,16 +245,8 @@
                                 <td class="px-4 py-3 whitespace-nowrap text-xs">{{ $attr->BaseCity ?? '—' }}</td>
 
                                 <!-- AccountStatus -->
-                                <td class="px-4 py-3 whitespace-nowrap">
-                                    @if($isActive)
-                                        <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border border-emerald-500/20">
-                                            <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span> Active
-                                        </span>
-                                    @else
-                                        <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-gray-100 dark:bg-gray-700 text-gray-500 dark:text-gray-400 border border-gray-200 dark:border-gray-600">
-                                            <span class="w-1.5 h-1.5 rounded-full bg-gray-400"></span> Inactive
-                                        </span>
-                                    @endif
+                                <td class="px-4 py-3 text-center whitespace-nowrap font-mono text-xs font-bold {{ ($item->AccountStatus == 1) ? 'text-emerald-600 dark:text-emerald-400' : 'text-gray-400 dark:text-gray-500' }}">
+                                    {{ $item->AccountStatus ?? 0 }}
                                 </td>
 
                                 <!-- Created -->
@@ -263,16 +255,8 @@
                                 </td>
 
                                 <!-- AccountSetupComplete -->
-                                <td class="px-4 py-3 whitespace-nowrap">
-                                    @if($isSetupComplete)
-                                        <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-xs font-semibold bg-indigo-50 dark:bg-indigo-950/40 text-indigo-700 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-800/60">
-                                            Done
-                                        </span>
-                                    @else
-                                        <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-xs font-semibold bg-amber-50 dark:bg-amber-950/40 text-amber-700 dark:text-amber-300 border border-amber-200 dark:border-amber-800/60">
-                                            Pending
-                                        </span>
-                                    @endif
+                                <td class="px-4 py-3 text-center whitespace-nowrap font-mono text-xs font-bold {{ ($item->AccountSetupComplete == 1) ? 'text-emerald-600 dark:text-emerald-400' : 'text-gray-400 dark:text-gray-500' }}">
+                                    {{ $item->AccountSetupComplete ?? 0 }}
                                 </td>
                             </tr>
                         @empty
