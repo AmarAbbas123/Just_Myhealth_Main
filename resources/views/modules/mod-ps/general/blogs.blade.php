@@ -27,21 +27,93 @@
             Blogs <span class="text-teal-400">JustMy.Health</span>
         </h1>
 
-       
-
     </div>
 </section>
-    <!-- main heading -->
-    <section class="relative pt-12 pb-10 lg:pt-16 lg:pb-12 bg-gray-50">
+
+    <!-- Main heading & Search Filter -->
+    <section class="relative pt-12 pb-6 lg:pt-16 lg:pb-8 bg-gray-50">
         <div class="max-w-3xl mx-auto text-center px-4">
             <span class="inline-flex rounded-full bg-teal-50 px-4 py-1.5 text-xs font-semibold uppercase tracking-widest text-teal-700">
                 Our Blog
             </span>
             <h1 class="mt-4 text-3xl sm:text-4xl font-bold text-gray-900">Insights, Stories &amp; Updates</h1>
-            <p class="mt-4 text-gray-600">
+            <p class="mt-3 text-gray-600">
                 Wellness tips, therapy insights, and the latest posts from our community and social channels —
                 all in one place.
             </p>
+
+            <!-- Search Filter Bar -->
+            <div class="mt-8 max-w-xl mx-auto">
+                <form action="{{ route('blogs') }}" method="GET" class="relative">
+                    @if(!empty($platform))
+                        <input type="hidden" name="platform" value="{{ $platform }}">
+                    @endif
+                    <div class="relative flex items-center">
+                        <div class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-4 text-gray-400">
+                            <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                            </svg>
+                        </div>
+                        <input type="text"
+                               name="search"
+                               value="{{ $search ?? '' }}"
+                               placeholder="Search articles by title, topic, or keyword..."
+                               class="w-full rounded-full border border-gray-200 bg-white pl-11 pr-28 py-3.5 text-sm text-gray-900 placeholder-gray-400 shadow-xs transition focus:border-teal-600 focus:outline-hidden focus:ring-2 focus:ring-teal-600/20">
+                        
+                        @if(!empty($search))
+                            <a href="{{ route('blogs', array_filter(['platform' => $platform ?? null])) }}"
+                               class="absolute right-24 text-gray-400 hover:text-gray-600 p-1"
+                               title="Clear search query">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                                </svg>
+                            </a>
+                        @endif
+
+                        <button type="submit"
+                                class="absolute right-1.5 top-1.5 bottom-1.5 px-5 rounded-full text-xs font-semibold text-white shadow-xs transition hover:opacity-95 active:scale-95"
+                                style="background: linear-gradient(135deg, #1C9BA0, #127F94);">
+                            Search
+                        </button>
+                    </div>
+                </form>
+
+                {{-- Platform Topic Filter Pills --}}
+                @if(isset($platforms) && $platforms->isNotEmpty())
+                    <div class="flex flex-wrap items-center justify-center gap-2 mt-4">
+                        <a href="{{ route('blogs', array_filter(['search' => $search ?? null])) }}"
+                           class="px-3.5 py-1.5 rounded-full text-xs font-medium transition {{ empty($platform) ? 'bg-teal-700 text-white shadow-xs' : 'bg-white text-gray-600 border border-gray-200 hover:border-teal-500 hover:text-teal-700' }}">
+                            All Topics
+                        </a>
+                        @foreach($platforms as $p)
+                            <a href="{{ route('blogs', array_filter(['search' => $search ?? null, 'platform' => $p])) }}"
+                               class="px-3.5 py-1.5 rounded-full text-xs font-medium transition {{ ($platform ?? '') === $p ? 'bg-teal-700 text-white shadow-xs' : 'bg-white text-gray-600 border border-gray-200 hover:border-teal-500 hover:text-teal-700' }}">
+                                {{ $p }}
+                            </a>
+                        @endforeach
+                    </div>
+                @endif
+
+                {{-- Active Filter Summary --}}
+                @if(!empty($search) || !empty($platform))
+                    <div class="flex items-center justify-center gap-2 mt-4 text-xs text-gray-500">
+                        <span>
+                            Found <strong class="font-bold text-gray-800">{{ $posts->total() }}</strong> {{ \Illuminate\Support\Str::plural('article', $posts->total()) }}
+                            @if(!empty($search))
+                                matching "<span class="font-semibold text-teal-700">{{ $search }}</span>"
+                            @endif
+                            @if(!empty($platform))
+                                in <span class="font-semibold text-teal-700">{{ $platform }}</span>
+                            @endif
+                        </span>
+                        <span>•</span>
+                        <a href="{{ route('blogs') }}" class="font-semibold text-teal-700 hover:underline">
+                            Reset filters
+                        </a>
+                    </div>
+                @endif
+            </div>
+
         </div>
     </section>
 
@@ -50,8 +122,23 @@
         <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
 
             @if ($posts->isEmpty())
-                <div class="text-center py-16 max-w-md mx-auto rounded-2xl border border-dashed border-gray-200 bg-white">
-                    <p class="text-gray-500">No posts published yet — check back soon.</p>
+                <div class="text-center py-16 max-w-md mx-auto rounded-2xl border border-dashed border-gray-200 bg-white p-8">
+                    <div class="w-12 h-12 rounded-2xl bg-teal-50 text-teal-600 mx-auto flex items-center justify-center mb-4">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                        </svg>
+                    </div>
+                    @if(!empty($search) || !empty($platform))
+                        <h3 class="text-base font-bold text-gray-900 mb-1">No matching articles found</h3>
+                        <p class="text-sm text-gray-500 mb-5">We couldn't find any articles matching your search query. Try different keywords or reset your filters.</p>
+                        <a href="{{ route('blogs') }}"
+                           class="inline-flex items-center gap-2 px-5 py-2.5 rounded-full text-xs font-semibold text-white shadow-xs transition hover:opacity-95"
+                           style="background: linear-gradient(135deg, #1C9BA0, #127F94);">
+                            Reset Search Filters
+                        </a>
+                    @else
+                        <p class="text-gray-500">No posts published yet — check back soon.</p>
+                    @endif
                 </div>
             @else
                 <div class="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
@@ -76,7 +163,7 @@
                                     {{ $post->PublishedAt?->format('M j, Y') }}
                                 </time>
 
-                                <h2 class="mt-2 text-lg  text-gray-900 leading-snug">
+                                <h2 class="mt-2 text-lg text-gray-900 leading-snug font-bold">
                                     <a href="{{ route('blogs.show', $post) }}" class="hover:text-teal-700 transition-colors">
                                         {{ $post->Title }}
                                     </a>
