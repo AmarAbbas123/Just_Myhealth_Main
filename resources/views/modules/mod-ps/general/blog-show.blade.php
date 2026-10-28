@@ -92,14 +92,9 @@
                         {{-- Video Section (Mobile view: replaces the main image at top of page) --}}
                         <div class="block lg:hidden mb-6">
                             <section class="overflow-hidden rounded-2xl bg-white shadow-sm border border-gray-100">
-                                @if ($blogPost->VideoTitle)
-                                    <h2 class="px-5 pt-5 text-sm font-bold leading-snug text-gray-900">
-                                        {{ $blogPost->VideoTitle }}</h2>
-                                @endif
-
                                 <a href="{{ $blogPost->VideoUrl ?: '#' }}"
                                     @if ($blogPost->VideoUrl) target="_blank" rel="noopener noreferrer" @endif
-                                    class="group relative {{ $blogPost->VideoTitle ? 'mt-4' : '' }} block aspect-video overflow-hidden bg-gray-900 {{ $blogPost->VideoUrl ? '' : 'pointer-events-none' }}"
+                                    class="group relative block aspect-video overflow-hidden bg-gray-900 {{ $blogPost->VideoUrl ? '' : 'pointer-events-none' }}"
                                     aria-label="{{ $blogPost->VideoTitle ?: 'Watch video' }}">
 
                                     <img src="{{ $blogPost->featuredImageUrl() }}"
