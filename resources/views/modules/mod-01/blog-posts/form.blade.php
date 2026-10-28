@@ -258,72 +258,8 @@
 
                 </div>
 
-                <!-- Right Column: Publishing, Image & Actions (1 col) -->
+                <!-- Right Column: Image, Tips & Publication (1 col) -->
                 <div class="lg:col-span-1 space-y-6">
-
-                    <!-- Publishing & Status Card -->
-                    <div class="bg-white dark:bg-gray-800 rounded-2xl sm:rounded-3xl border border-gray-100 dark:border-gray-700/80 shadow-[0_4px_25px_-5px_rgba(0,0,0,0.05)] p-5 sm:p-6 space-y-5">
-                        <div class="flex items-center justify-between pb-3 border-b border-gray-100 dark:border-gray-700/80">
-                            <h2 class="text-sm font-bold text-gray-900 dark:text-gray-100">Publication</h2>
-                            <template x-if="isPublished">
-                                <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800">
-                                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
-                                    Live
-                                </span>
-                            </template>
-                            <template x-if="!isPublished">
-                                <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-amber-50 dark:bg-amber-950/40 text-amber-700 dark:text-amber-400 border border-amber-200 dark:border-amber-800">
-                                    <span class="w-1.5 h-1.5 rounded-full bg-amber-500"></span>
-                                    Draft
-                                </span>
-                            </template>
-                        </div>
-
-                        <!-- Publish Toggle -->
-                        <div class="p-3.5 rounded-2xl bg-gray-50 dark:bg-gray-900/50 border border-gray-100 dark:border-gray-700/60">
-                            <label for="IsPublished" class="flex items-start justify-between gap-3 cursor-pointer select-none">
-                                <div class="min-w-0">
-                                    <span class="block text-sm font-bold text-gray-800 dark:text-gray-200">Published Status</span>
-                                    <span class="block text-xs text-gray-500 dark:text-gray-400 mt-0.5" x-text="isPublished ? 'Visible on public blog' : 'Hidden from public view'"></span>
-                                </div>
-
-                                <div class="relative inline-flex shrink-0 mt-0.5">
-                                    <input type="hidden" name="IsPublished" value="0">
-                                    <input type="checkbox" id="IsPublished" name="IsPublished" value="1"
-                                           @checked(old('IsPublished', $post->IsPublished))
-                                           @change="isPublished = $event.target.checked"
-                                           class="peer sr-only">
-                                    <div class="w-11 h-6 bg-gray-300 dark:bg-gray-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#1C9BA0]"></div>
-                                </div>
-                            </label>
-                        </div>
-
-                        @if ($post->exists && $post->PublishedAt)
-                            <div class="flex items-center gap-2 text-xs text-gray-500 dark:text-gray-400 pt-1">
-                                <svg class="w-4 h-4 text-gray-400 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                                </svg>
-                                <span>Published: <strong class="text-gray-700 dark:text-gray-200">{{ $post->PublishedAt->format('M j, Y h:i A') }}</strong></span>
-                            </div>
-                        @endif
-
-                        <!-- Action Buttons -->
-                        <div class="space-y-2.5 pt-2">
-                            <button type="submit"
-                                    class="w-full inline-flex items-center justify-center gap-2 px-5 py-3 rounded-xl text-sm font-bold text-white shadow-md hover:opacity-95 transition-all active:scale-[0.98]"
-                                    style="background: linear-gradient(135deg, #1C9BA0, #127F94);">
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
-                                </svg>
-                                <span>{{ $post->exists ? 'Save Changes' : 'Create Post' }}</span>
-                            </button>
-
-                            <a href="{{ route('blog-posts.index') }}"
-                               class="w-full inline-flex items-center justify-center gap-1.5 px-5 py-2.5 rounded-xl text-sm font-semibold text-gray-700 dark:text-gray-200 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 transition">
-                                <span>Cancel</span>
-                            </a>
-                        </div>
-                    </div>
 
                     <!-- Section 4: Featured Image Card -->
                     <div class="bg-white dark:bg-gray-800 rounded-2xl sm:rounded-3xl border border-gray-100 dark:border-gray-700/80 shadow-[0_4px_25px_-5px_rgba(0,0,0,0.05)] p-5 sm:p-6 space-y-4">
@@ -387,6 +323,70 @@
                                 <span>Keep excerpts punchy to boost click-through rates from the main blog grid.</span>
                             </li>
                         </ul>
+                    </div>
+
+                    <!-- Publication & Status Card (At End) -->
+                    <div class="bg-white dark:bg-gray-800 rounded-2xl sm:rounded-3xl border border-gray-100 dark:border-gray-700/80 shadow-[0_4px_25px_-5px_rgba(0,0,0,0.05)] p-5 sm:p-6 space-y-5">
+                        <div class="flex items-center justify-between pb-3 border-b border-gray-100 dark:border-gray-700/80">
+                            <h2 class="text-sm font-bold text-gray-900 dark:text-gray-100">Publication</h2>
+                            <template x-if="isPublished">
+                                <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800">
+                                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                                    Live
+                                </span>
+                            </template>
+                            <template x-if="!isPublished">
+                                <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-amber-50 dark:bg-amber-950/40 text-amber-700 dark:text-amber-400 border border-amber-200 dark:border-amber-800">
+                                    <span class="w-1.5 h-1.5 rounded-full bg-amber-500"></span>
+                                    Draft
+                                </span>
+                            </template>
+                        </div>
+
+                        <!-- Publish Toggle -->
+                        <div class="p-3.5 rounded-2xl bg-gray-50 dark:bg-gray-900/50 border border-gray-100 dark:border-gray-700/60">
+                            <label for="IsPublished" class="flex items-start justify-between gap-3 cursor-pointer select-none">
+                                <div class="min-w-0">
+                                    <span class="block text-sm font-bold text-gray-800 dark:text-gray-200">Published Status</span>
+                                    <span class="block text-xs text-gray-500 dark:text-gray-400 mt-0.5" x-text="isPublished ? 'Visible on public blog' : 'Hidden from public view'"></span>
+                                </div>
+
+                                <div class="relative inline-flex shrink-0 mt-0.5">
+                                    <input type="hidden" name="IsPublished" value="0">
+                                    <input type="checkbox" id="IsPublished" name="IsPublished" value="1"
+                                           @checked(old('IsPublished', $post->IsPublished))
+                                           @change="isPublished = $event.target.checked"
+                                           class="peer sr-only">
+                                    <div class="w-11 h-6 bg-gray-300 dark:bg-gray-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#1C9BA0]"></div>
+                                </div>
+                            </label>
+                        </div>
+
+                        @if ($post->exists && $post->PublishedAt)
+                            <div class="flex items-center gap-2 text-xs text-gray-500 dark:text-gray-400 pt-1">
+                                <svg class="w-4 h-4 text-gray-400 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                </svg>
+                                <span>Published: <strong class="text-gray-700 dark:text-gray-200">{{ $post->PublishedAt->format('M j, Y h:i A') }}</strong></span>
+                            </div>
+                        @endif
+
+                        <!-- Action Buttons -->
+                        <div class="space-y-2.5 pt-2">
+                            <button type="submit"
+                                    class="w-full inline-flex items-center justify-center gap-2 px-5 py-3 rounded-xl text-sm font-bold text-white shadow-md hover:opacity-95 transition-all active:scale-[0.98]"
+                                    style="background: linear-gradient(135deg, #1C9BA0, #127F94);">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+                                </svg>
+                                <span>{{ $post->exists ? 'Save Changes' : 'Create Post' }}</span>
+                            </button>
+
+                            <a href="{{ route('blog-posts.index') }}"
+                               class="w-full inline-flex items-center justify-center gap-1.5 px-5 py-2.5 rounded-xl text-sm font-semibold text-gray-700 dark:text-gray-200 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 transition">
+                                <span>Cancel</span>
+                            </a>
+                        </div>
                     </div>
 
                 </div>
