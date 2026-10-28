@@ -88,7 +88,53 @@
 
                 <!-- Main content -->
                 <article class="lg:col-span-3 min-w-0">
-                    <div class="relative overflow-hidden bg-gray-100" style="max-height:440px;">
+                    @if ($blogPost->hasVideoCard())
+                        {{-- Video Section (Mobile view: replaces the main image at top of page) --}}
+                        <div class="block lg:hidden mb-6">
+                            <section class="overflow-hidden rounded-2xl bg-white shadow-sm border border-gray-100">
+                                @if ($blogPost->VideoTitle)
+                                    <h2 class="px-5 pt-5 text-sm font-bold leading-snug text-gray-900">
+                                        {{ $blogPost->VideoTitle }}</h2>
+                                @endif
+
+                                <a href="{{ $blogPost->VideoUrl ?: '#' }}"
+                                    @if ($blogPost->VideoUrl) target="_blank" rel="noopener noreferrer" @endif
+                                    class="group relative {{ $blogPost->VideoTitle ? 'mt-4' : '' }} block aspect-video overflow-hidden bg-gray-900 {{ $blogPost->VideoUrl ? '' : 'pointer-events-none' }}"
+                                    aria-label="{{ $blogPost->VideoTitle ?: 'Watch video' }}">
+
+                                    <img src="{{ $blogPost->featuredImageUrl() }}"
+                                        alt="{{ $blogPost->VideoTitle ?: $blogPost->Title }}"
+                                        class="absolute inset-0 h-full w-full object-cover transition duration-300 group-hover:scale-105">
+
+                                    <span
+                                        class="absolute inset-0 bg-black/25 transition group-hover:bg-black/40"></span>
+
+                                    <!-- Center Play Button -->
+                                    <span class="absolute inset-0 flex items-center justify-center pointer-events-none">
+                                        <span
+                                            class="flex h-14 w-20 items-center justify-center rounded-2xl bg-red-600 shadow-lg transition group-hover:scale-110">
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="ml-1 h-7 w-7 text-white"
+                                                fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                                                <path d="M8 5v14l11-7z" />
+                                            </svg>
+                                        </span>
+                                    </span>
+
+                                </a>
+
+                                @if ($blogPost->VideoDescription)
+                                    <a href="{{ $blogPost->VideoUrl ?: '#' }}"
+                                        @if ($blogPost->VideoUrl) target="_blank" rel="noopener noreferrer" @endif
+                                        class="block px-5 py-4 text-sm font-semibold text-teal-700 hover:text-teal-800 transition {{ $blogPost->VideoUrl ? '' : 'pointer-events-none' }}">
+                                        {{ $blogPost->VideoDescription }}
+                                    </a>
+                                @endif
+                            </section>
+                        </div>
+                    @endif
+
+                    {{-- Main Featured Image (Hidden on mobile if video card exists) --}}
+                    <div class="relative overflow-hidden bg-gray-100 {{ $blogPost->hasVideoCard() ? 'hidden lg:block' : '' }}" style="max-height:440px;">
                         <img src="{{ $blogPost->featuredImageUrl() }}" alt="{{ $blogPost->Title }}"
                             class="w-full object-cover" style="max-height:440px;">
                     </div>
@@ -112,7 +158,8 @@
                 <aside class="lg:col-span-1">
                     <div class="space-y-6 lg:top-24">
                         @if ($blogPost->hasVideoCard())
-                            <section class="overflow-hidden rounded-2xl bg-white shadow-sm border border-gray-100">
+                            {{-- Video Section (Desktop view in sidebar) --}}
+                            <section class="hidden lg:block overflow-hidden rounded-2xl bg-white shadow-sm border border-gray-100">
                                 @if ($blogPost->VideoTitle)
                                     <h2 class="px-5 pt-5 text-sm font-bold leading-snug text-gray-900">
                                         {{ $blogPost->VideoTitle }}</h2>
